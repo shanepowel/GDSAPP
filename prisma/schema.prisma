@@ -1,0 +1,187 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model RoleGroup {
+  id    String @id
+  name  String
+  roles Role[]
+}
+
+model Role {
+  id          String      @id
+  name        String
+  description String      @db.Text
+  groupId     String
+  group       RoleGroup   @relation(fields: [groupId], references: [id])
+  levels      RoleLevel[]
+}
+
+model RoleLevel {
+  id            String           @id
+  name          String
+  description   String           @db.Text
+  roleType      String?
+  seniorityRank Int              @default(0)
+  roleId        String
+  role          Role             @relation(fields: [roleId], references: [id])
+  skills        RoleLevelSkill[]
+}
+
+model Skill {
+  id           String           @id
+  name         String
+  description  String           @db.Text
+  awareness    String?          @db.Text
+  working      String?          @db.Text
+  practitioner String?          @db.Text
+  expert       String?          @db.Text
+  isCustom     Boolean          @default(false)
+  roleLevels   RoleLevelSkill[]
+}
+
+model RoleLevelSkill {
+  roleLevelId   String
+  skillId       String
+  requiredLevel String
+  roleLevel     RoleLevel @relation(fields: [roleLevelId], references: [id])
+  skill         Skill     @relation(fields: [skillId], references: [id])
+
+  @@id([roleLevelId, skillId])
+}
+
+model Standard {
+  id           String         @id
+  name         String
+  jurisdiction String
+  points       StandardPoint[]
+}
+
+model StandardPoint {
+  id                String                  @id
+  standardId        String
+  number            Int
+  title             String
+  category          String?
+  description       String                  @db.Text
+  evidenceTypes     String[]
+  phaseEmphasis     String[]
+  compositionDriven Boolean                 @default(false)
+  statutoryNote     String?                 @db.Text
+  standard          Standard                @relation(fields: [standardId], references: [id])
+  roleDeps          StandardPointRoleDep[]
+  skillDeps         StandardPointSkillDep[]
+}
+
+model StandardPointRoleDep {
+  id               String        @id @default(cuid())
+  pointId          String
+  roleId           String
+  weight           Float         @default(1)
+  minSeniorityRank Int           @default(0)
+  point            StandardPoint @relation(fields: [pointId], references: [id])
+}
+
+model StandardPointSkillDep {
+  id       String        @id @default(cuid())
+  pointId  String
+  skillId  String
+  minLevel String
+  weight   Float         @default(1)
+  point    StandardPoint @relation(fields: [pointId], references: [id])
+}
+
+model Organisation {
+  id          String       @id @default(cuid())
+  name        String
+  users       User[]
+  engagements Engagement[]
+}
+
+model User {
+  id     String       @id @default(cuid())
+  email  String       @unique
+  name   String?
+  role   String       @default("member")
+  orgId  String
+  org    Organisation @relation(fields: [orgId], references: [id])
+  passwordHash String?
+}
+
+model Engagement {
+  id         String        @id @default(cuid())
+  name       String
+  standardId String
+  orgId      String
+  org        Organisation  @relation(fields: [orgId], references: [id])
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  requirements Requirement[]
+  people     Person[]
+}
+
+model Requirement {
+  id           String            @id @default(cuid())
+  engagementId String
+  title        String
+  phase        String
+  outcome      String            @db.Text
+  channels     String[]
+  sensitivity  String
+  engagement   Engagement        @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  roles        RequirementRole[]
+  assignments  Assignment[]
+  runs         AnalysisRun[]
+}
+
+model RequirementRole {
+  id            String      @id @default(cuid())
+  requirementId String
+  roleLevelId   String
+  weight        Float       @default(1)
+  requirement   Requirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+}
+
+model Person {
+  id           String        @id @default(cuid())
+  engagementId String
+  displayName  String
+  pseudonym    String?
+  isVacancy    Boolean       @default(false)
+  engagement   Engagement    @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  skills       PersonSkill[]
+  assignments  Assignment[]
+}
+
+model PersonSkill {
+  id       String @id @default(cuid())
+  personId String
+  skillId  String
+  level    String
+  person   Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+}
+
+model Assignment {
+  id            String      @id @default(cuid())
+  requirementId String
+  personId      String
+  roleLevelId   String
+  requirement   Requirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+  person        Person      @relation(fields: [personId], references: [id], onDelete: Cascade)
+}
+
+model AnalysisRun {
+  id               String      @id @default(cuid())
+  requirementId    String
+  createdAt        DateTime    @default(now())
+  overallReadiness Float
+  readinessBand    String
+  result           Json
+  requirement      Requirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,52 @@
+:root {
+  /* ---- BRAND CORE: REPLACE PLACEHOLDERS WITH VERIFIED T&T VALUES ---- */
+  --tt-magenta: #e6007e;
+  --tt-magenta-600: #c00069;
+  --tt-magenta-050: #fce6f2;
+  --tt-ink: #1a1a1a;
+  --tt-purple: #3b1c4a;
+  --tt-white: #ffffff;
+
+  --grey-900: #1a1a1a;
+  --grey-700: #3d3d3d;
+  --grey-500: #6b6b6b;
+  --grey-300: #cfcfcf;
+  --grey-200: #e5e5e5;
+  --grey-100: #f4f4f4;
+  --grey-050: #fafafa;
+
+  --status-strong: #1e7a46;
+  --status-met: #2e7d32;
+  --status-partial: #b26a00;
+  --status-gap: #c62828;
+  --status-info: #1f5fad;
+
+  --color-bg: var(--grey-050);
+  --color-surface: var(--tt-white);
+  --color-surface-alt: var(--grey-100);
+  --color-border: var(--grey-200);
+  --color-text: var(--grey-900);
+  --color-text-muted: var(--grey-500);
+  --color-text-inverse: var(--tt-white);
+  --color-brand: var(--tt-magenta);
+  --color-brand-hover: var(--tt-magenta-600);
+  --color-brand-tint: var(--tt-magenta-050);
+  --color-accent: var(--tt-purple);
+  --color-focus-ring: var(--tt-magenta);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+  --space-10: 64px;
+  --container-max: 1200px;
+}

@@ -1,0 +1,77 @@
+'use client';
+
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { AppShell } from '@/components/app/AppShell';
+import { ScoreBar } from '@/components/app/ScoreBar';
+import { Button } from '@/components/ui/Button';
+import { trpc } from '@/lib/trpc/client';
+import { en } from '@/lib/i18n/en';
+
+export default function EngagementOverviewPage() {
+  const params = useParams();
+  const id = params.id as string;
+  const { data, isLoading } = trpc.engagement.byId.useQuery({ id });
+  const run = trpc.engagement.runAnalysis.useMutation({
+    onSuccess: () => {
+      window.location.href = `/engagements/${id}/analysis`;
+    },
+  });
+
+  const req = data?.requirements[0];
+  const lastRun = req?.runs[0];
+
+  return (
+    <AppShell title={data?.name ?? 'Engagement'}>
+      {isLoading && <p className="text-text-muted">Loading…</p>}
+      {data && (
+        <>
+          <p className="mb-6 text-text-muted">
+            Standard: {data.standardId === 'wales' ? 'Digital Service Standard for Wales' : 'GDS Service Standard'}
+          </p>
+          <div className="grid gap-6 md:grid-cols-2">
+            <section className="rounded-lg border border-border bg-surface p-5">
+              <h2 className="font-semibold">Requirement</h2>
+              <p className="mt-2 text-sm text-text-muted">{req?.title ?? 'None'}</p>
+              <p className="text-sm">Phase: {req?.phase}</p>
+              <Link href={`/engagements/${id}/requirement`} className="mt-3 inline-block text-sm text-brand hover:underline">
+                Edit requirement
+              </Link>
+            </section>
+            <section className="rounded-lg border border-border bg-surface p-5">
+              <h2 className="font-semibold">Team</h2>
+              <p className="mt-2 text-sm text-text-muted">{data.people.length} people</p>
+              <Link href={`/engagements/${id}/team`} className="mt-3 inline-block text-sm text-brand hover:underline">
+                Edit team
+              </Link>
+            </section>
+          </div>
+          {lastRun && (
+            <div className="mt-6 rounded-lg border border-border bg-surface p-5">
+              <h2 className="font-semibold">Latest readiness</h2>
+              <div className="mt-3">
+                <ScoreBar value={lastRun.overallReadiness} />
+              </div>
+            </div>
+          )}
+          <nav className="no-print mt-8 flex flex-wrap gap-3">
+            {req && (
+              <Button onClick={() => run.mutate({ requirementId: req.id })} disabled={run.isPending}>
+                {en.common.runAnalysis}
+              </Button>
+            )}
+            <Link href={`/engagements/${id}/analysis`}>
+              <Button variant="secondary">View analysis</Button>
+            </Link>
+            <Link href={`/engagements/${id}/report`}>
+              <Button variant="secondary">Report</Button>
+            </Link>
+            <Link href={`/engagements/${id}/history`}>
+              <Button variant="tertiary">History</Button>
+            </Link>
+          </nav>
+        </>
+      )}
+    </AppShell>
+  );
+}
