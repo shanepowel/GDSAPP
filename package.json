@@ -9,6 +9,7 @@
     "start": "next start",
     "db:migrate": "sh scripts/prisma-env.sh migrate dev",
     "db:deploy": "sh scripts/prisma-env.sh migrate deploy",
+    "db:provision": "sh scripts/provision-db.sh",
     "ingest": "tsx scripts/ingest-ddat.ts",
     "seed:standards": "tsx scripts/seed-standards.ts",
     "seed:demo": "tsx scripts/seed-demo.ts",

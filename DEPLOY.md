@@ -38,27 +38,46 @@ npx vercel env pull .env.local
 npx vercel deploy --prod
 ```
 
-## 5. Run migrations (after deploy, once per schema change)
+## 5. Run migrations and seed (after deploy, once)
 
-The Vercel build does not run `migrate deploy` (no database during build). From your machine with production env vars loaded:
+The Vercel build does **not** run migrations. Do this from your laptop after Neon is created.
 
-```bash
-export DATABASE_URL="your-neon-pooled-url"
-export DIRECT_URL="your-neon-unpooled-url"   # required for Neon; can match DATABASE_URL for non-pooled Postgres
-npm run db:deploy
+### Get two Neon connection strings
+
+1. Open your project in https://console.neon.tech
+2. **Dashboard → Connection details**
+3. **Pooled connection** (toggle ON) → copy → this is `DATABASE_URL` (for the app on Vercel)
+4. **Pooled connection** (toggle OFF) → copy → this is `DIRECT_URL` (for `migrate deploy` only)
+
+Both URLs must include `?sslmode=require` (Neon adds this by default).
+
+Paste them into Vercel environment variables **and** into a local `.env` (do not commit `.env`).
+
+Example shape (yours will differ):
+
+```env
+DATABASE_URL=postgresql://user:pass@ep-xxx-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require
+DIRECT_URL=postgresql://user:pass@ep-xxx.eu-west-2.aws.neon.tech/neondb?sslmode=require
 ```
 
-On Neon, use the **unpooled** connection string for `DIRECT_URL`, not the pooler URL.
+### Run once
 
-## 6. Seed production (once)
-
-From a machine with production `DATABASE_URL`:
+From the project root, with `.env` filled in:
 
 ```bash
+npm run db:provision
+```
+
+That runs `migrate deploy` then `seed` (DDaT fixtures, standards, demo org, NRW engagement).
+
+Or step by step:
+
+```bash
+npm run db:deploy
 npm run seed
 ```
 
-Or run as a one-off job in Vercel / locally against the production database.
+Demo login after seed: `admin@demo.local` / `demo-password`
 
 ## 7. Verify
 
