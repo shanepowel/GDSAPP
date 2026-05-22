@@ -79,5 +79,7 @@ See [docs/NRW-FRAMEWORK-STRATEGY.md](docs/NRW-FRAMEWORK-STRATEGY.md) and [docs/W
 1. Retarget **call-off** layer copy and demo (not framework WPSQ).
 2. Design for **portfolio rollup** (engagement model first).
 3. **Client handover** path for Play B (training, NRW-operated instance).
-4. **Separate deployments** for internal vs client-owned modes (roadmap).
-5. Lead demos with **Welsh language** and **wellbeing duty** gaps on NRW scenario.
+4. **Separate deployments** via `DEPLOYMENT_MODE` / `NEXT_PUBLIC_DEPLOYMENT_MODE` ([docs/DEPLOYMENT-MODES.md](docs/DEPLOYMENT-MODES.md)).
+5. **Portfolio rollup UI** at `/portfolio` ([lib/portfolio/rollup.ts](lib/portfolio/rollup.ts)).
+6. **Handover pack** at `/handover` ([lib/handover/sections.ts](lib/handover/sections.ts)).
+7. Lead demos with **Welsh language** and **wellbeing duty** gaps on NRW scenario.

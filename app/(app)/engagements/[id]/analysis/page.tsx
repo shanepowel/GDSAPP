@@ -5,13 +5,16 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { FileText, ShieldAlert } from 'lucide-react';
 import { AppShell } from '@/components/app/AppShell';
+import { AppNav } from '@/components/app/AppNav';
 import { AnalysisTabs, type AnalysisTabId } from '@/components/app/AnalysisTabs';
+import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { Card } from '@/components/app/Card';
 import { Eyebrow } from '@/components/app/Eyebrow';
 import { ScoreBar } from '@/components/app/ScoreBar';
 import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
 import { RationaleDisclosure } from '@/components/app/RationaleDisclosure';
 import { Button } from '@/components/ui/Button';
+import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import { trpc } from '@/lib/trpc/client';
 import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
@@ -29,6 +32,7 @@ export default function AnalysisPage() {
   const id = params.id as string;
   const { data } = trpc.engagement.byId.useQuery({ id });
   const [tab, setTab] = useState<AnalysisTabId>('readiness');
+  const features = getClientDeploymentFeatures();
   const req = data?.requirements[0];
   const result = req?.runs[0]?.result as ExtendedAnalysisResult | undefined;
 
@@ -88,6 +92,8 @@ export default function AnalysisPage() {
       orgLabel="Engagement"
       hideTitle
     >
+      <DeploymentBanner />
+      <AppNav />
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <Eyebrow>{data?.name}</Eyebrow>
@@ -143,7 +149,9 @@ export default function AnalysisPage() {
               </div>
               <p className="mt-3 text-[13px] text-text-muted">
                 {topBidRisk.passFailRisk
-                  ? 'Mandatory pass/fail threshold may not be met. Review before submission.'
+                  ? features.supplierWinFraming
+                    ? 'Mandatory pass/fail threshold may not be met. Review before submission.'
+                    : 'Mandatory criterion may not be met. Review before assurance sign-off.'
                   : topBidRisk.pointMovers[0] ?? topBidRisk.confidenceNote}
               </p>
             </>

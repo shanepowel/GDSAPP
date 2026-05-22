@@ -8,5 +8,5 @@ export default withAuth({
 });
 
 export const config = {
-  matcher: ['/engagements/:path*'],
+  matcher: ['/engagements/:path*', '/portfolio', '/handover'],
 };

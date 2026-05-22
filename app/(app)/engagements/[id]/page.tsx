@@ -3,6 +3,9 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
+import { AppNav } from '@/components/app/AppNav';
+import { DeploymentBanner } from '@/components/app/DeploymentBanner';
+import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import { ScoreBar } from '@/components/app/ScoreBar';
 import { Button } from '@/components/ui/Button';
 import { trpc } from '@/lib/trpc/client';
@@ -18,6 +21,7 @@ export default function EngagementOverviewPage() {
     },
   });
 
+  const features = getClientDeploymentFeatures();
   const req = data?.requirements[0];
   const lastRun = req?.runs[0];
 
@@ -35,6 +39,8 @@ export default function EngagementOverviewPage() {
       {isLoading && <p className="mt-4 text-text-muted">Loading…</p>}
       {data && (
         <>
+          <DeploymentBanner />
+          <AppNav />
           <p className="mb-6 text-sm text-text-muted">
             {standardLabel} · {req?.phase ?? 'discovery'} phase
           </p>
@@ -79,7 +85,9 @@ export default function EngagementOverviewPage() {
               <Button variant="secondary">Rigour</Button>
             </Link>
             <Link href={`/engagements/${id}/tender`}>
-              <Button variant="secondary">Call-off</Button>
+              <Button variant="secondary">
+                {features.clientAssuranceLabels ? 'Assurance criteria' : 'Call-off'}
+              </Button>
             </Link>
             <Link href={`/engagements/${id}/report`}>
               <Button variant="secondary">Report</Button>

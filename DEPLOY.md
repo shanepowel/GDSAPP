@@ -24,7 +24,14 @@ Wrap values in double quotes if you store them in `.env` and the URI contains `&
 
 Full detail: [docs/NEON.md](docs/NEON.md).
 
-## 3. Environment variables (Vercel)
+## 3. Deployment mode (two instances)
+
+See [docs/DEPLOYMENT-MODES.md](docs/DEPLOYMENT-MODES.md). Use **two Vercel projects** and **two Neon databases**:
+
+- **Internal:** `DEPLOYMENT_MODE=internal` and `NEXT_PUBLIC_DEPLOYMENT_MODE=internal`
+- **Client (NRW):** `DEPLOYMENT_MODE=client` and `NEXT_PUBLIC_DEPLOYMENT_MODE=client`
+
+## 4. Environment variables (Vercel)
 
 | Variable | Notes |
 |----------|--------|
@@ -33,7 +40,7 @@ Full detail: [docs/NEON.md](docs/NEON.md).
 | `NEXTAUTH_SECRET` or `AUTH_SECRET` | `openssl rand -base64 32` (required) |
 | `NEXTAUTH_URL` or `AUTH_URL` | `https://<your-vercel-domain>` (exact URL, no trailing slash) |
 
-## 4. First deploy
+## 5. First deploy
 
 Deploy from Vercel UI or:
 
@@ -44,7 +51,7 @@ npx vercel env pull .env.local
 npx vercel deploy --prod
 ```
 
-## 5. Run migrations and seed (after deploy, once)
+## 6. Run migrations and seed (after deploy, once)
 
 The Vercel build does **not** run migrations. From your laptop with `.env` filled in:
 
@@ -61,13 +68,13 @@ npm run seed
 
 Demo login after seed: `admin@demo.local` / `demo-password`
 
-## 6. Verify
+## 7. Verify
 
 After setting env vars, **Redeploy** from the Vercel dashboard (env changes do not apply until redeploy).
 
 Check configuration (no secrets returned):
 
-`https://<your-vercel-domain>/api/health` → `{"ok":true,"hasSecret":true,"hasUrl":true,"hasDatabase":true}`
+`https://<your-vercel-domain>/api/health` → `{"ok":true,"deploymentMode":"client","hasSecret":true,"hasUrl":true,"hasDatabase":true}`
 
 Then:
 

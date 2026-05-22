@@ -6,10 +6,12 @@ import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { Button } from '@/components/ui/Button';
 import { RationaleDisclosure } from '@/components/app/RationaleDisclosure';
+import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import { trpc } from '@/lib/trpc/client';
 import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
 export default function TenderPage() {
+  const features = getClientDeploymentFeatures();
   const params = useParams();
   const id = params.id as string;
   const { data: engagement, refetch } = trpc.engagement.byId.useQuery({ id });
@@ -36,11 +38,13 @@ export default function TenderPage() {
   const [qText, setQText] = useState('');
 
   return (
-    <AppShell title="Call-off evaluation">
+    <AppShell
+      title={features.clientAssuranceLabels ? 'Assurance criteria' : 'Call-off evaluation'}
+    >
       <p className="mb-4 text-sm text-text-muted">
-        Call-off specification (not framework WPSQ): paste scored questions from the mini-competition,
-        map roles and skills, view predicted bands and point-movers. Advisory only; supports honest
-        professional judgement.
+        {features.clientAssuranceLabels
+          ? 'Map call-off specification criteria to roles, skills and standard points. View predicted assurance bands and gaps. For authority self-assurance, not supplier scoring.'
+          : 'Call-off specification (not framework WPSQ): paste scored questions, map dependencies, view predicted bands and point-movers. Advisory only.'}
       </p>
       {!tender ? (
         <Button
@@ -94,7 +98,9 @@ export default function TenderPage() {
           </form>
           {outlook && (
             <div className="mt-6 rounded-lg border border-border bg-surface p-5">
-              <h2 className="font-semibold">Quality outlook</h2>
+              <h2 className="font-semibold">
+                {features.clientAssuranceLabels ? 'Criteria outlook' : 'Quality outlook'}
+              </h2>
               <p className="mt-2 text-2xl font-bold text-brand">{outlook.overallQualityOutlook}%</p>
               <h3 className="mt-4 text-sm font-semibold">Per question</h3>
               <ul className="mt-2 space-y-3">
@@ -133,7 +139,9 @@ export default function TenderPage() {
                   </li>
                 ))}
               </ul>
-              <h3 className="mt-4 text-sm font-semibold">Top point-movers</h3>
+              <h3 className="mt-4 text-sm font-semibold">
+                {features.supplierWinFraming ? 'Top point-movers' : 'Priority assurance gaps'}
+              </h3>
               <ul className="mt-1 list-disc pl-5 text-sm">
                 {outlook.topPointMovers.slice(0, 5).map((m) => (
                   <li key={m.text}>{m.text}</li>

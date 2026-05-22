@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
+import { AppNav } from '@/components/app/AppNav';
+import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
 import { Button } from '@/components/ui/Button';
 import { trpc } from '@/lib/trpc/client';
@@ -57,6 +59,8 @@ export default function EngagementsPage() {
         </form>
       }
     >
+      <DeploymentBanner />
+      <AppNav />
       {isLoading && <p className="text-text-muted">Loading…</p>}
       {!isLoading && !data?.length && (
         <p className="rounded-lg border border-border bg-surface p-6 text-text-muted">{en.engagements.empty}</p>
