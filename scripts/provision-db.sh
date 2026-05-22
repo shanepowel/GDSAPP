@@ -10,14 +10,14 @@ if [ -f .env ]; then
   set +a
 fi
 
-if [ -z "$DATABASE_URL" ] || echo "$DATABASE_URL" | grep -qE 'your-neon|\[password\]|\[YOUR-PASSWORD\]'; then
-  echo "ERROR: Set DATABASE_URL and DIRECT_URL in .env (Supabase pooled + direct URIs)." >&2
-  echo "See docs/SUPABASE.md" >&2
+if [ -z "$DATABASE_URL" ] || echo "$DATABASE_URL" | grep -qE 'your-neon|\[password\]|\[YOUR-PASSWORD\]|PASSWORD@'; then
+  echo "ERROR: Set DATABASE_URL and DIRECT_URL in .env (Neon pooled + direct URIs)." >&2
+  echo "See docs/NEON.md" >&2
   exit 1
 fi
 
 if [ -z "$DIRECT_URL" ]; then
-  echo "WARN: DIRECT_URL not set; using DATABASE_URL for migrations (OK for Docker, not ideal for Supabase)." >&2
+  echo "WARN: DIRECT_URL not set; using DATABASE_URL for migrations (OK for Docker, not ideal for Neon)." >&2
 fi
 
 export DIRECT_URL="${DIRECT_URL:-$DATABASE_URL}"

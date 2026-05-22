@@ -1,35 +1,79 @@
 # Neon Postgres with Assemble
 
-## Two URLs
+Assemble uses Prisma with **two** Neon connection strings: pooled for the app (Vercel/serverless), direct for migrations.
 
-| Variable | Neon dashboard | Hostname |
-|----------|----------------|----------|
-| `DATABASE_URL` | **Pooled connection** (toggle ON) | `…-pooler.….neon.tech` |
-| `DIRECT_URL` | **Pooled connection** (toggle OFF) | `….neon.tech` (no `-pooler`) |
+## 1. Get connection strings
 
-Your pooled URL is correct for `DATABASE_URL`. For migrations, remove `-pooler` from the host for `DIRECT_URL`.
+In [Neon Console](https://console.neon.tech) → your project → **Dashboard → Connection details**:
 
-## `.env` on your laptop
+| Use | Neon setting | Env var | Host pattern |
+|-----|--------------|---------|--------------|
+| App (Vercel, Prisma Client) | **Pooled connection** (toggle **ON**) | `DATABASE_URL` | `ep-…-pooler.….neon.tech` |
+| Migrations (`migrate deploy`) | **Pooled connection** (toggle **OFF**) | `DIRECT_URL` | `ep-….neon.tech` (no `-pooler`) |
 
-**Quote the URLs** when they contain `&`, or `source .env` will break at the first `&`:
+Both URLs use the same user, password, and database name (`neondb` by default). Neon usually appends `?sslmode=require` (and sometimes `channel_binding=require`).
+
+Example shape (replace with your project values):
 
 ```env
-DATABASE_URL="postgresql://…@ep-xxx-pooler.region.aws.neon.tech/neondb?channel_binding=require&sslmode=require"
-DIRECT_URL="postgresql://…@ep-xxx.region.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL="postgresql://neondb_owner:PASSWORD@ep-xxx-pooler.us-east-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require"
+DIRECT_URL="postgresql://neondb_owner:PASSWORD@ep-xxx.us-east-1.aws.neon.tech/neondb?sslmode=require"
 ```
 
-Then:
+**Quote each URL in double quotes** in `.env` when it contains `&`, or shell `source` will truncate the string.
+
+URL-encode special characters in the password (`@`, `#`, `%`).
+
+## 2. Vercel environment variables
+
+Set for **Production** (and Preview if you use a separate Neon branch):
+
+| Variable | Value |
+|----------|--------|
+| `DATABASE_URL` | Pooled URI (`-pooler` host) |
+| `DIRECT_URL` | Direct URI (no `-pooler`) |
+| `NEXTAUTH_SECRET` or `AUTH_SECRET` | `openssl rand -base64 32` |
+| `NEXTAUTH_URL` or `AUTH_URL` | `https://your-app.vercel.app` |
+
+Redeploy after changing env vars. Region `lhr1` in `vercel.json` works well with Neon **EU** projects; US Neon endpoints are also fine.
+
+## 3. Apply schema and seed (once)
+
+On your laptop, copy the same URLs into `.env` (never commit `.env`):
 
 ```bash
+npm install
 npm run db:provision
 ```
 
-## Vercel
+That runs `prisma migrate deploy` via `DIRECT_URL`, then `npm run seed`.
 
-Paste the **same two quoted values** into Vercel environment variables (Production). Redeploy after saving.
+Demo login: `admin@demo.local` / `demo-password`
 
-Also set `AUTH_SECRET` and `AUTH_URL` (see `DEPLOY.md`).
+## 4. Common issues
 
-## Security
+| Symptom | Fix |
+|---------|-----|
+| Prisma hits `localhost:5432` | Unquoted `&` in `.env` — wrap `DATABASE_URL` and `DIRECT_URL` in quotes |
+| "problem with the server configuration" | Set `AUTH_SECRET` / `NEXTAUTH_URL` (see `DEPLOY.md`) |
+| `Can't reach database server` on Vercel | `DATABASE_URL` must be the **pooled** URL, not direct |
+| Migration timeout / errors | Use **direct** `DIRECT_URL` for `db:provision`, not the pooler host |
+| Connection limit on serverless | Do not use direct URL as `DATABASE_URL` in production |
 
-If a database URL was shared in chat or committed, **rotate the Neon role password** in the Neon console and update Vercel + local `.env`.
+## 5. Local development options
+
+**Docker (default in `.env.example`):**
+
+```bash
+docker compose up -d
+cp .env.example .env
+npm run db:migrate
+npm run seed
+npm run dev
+```
+
+**Neon for local dev:** point `.env` at the same Neon project (or a second Neon project) with pooled + direct URLs, then `npm run db:provision` and `npm run dev`.
+
+## 6. Security
+
+If a connection string was shared in chat or committed, **reset the Neon role password** in the console and update Vercel + local `.env`.

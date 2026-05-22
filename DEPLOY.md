@@ -2,7 +2,7 @@
 
 Repository: https://github.com/shanepowel/GDSAPP
 
-Database: **Supabase Postgres** (see [docs/SUPABASE.md](docs/SUPABASE.md) for connection strings and troubleshooting).
+Database: **[Neon](https://neon.tech) Postgres** — see [docs/NEON.md](docs/NEON.md).
 
 ## 1. Import project
 
@@ -11,24 +11,27 @@ Database: **Supabase Postgres** (see [docs/SUPABASE.md](docs/SUPABASE.md) for co
 3. Framework preset: **Next.js**
 4. Root directory: `.` (default)
 5. Build command (from `vercel.json`): `prisma generate && next build` (migrations are **not** run at build time)
-6. Region: **London (lhr1)** — pair with a Supabase project in **EU (London)** if possible
+6. Region: **London (lhr1)** in `vercel.json` (use a Neon project in EU when possible)
 
-## 2. Environment variables
+## 2. Neon Postgres
 
-Add in Vercel → Project → Settings → Environment Variables:
+1. Create a project at https://console.neon.tech
+2. **Connection details** → copy **pooled** and **direct** connection strings
+3. Pooled → `DATABASE_URL` (hostname includes `-pooler`)
+4. Direct → `DIRECT_URL` (same credentials, host **without** `-pooler`)
+
+Wrap values in double quotes if you store them in `.env` and the URI contains `&`.
+
+Full detail: [docs/NEON.md](docs/NEON.md).
+
+## 3. Environment variables (Vercel)
 
 | Variable | Notes |
 |----------|--------|
-| `DATABASE_URL` | Supabase **Connection pooling** (Transaction mode, port **6543**). Include `?pgbouncer=true` if not in the URI. |
-| `DIRECT_URL` | Supabase **direct** connection (port **5432**) for migrations only. |
+| `DATABASE_URL` | Neon **pooled** connection string |
+| `DIRECT_URL` | Neon **direct** connection string (migrations only) |
 | `NEXTAUTH_SECRET` or `AUTH_SECRET` | `openssl rand -base64 32` (required) |
-| `NEXTAUTH_URL` or `AUTH_URL` | `https://<your-vercel-domain>` (exact live URL, no trailing slash) |
-
-## 3. Supabase setup
-
-1. Create a project at https://supabase.com/dashboard
-2. **Project Settings → Database** → copy pooled and direct URIs (see [docs/SUPABASE.md](docs/SUPABASE.md))
-3. Paste into Vercel and into a local `.env` for the one-off provision step
+| `NEXTAUTH_URL` or `AUTH_URL` | `https://<your-vercel-domain>` (exact URL, no trailing slash) |
 
 ## 4. First deploy
 
@@ -49,8 +52,6 @@ The Vercel build does **not** run migrations. From your laptop with `.env` fille
 npm run db:provision
 ```
 
-That runs `migrate deploy` (uses `DIRECT_URL`) then `seed`.
-
 Or step by step:
 
 ```bash
@@ -65,21 +66,12 @@ Demo login after seed: `admin@demo.local` / `demo-password`
 - Sign in: `admin@demo.local` / `demo-password`
 - Open NRW demo engagement → **Run analysis**
 
-## Alternative: local Docker Postgres
+## Local alternative: Docker Postgres
 
 ```bash
 docker compose up -d
 cp .env.example .env
-# DATABASE_URL and DIRECT_URL both point at localhost:5432
 npm run db:migrate
 npm run seed
+npm run dev
 ```
-
-## Neon (pooled + direct)
-
-1. Neon dashboard → **Connection details**
-2. **Pooled** → `DATABASE_URL` (hostname contains `-pooler`)
-3. **Unpooled** → `DIRECT_URL` (same user/password, host without `-pooler`)
-4. Wrap both in **double quotes** in `.env` if the string contains `&`
-
-See [docs/NEON.md](docs/NEON.md).
