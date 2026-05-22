@@ -1,9 +1,12 @@
+import '@/lib/auth-env';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/db/client';
+import { getAuthSecret } from '@/lib/auth-env';
 
 export const authOptions: NextAuthOptions = {
+  secret: getAuthSecret(),
   session: { strategy: 'jwt' },
   pages: { signIn: '/sign-in' },
   providers: [
