@@ -16,7 +16,7 @@ const TABS: { id: AnalysisTabId; label: string; Icon: LucideIcon }[] = [
   { id: 'composition', label: 'Composition', Icon: GitBranch },
   { id: 'readiness', label: 'Readiness', Icon: ClipboardCheck },
   { id: 'adaptation', label: 'Adaptation', Icon: Sparkles },
-  { id: 'bid', label: 'Bid', Icon: Scale },
+  { id: 'bid', label: 'Call-off', Icon: Scale },
 ];
 
 export function AnalysisTabs({

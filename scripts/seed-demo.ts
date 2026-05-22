@@ -141,17 +141,17 @@ async function main() {
   const tender = await prisma.tender.create({
     data: {
       engagementId: engagement.id,
-      title: 'NRW discovery capability (quality)',
+      title: 'Call-off: regulatory permitting discovery (mini-competition)',
       buyer: 'Natural Resources Wales',
-      route: 'Digital Outcomes',
-      qualityWeight: 0.7,
-      priceWeight: 0.3,
+      route: 'NRW DDaT Framework call-off',
+      qualityWeight: 0.5,
+      priceWeight: 0.5,
       scoringScaleMax: 5,
       questions: {
         create: [
           {
-            ref: 'Q1',
-            text: 'Team and capability to deliver discovery in Wales.',
+            ref: 'C1',
+            text: 'Team and capability to deliver this discovery service against the Wales standard.',
             weight: 1,
             category: 'capability',
             roleDeps: {

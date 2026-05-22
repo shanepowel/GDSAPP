@@ -36,9 +36,11 @@ export default function TenderPage() {
   const [qText, setQText] = useState('');
 
   return (
-    <AppShell title="Bid evaluation">
+    <AppShell title="Call-off evaluation">
       <p className="mb-4 text-sm text-text-muted">
-        Manual tender setup: paste questions, map dependencies, view predicted bands and point-movers.
+        Call-off specification (not framework WPSQ): paste scored questions from the mini-competition,
+        map roles and skills, view predicted bands and point-movers. Advisory only; supports honest
+        professional judgement.
       </p>
       {!tender ? (
         <Button

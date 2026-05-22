@@ -79,7 +79,7 @@ export default function EngagementOverviewPage() {
               <Button variant="secondary">Rigour</Button>
             </Link>
             <Link href={`/engagements/${id}/tender`}>
-              <Button variant="secondary">Bid</Button>
+              <Button variant="secondary">Call-off</Button>
             </Link>
             <Link href={`/engagements/${id}/report`}>
               <Button variant="secondary">Report</Button>

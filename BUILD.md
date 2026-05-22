@@ -61,3 +61,23 @@ Extension (sections 18–27): bid evaluation, agile rigour, evidence layer, adap
 Hard rule: scoring stays deterministic; bid layer never fabricates evidence or capability.
 
 Full narrative sections 18–27 are in the originating BUILD extension sheet provided to Cursor for this implementation.
+
+## Commercial positioning (NRW DDaT framework)
+
+See [docs/NRW-FRAMEWORK-STRATEGY.md](docs/NRW-FRAMEWORK-STRATEGY.md) and [docs/WPSQ-DRAFTS.md](docs/WPSQ-DRAFTS.md).
+
+| Play | Use of Assemble | Product note |
+|------|-----------------|--------------|
+| **A Call-off accelerator** | Internal: call-off spec, team, Wales readiness, rigour, approach drafts | **Build focus:** bid/call-off UI language, demo scenario |
+| **B Capability uplift** | Client-owned assurance; NRW operates, no competitor data | Handover, explainability, separate deployment |
+| **C Multi-authority** | Generalise after evidence | Portfolio rollup (schema-ready, UI deferred) |
+
+**Not for:** framework Stage 1 WPSQ as primary demo (cost 50%, no squad assessment). **Conflict firewall:** never run client instance over competitor submissions.
+
+### Build priorities from strategy (section 5)
+
+1. Retarget **call-off** layer copy and demo (not framework WPSQ).
+2. Design for **portfolio rollup** (engagement model first).
+3. **Client handover** path for Play B (training, NRW-operated instance).
+4. **Separate deployments** for internal vs client-owned modes (roadmap).
+5. Lead demos with **Welsh language** and **wellbeing duty** gaps on NRW scenario.

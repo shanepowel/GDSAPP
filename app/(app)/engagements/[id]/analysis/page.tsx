@@ -130,7 +130,7 @@ export default function AnalysisPage() {
               : undefined
           }
         >
-          <Eyebrow>{result.bidOutlook ? 'Top bid risk' : 'Bid outlook'}</Eyebrow>
+          <Eyebrow>{result.bidOutlook ? 'Top call-off risk' : 'Call-off outlook'}</Eyebrow>
           {result.bidOutlook && topBidRisk ? (
             <>
               <div className="mt-2 flex items-center gap-2">
@@ -150,7 +150,7 @@ export default function AnalysisPage() {
           ) : (
             <p className="mt-2 text-[13px] text-text-muted">
               <Link href={`/engagements/${id}/tender`} className="text-brand-hover hover:underline">
-                Set up a tender
+                Set up a call-off specification
               </Link>{' '}
               to see quality outlook and point-movers.
             </p>
@@ -328,16 +328,16 @@ export default function AnalysisPage() {
               </Card>
             ))}
             <Link href={`/engagements/${id}/tender`} className="text-sm text-brand-hover hover:underline">
-              Manage tender and drafts
+              Manage call-off and drafts
             </Link>
           </div>
         )}
 
         {tab === 'bid' && !result.bidOutlook && (
           <p className="text-sm text-text-muted">
-            Set up a tender under{' '}
+            Set up a call-off under{' '}
             <Link href={`/engagements/${id}/tender`} className="text-brand-hover hover:underline">
-              Bid
+              Call-off
             </Link>{' '}
             to see outlook here.
           </p>

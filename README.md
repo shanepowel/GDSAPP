@@ -12,6 +12,8 @@ Built by Amplified Ltd. Turner & Townsend brand tokens are placeholders in `styl
 
 See `BUILD.md` for the full build specification.
 
+Commercial positioning for NRW and framework bids: [docs/NRW-FRAMEWORK-STRATEGY.md](docs/NRW-FRAMEWORK-STRATEGY.md), WPSQ templates: [docs/WPSQ-DRAFTS.md](docs/WPSQ-DRAFTS.md).
+
 ## Stack
 
 Next.js (App Router), TypeScript, Tailwind, tRPC, Prisma, PostgreSQL, Auth.js (credentials for local dev; Microsoft Entra ID ready), Vitest, Playwright, @axe-core/playwright.
