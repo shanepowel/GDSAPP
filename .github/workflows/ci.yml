@@ -33,7 +33,7 @@ jobs:
           node-version: '20'
           cache: npm
       - run: npm ci
-      - run: npx prisma migrate deploy
+      - run: sh scripts/prisma-env.sh migrate deploy
       - run: npm run seed
       - run: npm run typecheck
       - run: npm run lint

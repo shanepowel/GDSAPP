@@ -17,8 +17,8 @@ Add in Vercel → Project → Settings → Environment Variables:
 
 | Variable | Notes |
 |----------|--------|
-| `DATABASE_URL` | Neon **pooled** connection string |
-| `DIRECT_URL` | Neon **direct** connection string (migrations) |
+| `DATABASE_URL` | Postgres connection string (Neon: **pooled**) |
+| `DIRECT_URL` | Optional: Neon **unpooled** URL for migrations. If omitted, the build uses `DATABASE_URL` (fine for Docker; on Neon set both explicitly). |
 | `AUTH_SECRET` | `openssl rand -base64 32` |
 | `AUTH_URL` | `https://<your-vercel-domain>` |
 
