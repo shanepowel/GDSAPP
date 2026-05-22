@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '../styles/tokens.css';
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
 
 @theme inline {
   --color-bg: var(--color-bg);
@@ -18,8 +19,8 @@
   --color-status-partial: var(--status-partial);
   --color-status-gap: var(--status-gap);
   --color-status-info: var(--status-info);
-  --font-sans: system-ui, sans-serif;
-  --font-display: Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
@@ -33,6 +34,11 @@ body {
   color: var(--color-text);
   font-family: var(--font-sans);
   font-feature-settings: 'tnum' 1;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
 }
 
 @media print {

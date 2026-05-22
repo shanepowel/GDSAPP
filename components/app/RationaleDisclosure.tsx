@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
 
 export interface RationaleRow {
   requirement: string;
@@ -17,13 +18,13 @@ export function RationaleDisclosure({ rows }: { rows: RationaleRow[] }) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="inline-flex items-center gap-1 text-sm font-medium text-brand hover:underline"
+        className="inline-flex items-center gap-1 text-[13px] font-medium text-brand-hover hover:underline"
       >
         <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden />
         {open ? 'Hide working' : 'Show working'}
       </button>
       {open && (
-        <table className="mt-2 w-full text-sm">
+        <table className="mt-2 w-full text-[13px]">
           <thead>
             <tr className="text-left text-text-muted">
               <th className="py-1 font-medium">Requirement</th>
@@ -36,7 +37,13 @@ export function RationaleDisclosure({ rows }: { rows: RationaleRow[] }) {
               <tr key={i} className="border-t border-border">
                 <td className="py-1.5 pr-3">{r.requirement}</td>
                 <td className="py-1.5 pr-3">{r.held}</td>
-                <td className="py-1.5 capitalize">{r.match}</td>
+                <td className="py-1.5">
+                  <StatusPill
+                    kind={
+                      (r.match === 'met' ? 'met' : r.match === 'partial' ? 'partial' : 'gap') as StatusKind
+                    }
+                  />
+                </td>
               </tr>
             ))}
           </tbody>

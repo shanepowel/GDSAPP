@@ -21,16 +21,25 @@ export default function EngagementOverviewPage() {
   const req = data?.requirements[0];
   const lastRun = req?.runs[0];
 
+  const standardLabel =
+    data?.standardId === 'wales'
+      ? 'Digital Service Standard for Wales'
+      : 'GDS Service Standard';
+
   return (
-    <AppShell title={data?.name ?? 'Engagement'}>
-      {isLoading && <p className="text-text-muted">Loading…</p>}
+    <AppShell
+      title={data?.name ?? 'Engagement'}
+      standardId={data?.standardId}
+      orgLabel="Engagement"
+    >
+      {isLoading && <p className="mt-4 text-text-muted">Loading…</p>}
       {data && (
         <>
-          <p className="mb-6 text-text-muted">
-            Standard: {data.standardId === 'wales' ? 'Digital Service Standard for Wales' : 'GDS Service Standard'}
+          <p className="mb-6 text-sm text-text-muted">
+            {standardLabel} · {req?.phase ?? 'discovery'} phase
           </p>
           <div className="grid gap-6 md:grid-cols-2">
-            <section className="rounded-lg border border-border bg-surface p-5">
+            <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
               <h2 className="font-semibold">Requirement</h2>
               <p className="mt-2 text-sm text-text-muted">{req?.title ?? 'None'}</p>
               <p className="text-sm">Phase: {req?.phase}</p>
@@ -38,7 +47,7 @@ export default function EngagementOverviewPage() {
                 Edit requirement
               </Link>
             </section>
-            <section className="rounded-lg border border-border bg-surface p-5">
+            <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
               <h2 className="font-semibold">Team</h2>
               <p className="mt-2 text-sm text-text-muted">{data.people.length} people</p>
               <Link href={`/engagements/${id}/team`} className="mt-3 inline-block text-sm text-brand hover:underline">
@@ -47,7 +56,7 @@ export default function EngagementOverviewPage() {
             </section>
           </div>
           {lastRun && (
-            <div className="mt-6 rounded-lg border border-border bg-surface p-5">
+            <div className="mt-6 rounded-2xl border border-border bg-surface p-5 shadow-sm">
               <h2 className="font-semibold">Latest readiness</h2>
               <div className="mt-3">
                 <ScoreBar value={lastRun.overallReadiness} />

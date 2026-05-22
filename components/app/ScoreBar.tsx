@@ -14,18 +14,18 @@ const COLOUR: Record<string, string> = {
 export function ScoreBar({ value, label }: { value: number; label?: string }) {
   const band = BANDS.find((b) => value >= b.min)!;
   return (
-    <div className="flex items-center gap-3">
-      <div
-        className="h-2.5 flex-1 rounded-full bg-surface-alt"
-        role="img"
-        aria-label={`${label ?? 'Readiness'} ${Math.round(value)} percent, ${band.label}`}
-      >
+    <div
+      className="flex items-center gap-3"
+      role="img"
+      aria-label={`${label ?? 'Readiness'} ${Math.round(value)} percent, ${band.label}`}
+    >
+      <div className="h-2 flex-1 rounded-full bg-border">
         <div
-          className="h-full rounded-full"
+          className="h-full rounded-full transition-all"
           style={{ width: `${value}%`, background: COLOUR[band.kind] }}
         />
       </div>
-      <span className="tabular-nums text-sm font-semibold">{Math.round(value)}%</span>
+      <span className="tabular-nums text-sm font-semibold text-text">{Math.round(value)}%</span>
       <span className="text-sm text-text-muted">{band.label}</span>
     </div>
   );

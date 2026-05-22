@@ -3,7 +3,7 @@
   --tt-magenta: #e6007e;
   --tt-magenta-600: #c00069;
   --tt-magenta-050: #fce6f2;
-  --tt-ink: #1a1a1a;
+  --tt-ink: #16141a;
   --tt-purple: #3b1c4a;
   --tt-white: #ffffff;
 
@@ -13,7 +13,7 @@
   --grey-300: #cfcfcf;
   --grey-200: #e5e5e5;
   --grey-100: #f4f4f4;
-  --grey-050: #fafafa;
+  --grey-050: #fafaf8;
 
   --status-strong: #1e7a46;
   --status-met: #2e7d32;
@@ -48,5 +48,6 @@
   --space-6: 32px;
   --space-8: 48px;
   --space-10: 64px;
-  --container-max: 1200px;
+  --container-max: 1180px;
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
