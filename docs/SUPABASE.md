@@ -25,6 +25,8 @@ DIRECT_URL=postgresql://postgres.xxxxxxxxxxxx:[YOUR-PASSWORD]@aws-0-eu-west-2.po
 
 If the password contains `@`, `#`, or `%`, [URL-encode](https://developer.mozilla.org/en-US/docs/Glossary/Percent-encoding) it in the connection string.
 
+Wrap each URL in **double quotes** in `.env` when it contains `&` (e.g. `sslmode=require&channel_binding=require`), or shell `source` will truncate the value.
+
 ## 2. Vercel environment variables
 
 Set for **Production** (and Preview if you use preview DBs):

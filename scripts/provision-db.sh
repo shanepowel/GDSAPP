@@ -5,6 +5,7 @@ set -e
 if [ -f .env ]; then
   set -a
   # shellcheck disable=SC1091
+  # Quote URLs in .env (Neon uses & in query string — unquoted values break `source`).
   . ./.env
   set +a
 fi

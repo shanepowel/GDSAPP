@@ -75,6 +75,11 @@ npm run db:migrate
 npm run seed
 ```
 
-## Alternative: Neon
+## Neon (pooled + direct)
 
-Neon uses the same Prisma pattern: pooled `DATABASE_URL`, unpooled `DIRECT_URL`, both with `?sslmode=require`.
+1. Neon dashboard → **Connection details**
+2. **Pooled** → `DATABASE_URL` (hostname contains `-pooler`)
+3. **Unpooled** → `DIRECT_URL` (same user/password, host without `-pooler`)
+4. Wrap both in **double quotes** in `.env` if the string contains `&`
+
+See [docs/NEON.md](docs/NEON.md).
