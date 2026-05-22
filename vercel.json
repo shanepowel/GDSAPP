@@ -1,5 +1,5 @@
 {
-  "buildCommand": "sh scripts/prisma-env.sh generate && sh scripts/prisma-env.sh migrate deploy && next build",
+  "buildCommand": "sh scripts/prisma-env.sh generate && next build",
   "framework": "nextjs",
   "regions": ["lhr1"]
 }

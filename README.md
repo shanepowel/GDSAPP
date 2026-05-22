@@ -44,4 +44,4 @@ Place official DDaT CSVs in `data/source/` as `roles.csv`, `skills.csv` (gitigno
 
 ## Deployment (Vercel + Neon)
 
-Set `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `AUTH_URL` in Vercel. Region `lhr1` in `vercel.json`. First deploy runs migrations via build command; run `npm run seed` once against production from a trusted machine.
+Set `DATABASE_URL`, `AUTH_SECRET`, `AUTH_URL` in Vercel (and `DIRECT_URL` for Neon migrations). Region `lhr1` in `vercel.json`. After first deploy, run `npm run db:deploy` then `npm run seed` once against production from a trusted machine.

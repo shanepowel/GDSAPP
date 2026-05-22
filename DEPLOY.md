@@ -8,7 +8,7 @@ Repository: https://github.com/shanepowel/GDSAPP
 2. Import **shanepowel/GDSAPP**
 3. Framework preset: **Next.js**
 4. Root directory: `.` (default)
-5. Build command (from `vercel.json`): `prisma generate && prisma migrate deploy && next build`
+5. Build command (from `vercel.json`): `prisma generate && next build` (migrations are **not** run at build time)
 6. Region: **London (lhr1)** — match Neon UK/EU if used
 
 ## 2. Environment variables
@@ -38,7 +38,19 @@ npx vercel env pull .env.local
 npx vercel deploy --prod
 ```
 
-## 5. Seed production (once)
+## 5. Run migrations (after deploy, once per schema change)
+
+The Vercel build does not run `migrate deploy` (no database during build). From your machine with production env vars loaded:
+
+```bash
+export DATABASE_URL="your-neon-pooled-url"
+export DIRECT_URL="your-neon-unpooled-url"   # required for Neon; can match DATABASE_URL for non-pooled Postgres
+npm run db:deploy
+```
+
+On Neon, use the **unpooled** connection string for `DIRECT_URL`, not the pooler URL.
+
+## 6. Seed production (once)
 
 From a machine with production `DATABASE_URL`:
 
@@ -48,7 +60,7 @@ npm run seed
 
 Or run as a one-off job in Vercel / locally against the production database.
 
-## 6. Verify
+## 7. Verify
 
 - Sign in: `admin@demo.local` / `demo-password`
 - Open NRW demo engagement → **Run analysis**
