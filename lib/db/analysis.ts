@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db/client';
-import { runAnalysis } from '@/lib/engine';
-import type { AnalysisInput, AnalysisResult } from '@/lib/types/analysis';
+import { runExtendedAnalysis } from '@/lib/db/extension';
+import type { AnalysisInput } from '@/lib/types/analysis';
+import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 import type { Phase, StandardId } from '@/lib/engine/standards-dependency-map';
 
 export async function buildAnalysisInput(requirementId: string): Promise<AnalysisInput | null> {
@@ -100,10 +101,11 @@ export async function buildAnalysisInput(requirementId: string): Promise<Analysi
   };
 }
 
-export async function runAndPersistAnalysis(requirementId: string): Promise<AnalysisResult | null> {
-  const input = await buildAnalysisInput(requirementId);
-  if (!input) return null;
-  const result = runAnalysis(input);
+export async function runAndPersistAnalysis(
+  requirementId: string,
+): Promise<ExtendedAnalysisResult | null> {
+  const result = await runExtendedAnalysis(requirementId);
+  if (!result) return null;
   await prisma.analysisRun.create({
     data: {
       requirementId,

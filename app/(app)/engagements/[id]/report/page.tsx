@@ -6,14 +6,16 @@ import { AppShell } from '@/components/app/AppShell';
 import { ScoreBar } from '@/components/app/ScoreBar';
 import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
 import { trpc } from '@/lib/trpc/client';
-import type { AnalysisResult } from '@/lib/types/analysis';
+import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
 export default function ReportPage() {
   const params = useParams();
   const id = params.id as string;
   const { data } = trpc.engagement.byId.useQuery({ id });
+  const createShare = trpc.extension.share.create.useMutation();
+  const { data: shares, refetch: refetchShares } = trpc.extension.share.list.useQuery({ engagementId: id });
   const req = data?.requirements[0];
-  const result = req?.runs[0]?.result as AnalysisResult | undefined;
+  const result = req?.runs[0]?.result as ExtendedAnalysisResult | undefined;
 
   const topGaps = result?.readiness.points
     .filter((p) => p.status === 'gap' || p.status === 'partial')
@@ -32,6 +34,30 @@ export default function ReportPage() {
           >
             Print report
           </button>
+          <button
+            type="button"
+            className="ml-3 rounded-md border border-border px-4 py-2 text-sm"
+            onClick={() =>
+              createShare.mutate(
+                { engagementId: id },
+                {
+                  onSuccess: (link) => {
+                    refetchShares();
+                    void navigator.clipboard?.writeText(
+                      `${window.location.origin}/share/${link.token}`,
+                    );
+                  },
+                },
+              )
+            }
+          >
+            Create share link
+          </button>
+          {shares?.[0] && (
+            <p className="mt-2 text-xs text-text-muted">
+              Latest link expires {new Date(shares[0].expiresAt).toLocaleDateString('en-GB')}
+            </p>
+          )}
           <Link href={`/engagements/${id}/analysis`} className="ml-3 text-sm text-brand">
             Back to analysis
           </Link>
@@ -47,6 +73,32 @@ export default function ReportPage() {
         </header>
         {result ? (
           <>
+            <section className="mt-8 print:break-inside-avoid">
+              <h2 className="text-lg font-semibold">Executive one-pager</h2>
+              <div className="mt-3 grid gap-4 text-sm md:grid-cols-3">
+                <div>
+                  <p className="font-medium">Readiness</p>
+                  <p>{result.overallReadiness}% ({result.readinessBand})</p>
+                </div>
+                {result.bidOutlook && (
+                  <div>
+                    <p className="font-medium">Bid quality outlook</p>
+                    <p>{result.bidOutlook.overallQualityOutlook}%</p>
+                  </div>
+                )}
+                {result.rigour && (
+                  <div>
+                    <p className="font-medium">Agile rigour</p>
+                    <p>{result.rigour.overallPercent}%</p>
+                  </div>
+                )}
+              </div>
+              {result.bidOutlook && (
+                <p className="mt-2 text-xs">
+                  Top mover: {result.bidOutlook.topPointMovers[0]?.text ?? 'None'}
+                </p>
+              )}
+            </section>
             <section className="mt-8">
               <h2 className="text-lg font-semibold">Summary</h2>
               <div className="mt-3">

@@ -111,6 +111,8 @@ export interface ReadinessPointResult {
   statutoryNote?: string | null;
   status: ReadinessStatus;
   score: number;
+  capabilityScore: number;
+  evidenceStrength: number;
   phaseWeight: number;
   evidenceGaps: string[];
   rationale: string[];
@@ -131,6 +133,11 @@ export interface AdaptationAction {
   effort: 'high' | 'medium' | 'low';
   improves: string[];
   rationale: string[];
+  estimatedCost?: number | null;
+  weeksToCompetence?: number | null;
+  feasible?: boolean;
+  impactPerPound?: number | null;
+  impactPerWeek?: number | null;
 }
 
 export interface AdaptationPlan {
@@ -146,6 +153,12 @@ export interface AnalysisResult {
   readinessBand: string;
 }
 
+export interface EngineEvidenceLink {
+  pointId: string;
+  strength: string;
+  title: string;
+}
+
 export interface AnalysisInput {
   phase: Phase;
   standardId: StandardId;
@@ -155,4 +168,6 @@ export interface AnalysisInput {
   roleLevels: EngineRoleLevel[];
   standardPoints: EngineStandardPoint[];
   rolesById: Map<string, { id: string; name: string }>;
+  evidenceByPoint?: Map<string, EngineEvidenceLink[]>;
+  rigourPercent?: number;
 }

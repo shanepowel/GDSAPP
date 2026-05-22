@@ -1,4 +1,6 @@
 import { readinessBandForScore } from '@/lib/engine/config';
+import { maxEvidenceStrengthForPoint } from '@/lib/engine/evidence-config';
+import { rigourBoostForPoint7 } from '@/lib/engine/rigour';
 import { compareSkillMatch } from '@/lib/engine/skill-match';
 import type {
   AnalysisInput,
@@ -11,10 +13,11 @@ function phaseWeight(pointPhases: string[], phase: string): number {
   return pointPhases.includes(phase) ? 1.25 : 1;
 }
 
-function scoreToStatus(score: number): ReadinessStatus {
-  if (score >= 0.85) return 'strong';
-  if (score >= 0.65) return 'met';
-  if (score >= 0.4) return 'partial';
+function combinedScoreToStatus(capability: number, evidence: number): ReadinessStatus {
+  const combined = capability * 0.65 + evidence * 0.35;
+  if (combined >= 0.85 && evidence >= 0.5) return 'strong';
+  if (combined >= 0.65) return 'met';
+  if (combined >= 0.4) return 'partial';
   return 'gap';
 }
 
@@ -30,6 +33,8 @@ export function computeReadiness(input: AnalysisInput): ReadinessResult {
     list.push({ personId: a.personId, seniorityRank: rl?.seniorityRank ?? 0 });
     assignedByRole.set(rl?.roleId ?? '', list);
   }
+
+  const rigourBoost = input.rigourPercent != null ? rigourBoostForPoint7(input.rigourPercent) : 0;
 
   const points: ReadinessPointResult[] = input.standardPoints.map((point) => {
     const weight = phaseWeight(point.phaseEmphasis, input.phase);
@@ -89,13 +94,27 @@ export function computeReadiness(input: AnalysisInput): ReadinessResult {
 
     const rolePart = roleWeightSum ? roleScoreSum / roleWeightSum : 1;
     const skillPart = skillWeightSum ? skillScoreSum / skillWeightSum : null;
-    const raw =
+    let capability =
       point.compositionDriven && skillWeightSum === 0
         ? rolePart
         : skillPart === null
           ? rolePart
           : (rolePart + skillPart) / 2;
-    const score = Math.min(1, raw);
+
+    if (point.number === 7 && rigourBoost > 0) {
+      capability = Math.min(1, capability + rigourBoost);
+      rationale.push(`Agile rigour assessment strengthens point 7 (+${Math.round(rigourBoost * 100)}% capability).`);
+    }
+
+    const linkedEvidence = input.evidenceByPoint?.get(point.id) ?? [];
+    const evidenceStrength = maxEvidenceStrengthForPoint(linkedEvidence);
+    if (linkedEvidence.length === 0 && point.evidenceTypes.length > 0) {
+      evidenceGaps.push(`Produce and link evidence: ${point.evidenceTypes[0]}`);
+    } else if (evidenceStrength < 0.5 && linkedEvidence.length > 0) {
+      rationale.push('Evidence linked but strength is below documented; strengthen artefacts.');
+    }
+
+    const score = Math.round(Math.min(1, capability * 0.65 + evidenceStrength * 0.35) * 100);
 
     return {
       pointId: point.id,
@@ -103,8 +122,10 @@ export function computeReadiness(input: AnalysisInput): ReadinessResult {
       title: point.title,
       category: point.category,
       statutoryNote: point.statutoryNote,
-      status: scoreToStatus(score),
-      score: Math.round(score * 100),
+      status: combinedScoreToStatus(capability, evidenceStrength),
+      score,
+      capabilityScore: Math.round(capability * 100),
+      evidenceStrength: Math.round(evidenceStrength * 100),
       phaseWeight: weight,
       evidenceGaps,
       rationale,

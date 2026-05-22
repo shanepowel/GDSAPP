@@ -137,7 +137,60 @@ async function main() {
     });
   }
 
-  console.log('Seeded demo org, admin@demo.local / demo-password, NRW engagement.');
+  await prisma.tender.deleteMany({ where: { engagementId: engagement.id } });
+  const tender = await prisma.tender.create({
+    data: {
+      engagementId: engagement.id,
+      title: 'NRW discovery capability (quality)',
+      buyer: 'Natural Resources Wales',
+      route: 'Digital Outcomes',
+      qualityWeight: 0.7,
+      priceWeight: 0.3,
+      scoringScaleMax: 5,
+      questions: {
+        create: [
+          {
+            ref: 'Q1',
+            text: 'Team and capability to deliver discovery in Wales.',
+            weight: 1,
+            category: 'capability',
+            roleDeps: {
+              create: [{ roleId: 'user-researcher', weight: 1, minSeniorityRank: 0 }],
+            },
+            skillDeps: {
+              create: [{ skillId: 'user-research', minLevel: 'practitioner', weight: 1 }],
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.evidence.create({
+    data: {
+      engagementId: engagement.id,
+      title: 'Discovery research plan (draft)',
+      type: 'research plan',
+      strength: 'documented',
+      links: { create: [] },
+    },
+  });
+
+  await prisma.constraint.upsert({
+    where: { id: 'nrw-constraint' },
+    create: {
+      id: 'nrw-constraint',
+      requirementId: requirement.id,
+      budgetCap: 120000,
+      internalRatePerDay: 550,
+      partnerRatePerDay: 850,
+    },
+    update: { budgetCap: 120000 },
+  });
+
+  console.log(
+    `Seeded demo org, admin@demo.local / demo-password, NRW engagement, tender ${tender.id}.`,
+  );
 }
 
 main()

@@ -77,6 +77,8 @@ model StandardPoint {
   standard          Standard                @relation(fields: [standardId], references: [id])
   roleDeps          StandardPointRoleDep[]
   skillDeps         StandardPointSkillDep[]
+  evidenceLinks     EvidenceLink[]
+  questionPointRefs QuestionPointRef[]
 }
 
 model StandardPointRoleDep {
@@ -97,6 +99,15 @@ model StandardPointSkillDep {
   point    StandardPoint @relation(fields: [pointId], references: [id])
 }
 
+model FrameworkVersion {
+  id           String      @id @default(cuid())
+  source       String
+  versionLabel String
+  importedAt   DateTime    @default(now())
+  notes        String?     @db.Text
+  judgements   Judgement[]
+}
+
 model Organisation {
   id          String       @id @default(cuid())
   name        String
@@ -105,39 +116,46 @@ model Organisation {
 }
 
 model User {
-  id     String       @id @default(cuid())
-  email  String       @unique
-  name   String?
-  role   String       @default("member")
-  orgId  String
-  org    Organisation @relation(fields: [orgId], references: [id])
+  id           String       @id @default(cuid())
+  email        String       @unique
+  name         String?
+  role         String       @default("member")
+  orgId        String
+  org          Organisation @relation(fields: [orgId], references: [id])
   passwordHash String?
 }
 
 model Engagement {
-  id         String        @id @default(cuid())
-  name       String
-  standardId String
-  orgId      String
-  org        Organisation  @relation(fields: [orgId], references: [id])
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  id           String        @id @default(cuid())
+  name         String
+  standardId   String
+  orgId        String
+  org          Organisation  @relation(fields: [orgId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   requirements Requirement[]
-  people     Person[]
+  people       Person[]
+  tenders      Tender[]
+  evidence     Evidence[]
+  shareLinks   ShareLink[]
+  judgements   Judgement[]
 }
 
 model Requirement {
-  id           String            @id @default(cuid())
+  id           String             @id @default(cuid())
   engagementId String
   title        String
   phase        String
-  outcome      String            @db.Text
+  outcome      String             @db.Text
   channels     String[]
   sensitivity  String
-  engagement   Engagement        @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  engagement   Engagement         @relation(fields: [engagementId], references: [id], onDelete: Cascade)
   roles        RequirementRole[]
   assignments  Assignment[]
   runs         AnalysisRun[]
+  constraints  Constraint[]
+  rigour       RigourAssessment[]
+  outcomes     Outcome[]
 }
 
 model RequirementRole {
@@ -149,14 +167,15 @@ model RequirementRole {
 }
 
 model Person {
-  id           String        @id @default(cuid())
+  id           String               @id @default(cuid())
   engagementId String
   displayName  String
   pseudonym    String?
-  isVacancy    Boolean       @default(false)
-  engagement   Engagement    @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  isVacancy    Boolean              @default(false)
+  engagement   Engagement           @relation(fields: [engagementId], references: [id], onDelete: Cascade)
   skills       PersonSkill[]
   assignments  Assignment[]
+  availability PersonAvailability[]
 }
 
 model PersonSkill {
@@ -165,6 +184,15 @@ model PersonSkill {
   skillId  String
   level    String
   person   Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+}
+
+model PersonAvailability {
+  id             String    @id @default(cuid())
+  personId       String
+  availableFrom  DateTime?
+  daysPerWeek    Float     @default(5)
+  dayRate        Float?
+  person         Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
 }
 
 model Assignment {
@@ -176,6 +204,17 @@ model Assignment {
   person        Person      @relation(fields: [personId], references: [id], onDelete: Cascade)
 }
 
+model Constraint {
+  id                 String      @id @default(cuid())
+  requirementId      String
+  budgetCap          Float?
+  startBy            DateTime?
+  endBy              DateTime?
+  internalRatePerDay Float?
+  partnerRatePerDay  Float?
+  requirement        Requirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+}
+
 model AnalysisRun {
   id               String      @id @default(cuid())
   requirementId    String
@@ -184,4 +223,148 @@ model AnalysisRun {
   readinessBand    String
   result           Json
   requirement      Requirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+}
+
+model Evidence {
+  id           String         @id @default(cuid())
+  engagementId String
+  title        String
+  type         String
+  description  String?        @db.Text
+  url          String?
+  strength     String
+  createdAt    DateTime       @default(now())
+  engagement   Engagement     @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  links        EvidenceLink[]
+}
+
+model EvidenceLink {
+  id          String         @id @default(cuid())
+  evidenceId  String
+  pointId     String?
+  questionId  String?
+  roleLevelId String?
+  evidence    Evidence       @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+  point       StandardPoint? @relation(fields: [pointId], references: [id])
+  question    ScoredQuestion? @relation(fields: [questionId], references: [id])
+}
+
+model RigourAssessment {
+  id            String                 @id @default(cuid())
+  requirementId String
+  createdAt     DateTime               @default(now())
+  assessedBy    String?
+  requirement   Requirement            @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+  dimensions    RigourDimensionScore[]
+}
+
+model RigourDimensionScore {
+  id           String           @id @default(cuid())
+  assessmentId String
+  dimension    String
+  score        Int
+  evidenceNote String?          @db.Text
+  assessment   RigourAssessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+}
+
+model Tender {
+  id              String           @id @default(cuid())
+  engagementId    String
+  title           String
+  buyer           String
+  route           String?
+  qualityWeight   Float
+  priceWeight     Float
+  scoringScaleMax Int              @default(5)
+  engagement      Engagement       @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  questions       ScoredQuestion[]
+}
+
+model ScoredQuestion {
+  id             String             @id @default(cuid())
+  tenderId       String
+  ref            String
+  text           String             @db.Text
+  weight         Float
+  passThreshold  Int?
+  isPassFail     Boolean            @default(false)
+  category       String?
+  tender         Tender             @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  roleDeps       QuestionRoleDep[]
+  skillDeps      QuestionSkillDep[]
+  pointRefs      QuestionPointRef[]
+  drafts         QuestionDraft[]
+  evidenceLinks  EvidenceLink[]
+}
+
+model QuestionRoleDep {
+  id               String         @id @default(cuid())
+  questionId       String
+  roleId           String
+  weight           Float          @default(1)
+  minSeniorityRank Int            @default(0)
+  question         ScoredQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model QuestionSkillDep {
+  id         String         @id @default(cuid())
+  questionId String
+  skillId    String
+  minLevel   String
+  weight     Float          @default(1)
+  question   ScoredQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model QuestionPointRef {
+  id         String         @id @default(cuid())
+  questionId String
+  pointId    String
+  question   ScoredQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  point      StandardPoint  @relation(fields: [pointId], references: [id])
+}
+
+model QuestionDraft {
+  id         String         @id @default(cuid())
+  questionId String
+  body       String         @db.Text
+  createdAt  DateTime       @default(now())
+  approvedBy String?
+  isScaffold Boolean        @default(false)
+  question   ScoredQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model Outcome {
+  id            String      @id @default(cuid())
+  requirementId String
+  event         String
+  result        String
+  phase         String?
+  recordedAt    DateTime    @default(now())
+  notes         String?     @db.Text
+  requirement   Requirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+}
+
+model Judgement {
+  id                  String            @id @default(cuid())
+  subjectType         String
+  subjectId           String
+  engagementId        String
+  status              String
+  score               Float?
+  frameworkVersionId  String?
+  decidedBy           String?
+  decidedAt           DateTime          @default(now())
+  overrideReason      String?           @db.Text
+  previousJudgementId String?
+  engagement          Engagement        @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  frameworkVersion    FrameworkVersion? @relation(fields: [frameworkVersionId], references: [id])
+}
+
+model ShareLink {
+  id           String     @id @default(cuid())
+  engagementId String
+  token        String     @unique
+  expiresAt    DateTime
+  createdAt    DateTime   @default(now())
+  engagement   Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
 }

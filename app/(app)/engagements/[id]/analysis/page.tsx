@@ -9,9 +9,9 @@ import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
 import { RationaleDisclosure } from '@/components/app/RationaleDisclosure';
 import { Button } from '@/components/ui/Button';
 import { trpc } from '@/lib/trpc/client';
-import type { AnalysisResult } from '@/lib/types/analysis';
+import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
-const TABS = ['Fit', 'Composition', 'Readiness', 'Adaptation'] as const;
+const TABS = ['Fit', 'Composition', 'Readiness', 'Adaptation', 'Bid'] as const;
 
 export default function AnalysisPage() {
   const params = useParams();
@@ -19,7 +19,7 @@ export default function AnalysisPage() {
   const { data } = trpc.engagement.byId.useQuery({ id });
   const [tab, setTab] = useState<(typeof TABS)[number]>('Readiness');
   const req = data?.requirements[0];
-  const result = req?.runs[0]?.result as AnalysisResult | undefined;
+  const result = req?.runs[0]?.result as ExtendedAnalysisResult | undefined;
 
   if (!result) {
     return (
@@ -100,7 +100,10 @@ export default function AnalysisPage() {
                       <span className="text-xs text-text-muted">Statutory</span>
                     )}
                   </div>
-                  <p className="mt-1 tabular-nums text-sm">{p.score}%</p>
+                  <p className="mt-1 tabular-nums text-sm">
+                    {p.score}% (capability {p.capabilityScore ?? p.score}% · evidence{' '}
+                    {p.evidenceStrength ?? 0}%)
+                  </p>
                   {p.evidenceGaps.length > 0 && (
                     <p className="mt-1 text-sm text-text-muted">Gaps: {p.evidenceGaps.join('; ')}</p>
                   )}
@@ -115,6 +118,29 @@ export default function AnalysisPage() {
               ))}
             </section>
           ))}
+        {tab === 'Bid' && result.bidOutlook && (
+          <>
+            <p className="mb-4 text-sm">
+              Quality outlook (weighted): {result.bidOutlook.overallQualityOutlook}%
+            </p>
+            {result.bidOutlook.questions.map((q) => (
+              <div key={q.questionId} className="mb-3 rounded-lg border border-border bg-surface p-4 text-sm">
+                <span className="font-medium">{q.ref}</span>
+                {q.passFailRisk && <span className="ml-2 text-danger">Pass/fail risk</span>}
+                <p>
+                  Band {q.predictedBand} · Capability {q.capabilityCoverage}% · Evidence {q.evidenceStrength}%
+                </p>
+                <p className="text-xs text-text-muted">{q.confidenceNote}</p>
+              </div>
+            ))}
+            <Link href={`/engagements/${id}/tender`} className="text-sm text-brand hover:underline">
+              Manage tender and drafts
+            </Link>
+          </>
+        )}
+        {tab === 'Bid' && !result.bidOutlook && (
+          <p className="text-sm text-text-muted">Set up a tender under Bid to see outlook here.</p>
+        )}
         {tab === 'Adaptation' &&
           result.adaptation.actions.map((a) => (
             <div key={a.id} className="mb-3 rounded-lg border border-border bg-surface p-4">
@@ -122,6 +148,9 @@ export default function AnalysisPage() {
               <p className="text-sm text-text-muted">{a.description}</p>
               <p className="mt-1 text-xs">
                 Impact: {a.impact} · Effort: {a.effort}
+                {a.estimatedCost != null && ` · ~£${a.estimatedCost}`}
+                {a.weeksToCompetence != null && ` · ${a.weeksToCompetence}w`}
+                {a.feasible === false && ' · Over budget'}
               </p>
             </div>
           ))}
