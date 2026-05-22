@@ -42,6 +42,11 @@ Place official DDaT CSVs in `data/source/` as `roles.csv`, `skills.csv` (gitigno
 | `npm test` | Scoring engine unit tests |
 | `npm run test:e2e` | Playwright + axe |
 
-## Deployment (Vercel + Neon)
+## Deployment (Vercel + Supabase Postgres)
 
-Set `DATABASE_URL`, `AUTH_SECRET`, `AUTH_URL` in Vercel (and `DIRECT_URL` for Neon migrations). Region `lhr1` in `vercel.json`. After first deploy, run `npm run db:deploy` then `npm run seed` once against production from a trusted machine.
+1. Create a Supabase project and set **two** URLs in Vercel: pooled `DATABASE_URL` (port 6543, `pgbouncer=true`) and direct `DIRECT_URL` (port 5432). Details: [docs/SUPABASE.md](docs/SUPABASE.md).
+2. Set `AUTH_SECRET` / `NEXTAUTH_SECRET` and `AUTH_URL` / `NEXTAUTH_URL`.
+3. Deploy (region `lhr1` in `vercel.json`).
+4. Once: `npm run db:provision` from your machine with the same `.env`.
+
+See [DEPLOY.md](DEPLOY.md) for the full checklist.
