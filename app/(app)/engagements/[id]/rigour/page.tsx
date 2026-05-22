@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -40,9 +40,11 @@ export default function RigourPage() {
   const [scores, setScores] = useState(initial);
   const [active, setActive] = useState<RigourDimensionKey>(RIGOUR_DIMENSIONS[0].key);
 
-  useEffect(() => {
+  const [prevInitial, setPrevInitial] = useState(initial);
+  if (initial !== prevInitial) {
+    setPrevInitial(initial);
     setScores(initial);
-  }, [initial]);
+  }
 
   const dimConfig = RIGOUR_DIMENSIONS.find((d) => d.key === active)!;
   const activeScore = scores.find((s) => s.dimension === active)?.score ?? 0;

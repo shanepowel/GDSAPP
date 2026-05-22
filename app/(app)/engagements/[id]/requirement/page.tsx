@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { Button } from '@/components/ui/Button';
 import { trpc } from '@/lib/trpc/client';
@@ -26,14 +26,16 @@ export default function RequirementPage() {
   const [outcome, setOutcome] = useState('');
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
 
-  useEffect(() => {
+  const [prevReq, setPrevReq] = useState(req);
+  if (req !== prevReq) {
+    setPrevReq(req);
     if (req) {
       setTitle(req.title);
       setPhase(req.phase as (typeof PHASES)[number]);
       setOutcome(req.outcome);
       setSelectedRoles(req.roles.map((r) => r.roleLevelId));
     }
-  }, [req]);
+  }
 
   if (!req) return <AppShell title="Requirement">Loading…</AppShell>;
 
