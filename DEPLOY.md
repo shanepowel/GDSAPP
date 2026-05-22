@@ -63,6 +63,14 @@ Demo login after seed: `admin@demo.local` / `demo-password`
 
 ## 6. Verify
 
+After setting env vars, **Redeploy** from the Vercel dashboard (env changes do not apply until redeploy).
+
+Check configuration (no secrets returned):
+
+`https://<your-vercel-domain>/api/health` → `{"ok":true,"hasSecret":true,"hasUrl":true,"hasDatabase":true}`
+
+Then:
+
 - Sign in: `admin@demo.local` / `demo-password`
 - Open NRW demo engagement → **Run analysis**
 
