@@ -16,6 +16,7 @@ export type Messages = {
     orDivider: string;
     invalidCredentials: string;
     invalidCredentialsOrSso: string;
+    databaseNotReady: string;
     singleLoginHint: string;
     emailSignIn: string;
     demoHint: string;

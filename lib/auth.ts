@@ -7,6 +7,8 @@ import { prisma } from '@/lib/db/client';
 import { getAuthSecret } from '@/lib/auth-env';
 import { getDeploymentMode } from '@/lib/deployment-mode';
 import { entraConfigured, getAuthMode } from '@/lib/auth-config';
+import { DEMO_ACCOUNT, ensureDemoAccount } from '@/lib/demo/demo-account';
+import { isDatabaseSchemaReady } from '@/lib/db/schema-ready';
 
 async function upsertUserFromProfile(profile: {
   email: string;
@@ -42,14 +44,26 @@ const providers: NextAuthOptions['providers'] = [
     },
     async authorize(credentials) {
       if (!credentials?.email || !credentials?.password) return null;
-      const user = await prisma.user.findUnique({
-        where: { email: credentials.email.trim().toLowerCase() },
-      });
+      const email = credentials.email.trim().toLowerCase();
+      const password = credentials.password;
+
+      if (!(await isDatabaseSchemaReady())) {
+        console.error(
+          '[auth] Database schema missing — run npm run db:deploy (or redeploy after migrate in build).',
+        );
+        return null;
+      }
+
+      if (email === DEMO_ACCOUNT.email) {
+        await ensureDemoAccount(prisma);
+      }
+
+      const user = await prisma.user.findUnique({ where: { email } });
       if (!user?.passwordHash) {
         // Account exists for SSO only — same email, one login service (Microsoft).
         return null;
       }
-      const valid = await bcrypt.compare(credentials.password, user.passwordHash);
+      const valid = await bcrypt.compare(password, user.passwordHash);
       if (!valid) return null;
       return {
         id: user.id,

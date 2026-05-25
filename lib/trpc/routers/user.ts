@@ -2,6 +2,8 @@ import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { allowSelfRegistration, getPublicAuthConfig } from '@/lib/auth-config';
+import { isDatabaseSchemaReady } from '@/lib/db/schema-ready';
+import { isDemoLoginReady } from '@/lib/demo/demo-account';
 import { getDeploymentMode, getDeploymentFeatures } from '@/lib/deployment-mode';
 import { publicProcedure, protectedProcedure, router } from '@/lib/trpc/trpc';
 
@@ -20,7 +22,15 @@ const updateProfileInput = z.object({
 });
 
 export const userRouter = router({
-  authConfig: publicProcedure.query(() => getPublicAuthConfig()),
+  authConfig: publicProcedure.query(async () => {
+    const schemaReady = await isDatabaseSchemaReady();
+    const demoLoginReady = schemaReady ? await isDemoLoginReady() : false;
+    return {
+      ...getPublicAuthConfig(),
+      schemaReady,
+      demoLoginReady,
+    };
+  }),
 
   register: publicProcedure.input(registerInput).mutation(async ({ ctx, input }) => {
     if (!allowSelfRegistration()) {

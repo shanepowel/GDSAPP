@@ -20,6 +20,8 @@ export const cy: Messages = {
     invalidCredentials: 'E-bost neu gyfrinair annilys.',
     invalidCredentialsOrSso:
       'Cyfrinair annilys, neu mae’r cyfrif hwn yn defnyddio Microsoft yn unig. Defnyddiwch Mewngofnodi gyda Microsoft.',
+    databaseNotReady:
+      'Nid yw’r gronfa ddata wedi’i darparu eto. Rhedegwch npm run db:provision ar gyfer yr amgylchedd hwn, neu ail-ddatblygu ar ôl ffurfweddu migrasiynau (DIRECT_URL ar Vercel).',
     singleLoginHint: 'Defnyddiwch eich cyfrif Microsoft sefydliad (Entra ID Turner & Townsend).',
     emailSignIn: 'Mewngofnodi gydag e-bost yn lle hynny',
     demoHint: 'Cyfrif demo (wedi’i hadau ar gynhyrchu)',

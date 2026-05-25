@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "sh scripts/prisma-env.sh generate && next build",
+    "build": "sh scripts/prisma-env.sh migrate deploy && sh scripts/prisma-env.sh generate && next build",
     "postinstall": "sh scripts/prisma-env.sh generate",
     "start": "next start",
     "db:migrate": "sh scripts/prisma-env.sh migrate dev",

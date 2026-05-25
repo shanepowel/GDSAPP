@@ -67,7 +67,11 @@ export function AuthTabs({
       callbackUrl,
     });
     if (res?.error) {
-      setError(entraEnabled ? m.signIn.invalidCredentialsOrSso : m.signIn.invalidCredentials);
+      if (authConfig?.schemaReady === false) {
+        setError(m.signIn.databaseNotReady);
+      } else {
+        setError(entraEnabled ? m.signIn.invalidCredentialsOrSso : m.signIn.invalidCredentials);
+      }
       return;
     }
     window.location.href = redirectAfterSignIn;
@@ -127,6 +131,11 @@ export function AuthTabs({
           {success && (
             <p className="mt-4 rounded-md bg-brand-tint px-3 py-2 text-sm text-brand-hover">
               {success}
+            </p>
+          )}
+          {authConfig?.schemaReady === false && (
+            <p className="mt-4 rounded-md border border-status-partial/40 bg-status-partial/10 px-3 py-2 text-sm text-text">
+              {m.signIn.databaseNotReady}
             </p>
           )}
           {error && <p className="mt-4 text-sm text-status-gap">{error}</p>}
