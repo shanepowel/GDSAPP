@@ -5,9 +5,11 @@ import { AppNav } from '@/components/app/AppNav';
 import { Card } from '@/components/app/Card';
 import { Button } from '@/components/ui/Button';
 import { useTheme } from '@/components/app/ThemeProvider';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 
 export default function SettingsPage() {
+  const { messages: m } = useI18n();
   const { theme, toggle } = useTheme();
   const { data: me } = trpc.user.me.useQuery();
   const { data: members, refetch } = trpc.user.listMembers.useQuery();
@@ -16,7 +18,7 @@ export default function SettingsPage() {
   const isAdmin = me?.role === 'admin';
 
   return (
-    <AppShell title="Settings">
+    <AppShell title={m.settings.title}>
       <AppNav />
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6">
@@ -33,6 +35,18 @@ export default function SettingsPage() {
           <h2 className="font-semibold text-text">Organisation</h2>
           <p className="mt-2 text-sm text-text-muted">{me?.organisationName}</p>
           <p className="mt-1 text-xs text-text-muted">Your role: {me?.role}</p>
+          {me && (
+            <p className="mt-3 text-sm">
+              {m.settings.tenantMode}:{' '}
+              <span className="font-medium">{me.instanceDeploymentMode}</span>
+              {' · '}
+              {me.tenantMatchesInstance ? (
+                <span className="text-brand-hover">{m.settings.tenantMatch}</span>
+              ) : (
+                <span className="text-status-gap">{m.settings.tenantMismatch}</span>
+              )}
+            </p>
+          )}
         </Card>
 
         <Card className="p-6 lg:col-span-2">

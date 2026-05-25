@@ -8,11 +8,13 @@ import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 
 const LEVELS = ['awareness', 'working', 'practitioner', 'expert'] as const;
 
 export default function TeamPage() {
+  const { messages: m } = useI18n();
   const params = useParams();
   const id = params.id as string;
   const { data, refetch } = trpc.engagement.byId.useQuery({ id });
@@ -31,7 +33,7 @@ export default function TeamPage() {
     pseudonymise && roleLabel ? roleLabel : name;
 
   return (
-    <AppShell title="Team">
+    <AppShell title={m.engagement.teamTitle}>
       <AppNav />
       <EngagementSubNav engagementId={id} />
       {data && data.requirements.length > 1 && (
@@ -43,7 +45,7 @@ export default function TeamPage() {
       )}
       <label className="mb-4 flex items-center gap-2 text-sm">
         <input type="checkbox" checked={pseudonymise} onChange={(e) => setPseudonymise(e.target.checked)} />
-        Pseudonymise names (show role labels only)
+        {m.engagement.pseudonymise}
       </label>
       <ul className="space-y-4">
         {data?.people.map((p) => {
@@ -53,7 +55,7 @@ export default function TeamPage() {
           return (
             <li key={p.id} className="rounded-lg border border-border bg-surface p-4">
               <p className="font-medium">{displayName(p.displayName, roleLabel)}</p>
-              {p.isVacancy && <span className="text-xs text-text-muted">Vacancy</span>}
+              {p.isVacancy && <span className="text-xs text-text-muted">{m.engagement.vacancy}</span>}
               <div className="mt-2 flex flex-wrap gap-1">
                 {p.skills.map((s) => (
                   <span key={s.id} className="rounded-full bg-surface-alt px-2 py-0.5 text-xs">
@@ -74,7 +76,7 @@ export default function TeamPage() {
                       });
                   }}
                 >
-                  <option value="">Assign role…</option>
+                  <option value="">{m.engagement.assignRole}</option>
                   {roleLevels.map((rlOption) => (
                     <option key={rlOption.id} value={rlOption.id}>
                       {rlOption.role.name} ({rlOption.name})
@@ -91,18 +93,18 @@ export default function TeamPage() {
                     setSkillPick(p.skills.map((s) => ({ skillId: s.skillId, level: s.level })));
                   }}
                 >
-                  Edit skills
+                  {m.engagement.editSkills}
                 </Button>
                 <Button
                   variant="secondary"
                   type="button"
                   onClick={() => {
-                    if (confirm('Remove this person from the engagement?')) {
+                    if (confirm(m.engagement.removeConfirm)) {
                       remove.mutate({ engagementId: id, personId: p.id });
                     }
                   }}
                 >
-                  Remove
+                  {m.engagement.removePerson}
                 </Button>
               </div>
             </li>
@@ -178,13 +180,13 @@ export default function TeamPage() {
                 setSkillPick([...skillPick, { skillId: skills?.[0]?.id ?? '', level: 'working' }])
               }
             >
-              Add skill
+              {m.engagement.addSkillLabel}
             </Button>
           </div>
           <div className="mt-3 flex gap-2">
-            <Button type="submit">Save skills</Button>
+            <Button type="submit">{m.engagement.saveSkills}</Button>
             <Button type="button" variant="secondary" onClick={() => setEditingId(null)}>
-              Cancel
+              {m.common.cancel}
             </Button>
           </div>
         </form>
@@ -203,7 +205,7 @@ export default function TeamPage() {
           });
         }}
       >
-        Add person
+        {m.engagement.addPerson}
       </Button>
     </AppShell>
   );

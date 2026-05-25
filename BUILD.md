@@ -58,9 +58,12 @@ Extension (sections 18–27): bid evaluation, agile rigour, evidence layer, adap
 
 **Shipped (Tier 4):** Automated tender PDF parsing (`/api/tender/parse-pdf`), branded PDF report (`/api/export/report`), benchmarking UI (`/benchmarking`), framework drift (`/framework`), bilingual EN/CY UI (language switcher).
 
-**Still deferred:** Multi-reviewer collaboration workflow, client tenancy enforcement in code, enterprise SSO (Entra ID), full field-level Welsh on all engagement screens, tender question dependency mapper UI.
-
-**Recently added:** Engagement sub-navigation, multi-requirement on all workflows, evidence→point linking, delivery constraints editor, team skill editor & delete, org member invites (admin), settings + dark theme, share link revoke, engagement search/delete.
+**Shipped (deferred items completed):**
+- Multi-reviewer approval chains (`/engagements/[id]/reviews`)
+- In-code client tenancy firewall (`Organisation.deploymentMode` vs instance `DEPLOYMENT_MODE`)
+- Enterprise SSO via Microsoft Entra ID (when env vars set)
+- Tender question → role/skill dependency mapper UI
+- Full Welsh copy for engagement workflow screens (`lib/i18n` `engagement` + `reviews` namespaces)
 
 Hard rule: scoring stays deterministic; bid layer never fabricates evidence or capability.
 

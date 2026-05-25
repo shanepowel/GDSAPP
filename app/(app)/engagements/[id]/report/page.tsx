@@ -34,7 +34,7 @@ export default function ReportPage() {
   return (
     <div className="min-h-screen bg-white text-black print:bg-white">
       <div className="no-print">
-        <AppShell title="Report">
+        <AppShell title={m.engagement.reportTitle}>
           <AppNav />
           <EngagementSubNav engagementId={id} />
           {data && data.requirements.length > 1 && (

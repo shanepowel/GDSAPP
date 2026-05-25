@@ -2,31 +2,46 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 
-const BASE_LINKS = [
-  { suffix: '', label: 'Overview' },
-  { suffix: '/requirement', label: 'Requirement' },
-  { suffix: '/team', label: 'Team' },
-  { suffix: '/evidence', label: 'Evidence' },
-  { suffix: '/rigour', label: 'Rigour' },
-  { suffix: '/analysis', label: 'Analysis' },
-  { suffix: '/tender', label: 'Call-off' },
-  { suffix: '/judgements', label: 'Judgements' },
-  { suffix: '/history', label: 'History' },
-  { suffix: '/report', label: 'Report' },
+const SUFFIXES = [
+  '',
+  '/requirement',
+  '/team',
+  '/evidence',
+  '/rigour',
+  '/analysis',
+  '/tender',
+  '/judgements',
+  '/reviews',
+  '/history',
+  '/report',
 ] as const;
 
 export function EngagementSubNav({ engagementId }: { engagementId: string }) {
   const pathname = usePathname();
   const features = getClientDeploymentFeatures();
+  const { messages: m } = useI18n();
   const base = `/engagements/${engagementId}`;
-  const links = BASE_LINKS.map((l) => ({
-    href: `${base}${l.suffix}`,
-    label:
-      l.suffix === '/tender' && features.clientAssuranceLabels
-        ? 'Criteria'
-        : l.label,
+  const labels: Record<string, string> = {
+    '': m.engagement.subOverview,
+    '/requirement': m.engagement.subRequirement,
+    '/team': m.engagement.subTeam,
+    '/evidence': m.engagement.subEvidence,
+    '/rigour': m.engagement.subRigour,
+    '/analysis': m.engagement.subAnalysis,
+    '/tender': features.clientAssuranceLabels
+      ? m.engagement.subTenderAssurance
+      : m.engagement.subTender,
+    '/judgements': m.engagement.subJudgements,
+    '/reviews': m.engagement.subReviews,
+    '/history': m.engagement.subHistory,
+    '/report': m.engagement.subReport,
+  };
+  const links = SUFFIXES.map((suffix) => ({
+    href: `${base}${suffix}`,
+    label: labels[suffix],
   }));
 
   return (

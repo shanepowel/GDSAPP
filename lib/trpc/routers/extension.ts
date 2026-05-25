@@ -6,6 +6,7 @@ import { buildAnswerScaffold } from '@/lib/engine/draft-scaffold';
 import { computeBidOutlook } from '@/lib/engine/bid';
 import { buildEvidenceMapsForBid, loadEvidenceMaps } from '@/lib/db/extension';
 import { buildAnalysisInput } from '@/lib/db/analysis';
+import { assertNotCompetitorSubject, assertPlayAOnly } from '@/lib/tenant-firewall';
 
 const evidenceStrength = z.enum([
   'none',
@@ -265,6 +266,7 @@ export const extensionRouter = router({
     bidOutlook: protectedProcedure
       .input(z.object({ tenderId: z.string(), requirementId: z.string() }))
       .query(async ({ ctx, input }) => {
+        assertPlayAOnly('Bid quality outlook');
         const tender = await ctx.prisma.tender.findUnique({
           where: { id: input.tenderId },
           include: {
@@ -439,6 +441,7 @@ export const extensionRouter = router({
       )
       .mutation(async ({ ctx, input }) => {
         await assertEngagementInOrg(ctx, input.engagementId);
+        assertNotCompetitorSubject(input.subjectType);
         return ctx.prisma.judgement.create({ data: input });
       }),
 

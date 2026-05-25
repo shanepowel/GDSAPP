@@ -8,10 +8,12 @@ import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 import { EVIDENCE_STRENGTHS } from '@/lib/engine/evidence-config';
 
 export default function EvidencePage() {
+  const { messages: m } = useI18n();
   const params = useParams();
   const id = params.id as string;
   const { data: engagement } = trpc.engagement.byId.useQuery({ id });
@@ -37,7 +39,7 @@ export default function EvidencePage() {
   }
 
   return (
-    <AppShell title="Evidence register">
+    <AppShell title={m.engagement.evidenceTitle}>
       <AppNav />
       <EngagementSubNav engagementId={id} />
       {engagement && engagement.requirements.length > 1 && (
@@ -47,10 +49,7 @@ export default function EvidencePage() {
           onChange={setRequirementId}
         />
       )}
-      <p className="mb-4 text-sm text-text-muted">
-        Link evidence to standard points. Strength affects readiness and bid outlook on the next
-        analysis run.
-      </p>
+      <p className="mb-4 text-sm text-text-muted">{m.engagement.evidenceIntro}</p>
       <form
         className="mb-8 space-y-4 rounded-lg border border-border bg-surface p-4"
         onSubmit={(e) => {
@@ -95,7 +94,7 @@ export default function EvidencePage() {
           </select>
         </div>
         <fieldset>
-          <legend className="text-sm font-medium text-text">Link to standard points</legend>
+          <legend className="text-sm font-medium text-text">{m.engagement.linkPoints}</legend>
           <div className="mt-2 max-h-40 overflow-y-auto rounded border border-border p-3">
             {points?.map((p) => (
               <label key={p.id} className="mb-1 flex items-start gap-2 text-sm">
@@ -112,7 +111,7 @@ export default function EvidencePage() {
           </div>
         </fieldset>
         <Button type="submit" disabled={upsert.isPending}>
-          {editingId ? 'Update evidence' : 'Add evidence'}
+          {editingId ? m.engagement.updateEvidence : m.engagement.addEvidence}
         </Button>
       </form>
       <ul className="space-y-3">

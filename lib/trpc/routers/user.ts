@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
+import { getDeploymentMode, getDeploymentFeatures } from '@/lib/deployment-mode';
 import { publicProcedure, protectedProcedure, router } from '@/lib/trpc/trpc';
 
 const registerInput = z.object({
@@ -31,7 +32,10 @@ export const userRouter = router({
     const passwordHash = await bcrypt.hash(input.password, 10);
     const user = await ctx.prisma.$transaction(async (tx) => {
       const org = await tx.organisation.create({
-        data: { name: input.organisationName.trim() },
+        data: {
+          name: input.organisationName.trim(),
+          deploymentMode: getDeploymentMode(),
+        },
       });
       return tx.user.create({
         data: {
@@ -55,9 +59,11 @@ export const userRouter = router({
   me: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findFirst({
       where: { id: ctx.userId, orgId: ctx.orgId },
-      include: { org: true },
+      include: { org: { select: { name: true, deploymentMode: true } } },
     });
     if (!user) throw new TRPCError({ code: 'NOT_FOUND' });
+    const instanceMode = getDeploymentMode();
+    const orgMode = user.org.deploymentMode === 'client' ? 'client' : 'internal';
     return {
       id: user.id,
       email: user.email,
@@ -65,6 +71,10 @@ export const userRouter = router({
       role: user.role,
       orgId: user.orgId,
       organisationName: user.org.name,
+      organisationDeploymentMode: orgMode,
+      instanceDeploymentMode: instanceMode,
+      tenantMatchesInstance: orgMode === instanceMode,
+      deploymentFeatures: getDeploymentFeatures(),
     };
   }),
 

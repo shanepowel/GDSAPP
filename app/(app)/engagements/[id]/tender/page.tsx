@@ -13,6 +13,7 @@ import { RationaleDisclosure } from '@/components/app/RationaleDisclosure';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import type { ParsedTenderQuestion } from '@/lib/tender/pdf-parser';
+import { QuestionDepsEditor } from '@/components/tender/QuestionDepsEditor';
 import { trpc } from '@/lib/trpc/client';
 import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
@@ -37,7 +38,7 @@ export default function TenderPage() {
   });
   const { data: liveOutlook } = trpc.extension.tender.bidOutlook.useQuery(
     { tenderId: tender?.id ?? '', requirementId: req?.id ?? '' },
-    { enabled: !!tender?.id && !!req?.id },
+    { enabled: !!tender?.id && !!req?.id && features.supplierWinFraming },
   );
   const outlook = liveOutlook ?? bidFromRun;
   const buildScaffold = trpc.extension.tender.buildScaffold.useMutation();
@@ -54,7 +55,11 @@ export default function TenderPage() {
 
   return (
     <AppShell
-      title={features.clientAssuranceLabels ? 'Assurance criteria' : 'Call-off evaluation'}
+      title={
+        features.clientAssuranceLabels
+          ? m.engagement.tenderTitleAssurance
+          : m.engagement.tenderTitle
+      }
     >
       <AppNav />
       <EngagementSubNav engagementId={id} />
@@ -67,8 +72,8 @@ export default function TenderPage() {
       )}
       <p className="mb-4 text-sm text-text-muted">
         {features.clientAssuranceLabels
-          ? 'Map call-off specification criteria to roles, skills and standard points. View predicted assurance bands and gaps. For authority self-assurance, not supplier scoring.'
-          : 'Call-off specification (not framework WPSQ): paste scored questions, map dependencies, view predicted bands and point-movers. Advisory only.'}
+          ? m.engagement.tenderIntroClient
+          : m.engagement.tenderIntroInternal}
       </p>
       {!tender ? (
         <Button
@@ -197,7 +202,30 @@ export default function TenderPage() {
               Add question
             </Button>
           </form>
-          {outlook && (
+
+          {tender.questions.length > 0 && (
+            <section className="mt-6">
+              <h2 className="font-semibold text-text">{m.engagement.mapQuestionDeps}</h2>
+              <ul className="mt-3 space-y-4">
+                {tender.questions.map((q) => (
+                  <li key={q.id} className="rounded-lg border border-border bg-surface p-4 text-sm">
+                    <p className="font-medium">
+                      {q.ref}: {q.text.slice(0, 200)}
+                      {q.text.length > 200 ? '…' : ''}
+                    </p>
+                    <QuestionDepsEditor
+                      questionId={q.id}
+                      initialRoleDeps={q.roleDeps}
+                      initialSkillDeps={q.skillDeps}
+                      onSaved={() => refetchTenders()}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {outlook && features.supplierWinFraming && (
             <div className="mt-6 rounded-lg border border-border bg-surface p-5">
               <h2 className="font-semibold">
                 {features.clientAssuranceLabels ? 'Criteria outlook' : 'Quality outlook'}

@@ -16,10 +16,12 @@ import { AppNav } from '@/components/app/AppNav';
 import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { diffAnalysisRuns } from '@/lib/analysis-run-diff';
 import { trpc } from '@/lib/trpc/client';
 
 export default function HistoryPage() {
+  const { messages: m } = useI18n();
   const params = useParams();
   const id = params.id as string;
   const { data: engagement } = trpc.engagement.byId.useQuery({ id });
@@ -41,7 +43,7 @@ export default function HistoryPage() {
   const diff = latest ? diffAnalysisRuns(previous, latest) : [];
 
   return (
-    <AppShell title="History">
+    <AppShell title={m.engagement.historyTitle}>
       <AppNav />
       <EngagementSubNav engagementId={id} />
       {engagement?.requirements && (
@@ -70,13 +72,13 @@ export default function HistoryPage() {
             </LineChart>
           </ResponsiveContainer>
         ) : (
-          <p className="text-sm text-text-muted">No saved runs yet.</p>
+          <p className="text-sm text-text-muted">{m.engagement.historyNoRuns}</p>
         )}
       </div>
 
       {diff.length > 0 && previous && (
         <section className="mt-6 rounded-lg border border-border bg-surface p-4">
-          <h2 className="font-semibold">Change since previous run</h2>
+          <h2 className="font-semibold">{m.engagement.historyChangeSince}</h2>
           <table className="mt-3 w-full text-sm">
             <thead>
               <tr className="text-left text-text-muted">

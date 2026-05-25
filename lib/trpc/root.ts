@@ -5,6 +5,7 @@ import { portfolioRouter } from '@/lib/trpc/routers/portfolio';
 import { benchmarkingRouter } from '@/lib/trpc/routers/benchmarking';
 import { frameworkRouter } from '@/lib/trpc/routers/framework';
 import { userRouter } from '@/lib/trpc/routers/user';
+import { reviewRouter } from '@/lib/trpc/routers/review';
 
 export const appRouter = router({
   engagement: engagementRouter,
@@ -13,6 +14,7 @@ export const appRouter = router({
   benchmarking: benchmarkingRouter,
   framework: frameworkRouter,
   user: userRouter,
+  review: reviewRouter,
 });
 
 export type AppRouter = typeof appRouter;

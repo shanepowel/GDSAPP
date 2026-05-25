@@ -109,20 +109,23 @@ model FrameworkVersion {
 }
 
 model Organisation {
-  id          String       @id @default(cuid())
-  name        String
-  users       User[]
-  engagements Engagement[]
+  id              String       @id @default(cuid())
+  name            String
+  /// Must match instance DEPLOYMENT_MODE (internal = Play A, client = Play B firewall).
+  deploymentMode  String       @default("internal")
+  users           User[]
+  engagements     Engagement[]
 }
 
 model User {
-  id           String       @id @default(cuid())
-  email        String       @unique
-  name         String?
-  role         String       @default("member")
-  orgId        String
-  org          Organisation @relation(fields: [orgId], references: [id])
-  passwordHash String?
+  id                 String              @id @default(cuid())
+  email              String              @unique
+  name               String?
+  role               String              @default("member")
+  orgId              String
+  org                Organisation        @relation(fields: [orgId], references: [id])
+  passwordHash       String?
+  reviewAssignments  ReviewAssignment[]
 }
 
 model Engagement {
@@ -142,7 +145,8 @@ model Engagement {
   tenders      Tender[]
   evidence     Evidence[]
   shareLinks   ShareLink[]
-  judgements   Judgement[]
+  judgements      Judgement[]
+  reviewRequests  ReviewRequest[]
 }
 
 model Requirement {
@@ -362,6 +366,32 @@ model Judgement {
   previousJudgementId String?
   engagement          Engagement        @relation(fields: [engagementId], references: [id], onDelete: Cascade)
   frameworkVersion    FrameworkVersion? @relation(fields: [frameworkVersionId], references: [id])
+}
+
+model ReviewRequest {
+  id           String             @id @default(cuid())
+  engagementId String
+  title        String
+  subjectType  String
+  subjectId    String
+  status       String             @default("open")
+  minApprovals Int                @default(2)
+  createdById  String?
+  createdAt    DateTime           @default(now())
+  engagement   Engagement         @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  assignments  ReviewAssignment[]
+}
+
+model ReviewAssignment {
+  id              String        @id @default(cuid())
+  reviewRequestId String
+  reviewerUserId  String
+  stepOrder       Int           @default(0)
+  status          String        @default("pending")
+  comment         String?       @db.Text
+  decidedAt       DateTime?
+  reviewRequest   ReviewRequest @relation(fields: [reviewRequestId], references: [id], onDelete: Cascade)
+  reviewer        User          @relation(fields: [reviewerUserId], references: [id])
 }
 
 model ShareLink {
