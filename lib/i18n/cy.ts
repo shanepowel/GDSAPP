@@ -3,6 +3,8 @@ import type { Messages } from '@/lib/i18n/types';
 export const cy: Messages = {
   signIn: {
     title: 'Mewngofnodi i Assemble',
+    subtitle:
+      'Aseswch parodrwydd tîm yn erbyn safon gwasanaeth ddigidol GDS neu Gymru cyn i chi ymrwymo i dendr neu adolygiad sicrwydd.',
     tabSignIn: 'Mewngofnodi',
     tabRegister: 'Creu cyfrif',
     email: 'E-bost',
@@ -24,9 +26,10 @@ export const cy: Messages = {
       'Nid yw’r gronfa ddata wedi’i darparu eto. Rhedegwch npm run db:provision ar gyfer yr amgylchedd hwn, neu ail-ddatblygu ar ôl ffurfweddu migrasiynau (DIRECT_URL ar Vercel).',
     singleLoginHint: 'Defnyddiwch eich cyfrif Microsoft sefydliad (Entra ID Turner & Townsend).',
     emailSignIn: 'Mewngofnodi gydag e-bost yn lle hynny',
-    demoHint: 'Cyfrif demo (wedi’i hadau ar gynhyrchu)',
+    demoHint: 'Rhowch gynnig ar yr enghraifft NRW (dim gosod)',
     demoEmail: 'admin@demo.local',
     demoPassword: 'demo-password',
+    demoFillButton: 'Defnyddio cyfrif demo ac agor enghraifft NRW',
   },
   reviews: {
     title: 'Cadwyn cymeradwyo',
@@ -49,7 +52,7 @@ export const cy: Messages = {
     chainsTitle: 'Cadwyni cymeradwyo',
   },
   engagement: {
-    subOverview: 'Trosolwg',
+    subOverview: 'Crynodeb',
     subRequirement: 'Gofyniad',
     subTeam: 'Tîm',
     subEvidence: 'Tystiolaeth',
@@ -145,7 +148,51 @@ export const cy: Messages = {
       'Y camau effaith uchaf ar gyfer y safon a’r cyfnod hwn. Defnyddiwch un a ailgyfrifo’r Mynegai Parodrwydd ar unwaith.',
     applyMove: 'Defnyddio',
     applied: 'Wedi defnyddio',
-    showWorkingTagline: 'Rydym yn dangos ein gwaith yn erbyn pob pwynt o’r safon.',
+    showWorkingTagline:
+      'Mae pob sgôr yn gysylltu â’r pwynt safon y daw ohono — agorwch unrhyw ganlyniad i weld y rhesymeg.',
+    overviewIntro:
+      'Dechreuwch gyda’r llif gwaith isod, yna defnyddiwch symudiadau what-if i brofi sut mae newidiadau i’r tîm yn effeithio ar barodrwydd cyn allforio adroddiad.',
+    preparednessHelp:
+      'Golwg sengl ar ba mor barod yw’r tîm hwn ar gyfer y cyfnod a ddewiswyd: pwyntiau safon wedi’u cyflawni, bylchau i’w cau, a risgiau statudol.',
+    noAnalysisTitle: 'Dim asesiad eto',
+    noAnalysisBody:
+      'Ychwanegwch eich gofyniad, tîm, a thystiolaeth, yna rhedegwch ddadansoddiad i gynhyrchu’r Mynegai Parodrwydd a rhestr o fylchau.',
+    whatIfTitle: 'Gwella parodrwydd (what-if)',
+    workflowTitle: 'Llif gwaith a argymhellir',
+    workflowIntro: 'Ewch trwy’r camau hyn yn nhrefn. Gallwch ddychwelyd at unrhyw gam yn ddiweddarach.',
+    workflowStep: 'Cam {n}',
+    workflowOptional: 'dewisol',
+    workflowUpNext: 'Nesaf:',
+    workflowStepRequirement: 'Gofyniad',
+    workflowStepRequirementHint: 'Canlyniad, cyfnod, sianeli, a sensitifrwydd.',
+    workflowStepTeam: 'Tîm',
+    workflowStepTeamHint: 'Rolau, sgiliau, ac aseiniadau ar gyfer y cyfnod hwn.',
+    workflowStepEvidence: 'Tystiolaeth',
+    workflowStepEvidenceHint: 'Cysylltu artefaktau â phwyntiau safon (yn cryfhau sgoriau).',
+    workflowStepAnalysis: 'Dadansoddiad',
+    workflowStepAnalysisHint: 'Rhedeg yr injin ac adolygu bylchau gyda rhesymeg.',
+    workflowStepReport: 'Adroddiad',
+    workflowStepReportHint: 'Allforio neu argraffu PDF cyngorol ar gyfer yr ystafell.',
+    navGroupPrepare: 'Paratoi',
+    navGroupAssess: 'Asesu',
+    navGroupDecide: 'Penderfynu',
+    navGroupShare: 'Rhannu',
+    sectionDashboard: 'Ar y cyfan',
+    sectionMoves: 'Gwella parodrwydd (what-if)',
+    editSupplierTags: 'Golygu tagiau cyflenwr a lot',
+    supplierPlaceholder: 'Tag cyflenwr',
+    lotPlaceholder: 'Lot / ffrwd gwaith',
+    supplierLabel: 'Cyflenwr',
+    lotLabel: 'Lot',
+    saveTags: 'Cadw tagiau',
+    cardRequirement: 'Gofyniad',
+    cardTeam: 'Tîm',
+    editRequirement: 'Golygu gofyniad',
+    editTeam: 'Rheoli tîm',
+    peopleCount: '{n} o bobl ar yr ymgysylltiad hwn',
+    primaryActions: 'Gweithredoedd',
+    hubNoAnalysis:
+      'Rhedegwch ddadansoddiad i weld parodrwydd, trwmder, tystiolaeth, a rhagolygon galwad i dendro yma.',
   },
   settings: {
     title: 'Gosodiadau',
@@ -155,10 +202,11 @@ export const cy: Messages = {
       'Nid yw modd y sefydliad yn cyfateb i’r enghraifft hon. Mewngofnodwch trwy’r prosiect Vercel cywir.',
   },
   home: {
-    heroTitle: 'Rydym yn dangos ein gwaith.',
-    heroTitleAccent: 'Yn fyw, yn erbyn pob pwynt o’r safon.',
+    heroEyebrow: 'Sicrwydd safon gwasanaeth',
+    heroTitle: 'Gwybod a yw eich tîm yn barod',
+    heroTitleAccent: 'cyn y tendr neu’r porth sicrwydd.',
     heroSubtitle:
-      'Mae Assemble gan Turner & Townsend yn sgorio gallu tîm, trwmder ystwyth, a thystiolaeth yn erbyn safonau gwasanaeth digidol GDS neu Gymru — cyn i chi ymrwymo i dendr neu adolygiad sicrwydd.',
+      'Mae Assemble yn mapio sgiliau DDaT a thystiolaeth i bob pwynt o’r safon GDS neu Gymru. Newidiwch y tîm neu’r cyfnod a mae’r asesiad yn diweddaru o’ch blaen — gyda’r rhesymeg yn weladwy.',
     ctaSignIn: 'Mewngofnodi',
     ctaRegister: 'Creu cyfrif',
     ctaDashboard: 'Agor dangosfwrdd',
@@ -177,11 +225,12 @@ export const cy: Messages = {
     whoTitle: 'Ar gyfer pwy',
     whoBody:
       'Arweinwyr cyflawni sy’n paratoi tendrau fframwaith, tîmau sicrwydd cleientiaid, a pherchnogion portffolio.',
-    ctaDemo: 'Agor demo NRW (ar ôl mewngofnodi)',
-    demoTitle: 'Manylion demo ar gyfer y sioe',
+    ctaTryDemo: 'Rhowch gynnig ar yr enghraifft NRW',
+    ctaDemo: 'Rhowch gynnig ar yr enghraifft NRW',
+    demoTitle: 'Gweld mewn dwy funud',
     demoBody:
-      'Mewngofnodwch gyda’r cyfrif demo a hanner, yna agorwch ymgysylltiad darganfod NRW.',
-    ctaDemoEngagement: 'Ymgysylltiad demo NRW',
+      'Defnyddiwch y cyfrif demo i agor ymgysylltiad darganfod NRW wedi’i lwytho — gyda bylchau, risg iaith Gymraeg statudol, a symudiadau what-if.',
+    ctaDemoEngagement: 'Agor enghraifft NRW ar ôl mewngofnodi',
     pillarWorkingTitle: 'Rydym yn dangos ein gwaith',
     pillarWorkingBody:
       'Mae pob sgôr yn olrhain i’r safon ac yn agor i’w rhesymeg. Dim blwch du — gall unrhyw un yn ystafell ei wirio.',
@@ -210,6 +259,17 @@ export const cy: Messages = {
     new: 'Galwad newydd i dendro',
     empty:
       'Dim galwadau i dendro eto. Crëwch un i asesu parodrwydd y tîm yn erbyn safon gwasanaeth.',
+    listIntro:
+      'Mae pob galwad i dendro yn cael ei hasesu yn erbyn GDS neu safon Cymru. Agorwch un i ddilyn y llif gwaith o gofyniad hyd at adroddiad.',
+    emptyTitle: 'Dim ymgysylltiadau eto',
+    emptyBody:
+      'Crëwch alwad i dendro i fodelu tîm yn erbyn safon gwasanaeth, neu rhowch gynnig ar yr enghraifft NRW i weld asesiad darganfod cyflawn.',
+    emptyCtaDemo: 'Rhowch gynnig ar yr enghraifft NRW',
+    createNamePlaceholder: 'Enw galwad i dendro',
+    createSupplierPlaceholder: 'Cyflenwr (dewisol)',
+    createLotPlaceholder: 'Lot (dewisol)',
+    noAnalysisYet: 'Heb ei asesu eto',
+    deleteConfirmShort: 'Dileu "{name}" a’r holl ddata cysylltiedig?',
   },
   common: {
     runAnalysis: 'Rhedeg dadansoddiad',
@@ -228,6 +288,7 @@ export const cy: Messages = {
     benchmarking: 'Meincnodi',
     framework: 'Fframwaith',
     profile: 'Proffil',
+    settings: 'Gosodiadau',
   },
   portfolio: {
     title: 'Portffolio',

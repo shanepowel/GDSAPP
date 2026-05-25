@@ -7,8 +7,13 @@ import { AppShell } from '@/components/app/AppShell';
 import { AppNav } from '@/components/app/AppNav';
 import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { EngagementAssuranceHub } from '@/components/app/EngagementAssuranceHub';
+import {
+  EngagementWorkflowGuide,
+  type WorkflowStepId,
+} from '@/components/app/EngagementWorkflowGuide';
 import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { ConstraintsCard } from '@/components/app/ConstraintsCard';
+import { PageIntro } from '@/components/app/PageIntro';
 import { PreparednessIndexCard } from '@/components/app/PreparednessIndexCard';
 import { RequirementFlexCard } from '@/components/app/RequirementFlexCard';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
@@ -53,14 +58,23 @@ export default function EngagementOverviewPage() {
   const result = lastRun?.result as ExtendedAnalysisResult | undefined;
 
   const standardLabel =
-    data?.standardId === 'wales'
-      ? 'Digital Service Standard for Wales'
-      : 'GDS Service Standard';
+    data?.standardId === 'wales' ? m.engagement.standardWales : m.engagement.standardGds;
 
   const onWhatIfUpdated = () => {
     void refetch();
     void utils.engagement.byId.invalidate({ id });
   };
+
+  const workflowSteps: { id: WorkflowStepId; done: boolean; optional?: boolean }[] = [
+    {
+      id: 'requirement',
+      done: Boolean(req?.title?.trim() && req?.outcome?.trim()),
+    },
+    { id: 'team', done: (data?.people.length ?? 0) > 0 },
+    { id: 'evidence', done: (data?._count.evidence ?? 0) > 0, optional: true },
+    { id: 'analysis', done: Boolean(result) },
+    { id: 'report', done: Boolean(result) },
+  ];
 
   return (
     <AppShell
@@ -69,15 +83,31 @@ export default function EngagementOverviewPage() {
       orgLabel={entityLabel}
       hideTitle
     >
-      {isLoading && <p className="mt-4 text-text-muted">Loading…</p>}
+      {isLoading && <p className="mt-4 text-text-muted">{m.engagement.loading}</p>}
       {data && (
         <>
           <DeploymentBanner />
           <AppNav />
           <EngagementSubNav engagementId={id} />
 
+          <PageIntro
+            className="mb-6"
+            title={m.engagement.subOverview}
+            description={m.engagement.overviewIntro}
+          />
+
+          <EngagementWorkflowGuide engagementId={id} steps={workflowSteps} />
+
+          {data.requirements.length > 0 && (
+            <RequirementSelector
+              requirements={data.requirements}
+              value={requirementId}
+              onChange={setRequirementId}
+            />
+          )}
+
           <section
-            className="-mx-6 mb-8 rounded-none px-6 py-8 md:rounded-2xl"
+            className="-mx-6 mb-8 mt-6 rounded-none px-6 py-8 md:rounded-2xl"
             style={{ background: 'var(--tt-navy)' }}
           >
             <h1 className="font-display text-2xl font-semibold text-white md:text-[34px] md:leading-tight">
@@ -88,12 +118,19 @@ export default function EngagementOverviewPage() {
             </p>
             {(data.supplierTag || data.lotTag) && (
               <p className="mt-1 text-sm text-slate-400">
-                {data.supplierTag && <>Supplier: {data.supplierTag}</>}
+                {data.supplierTag && (
+                  <>
+                    {m.engagement.supplierLabel}: {data.supplierTag}
+                  </>
+                )}
                 {data.supplierTag && data.lotTag && ' · '}
-                {data.lotTag && <>Lot: {data.lotTag}</>}
+                {data.lotTag && (
+                  <>
+                    {m.engagement.lotLabel}: {data.lotTag}
+                  </>
+                )}
               </p>
             )}
-            <p className="mt-4 max-w-2xl text-sm text-slate-300">{m.engagement.showWorkingTagline}</p>
 
             {result && req ? (
               <div className="mt-6">
@@ -104,10 +141,9 @@ export default function EngagementOverviewPage() {
                 />
               </div>
             ) : (
-              <div className="mt-6 rounded-2xl border border-dashed border-white/20 px-6 py-8 text-center">
-                <p className="text-sm text-slate-300">
-                  Run analysis to see the Preparedness Index for this requirement.
-                </p>
+              <div className="mt-6 rounded-2xl border border-dashed border-white/20 px-6 py-8">
+                <h2 className="text-base font-semibold text-white">{m.engagement.noAnalysisTitle}</h2>
+                <p className="mt-2 text-sm text-slate-300">{m.engagement.noAnalysisBody}</p>
                 {req && (
                   <Button
                     className="mt-4"
@@ -135,22 +171,22 @@ export default function EngagementOverviewPage() {
               }}
             >
               <input
-                placeholder="Supplier tag"
+                placeholder={m.engagement.supplierPlaceholder}
                 value={supplierTag}
                 onChange={(e) => setSupplierTag(e.target.value)}
                 className="rounded-md border border-border px-3 py-2 text-sm"
               />
               <input
-                placeholder="Lot / workstream"
+                placeholder={m.engagement.lotPlaceholder}
                 value={lotTag}
                 onChange={(e) => setLotTag(e.target.value)}
                 className="rounded-md border border-border px-3 py-2 text-sm"
               />
               <Button type="submit" disabled={updateMeta.isPending}>
-                Save tags
+                {m.engagement.saveTags}
               </Button>
               <Button type="button" variant="tertiary" onClick={() => setEditingMeta(false)}>
-                Cancel
+                {m.common.cancel}
               </Button>
             </form>
           ) : (
@@ -163,30 +199,28 @@ export default function EngagementOverviewPage() {
                 setEditingMeta(true);
               }}
             >
-              Edit supplier and lot tags (portfolio grouping)
+              {m.engagement.editSupplierTags}
             </button>
-          )}
-
-          {data.requirements.length > 0 && (
-            <RequirementSelector
-              requirements={data.requirements}
-              value={requirementId}
-              onChange={setRequirementId}
-            />
           )}
 
           {req && (
             <section className="mt-8">
-              <h2 className="mb-4 font-display text-lg font-semibold text-text">What-if moves</h2>
-              <WhatIfMovesCard
-                engagementId={id}
-                requirementId={req.id}
-                onUpdated={onWhatIfUpdated}
-              />
+              <PageIntro title={m.engagement.sectionMoves} description={m.engagement.whatIfIntro} />
+              <div className="mt-4">
+                <WhatIfMovesCard
+                  engagementId={id}
+                  requirementId={req.id}
+                  onUpdated={onWhatIfUpdated}
+                />
+              </div>
             </section>
           )}
 
-          <h2 className="mb-4 mt-10 font-semibold">Assurance dashboard</h2>
+          <PageIntro
+            className="mb-4 mt-10"
+            title={m.engagement.sectionDashboard}
+            description={result ? undefined : m.engagement.hubNoAnalysis}
+          />
           <EngagementAssuranceHub
             engagementId={id}
             result={result}
@@ -205,84 +239,81 @@ export default function EngagementOverviewPage() {
 
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
-              <h2 className="font-semibold">Requirement</h2>
-              <p className="mt-2 text-sm text-text-muted">{req?.title ?? 'None'}</p>
-              <p className="text-sm">Phase: {req?.phase}</p>
+              <h2 className="font-semibold">{m.engagement.cardRequirement}</h2>
+              <p className="mt-2 text-sm text-text-muted">{req?.title ?? '—'}</p>
+              <p className="text-sm text-text-muted">
+                {m.engagement.reqPhase}: {req?.phase ?? '—'}
+              </p>
               <Link
                 href={`/engagements/${id}/requirement`}
-                className="mt-3 inline-block text-sm text-brand hover:underline"
+                className="mt-3 inline-block text-sm font-medium text-brand hover:underline"
               >
-                Edit requirement
+                {m.engagement.editRequirement}
               </Link>
             </section>
             <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
-              <h2 className="font-semibold">Team</h2>
-              <p className="mt-2 text-sm text-text-muted">{data.people.length} people</p>
+              <h2 className="font-semibold">{m.engagement.cardTeam}</h2>
+              <p className="mt-2 text-sm text-text-muted">
+                {m.engagement.peopleCount.replace('{n}', String(data.people.length))}
+              </p>
               <Link
                 href={`/engagements/${id}/team`}
-                className="mt-3 inline-block text-sm text-brand hover:underline"
+                className="mt-3 inline-block text-sm font-medium text-brand hover:underline"
               >
-                Edit team
+                {m.engagement.editTeam}
               </Link>
             </section>
           </div>
 
-          <nav className="no-print mt-8 flex flex-wrap gap-3">
-            {req && (
-              <Button onClick={() => run.mutate({ requirementId: req.id })} disabled={run.isPending}>
-                {m.common.runAnalysis}
-              </Button>
-            )}
-            <Link href={`/engagements/${id}/analysis`}>
-              <Button variant="secondary">View analysis</Button>
-            </Link>
-            <Link href={`/engagements/${id}/evidence`}>
-              <Button variant="secondary">Evidence</Button>
-            </Link>
-            <Link href={`/engagements/${id}/rigour`}>
-              <Button variant="secondary">Rigour</Button>
-            </Link>
-            <Link href={`/engagements/${id}/tender`}>
-              <Button variant="secondary">
-                {features.clientAssuranceLabels ? 'Assurance criteria' : 'Call-off'}
-              </Button>
-            </Link>
-            <Link href={`/engagements/${id}/judgements`}>
-              <Button variant="secondary">Judgements</Button>
-            </Link>
-            <Link href={`/engagements/${id}/report`}>
-              <Button variant="secondary">Report</Button>
-            </Link>
-            <Link href={`/engagements/${id}/history`}>
-              <Button variant="tertiary">History</Button>
-            </Link>
-            <Button
-              variant="tertiary"
-              onClick={() =>
-                addRequirement.mutate({
-                  engagementId: id,
-                  title: `Requirement ${(data.requirements.length + 1).toString()}`,
-                  phase: 'alpha',
-                })
-              }
-            >
-              Add requirement
-            </Button>
-            <Button
-              variant="tertiary"
-              onClick={() => {
-                if (
-                  confirm(
-                    'Delete this engagement and all related data? This cannot be undone.',
-                  )
-                ) {
-                  deleteEngagement.mutate({ engagementId: id });
+          <div className="no-print mt-10">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+              {m.engagement.primaryActions}
+            </p>
+            <nav className="flex flex-wrap gap-3">
+              {req && (
+                <Button
+                  onClick={() => run.mutate({ requirementId: req.id })}
+                  disabled={run.isPending}
+                >
+                  {m.common.runAnalysis}
+                </Button>
+              )}
+              <Link href={`/engagements/${id}/analysis`}>
+                <Button variant="secondary">{m.engagement.viewAnalysis}</Button>
+              </Link>
+              <Link href={`/engagements/${id}/report`}>
+                <Button variant="secondary">{m.engagement.subReport}</Button>
+              </Link>
+              <Link href={`/engagements/${id}/evidence`}>
+                <Button variant="tertiary">{m.engagement.subEvidence}</Button>
+              </Link>
+              <Link href={`/engagements/${id}/team`}>
+                <Button variant="tertiary">{m.engagement.subTeam}</Button>
+              </Link>
+              <Button
+                variant="tertiary"
+                onClick={() =>
+                  addRequirement.mutate({
+                    engagementId: id,
+                    title: `Requirement ${(data.requirements.length + 1).toString()}`,
+                    phase: 'alpha',
+                  })
                 }
-              }}
-            >
-              Delete engagement
-            </Button>
-          </nav>
+              >
+                Add requirement
+              </Button>
+              <Button
+                variant="tertiary"
+                onClick={() => {
+                  if (confirm(m.engagement.deleteConfirm)) {
+                    deleteEngagement.mutate({ engagementId: id });
+                  }
+                }}
+              >
+                {m.engagement.deleteEngagement}
+              </Button>
+            </nav>
+          </div>
         </>
       )}
     </AppShell>

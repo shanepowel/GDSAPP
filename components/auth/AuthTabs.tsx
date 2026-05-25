@@ -96,6 +96,7 @@ export function AuthTabs({
       <div className="flex flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-md rounded-xl border border-border bg-surface p-8 shadow-md">
           <h1 className="font-display text-2xl font-bold text-text">{m.signIn.title}</h1>
+          <p className="mt-2 text-sm leading-relaxed text-text-muted">{m.signIn.subtitle}</p>
           {singleLogin && (
             <p className="mt-2 text-sm text-text-muted">{m.signIn.singleLoginHint}</p>
           )}
@@ -156,7 +157,7 @@ export function AuthTabs({
                 setRedirectAfterSignIn('/engagements/nrw-demo');
               }}
             >
-              {m.home.ctaDemoEngagement}
+              {m.signIn.demoFillButton}
             </Button>
           </div>
 

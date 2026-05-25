@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, CircleCheck, Wand2 } from 'lucide-react';
+import { ArrowRight, CircleCheck } from 'lucide-react';
 import { Card } from '@/components/app/Card';
 import { Button } from '@/components/ui/Button';
 import { useI18n } from '@/components/app/LocaleProvider';
@@ -28,12 +28,6 @@ export function WhatIfMovesCard({
 
   return (
     <div className="space-y-4">
-      <Card className="p-5" style={{ background: 'var(--tt-blue-050)', border: 'none' }}>
-        <div className="flex items-start gap-2">
-          <Wand2 className="mt-0.5 h-5 w-5 shrink-0 text-brand" aria-hidden />
-          <p className="text-sm text-text">{m.engagement.whatIfIntro}</p>
-        </div>
-      </Card>
       {data.moves.map((mv) => {
         const on = data.applied.includes(mv.id);
         return (

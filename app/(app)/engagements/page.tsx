@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { AppNav } from '@/components/app/AppNav';
 import { DeploymentBanner } from '@/components/app/DeploymentBanner';
+import { PageIntro } from '@/components/app/PageIntro';
 import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
 import { Button } from '@/components/ui/Button';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
@@ -38,6 +39,18 @@ export default function EngagementsPage() {
   const [supplierTag, setSupplierTag] = useState('');
   const [lotTag, setLotTag] = useState('');
 
+  const filtered =
+    data?.filter((e) => {
+      if (standardFilter !== 'all' && e.standardId !== standardFilter) return false;
+      if (!query.trim()) return true;
+      const q = query.toLowerCase();
+      return (
+        e.name.toLowerCase().includes(q) ||
+        (e.supplierTag?.toLowerCase().includes(q) ?? false) ||
+        (e.lotTag?.toLowerCase().includes(q) ?? false)
+      );
+    }) ?? [];
+
   return (
     <AppShell
       title={listTitle}
@@ -56,19 +69,24 @@ export default function EngagementsPage() {
           }}
         >
           <input
-            placeholder={features.clientAssuranceLabels ? 'Service name' : 'Call-off name'}
+            placeholder={
+              features.clientAssuranceLabels
+                ? m.engagements.createNamePlaceholder.replace('Call-off', 'Service')
+                : m.engagements.createNamePlaceholder
+            }
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="rounded-md border border-border px-3 py-2 text-sm"
+            aria-label={m.engagements.createNamePlaceholder}
           />
           <input
-            placeholder="Supplier tag (optional)"
+            placeholder={m.engagements.createSupplierPlaceholder}
             value={supplierTag}
             onChange={(e) => setSupplierTag(e.target.value)}
             className="rounded-md border border-border px-3 py-2 text-sm"
           />
           <input
-            placeholder="Lot (optional)"
+            placeholder={m.engagements.createLotPlaceholder}
             value={lotTag}
             onChange={(e) => setLotTag(e.target.value)}
             className="rounded-md border border-border px-3 py-2 text-sm"
@@ -77,9 +95,10 @@ export default function EngagementsPage() {
             value={standardId}
             onChange={(e) => setStandardId(e.target.value as 'gds' | 'wales')}
             className="rounded-md border border-border px-3 py-2 text-sm"
+            aria-label={m.engagement.filterAllStandards}
           >
-            <option value="wales">Wales standard</option>
-            <option value="gds">GDS standard</option>
+            <option value="wales">{m.engagement.filterWales}</option>
+            <option value="gds">{m.engagement.filterGds}</option>
           </select>
           <Button type="submit" disabled={create.isPending}>
             {m.engagements.new}
@@ -89,10 +108,12 @@ export default function EngagementsPage() {
     >
       <DeploymentBanner />
       <AppNav />
+      <PageIntro className="mb-6" title={listTitle} description={m.engagements.listIntro} />
+
       <div className="mb-6 flex flex-wrap gap-3">
         <input
           type="search"
-          placeholder="Search call-offs…"
+          placeholder={m.engagement.searchPlaceholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="min-w-[200px] flex-1 rounded-md border border-border px-3 py-2 text-sm"
@@ -101,29 +122,30 @@ export default function EngagementsPage() {
           value={standardFilter}
           onChange={(e) => setStandardFilter(e.target.value as typeof standardFilter)}
           className="rounded-md border border-border px-3 py-2 text-sm"
+          aria-label={m.engagement.filterAllStandards}
         >
-          <option value="all">All standards</option>
-          <option value="wales">Wales only</option>
-          <option value="gds">GDS only</option>
+          <option value="all">{m.engagement.filterAllStandards}</option>
+          <option value="wales">{m.engagement.filterWales}</option>
+          <option value="gds">{m.engagement.filterGds}</option>
         </select>
       </div>
-      {isLoading && <p className="text-text-muted">Loading…</p>}
+
+      {isLoading && <p className="text-text-muted">{m.engagement.loading}</p>}
+
       {!isLoading && !data?.length && (
-        <p className="rounded-lg border border-border bg-surface p-6 text-text-muted">{m.engagements.empty}</p>
+        <div className="rounded-xl border border-border bg-surface p-8 text-center shadow-sm">
+          <h2 className="font-display text-lg font-semibold text-text">{m.engagements.emptyTitle}</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-text-muted">{m.engagements.emptyBody}</p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link href="/sign-in?callbackUrl=%2Fengagements%2Fnrw-demo">
+              <Button>{m.engagements.emptyCtaDemo}</Button>
+            </Link>
+          </div>
+        </div>
       )}
+
       <ul className="grid gap-4 md:grid-cols-2">
-        {data
-          ?.filter((e) => {
-            if (standardFilter !== 'all' && e.standardId !== standardFilter) return false;
-            if (!query.trim()) return true;
-            const q = query.toLowerCase();
-            return (
-              e.name.toLowerCase().includes(q) ||
-              (e.supplierTag?.toLowerCase().includes(q) ?? false) ||
-              (e.lotTag?.toLowerCase().includes(q) ?? false)
-            );
-          })
-          .map((e) => (
+        {filtered.map((e) => (
           <li key={e.id} className="rounded-lg border border-border bg-surface shadow-sm">
             <Link
               href={`/engagements/${e.id}`}
@@ -131,7 +153,7 @@ export default function EngagementsPage() {
             >
               <h2 className="font-semibold text-text">{e.name}</h2>
               <p className="mt-1 text-sm text-text-muted">
-                {e.standardId === 'wales' ? 'Wales' : 'GDS'} · {e.phase ?? 'No phase'}
+                {e.standardId === 'wales' ? 'Wales' : 'GDS'} · {e.phase ?? '—'}
                 {e.supplierTag ? ` · ${e.supplierTag}` : ''}
               </p>
               <div className="mt-3">
@@ -140,7 +162,7 @@ export default function EngagementsPage() {
                     {e.lastRun.readinessBand} · {Math.round(e.lastRun.overallReadiness)}%
                   </StatusPill>
                 ) : (
-                  <StatusPill kind="info">No analysis yet</StatusPill>
+                  <StatusPill kind="info">{m.engagements.noAnalysisYet}</StatusPill>
                 )}
               </div>
             </Link>
@@ -149,10 +171,12 @@ export default function EngagementsPage() {
                 type="button"
                 className="text-xs text-status-gap hover:underline"
                 onClick={() => {
-                  if (confirm(`Delete "${e.name}"?`)) remove.mutate({ engagementId: e.id });
+                  if (confirm(m.engagements.deleteConfirmShort.replace('{name}', e.name))) {
+                    remove.mutate({ engagementId: e.id });
+                  }
                 }}
               >
-                Delete
+                {m.engagement.deleteEngagement}
               </button>
             </div>
           </li>
