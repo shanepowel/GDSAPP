@@ -22,6 +22,9 @@ export const cy: Messages = {
       'Cyfrinair annilys, neu mae’r cyfrif hwn yn defnyddio Microsoft yn unig. Defnyddiwch Mewngofnodi gyda Microsoft.',
     singleLoginHint: 'Defnyddiwch eich cyfrif Microsoft sefydliad (Entra ID Turner & Townsend).',
     emailSignIn: 'Mewngofnodi gydag e-bost yn lle hynny',
+    demoHint: 'Cyfrif demo (wedi’i hadau ar gynhyrchu)',
+    demoEmail: 'admin@demo.local',
+    demoPassword: 'demo-password',
   },
   reviews: {
     title: 'Cadwyn cymeradwyo',
@@ -126,6 +129,21 @@ export const cy: Messages = {
     flexCost: 'Rheoli cost',
     flexSpeed: 'Cyflymder',
     flexQuality: 'Ansawdd / parodrwydd',
+    preparednessIndex: 'Mynegai parodrwydd',
+    live: 'yn fyw',
+    bandReady: 'Yn barod',
+    bandOnTrack: 'Ar y trywydd',
+    bandAtRisk: 'Mewn perygl',
+    bandNotReady: 'Ddim yn barod',
+    phaseLabel: 'cyfnod',
+    pointsMet: 'Pwyntiau wedi’u cyflawni',
+    toClose: 'I’w gau',
+    statutoryAtRisk: 'Statudol mewn perygl',
+    whatIfIntro:
+      'Y camau effaith uchaf ar gyfer y safon a’r cyfnod hwn. Defnyddiwch un a ailgyfrifo’r Mynegai Parodrwydd ar unwaith.',
+    applyMove: 'Defnyddio',
+    applied: 'Wedi defnyddio',
+    showWorkingTagline: 'Rydym yn dangos ein gwaith yn erbyn pob pwynt o’r safon.',
   },
   settings: {
     title: 'Gosodiadau',
@@ -135,7 +153,8 @@ export const cy: Messages = {
       'Nid yw modd y sefydliad yn cyfateb i’r enghraifft hon. Mewngofnodwch trwy’r prosiect Vercel cywir.',
   },
   home: {
-    heroTitle: 'Gwybod a all eich tîm ddarparu safon y gwasanaeth',
+    heroTitle: 'Rydym yn dangos ein gwaith.',
+    heroTitleAccent: 'Yn fyw, yn erbyn pob pwynt o’r safon.',
     heroSubtitle:
       'Mae Assemble gan Turner & Townsend yn sgorio gallu tîm, trwmder ystwyth, a thystiolaeth yn erbyn safonau gwasanaeth digidol GDS neu Gymru — cyn i chi ymrwymo i dendr neu adolygiad sicrwydd.',
     ctaSignIn: 'Mewngofnodi',
@@ -156,6 +175,20 @@ export const cy: Messages = {
     whoTitle: 'Ar gyfer pwy',
     whoBody:
       'Arweinwyr cyflawni sy’n paratoi tendrau fframwaith, tîmau sicrwydd cleientiaid, a pherchnogion portffolio.',
+    ctaDemo: 'Agor demo NRW (ar ôl mewngofnodi)',
+    demoTitle: 'Manylion demo ar gyfer y sioe',
+    demoBody:
+      'Mewngofnodwch gyda’r cyfrif demo a hanner, yna agorwch ymgysylltiad darganfod NRW.',
+    ctaDemoEngagement: 'Ymgysylltiad demo NRW',
+    pillarWorkingTitle: 'Rydym yn dangos ein gwaith',
+    pillarWorkingBody:
+      'Mae pob sgôr yn olrhain i’r safon ac yn agor i’w rhesymeg. Dim blwch du — gall unrhyw un yn ystafell ei wirio.',
+    pillarAssessTitle: 'Rydym yn asesu ein hunain yr un ffordd',
+    pillarAssessBody:
+      'Rydym yn dal ein tîmau ni i’r un safon â neb arall, gyda bylchau’n cael eu henwi’n agored a’r cam i’w cau.',
+    pillarHandoverTitle: 'Wedi’i adeiladu i’w drosglwyddo',
+    pillarHandoverBody:
+      'Mae’r holl ddata, tystiolaeth, a dadansoddiad yn barod i’w drosglwyddo i’r tîm cyflawni pan fydd y tendr yn cael ei enill.',
   },
   profile: {
     title: 'Eich proffil',
@@ -222,7 +255,7 @@ export const cy: Messages = {
     productName: 'Assemble',
     tagline: 'gan Turner & Townsend',
     advisoryFooter:
-      'Turner & Townsend · Wedi ei adeiladu ar fframweithiau cyhoeddus o dan Drwydded Llywodraeth Agored. Offeryn cyngorol; nid penderfyniad swyddi.',
+      'Demo cynrychioladol gyda rolau a sgiliau DDaT. Safonau GDS a Chymru o dan Drwydded Llywodraeth Agored. Offeryn cyngorol; nid penderfyniad swyddi. © Turner & Townsend.',
     language: 'Iaith',
     english: 'Saesneg',
     welsh: 'Cymraeg',

@@ -21,6 +21,9 @@ export const en: Messages = {
       'Invalid password, or this account uses Microsoft sign-in only. Use Sign in with Microsoft.',
     singleLoginHint: 'Use your organisation Microsoft account (Turner & Townsend Entra ID).',
     emailSignIn: 'Sign in with email instead',
+    demoHint: 'Demo account (seeded on production)',
+    demoEmail: 'admin@demo.local',
+    demoPassword: 'demo-password',
   },
   reviews: {
     title: 'Approval chain',
@@ -125,6 +128,21 @@ export const en: Messages = {
     flexCost: 'Cost control',
     flexSpeed: 'Speed',
     flexQuality: 'Quality / readiness',
+    preparednessIndex: 'Preparedness Index',
+    live: 'live',
+    bandReady: 'Ready',
+    bandOnTrack: 'On track',
+    bandAtRisk: 'At risk',
+    bandNotReady: 'Not ready',
+    phaseLabel: 'phase',
+    pointsMet: 'Points met',
+    toClose: 'To close',
+    statutoryAtRisk: 'Statutory at risk',
+    whatIfIntro:
+      'Highest-impact moves for this standard and phase. Apply one and the Preparedness Index recomputes immediately.',
+    applyMove: 'Apply',
+    applied: 'Applied',
+    showWorkingTagline: 'We show our working against every point of the standard.',
   },
   settings: {
     title: 'Settings',
@@ -134,9 +152,10 @@ export const en: Messages = {
       'Organisation deployment mode does not match this instance. Sign in via the correct Vercel project.',
   },
   home: {
-    heroTitle: 'Know if your team can deliver the service standard',
+    heroTitle: 'We show our working.',
+    heroTitleAccent: 'Live, against every point of the standard.',
     heroSubtitle:
-      'Assemble by Turner & Townsend scores team capability, agile rigour, and evidence against GDS or Wales digital service standards — before you commit to a bid or assurance review.',
+      'Change the standard, the phase, or the team and the assessment recomputes in front of you. Every score opens to its reasoning. Gaps are named honestly, with the move that closes them.',
     ctaSignIn: 'Sign in',
     ctaRegister: 'Create account',
     ctaDashboard: 'Open dashboard',
@@ -155,6 +174,19 @@ export const en: Messages = {
     whoTitle: 'Who it is for',
     whoBody:
       'Delivery leads preparing framework bids, NRW-style client assurance teams, and portfolio owners who need a single view of supplier readiness across lots.',
+    ctaDemo: 'Open NRW demo (after sign-in)',
+    demoTitle: 'Demo credentials for tomorrow',
+    demoBody: 'Sign in with the seeded demo account, then open the NRW discovery engagement.',
+    ctaDemoEngagement: 'NRW demo engagement',
+    pillarWorkingTitle: 'We show our working',
+    pillarWorkingBody:
+      'Every score traces to the standard and opens to its reasoning. No black box, so anyone in the room can check it.',
+    pillarAssessTitle: 'We assess ourselves the same way',
+    pillarAssessBody:
+      'We hold our own teams to the standard we apply to anyone, gaps named openly, with the move that closes each one.',
+    pillarHandoverTitle: 'Built to hand over',
+    pillarHandoverBody:
+      'The same instrument can be run by the client, so the rigour stays after we leave. Capability, not dependency.',
   },
   profile: {
     title: 'Your profile',
@@ -220,7 +252,7 @@ export const en: Messages = {
     productName: 'Assemble',
     tagline: 'by Turner & Townsend',
     advisoryFooter:
-      'Turner & Townsend · Built on public frameworks under the Open Government Licence. Advisory tool; not a hiring decision.',
+      'Demonstration build with representative DDaT roles and skills. GDS and Wales standards under the Open Government Licence. Advisory tool; not a hiring decision. © Turner & Townsend.',
     language: 'Language',
     english: 'English',
     welsh: 'Welsh',

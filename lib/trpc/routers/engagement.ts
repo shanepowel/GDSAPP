@@ -2,6 +2,13 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { assertEngagementInOrg, protectedProcedure, router } from '@/lib/trpc/trpc';
 import { runAndPersistAnalysis } from '@/lib/db/analysis';
+import {
+  applyWhatIfMove,
+  listAppliedMoves,
+  revertWhatIfMove,
+  WHAT_IF_MOVES,
+  type WhatIfMoveId,
+} from '@/lib/demo/what-if-moves';
 
 export const engagementRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -267,6 +274,42 @@ export const engagementRouter = router({
       orderBy: { role: { name: 'asc' } },
     });
   }),
+
+  whatIfMoves: protectedProcedure
+    .input(z.object({ engagementId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      const applied = await listAppliedMoves(ctx.prisma, input.engagementId);
+      return { moves: WHAT_IF_MOVES, applied };
+    }),
+
+  toggleWhatIfMove: protectedProcedure
+    .input(
+      z.object({
+        engagementId: z.string(),
+        requirementId: z.string(),
+        moveId: z.enum(['m_welsh', 'm_so', 'm_research']),
+        apply: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const req = await ctx.prisma.requirement.findUnique({
+        where: { id: input.requirementId },
+        include: { engagement: true },
+      });
+      if (!req || req.engagementId !== input.engagementId || req.engagement.orgId !== ctx.orgId) {
+        throw new TRPCError({ code: 'NOT_FOUND' });
+      }
+      if (input.apply) {
+        await applyWhatIfMove(ctx.prisma, input.engagementId, input.requirementId, input.moveId);
+      } else {
+        await revertWhatIfMove(ctx.prisma, input.engagementId, input.requirementId, input.moveId);
+      }
+      const result = await runAndPersistAnalysis(input.requirementId);
+      if (!result) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+      const applied = await listAppliedMoves(ctx.prisma, input.engagementId);
+      return { result, applied };
+    }),
 
   analysisHistory: protectedProcedure
     .input(z.object({ requirementId: z.string() }))
