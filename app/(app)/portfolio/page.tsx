@@ -23,8 +23,10 @@ function bandToKind(band: string | null | undefined): StatusKind {
 export default function PortfolioPage() {
   const { data, isLoading } = trpc.portfolio.summary.useQuery();
   const features = getClientDeploymentFeatures();
-  const { messages: m } = useI18n();
-  const title = features.clientAssuranceLabels ? m.portfolio.titleAssurance : m.portfolio.title;
+  const { messages } = useI18n();
+  const title = features.clientAssuranceLabels
+    ? messages.portfolio.titleAssurance
+    : messages.portfolio.title;
 
   return (
     <AppShell title={title} orgLabel="Organisation-wide">
@@ -85,7 +87,7 @@ export default function PortfolioPage() {
           {data.supplierGroups.length > 0 && (
             <Card className="mb-8 overflow-hidden p-0">
               <div className="border-b border-border px-5 py-3">
-                <Eyebrow>{m.portfolio.bySupplier}</Eyebrow>
+                <Eyebrow>{messages.portfolio.bySupplier}</Eyebrow>
               </div>
               <table className="w-full text-sm">
                 <thead>
