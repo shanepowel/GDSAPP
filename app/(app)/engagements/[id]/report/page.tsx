@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { AppShell } from '@/components/app/AppShell';
 import { ScoreBar } from '@/components/app/ScoreBar';
 import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
 export default function ReportPage() {
+  const { messages: m } = useI18n();
   const params = useParams();
   const id = params.id as string;
   const { data } = trpc.engagement.byId.useQuery({ id });
@@ -34,6 +36,14 @@ export default function ReportPage() {
           >
             Print report
           </button>
+          {req && (
+            <a
+              href={`/api/export/report?engagementId=${id}&requirementId=${req.id}`}
+              className="ml-3 mt-4 inline-block rounded-md border border-border px-4 py-2 text-sm"
+            >
+              {m.common.exportPdf}
+            </a>
+          )}
           <button
             type="button"
             className="ml-3 rounded-md border border-border px-4 py-2 text-sm"

@@ -83,7 +83,7 @@ export default function PortfolioPage() {
           {data.supplierGroups.length > 0 && (
             <Card className="mb-8 overflow-hidden p-0">
               <div className="border-b border-border px-5 py-3">
-                <Eyebrow>By supplier</Eyebrow>
+                <Eyebrow>{m.portfolio.bySupplier}</Eyebrow>
               </div>
               <table className="w-full text-sm">
                 <thead>

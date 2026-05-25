@@ -13,14 +13,15 @@ import { useRequirementId } from '@/lib/hooks/use-requirement-id';
 import { engagementEntityLabel } from '@/lib/labels';
 import { ScoreBar } from '@/components/app/ScoreBar';
 import { Button } from '@/components/ui/Button';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
-import { en } from '@/lib/i18n/en';
 import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
 export default function EngagementOverviewPage() {
   const params = useParams();
   const id = params.id as string;
   const features = getClientDeploymentFeatures();
+  const { messages: m } = useI18n();
   const entityLabel = engagementEntityLabel(features);
   const { data, isLoading, refetch } = trpc.engagement.byId.useQuery({ id });
   const { requirementId, setRequirementId } = useRequirementId(id, data?.requirements);
@@ -165,7 +166,7 @@ export default function EngagementOverviewPage() {
           <nav className="no-print mt-8 flex flex-wrap gap-3">
             {req && (
               <Button onClick={() => run.mutate({ requirementId: req.id })} disabled={run.isPending}>
-                {en.common.runAnalysis}
+                {m.common.runAnalysis}
               </Button>
             )}
             <Link href={`/engagements/${id}/analysis`}>
@@ -177,16 +178,11 @@ export default function EngagementOverviewPage() {
             <Link href={`/engagements/${id}/rigour`}>
               <Button variant="secondary">Rigour</Button>
             </Link>
-            {features.supplierWinFraming && (
-              <Link href={`/engagements/${id}/tender`}>
-                <Button variant="secondary">Call-off</Button>
-              </Link>
-            )}
-            {!features.supplierWinFraming && (
-              <Link href={`/engagements/${id}/tender`}>
-                <Button variant="secondary">Assurance criteria</Button>
-              </Link>
-            )}
+            <Link href={`/engagements/${id}/tender`}>
+              <Button variant="secondary">
+                {features.clientAssuranceLabels ? 'Assurance criteria' : 'Call-off'}
+              </Button>
+            </Link>
             <Link href={`/engagements/${id}/judgements`}>
               <Button variant="secondary">Judgements</Button>
             </Link>

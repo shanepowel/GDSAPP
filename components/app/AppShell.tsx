@@ -1,5 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import { Globe } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
+import { useI18n } from '@/components/app/LocaleProvider';
 
 export function AppShell({
   title,
@@ -16,6 +20,7 @@ export function AppShell({
   orgLabel?: string;
   hideTitle?: boolean;
 }) {
+  const { messages: m } = useI18n();
   const standardBadge =
     standardId === 'wales'
       ? 'Wales standard'
@@ -37,7 +42,7 @@ export function AppShell({
               </div>
               <div>
                 <div className="text-[15px] font-semibold leading-none text-text">Assemble</div>
-                <div className="mt-0.5 text-[11px] text-text-muted">Standard readiness and team fit</div>
+                <div className="mt-0.5 text-[11px] text-text-muted">{m.app.tagline}</div>
               </div>
             </Link>
           </div>
@@ -48,6 +53,7 @@ export function AppShell({
                 {standardBadge}
               </span>
             )}
+            <LanguageSwitcher />
             {actions}
             <div
               className="h-8 w-8 rounded-full bg-accent"
@@ -73,8 +79,7 @@ export function AppShell({
         {children}
       </main>
       <footer className="mx-auto max-w-container px-6 py-8 text-xs text-text-muted">
-        Built on public frameworks under the Open Government Licence. Centre for Digital Public Services
-        (Wales). Advisory tool; supports human judgement; makes no hiring decision.
+        {m.app.advisoryFooter}
       </footer>
     </div>
   );

@@ -209,6 +209,19 @@ async function main() {
     update: { budgetCap: 120000 },
   });
 
+  await prisma.outcome.upsert({
+    where: { id: 'nrw-outcome-1' },
+    create: {
+      id: 'nrw-outcome-1',
+      requirementId: requirement.id,
+      event: 'assessment',
+      result: 'partial',
+      phase: 'discovery',
+      notes: 'Demo benchmark: statutory Welsh language gaps remain.',
+    },
+    update: {},
+  });
+
   const engagement2 = await prisma.engagement.findUnique({ where: { id: 'nrw-demo-2' } });
   if (engagement2) {
     await prisma.requirement.upsert({

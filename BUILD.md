@@ -102,3 +102,7 @@ See [docs/NRW-FRAMEWORK-STRATEGY.md](docs/NRW-FRAMEWORK-STRATEGY.md) and [docs/W
 | `/engagements/[id]/judgements` | Human sign-off |
 | `/portfolio` | Org rollup + supplier groups |
 | `/handover` | Play B training pack |
+| `/benchmarking` | Outcomes and benchmarks |
+| `/framework` | Framework drift detection |
+| `/api/tender/parse-pdf` | PDF question extraction |
+| `/api/export/report` | Branded PDF report |

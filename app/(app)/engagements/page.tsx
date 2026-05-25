@@ -9,8 +9,8 @@ import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
 import { Button } from '@/components/ui/Button';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import { engagementsListTitle } from '@/lib/labels';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
-import { en } from '@/lib/i18n/en';
 
 function bandToKind(band: string | undefined): StatusKind {
   if (!band) return 'info';
@@ -22,6 +22,7 @@ function bandToKind(band: string | undefined): StatusKind {
 
 export default function EngagementsPage() {
   const features = getClientDeploymentFeatures();
+  const { messages: m } = useI18n();
   const listTitle = engagementsListTitle(features);
   const { data, isLoading } = trpc.engagement.list.useQuery();
   const create = trpc.engagement.create.useMutation({
@@ -78,7 +79,7 @@ export default function EngagementsPage() {
             <option value="gds">GDS standard</option>
           </select>
           <Button type="submit" disabled={create.isPending}>
-            {en.engagements.new}
+            {m.engagements.new}
           </Button>
         </form>
       }
@@ -87,7 +88,7 @@ export default function EngagementsPage() {
       <AppNav />
       {isLoading && <p className="text-text-muted">Loading…</p>}
       {!isLoading && !data?.length && (
-        <p className="rounded-lg border border-border bg-surface p-6 text-text-muted">{en.engagements.empty}</p>
+        <p className="rounded-lg border border-border bg-surface p-6 text-text-muted">{m.engagements.empty}</p>
       )}
       <ul className="grid gap-4 md:grid-cols-2">
         {data?.map((e) => (

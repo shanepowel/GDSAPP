@@ -6,6 +6,11 @@ import {
 } from '../lib/engine/standards-dependency-map';
 import { SENIORITY_RANK } from '../lib/engine/config';
 import type { Seniority } from '../lib/engine/standards-dependency-map';
+import {
+  hashFrameworkPoints,
+  loadCurrentPointSnapshots,
+  serializeBaselineSnapshot,
+} from '../lib/framework/drift';
 
 const prisma = new PrismaClient();
 
@@ -102,6 +107,22 @@ async function main() {
         },
       });
     }
+  }
+
+  const points = await loadCurrentPointSnapshots(prisma);
+  const hash = hashFrameworkPoints(points);
+  const existing = await prisma.frameworkVersion.findFirst({
+    where: { versionLabel: 'Initial dependency map baseline' },
+  });
+  if (!existing) {
+    await prisma.frameworkVersion.create({
+      data: {
+        source: 'assemble-standards-map',
+        versionLabel: 'Initial dependency map baseline',
+        notes: serializeBaselineSnapshot(points),
+      },
+    });
+    console.log(`Recorded framework baseline (${points.length} points, hash ${hash.slice(0, 12)}…).`);
   }
 
   console.log('Seeded standards and dependency mappings.');

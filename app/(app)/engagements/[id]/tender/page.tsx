@@ -6,11 +6,14 @@ import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { Button } from '@/components/ui/Button';
 import { RationaleDisclosure } from '@/components/app/RationaleDisclosure';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
+import type { ParsedTenderQuestion } from '@/lib/tender/pdf-parser';
 import { trpc } from '@/lib/trpc/client';
 import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
 export default function TenderPage() {
+  const { messages: m } = useI18n();
   const features = getClientDeploymentFeatures();
   const params = useParams();
   const id = params.id as string;
@@ -33,9 +36,16 @@ export default function TenderPage() {
   );
   const outlook = liveOutlook ?? bidFromRun;
   const buildScaffold = trpc.extension.tender.buildScaffold.useMutation();
+  const importQuestions = trpc.extension.tender.importQuestions.useMutation({
+    onSuccess: () => refetchTenders(),
+  });
 
   const [qRef, setQRef] = useState('Q1');
   const [qText, setQText] = useState('');
+  const [parsed, setParsed] = useState<ParsedTenderQuestion[]>([]);
+  const [selectedRefs, setSelectedRefs] = useState<Set<string>>(new Set());
+  const [parseError, setParseError] = useState('');
+  const [parsing, setParsing] = useState(false);
 
   return (
     <AppShell
@@ -66,6 +76,83 @@ export default function TenderPage() {
             {tender.title} · Quality {Math.round(tender.qualityWeight * 100)}% / Price{' '}
             {Math.round(tender.priceWeight * 100)}% · Scale 0–{tender.scoringScaleMax}
           </p>
+
+          <section className="mt-6 rounded-lg border border-border bg-surface p-4">
+            <h2 className="font-semibold">{m.tender.importPdf}</h2>
+            <p className="mt-1 text-sm text-text-muted">{m.tender.parseHint}</p>
+            <input
+              type="file"
+              accept="application/pdf"
+              className="mt-3 block text-sm"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setParseError('');
+                setParsing(true);
+                try {
+                  const body = new FormData();
+                  body.append('file', file);
+                  const res = await fetch('/api/tender/parse-pdf', { method: 'POST', body });
+                  const json = await res.json();
+                  if (!res.ok) throw new Error(json.error ?? 'Parse failed');
+                  setParsed(json.questions as ParsedTenderQuestion[]);
+                  setSelectedRefs(new Set(json.questions.map((q: ParsedTenderQuestion) => q.ref)));
+                } catch (err) {
+                  setParseError(err instanceof Error ? err.message : 'Parse failed');
+                  setParsed([]);
+                } finally {
+                  setParsing(false);
+                }
+              }}
+            />
+            {parsing && <p className="mt-2 text-sm text-text-muted">{m.common.loading}</p>}
+            {parseError && <p className="mt-2 text-sm text-status-gap">{parseError}</p>}
+            {parsed.length > 0 && (
+              <div className="mt-4">
+                <p className="text-sm font-medium">{parsed.length} questions detected</p>
+                <ul className="mt-2 max-h-48 space-y-2 overflow-y-auto text-sm">
+                  {parsed.map((q) => (
+                    <li key={q.ref} className="flex gap-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedRefs.has(q.ref)}
+                        onChange={(e) => {
+                          const next = new Set(selectedRefs);
+                          if (e.target.checked) next.add(q.ref);
+                          else next.delete(q.ref);
+                          setSelectedRefs(next);
+                        }}
+                      />
+                      <span>
+                        <strong>{q.ref}</strong> ({q.confidence}) {q.text.slice(0, 120)}…
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  className="mt-3"
+                  disabled={importQuestions.isPending || selectedRefs.size === 0}
+                  onClick={() => {
+                    const toImport = parsed.filter((q) => selectedRefs.has(q.ref));
+                    importQuestions.mutate({
+                      tenderId: tender.id,
+                      questions: toImport.map((q) => ({
+                        ref: q.ref,
+                        text: q.text,
+                        weight: q.weight,
+                        category: q.category,
+                        isPassFail: q.isPassFail,
+                      })),
+                    });
+                    setParsed([]);
+                  }}
+                >
+                  {m.tender.importSelected}
+                </Button>
+              </div>
+            )}
+          </section>
+
           <form
             className="mt-4 flex flex-wrap gap-2 rounded-lg border border-border bg-surface p-4"
             onSubmit={(e) => {
@@ -153,7 +240,7 @@ export default function TenderPage() {
             href={`/api/export/drafts?tenderId=${tender.id}`}
             className="mt-4 inline-block text-sm text-brand hover:underline"
           >
-            Export drafts to Word
+            {m.common.exportWord}
           </a>
         </>
       )}
