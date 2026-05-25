@@ -47,9 +47,12 @@ export function PreparednessIndexCard({
         border: '1px solid rgba(255,255,255,0.12)',
       }}
     >
-      <div className="flex items-center justify-between">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-          {m.engagement.preparednessIndex}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+            {m.engagement.preparednessIndex}
+          </div>
+          <p className="mt-1 max-w-md text-xs text-slate-400">{m.engagement.preparednessHelp}</p>
         </div>
         <span className="inline-flex items-center gap-1 text-[11px]" style={{ color: 'var(--tt-blue-hero)' }}>
           <ShieldCheck className="h-3.5 w-3.5" aria-hidden />

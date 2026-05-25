@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Card } from '@/components/app/Card';
 import { Eyebrow } from '@/components/app/Eyebrow';
 import { ScoreBar } from '@/components/app/ScoreBar';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
@@ -19,11 +20,12 @@ export function EngagementAssuranceHub({
   judgementCount: number;
 }) {
   const features = getClientDeploymentFeatures();
+  const { messages: m } = useI18n();
 
   if (!result) {
     return (
       <Card className="p-5">
-        <p className="text-sm text-text-muted">Run analysis to populate the assurance dashboard.</p>
+        <p className="text-sm text-text-muted">{m.engagement.hubNoAnalysis}</p>
       </Card>
     );
   }

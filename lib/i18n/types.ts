@@ -22,6 +22,8 @@ export type Messages = {
     demoHint: string;
     demoEmail: string;
     demoPassword: string;
+    subtitle: string;
+    demoFillButton: string;
   };
   reviews: {
     title: string;
@@ -134,6 +136,45 @@ export type Messages = {
     applyMove: string;
     applied: string;
     showWorkingTagline: string;
+    overviewIntro: string;
+    preparednessHelp: string;
+    noAnalysisTitle: string;
+    noAnalysisBody: string;
+    whatIfTitle: string;
+    workflowTitle: string;
+    workflowIntro: string;
+    workflowStep: string;
+    workflowOptional: string;
+    workflowUpNext: string;
+    workflowStepRequirement: string;
+    workflowStepRequirementHint: string;
+    workflowStepTeam: string;
+    workflowStepTeamHint: string;
+    workflowStepEvidence: string;
+    workflowStepEvidenceHint: string;
+    workflowStepAnalysis: string;
+    workflowStepAnalysisHint: string;
+    workflowStepReport: string;
+    workflowStepReportHint: string;
+    navGroupPrepare: string;
+    navGroupAssess: string;
+    navGroupDecide: string;
+    navGroupShare: string;
+    sectionDashboard: string;
+    sectionMoves: string;
+    editSupplierTags: string;
+    supplierPlaceholder: string;
+    lotPlaceholder: string;
+    supplierLabel: string;
+    lotLabel: string;
+    saveTags: string;
+    cardRequirement: string;
+    cardTeam: string;
+    editRequirement: string;
+    editTeam: string;
+    peopleCount: string;
+    primaryActions: string;
+    hubNoAnalysis: string;
   };
   settings: {
     title: string;
@@ -171,6 +212,8 @@ export type Messages = {
     pillarAssessBody: string;
     pillarHandoverTitle: string;
     pillarHandoverBody: string;
+    heroEyebrow: string;
+    ctaTryDemo: string;
   };
   profile: {
     title: string;
@@ -189,6 +232,15 @@ export type Messages = {
     title: string;
     new: string;
     empty: string;
+    listIntro: string;
+    emptyTitle: string;
+    emptyBody: string;
+    emptyCtaDemo: string;
+    createNamePlaceholder: string;
+    createSupplierPlaceholder: string;
+    createLotPlaceholder: string;
+    noAnalysisYet: string;
+    deleteConfirmShort: string;
   };
   common: {
     runAnalysis: string;
@@ -207,6 +259,7 @@ export type Messages = {
     benchmarking: string;
     framework: string;
     profile: string;
+    settings: string;
   };
   portfolio: {
     title: string;

@@ -20,7 +20,7 @@ export function AppNav() {
     { href: '/benchmarking', label: m.nav.benchmarking },
     { href: '/framework', label: m.nav.framework },
     ...(features.handoverPack ? [{ href: '/handover', label: m.nav.handover }] : []),
-    { href: '/settings', label: 'Settings' },
+    { href: '/settings', label: m.nav.settings },
     { href: '/profile', label: m.nav.profile },
   ];
 

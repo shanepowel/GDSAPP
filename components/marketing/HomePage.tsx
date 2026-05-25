@@ -49,8 +49,10 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
         </div>
 
         <div className="mx-auto max-w-container px-6 pb-14 pt-4">
-          <p className="text-xs text-slate-400">{BRAND.tagline}</p>
-          <h1 className="mt-4 max-w-3xl font-display text-4xl font-extrabold leading-tight md:text-[38px]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+            {m.home.heroEyebrow}
+          </p>
+          <h1 className="mt-3 max-w-3xl font-display text-4xl font-extrabold leading-tight md:text-[38px]">
             {m.home.heroTitle}
             <br />
             <span style={{ color: 'var(--tt-blue-hero)' }}>{m.home.heroTitleAccent}</span>
@@ -68,7 +70,7 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
               <>
                 <Link href="/sign-in?callbackUrl=%2Fengagements%2Fnrw-demo">
                   <Button className="gap-2">
-                    {m.home.ctaDemo}
+                    {m.home.ctaTryDemo}
                     <ArrowRight className="h-4 w-4" aria-hidden />
                   </Button>
                 </Link>
@@ -83,7 +85,7 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
 
       <section className="mx-auto max-w-container px-6 py-16">
         <h2 className="font-display text-2xl font-bold text-text">{m.home.whatTitle}</h2>
-        <p className="mt-4 max-w-3xl text-text-muted leading-relaxed">{m.home.whatBody}</p>
+        <p className="mt-4 max-w-3xl leading-relaxed text-text-muted">{m.home.whatBody}</p>
       </section>
 
       <section className="border-y border-border bg-surface-alt">
@@ -97,7 +99,7 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
               >
                 <Icon className="h-8 w-8 text-brand" aria-hidden />
                 <h3 className="mt-4 font-semibold text-text">{title}</h3>
-                <p className="mt-2 text-sm text-text-muted leading-relaxed">{body}</p>
+                <p className="mt-2 text-sm leading-relaxed text-text-muted">{body}</p>
               </li>
             ))}
           </ol>
@@ -127,19 +129,17 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
       {!isSignedIn && (
         <section className="mx-auto max-w-container px-6 pb-16">
           <div className="rounded-xl border border-brand/30 bg-brand-tint p-8">
-            <p className="font-medium text-text">{m.home.demoTitle}</p>
-            <p className="mt-2 text-sm text-text-muted">{m.home.demoBody}</p>
-            <p className="mt-3 font-mono text-sm">
-              <code className="rounded bg-surface px-2 py-1">admin@demo.local</code>
-              {' / '}
-              <code className="rounded bg-surface px-2 py-1">demo-password</code>
-            </p>
+            <h2 className="font-display text-lg font-semibold text-text">{m.home.demoTitle}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-text-muted">{m.home.demoBody}</p>
             <div className="mt-4 flex flex-wrap gap-3">
-              <Link href="/sign-in">
-                <Button>{m.home.ctaSignIn}</Button>
-              </Link>
               <Link href="/sign-in?callbackUrl=%2Fengagements%2Fnrw-demo">
-                <Button variant="secondary">{m.home.ctaDemoEngagement}</Button>
+                <Button className="gap-2">
+                  {m.home.ctaTryDemo}
+                  <ArrowRight className="h-4 w-4" aria-hidden />
+                </Button>
+              </Link>
+              <Link href="/sign-in">
+                <Button variant="secondary">{m.home.ctaSignIn}</Button>
               </Link>
             </div>
           </div>
