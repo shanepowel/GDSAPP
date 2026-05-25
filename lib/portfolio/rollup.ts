@@ -5,6 +5,8 @@ export interface PortfolioEngagementRow {
   id: string;
   name: string;
   standardId: string;
+  supplierTag: string | null;
+  lotTag: string | null;
   phase: string | null;
   readinessPercent: number | null;
   readinessBand: string | null;
@@ -17,6 +19,13 @@ export interface PortfolioEngagementRow {
   lastRunAt: Date | null;
 }
 
+export interface PortfolioSupplierGroup {
+  supplierTag: string;
+  engagementCount: number;
+  averageReadiness: number | null;
+  totalGapPoints: number;
+}
+
 export interface PortfolioSummary {
   engagementCount: number;
   analysedCount: number;
@@ -26,6 +35,7 @@ export interface PortfolioSummary {
   totalStatutoryGaps: number;
   totalPassFailRisks: number;
   engagements: PortfolioEngagementRow[];
+  supplierGroups: PortfolioSupplierGroup[];
   topRisks: string[];
 }
 
@@ -105,6 +115,8 @@ export async function buildPortfolioSummary(
       id: e.id,
       name: e.name,
       standardId: e.standardId,
+      supplierTag: e.supplierTag,
+      lotTag: e.lotTag,
       phase: req?.phase ?? null,
       readinessPercent: run?.overallReadiness ?? null,
       readinessBand: run?.readinessBand ?? null,
@@ -118,6 +130,31 @@ export async function buildPortfolioSummary(
     });
   }
 
+  const supplierMap = new Map<
+    string,
+    { count: number; readinessSum: number; readinessN: number; gaps: number }
+  >();
+  for (const row of rows) {
+    const tag = row.supplierTag?.trim() || 'Unassigned supplier';
+    const bucket = supplierMap.get(tag) ?? { count: 0, readinessSum: 0, readinessN: 0, gaps: 0 };
+    bucket.count += 1;
+    bucket.gaps += row.gapPointCount;
+    if (row.readinessPercent != null) {
+      bucket.readinessSum += row.readinessPercent;
+      bucket.readinessN += 1;
+    }
+    supplierMap.set(tag, bucket);
+  }
+
+  const supplierGroups: PortfolioSupplierGroup[] = [...supplierMap.entries()]
+    .map(([supplierTag, v]) => ({
+      supplierTag,
+      engagementCount: v.count,
+      averageReadiness: v.readinessN ? Math.round(v.readinessSum / v.readinessN) : null,
+      totalGapPoints: v.gaps,
+    }))
+    .sort((a, b) => b.engagementCount - a.engagementCount);
+
   return {
     engagementCount: engagements.length,
     analysedCount,
@@ -127,6 +164,7 @@ export async function buildPortfolioSummary(
     totalStatutoryGaps,
     totalPassFailRisks,
     engagements: rows,
+    supplierGroups,
     topRisks,
   };
 }

@@ -162,6 +162,46 @@ export const extensionRouter = router({
         return ctx.prisma.tender.create({ data: { engagementId, ...data } });
       }),
 
+    importQuestions: protectedProcedure
+      .input(
+        z.object({
+          tenderId: z.string(),
+          questions: z.array(
+            z.object({
+              ref: z.string(),
+              text: z.string(),
+              weight: z.number().default(1),
+              category: z.string().optional(),
+              isPassFail: z.boolean().optional(),
+            }),
+          ),
+        }),
+      )
+      .mutation(async ({ ctx, input }) => {
+        const tender = await ctx.prisma.tender.findUnique({
+          where: { id: input.tenderId },
+          include: { engagement: true },
+        });
+        if (!tender || tender.engagement.orgId !== ctx.orgId) {
+          throw new TRPCError({ code: 'NOT_FOUND' });
+        }
+        const created = [];
+        for (const q of input.questions) {
+          const row = await ctx.prisma.scoredQuestion.create({
+            data: {
+              tenderId: tender.id,
+              ref: q.ref,
+              text: q.text,
+              weight: q.weight,
+              category: q.category ?? 'capability',
+              isPassFail: q.isPassFail ?? false,
+            },
+          });
+          created.push(row);
+        }
+        return { count: created.length, ids: created.map((r) => r.id) };
+      }),
+
     addQuestion: protectedProcedure
       .input(
         z.object({

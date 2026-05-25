@@ -2,20 +2,24 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 
 export function AppNav() {
   const pathname = usePathname();
   const features = getClientDeploymentFeatures();
+  const { messages: m } = useI18n();
 
   const links = [
-    { href: '/engagements', label: 'Engagements' },
+    { href: '/engagements', label: m.nav.engagements },
     {
       href: '/portfolio',
-      label: features.clientAssuranceLabels ? 'Portfolio assurance' : 'Portfolio',
+      label: features.clientAssuranceLabels ? m.nav.portfolioAssurance : m.nav.portfolio,
       highlight: features.clientAssuranceLabels,
     },
-    { href: '/handover', label: 'Handover pack' },
+    { href: '/benchmarking', label: m.nav.benchmarking },
+    { href: '/framework', label: m.nav.framework },
+    { href: '/handover', label: m.nav.handover },
   ];
 
   return (

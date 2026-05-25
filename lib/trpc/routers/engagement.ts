@@ -20,6 +20,8 @@ export const engagementRouter = router({
       id: e.id,
       name: e.name,
       standardId: e.standardId,
+      supplierTag: e.supplierTag,
+      lotTag: e.lotTag,
       phase: e.requirements[0]?.phase ?? null,
       lastRun: e.requirements[0]?.runs[0] ?? null,
     }));
@@ -30,6 +32,8 @@ export const engagementRouter = router({
       z.object({
         name: z.string().min(1),
         standardId: z.enum(['gds', 'wales']),
+        supplierTag: z.string().optional(),
+        lotTag: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -37,6 +41,8 @@ export const engagementRouter = router({
         data: {
           name: input.name,
           standardId: input.standardId,
+          supplierTag: input.supplierTag,
+          lotTag: input.lotTag,
           orgId: ctx.orgId,
           requirements: {
             create: {
@@ -63,11 +69,52 @@ export const engagementRouter = router({
           },
         },
         people: { include: { skills: true, assignments: true } },
+        _count: { select: { evidence: true, judgements: true } },
       },
     });
     if (!engagement) throw new TRPCError({ code: 'NOT_FOUND' });
     return engagement;
   }),
+
+  updateMeta: protectedProcedure
+    .input(
+      z.object({
+        engagementId: z.string(),
+        name: z.string().min(1).optional(),
+        supplierTag: z.string().nullable().optional(),
+        lotTag: z.string().nullable().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      const { engagementId, ...data } = input;
+      return ctx.prisma.engagement.update({
+        where: { id: engagementId },
+        data,
+      });
+    }),
+
+  addRequirement: protectedProcedure
+    .input(
+      z.object({
+        engagementId: z.string(),
+        title: z.string().min(1),
+        phase: z.enum(['discovery', 'alpha', 'beta', 'live']),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      return ctx.prisma.requirement.create({
+        data: {
+          engagementId: input.engagementId,
+          title: input.title,
+          phase: input.phase,
+          outcome: '',
+          channels: ['web'],
+          sensitivity: 'official',
+        },
+      });
+    }),
 
   updateRequirement: protectedProcedure
     .input(

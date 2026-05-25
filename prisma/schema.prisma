@@ -129,6 +129,10 @@ model Engagement {
   id           String        @id @default(cuid())
   name         String
   standardId   String
+  /// Supplier or delivery partner label (Play B portfolio grouping)
+  supplierTag  String?
+  /// Framework lot or workstream (Play B portfolio grouping)
+  lotTag       String?
   orgId        String
   org          Organisation  @relation(fields: [orgId], references: [id])
   createdAt    DateTime      @default(now())

@@ -7,8 +7,10 @@ import { AppNav } from '@/components/app/AppNav';
 import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
 import { Button } from '@/components/ui/Button';
+import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
+import { engagementsListTitle } from '@/lib/labels';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
-import { en } from '@/lib/i18n/en';
 
 function bandToKind(band: string | undefined): StatusKind {
   if (!band) return 'info';
@@ -19,6 +21,9 @@ function bandToKind(band: string | undefined): StatusKind {
 }
 
 export default function EngagementsPage() {
+  const features = getClientDeploymentFeatures();
+  const { messages: m } = useI18n();
+  const listTitle = engagementsListTitle(features);
   const { data, isLoading } = trpc.engagement.list.useQuery();
   const create = trpc.engagement.create.useMutation({
     onSuccess: (e) => {
@@ -27,22 +32,42 @@ export default function EngagementsPage() {
   });
   const [name, setName] = useState('');
   const [standardId, setStandardId] = useState<'gds' | 'wales'>('wales');
+  const [supplierTag, setSupplierTag] = useState('');
+  const [lotTag, setLotTag] = useState('');
 
   return (
     <AppShell
-      title={en.engagements.title}
+      title={listTitle}
       actions={
         <form
           className="flex flex-wrap items-end gap-2"
           onSubmit={(e) => {
             e.preventDefault();
-            if (name.trim()) create.mutate({ name: name.trim(), standardId });
+            if (name.trim())
+              create.mutate({
+                name: name.trim(),
+                standardId,
+                supplierTag: supplierTag.trim() || undefined,
+                lotTag: lotTag.trim() || undefined,
+              });
           }}
         >
           <input
-            placeholder="Engagement name"
+            placeholder={features.clientAssuranceLabels ? 'Service name' : 'Call-off name'}
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className="rounded-md border border-border px-3 py-2 text-sm"
+          />
+          <input
+            placeholder="Supplier tag (optional)"
+            value={supplierTag}
+            onChange={(e) => setSupplierTag(e.target.value)}
+            className="rounded-md border border-border px-3 py-2 text-sm"
+          />
+          <input
+            placeholder="Lot (optional)"
+            value={lotTag}
+            onChange={(e) => setLotTag(e.target.value)}
             className="rounded-md border border-border px-3 py-2 text-sm"
           />
           <select
@@ -54,7 +79,7 @@ export default function EngagementsPage() {
             <option value="gds">GDS standard</option>
           </select>
           <Button type="submit" disabled={create.isPending}>
-            {en.engagements.new}
+            {m.engagements.new}
           </Button>
         </form>
       }
@@ -63,7 +88,7 @@ export default function EngagementsPage() {
       <AppNav />
       {isLoading && <p className="text-text-muted">Loading…</p>}
       {!isLoading && !data?.length && (
-        <p className="rounded-lg border border-border bg-surface p-6 text-text-muted">{en.engagements.empty}</p>
+        <p className="rounded-lg border border-border bg-surface p-6 text-text-muted">{m.engagements.empty}</p>
       )}
       <ul className="grid gap-4 md:grid-cols-2">
         {data?.map((e) => (
@@ -75,6 +100,7 @@ export default function EngagementsPage() {
               <h2 className="font-semibold text-text">{e.name}</h2>
               <p className="mt-1 text-sm text-text-muted">
                 {e.standardId === 'wales' ? 'Wales' : 'GDS'} · {e.phase ?? 'No phase'}
+                {e.supplierTag ? ` · ${e.supplierTag}` : ''}
               </p>
               <div className="mt-3">
                 {e.lastRun ? (
