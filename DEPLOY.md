@@ -40,7 +40,9 @@ See [docs/DEPLOYMENT-MODES.md](docs/DEPLOYMENT-MODES.md). Use **two Vercel proje
 | `NEXTAUTH_SECRET` or `AUTH_SECRET` | `openssl rand -base64 32` (required) |
 | `NEXTAUTH_URL` or `AUTH_URL` | `https://<your-vercel-domain>` (exact URL, no trailing slash) |
 | `AUTH_MICROSOFT_ENTRA_ID_*` | Optional Entra ID SSO (see `.env.example`) |
-| `NEXT_PUBLIC_ENTRA_ENABLED` | Set `true` when Entra app is registered to show Microsoft sign-in |
+| `NEXT_PUBLIC_ENTRA_ENABLED` | Set `true` when Entra app is registered (single Microsoft login service) |
+| `AUTH_ALLOW_CREDENTIALS` | Set `true` with Entra to also allow email/password (same email links one account) |
+| `NEXT_PUBLIC_AUTH_ALLOW_CREDENTIALS` | Client flag matching `AUTH_ALLOW_CREDENTIALS` |
 
 Organisations are stamped with `deploymentMode` on create; `protectedProcedure` rejects cross-instance sign-in (Play A org on Play B URL, etc.).
 
@@ -71,6 +73,8 @@ Or step by step:
 npm run db:deploy
 npm run seed
 ```
+
+Or one command (migrate + full seed): `npm run db:seed-all`
 
 Demo login after seed: `admin@demo.local` / `demo-password`
 
