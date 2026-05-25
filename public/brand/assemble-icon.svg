@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" role="img" aria-label="Assemble">
+  <g fill="#0A1633">
+    <path d="M16 1.5 28.5 8.75v14.5L16 30.5 3.5 23.25V8.75L16 1.5Zm0 3.2-9.8 5.65v11.3L16 27.3l9.8-5.65v-11.3L16 4.7Z"/>
+    <path d="M16 9.2 21.2 22h-2.35l-1.15-2.85h-7.4L9.15 22H6.8L16 9.2Zm0 3.55-4.55 7.35h9.1L16 12.75Z"/>
+  </g>
+</svg>
