@@ -2,36 +2,14 @@
  * Idempotent repair for demo login and NRW benchmark data (safe on production).
  * Run: npm run ensure:demo
  */
-import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 import { runAndPersistAnalysis } from '../lib/db/analysis';
+import { DEMO_ACCOUNT, ensureDemoAccount } from '../lib/demo/demo-account';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const deploymentMode =
-    process.env.DEPLOYMENT_MODE === 'client' || process.env.NEXT_PUBLIC_DEPLOYMENT_MODE === 'client'
-      ? 'client'
-      : 'internal';
-
-  const org = await prisma.organisation.upsert({
-    where: { id: 'demo-org' },
-    create: { id: 'demo-org', name: 'Turner & Townsend Demo', deploymentMode },
-    update: { deploymentMode },
-  });
-
-  const passwordHash = await bcrypt.hash('demo-password', 10);
-  await prisma.user.upsert({
-    where: { email: 'admin@demo.local' },
-    create: {
-      email: 'admin@demo.local',
-      name: 'Demo Admin',
-      role: 'admin',
-      orgId: org.id,
-      passwordHash,
-    },
-    update: { passwordHash, role: 'admin', orgId: org.id },
-  });
+  await ensureDemoAccount(prisma);
 
   const req = await prisma.requirement.findUnique({ where: { id: 'nrw-req-1' } });
   if (req) {
@@ -45,7 +23,7 @@ async function main() {
     console.warn('nrw-req-1 not found — run npm run db:seed-all first.');
   }
 
-  console.log('Demo account ready: admin@demo.local / demo-password');
+  console.log(`Demo account ready: ${DEMO_ACCOUNT.email} / ${DEMO_ACCOUNT.password}`);
 }
 
 main()

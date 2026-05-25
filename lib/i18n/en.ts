@@ -19,6 +19,8 @@ export const en: Messages = {
     invalidCredentials: 'Invalid email or password.',
     invalidCredentialsOrSso:
       'Invalid password, or this account uses Microsoft sign-in only. Use Sign in with Microsoft.',
+    databaseNotReady:
+      'The database is not provisioned yet. Run npm run db:provision against this environment, or redeploy after migrations are configured (DIRECT_URL on Vercel).',
     singleLoginHint: 'Use your organisation Microsoft account (Turner & Townsend Entra ID).',
     emailSignIn: 'Sign in with email instead',
     demoHint: 'Demo account (seeded on production)',

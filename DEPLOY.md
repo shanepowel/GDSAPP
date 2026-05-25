@@ -10,7 +10,7 @@ Database: **[Neon](https://neon.tech) Postgres** — see [docs/NEON.md](docs/NEO
 2. Import **shanepowel/GDSAPP**
 3. Framework preset: **Next.js**
 4. Root directory: `.` (default)
-5. Build command (from `vercel.json`): `prisma generate && next build` (migrations are **not** run at build time)
+5. Build command (from `vercel.json`): `prisma migrate deploy && prisma generate && next build` (requires `DIRECT_URL` on Vercel for Neon)
 6. Region: **London (lhr1)** in `vercel.json` (use a Neon project in EU when possible)
 
 ## 2. Neon Postgres
@@ -61,7 +61,7 @@ npx vercel deploy --prod
 
 ## 6. Run migrations and seed (after deploy, once)
 
-The Vercel build does **not** run migrations. From your laptop with `.env` filled in:
+Each production **build** runs `prisma migrate deploy` when `DATABASE_URL` and `DIRECT_URL` are set on Vercel. For a one-off laptop provision (seed + demo), with `.env` filled in:
 
 ```bash
 npm run db:provision
