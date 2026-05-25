@@ -2,10 +2,54 @@ import type { Messages } from '@/lib/i18n/types';
 
 export const en: Messages = {
   signIn: {
-    title: 'Sign in',
+    title: 'Welcome to Assemble',
+    tabSignIn: 'Sign in',
+    tabRegister: 'Create account',
     email: 'Email',
     password: 'Password',
     submit: 'Sign in',
+    name: 'Your name',
+    organisation: 'Organisation name',
+    createAccount: 'Create account',
+    registerHint: 'Creates your organisation and an admin account. You can invite colleagues later.',
+    signInHint: 'Use the email and password for your organisation account.',
+    accountCreated: 'Account created. Sign in with your new credentials.',
+  },
+  home: {
+    heroTitle: 'Know if your team can deliver the service standard',
+    heroSubtitle:
+      'Assemble scores team readiness, agile rigour, and evidence against GDS or Wales digital service standards — before you commit to a bid or assurance review.',
+    ctaSignIn: 'Sign in',
+    ctaRegister: 'Create account',
+    ctaDashboard: 'Open dashboard',
+    whatTitle: 'What Assemble does',
+    whatBody:
+      'For each call-off or engagement you define the service requirement, team, and evidence. The engine maps DDaT skills to standard points, runs readiness and rigour analysis, and produces advisory reports for suppliers and authorities.',
+    howTitle: 'How to use it',
+    step1Title: '1. Create an account',
+    step1Body: 'Register your organisation or sign in with an existing account.',
+    step2Title: '2. Open a call-off',
+    step2Body: 'Capture the service outcome, phase, roles, and tender questions.',
+    step3Title: '3. Run analysis',
+    step3Body: 'Score gaps, statutory risks, person fit, and agile rigour across dimensions.',
+    step4Title: '4. Report and assure',
+    step4Body: 'Export branded PDFs, track portfolio roll-ups, and record assurance judgements.',
+    whoTitle: 'Who it is for',
+    whoBody:
+      'Delivery leads preparing framework bids, NRW-style client assurance teams, and portfolio owners who need a single view of supplier readiness across lots.',
+  },
+  profile: {
+    title: 'Your profile',
+    subtitle: 'Account details for this organisation.',
+    name: 'Display name',
+    email: 'Email',
+    organisation: 'Organisation',
+    role: 'Role',
+    currentPassword: 'Current password',
+    newPassword: 'New password',
+    passwordHint: 'Leave blank to keep your current password.',
+    saved: 'Profile updated.',
+    signOut: 'Sign out',
   },
   engagements: {
     title: 'Call-offs',
@@ -27,6 +71,7 @@ export const en: Messages = {
     handover: 'Handover pack',
     benchmarking: 'Benchmarking',
     framework: 'Framework',
+    profile: 'Profile',
   },
   portfolio: {
     title: 'Portfolio',

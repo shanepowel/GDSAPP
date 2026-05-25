@@ -1,9 +1,50 @@
 export type Messages = {
   signIn: {
     title: string;
+    tabSignIn: string;
+    tabRegister: string;
     email: string;
     password: string;
     submit: string;
+    name: string;
+    organisation: string;
+    createAccount: string;
+    registerHint: string;
+    signInHint: string;
+    accountCreated: string;
+  };
+  home: {
+    heroTitle: string;
+    heroSubtitle: string;
+    ctaSignIn: string;
+    ctaRegister: string;
+    ctaDashboard: string;
+    whatTitle: string;
+    whatBody: string;
+    howTitle: string;
+    step1Title: string;
+    step1Body: string;
+    step2Title: string;
+    step2Body: string;
+    step3Title: string;
+    step3Body: string;
+    step4Title: string;
+    step4Body: string;
+    whoTitle: string;
+    whoBody: string;
+  };
+  profile: {
+    title: string;
+    subtitle: string;
+    name: string;
+    email: string;
+    organisation: string;
+    role: string;
+    currentPassword: string;
+    newPassword: string;
+    passwordHint: string;
+    saved: string;
+    signOut: string;
   };
   engagements: {
     title: string;
@@ -25,6 +66,7 @@ export type Messages = {
     handover: string;
     benchmarking: string;
     framework: string;
+    profile: string;
   };
   portfolio: {
     title: string;
