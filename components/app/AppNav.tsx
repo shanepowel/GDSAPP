@@ -20,6 +20,7 @@ export function AppNav() {
     { href: '/benchmarking', label: m.nav.benchmarking },
     { href: '/framework', label: m.nav.framework },
     { href: '/handover', label: m.nav.handover },
+    { href: '/profile', label: m.nav.profile },
   ];
 
   return (

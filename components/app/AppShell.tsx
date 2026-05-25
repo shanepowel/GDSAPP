@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { Globe } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { useI18n } from '@/components/app/LocaleProvider';
@@ -21,6 +22,11 @@ export function AppShell({
   hideTitle?: boolean;
 }) {
   const { messages: m } = useI18n();
+  const { data: session } = useSession();
+  const userInitial =
+    session?.user?.name?.trim()?.charAt(0) ||
+    session?.user?.email?.charAt(0)?.toUpperCase() ||
+    '?';
   const standardBadge =
     standardId === 'wales'
       ? 'Wales standard'
@@ -33,7 +39,7 @@ export function AppShell({
       <header className="border-b border-border bg-surface">
         <div className="mx-auto flex max-w-container items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-6">
-            <Link href="/engagements" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
               <div
                 className="grid h-9 w-9 place-items-center rounded-lg"
                 style={{ background: 'var(--tt-ink)' }}
@@ -55,11 +61,14 @@ export function AppShell({
             )}
             <LanguageSwitcher />
             {actions}
-            <div
-              className="h-8 w-8 rounded-full bg-accent"
-              aria-hidden
-              title="Account"
-            />
+            <Link
+              href="/profile"
+              className="grid h-9 w-9 place-items-center rounded-full bg-brand text-sm font-semibold text-text-inverse hover:opacity-90"
+              title={session?.user?.name ?? session?.user?.email ?? m.nav.profile}
+              aria-label={m.nav.profile}
+            >
+              {userInitial}
+            </Link>
           </div>
         </div>
       </header>
