@@ -2,7 +2,7 @@ import type { Messages } from '@/lib/i18n/types';
 
 export const cy: Messages = {
   signIn: {
-    title: 'Croeso i Assemble',
+    title: 'Croeso i Barodrwydd Safonol',
     tabSignIn: 'Mewngofnodi',
     tabRegister: 'Creu cyfrif',
     email: 'E-bost',
@@ -125,11 +125,11 @@ export const cy: Messages = {
   home: {
     heroTitle: 'Gwybod a all eich tîm ddarparu safon y gwasanaeth',
     heroSubtitle:
-      'Mae Assemble yn sgorio parodrwydd tîm, trwmder ystwyth, a thystiolaeth yn erbyn safonau gwasanaeth digidol GDS neu Gymru — cyn i chi ymrwymo i dendr neu adolygiad sicrwydd.',
+      'Mae Turner & Townsend Standard Readiness yn sgorio gallu tîm, trwmder ystwyth, a thystiolaeth yn erbyn safonau gwasanaeth digidol GDS neu Gymru — cyn i chi ymrwymo i dendr neu adolygiad sicrwydd.',
     ctaSignIn: 'Mewngofnodi',
     ctaRegister: 'Creu cyfrif',
     ctaDashboard: 'Agor dangosfwrdd',
-    whatTitle: 'Beth mae Assemble yn ei wneud',
+    whatTitle: 'Beth mae Barodrwydd Safonol yn ei wneud',
     whatBody:
       'Ar gyfer pob galwad i dendro rydych yn diffinio gofyniad y gwasanaeth, y tîm, a thystiolaeth. Mae’r injin yn mapio sgiliau DDaT i bwyntiau safon, yn rhedeg dadansoddiad parodrwydd a thrwmder, ac yn cynhyrchu adroddiadau cyngorol.',
     howTitle: 'Sut i’w ddefnyddio',
@@ -206,9 +206,11 @@ export const cy: Messages = {
     importSelected: 'Mewnforio cwestiynau a ddewiswyd',
   },
   app: {
-    tagline: 'Parodrwydd safon a ffit tîm',
+    brandName: 'Turner & Townsend',
+    productName: 'Barodrwydd Safonol',
+    tagline: 'Parodrwydd safon gwasanaeth a ffit tîm',
     advisoryFooter:
-      'Wedi ei adeiladu ar fframweithiau cyhoeddus o dan Drwydded Llywodraeth Agored. Offeryn cyngorol; nid penderfyniad swyddi.',
+      'Turner & Townsend · Wedi ei adeiladu ar fframweithiau cyhoeddus o dan Drwydded Llywodraeth Agored. Offeryn cyngorol; nid penderfyniad swyddi.',
     language: 'Iaith',
     english: 'Saesneg',
     welsh: 'Cymraeg',

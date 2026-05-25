@@ -2,7 +2,7 @@ import type { Messages } from '@/lib/i18n/types';
 
 export const en: Messages = {
   signIn: {
-    title: 'Welcome to Assemble',
+    title: 'Welcome to Standard Readiness',
     tabSignIn: 'Sign in',
     tabRegister: 'Create account',
     email: 'Email',
@@ -124,11 +124,11 @@ export const en: Messages = {
   home: {
     heroTitle: 'Know if your team can deliver the service standard',
     heroSubtitle:
-      'Assemble scores team readiness, agile rigour, and evidence against GDS or Wales digital service standards — before you commit to a bid or assurance review.',
+      'Turner & Townsend Standard Readiness scores team capability, agile rigour, and evidence against GDS or Wales digital service standards — before you commit to a bid or assurance review.',
     ctaSignIn: 'Sign in',
     ctaRegister: 'Create account',
     ctaDashboard: 'Open dashboard',
-    whatTitle: 'What Assemble does',
+    whatTitle: 'What Standard Readiness does',
     whatBody:
       'For each call-off or engagement you define the service requirement, team, and evidence. The engine maps DDaT skills to standard points, runs readiness and rigour analysis, and produces advisory reports for suppliers and authorities.',
     howTitle: 'How to use it',
@@ -204,9 +204,11 @@ export const en: Messages = {
     importSelected: 'Import selected questions',
   },
   app: {
-    tagline: 'Standard readiness and team fit',
+    brandName: 'Turner & Townsend',
+    productName: 'Standard Readiness',
+    tagline: 'Service standard readiness and team fit',
     advisoryFooter:
-      'Built on public frameworks under the Open Government Licence. Advisory tool; not a hiring decision.',
+      'Turner & Townsend · Built on public frameworks under the Open Government Licence. Advisory tool; not a hiring decision.',
     language: 'Language',
     english: 'English',
     welsh: 'Welsh',

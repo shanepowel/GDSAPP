@@ -27,7 +27,7 @@ export function DeploymentBanner() {
           <p className="mt-1 text-text-muted">
             {client
               ? 'NRW-operated assurance across services and call-offs. This deployment must not receive supplier competitive submissions.'
-              : 'Call-off and delivery accelerator for Amplified teams. Keep separate from any client-owned instance.'}
+              : 'Call-off and delivery accelerator for Turner & Townsend delivery teams. Keep separate from any client-owned instance.'}
           </p>
         </div>
       </div>

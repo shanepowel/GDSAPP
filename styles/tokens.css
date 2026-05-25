@@ -1,45 +1,59 @@
 :root {
-  /* ---- BRAND CORE: REPLACE PLACEHOLDERS WITH VERIFIED T&T VALUES ---- */
-  --tt-magenta: #e6007e;
-  --tt-magenta-600: #c00069;
-  --tt-magenta-050: #fce6f2;
-  --tt-ink: #16141a;
-  --tt-purple: #3b1c4a;
+  /* Turner & Townsend — turnerandtownsend.com */
+  --tt-cyan: #00b0b3;
+  --tt-cyan-600: #008a8d;
+  --tt-cyan-050: #e6f7f7;
+  --tt-charcoal: #111827;
+  --tt-charcoal-800: #1f2937;
+  --tt-navy: #1e3a5f;
+  --tt-slate: #64748b;
   --tt-white: #ffffff;
 
-  --grey-900: #1a1a1a;
-  --grey-700: #3d3d3d;
-  --grey-500: #6b6b6b;
-  --grey-300: #cfcfcf;
-  --grey-200: #e5e5e5;
-  --grey-100: #f4f4f4;
-  --grey-050: #fafaf8;
+  /* Legacy aliases (components reference --tt-ink) */
+  --tt-ink: var(--tt-charcoal);
+  --tt-magenta: var(--tt-cyan);
+  --tt-magenta-600: var(--tt-cyan-600);
+  --tt-magenta-050: var(--tt-cyan-050);
+  --tt-purple: var(--tt-navy);
 
-  --status-strong: #1e7a46;
-  --status-met: #2e7d32;
-  --status-partial: #b26a00;
-  --status-gap: #c62828;
-  --status-info: #1f5fad;
+  --grey-900: var(--tt-charcoal);
+  --grey-700: #374151;
+  --grey-500: var(--tt-slate);
+  --grey-300: #d1d5db;
+  --grey-200: #e5e7eb;
+  --grey-100: #f3f4f6;
+  --grey-050: #f8fafc;
+
+  --status-strong: #0d9488;
+  --status-met: #059669;
+  --status-partial: #d97706;
+  --status-gap: #dc2626;
+  --status-info: var(--tt-navy);
 
   --color-bg: var(--grey-050);
   --color-surface: var(--tt-white);
   --color-surface-alt: var(--grey-100);
   --color-border: var(--grey-200);
-  --color-text: var(--grey-900);
-  --color-text-muted: var(--grey-500);
+  --color-text: var(--tt-charcoal);
+  --color-text-muted: var(--tt-slate);
   --color-text-inverse: var(--tt-white);
-  --color-brand: var(--tt-magenta);
-  --color-brand-hover: var(--tt-magenta-600);
-  --color-brand-tint: var(--tt-magenta-050);
-  --color-accent: var(--tt-purple);
-  --color-focus-ring: var(--tt-magenta);
+  --color-brand: var(--tt-cyan);
+  --color-brand-hover: var(--tt-cyan-600);
+  --color-brand-tint: var(--tt-cyan-050);
+  --color-accent: var(--tt-navy);
+  --color-focus-ring: var(--tt-cyan);
+
+  --chart-primary: var(--tt-cyan);
+  --chart-secondary: var(--tt-navy);
+  --chart-neutral: var(--tt-slate);
+  --chart-grid: var(--grey-200);
 
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0 1px 2px rgba(17, 24, 39, 0.06);
+  --shadow-md: 0 4px 12px rgba(17, 24, 39, 0.08);
+  --shadow-lg: 0 12px 32px rgba(17, 24, 39, 0.12);
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -49,18 +63,19 @@
   --space-8: 48px;
   --space-10: 64px;
   --container-max: 1180px;
-  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --card-shadow: 0 1px 2px rgba(17, 24, 39, 0.04);
 }
 
 html.dark {
-  --color-bg: #121016;
-  --color-surface: #1c1822;
-  --color-surface-alt: #26212c;
-  --color-border: #3a3442;
-  --color-text: #f2eef5;
-  --color-text-muted: #a89fb2;
+  --color-bg: #0b0f14;
+  --color-surface: var(--tt-charcoal);
+  --color-surface-alt: var(--tt-charcoal-800);
+  --color-border: #334155;
+  --color-text: #f8fafc;
+  --color-text-muted: #94a3b8;
   --color-text-inverse: var(--tt-white);
-  --color-brand-tint: rgba(230, 0, 126, 0.15);
+  --color-brand-tint: rgba(0, 176, 179, 0.18);
+  --chart-grid: #334155;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
 }

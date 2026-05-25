@@ -57,7 +57,7 @@ export default function HistoryPage() {
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
-              <CartesianGrid stroke="var(--grey-200)" />
+              <CartesianGrid stroke="var(--chart-grid)" />
               <XAxis dataKey="date" tick={{ fontSize: 12 }} />
               <YAxis domain={[0, 100]} tick={{ fontSize: 12 }} />
               <Tooltip />

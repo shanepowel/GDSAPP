@@ -24,7 +24,7 @@ async function main() {
       : 'internal';
   const org = await prisma.organisation.upsert({
     where: { id: 'demo-org' },
-    create: { id: 'demo-org', name: 'Amplified Demo', deploymentMode },
+    create: { id: 'demo-org', name: 'Turner & Townsend Demo', deploymentMode },
     update: { deploymentMode },
   });
 
@@ -48,11 +48,11 @@ async function main() {
       name: 'NRW regulatory permitting service (discovery)',
       standardId: 'wales',
       orgId: org.id,
-      supplierTag: 'Amplified Demo',
+      supplierTag: 'Turner & Townsend Demo',
       lotTag: 'Lot 1 Digital delivery',
     },
     update: {
-      supplierTag: 'Amplified Demo',
+      supplierTag: 'Turner & Townsend Demo',
       lotTag: 'Lot 1 Digital delivery',
     },
   });

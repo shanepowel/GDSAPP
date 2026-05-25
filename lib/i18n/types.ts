@@ -192,6 +192,8 @@ export type Messages = {
     importSelected: string;
   };
   app: {
+    brandName: string;
+    productName: string;
     tagline: string;
     advisoryFooter: string;
     language: string;

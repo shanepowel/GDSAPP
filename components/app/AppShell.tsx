@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { Globe } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
+import { BrandMark } from '@/components/brand/BrandMark';
 import { useI18n } from '@/components/app/LocaleProvider';
 
 export function AppShell({
@@ -39,18 +40,7 @@ export function AppShell({
       <header className="border-b border-border bg-surface">
         <div className="mx-auto flex max-w-container items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-3">
-              <div
-                className="grid h-9 w-9 place-items-center rounded-lg"
-                style={{ background: 'var(--tt-ink)' }}
-              >
-                <span className="font-display text-base font-semibold text-brand">A</span>
-              </div>
-              <div>
-                <div className="text-[15px] font-semibold leading-none text-text">Assemble</div>
-                <div className="mt-0.5 text-[11px] text-text-muted">{m.app.tagline}</div>
-              </div>
-            </Link>
+            <BrandMark href="/" size="sm" />
           </div>
           <div className="flex items-center gap-3">
             {standardBadge && (

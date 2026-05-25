@@ -43,7 +43,7 @@ export async function GET(req: Request) {
 <h1>${escapeHtml(tender.title)}</h1>
 <p>Buyer: ${escapeHtml(tender.buyer)}. Advisory drafts only.</p>
 ${sections}
-<footer><p>Open Government Licence. Amplified Ltd / Assemble.</p></footer>
+<footer><p>Open Government Licence. Turner & Townsend · Standard Readiness.</p></footer>
 </body></html>`;
 
   return new NextResponse(html, {

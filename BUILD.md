@@ -1,6 +1,6 @@
 # BUILD SHEET: Assemble (Standard Readiness and Team Fit)
 
-**Owner:** Amplified Ltd · Turner & Townsend themed palette (verify hex in `styles/tokens.css` before client demo)
+**Owner:** Turner & Townsend · Brand palette in `styles/tokens.css` (cyan `#00B0B3`, charcoal `#111827`)
 
 This repository implements the build defined in the Amplified build sheet. **Build strictly in section 14 order, then extension steps in section 25.**
 

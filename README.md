@@ -1,8 +1,8 @@
-# Assemble (GDSAPP)
+# Standard Readiness (GDSAPP)
 
-Multi-tenant web app for assessing digital service team readiness against the **GDS Service Standard** and the **Digital Service Standard for Wales**, using the **DDaT Capability Framework** for roles and skills.
+**Turner & Townsend** product for assessing digital service team readiness against the **GDS Service Standard** and the **Digital Service Standard for Wales**, using the **DDaT Capability Framework** for roles and skills.
 
-Built by Amplified Ltd. Turner & Townsend brand tokens are placeholders in `styles/tokens.css` until verified values are applied.
+Brand palette: electric cyan `#00B0B3`, charcoal `#111827`, navy `#1E3A5F` — see `styles/tokens.css`.
 
 ## Advisory and legal
 

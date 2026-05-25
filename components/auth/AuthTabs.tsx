@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
+import { BrandMark } from '@/components/brand/BrandMark';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 import { entraSignInEnabled } from '@/lib/auth-client';
@@ -61,16 +62,14 @@ export function AuthTabs({ initialTab = 'sign-in' }: { initialTab?: Tab }) {
     <div className="flex min-h-screen flex-col bg-bg">
       <header className="border-b border-border bg-surface px-6 py-4">
         <div className="mx-auto flex max-w-container items-center justify-between">
-          <Link href="/" className="font-display text-lg font-semibold text-text">
-            Assemble
-          </Link>
+          <BrandMark href="/" size="sm" />
           <LanguageSwitcher />
         </div>
       </header>
 
       <div className="flex flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-md rounded-xl border border-border bg-surface p-8 shadow-md">
-          <p className="text-sm font-medium text-brand">Amplified Ltd</p>
+          <p className="text-sm font-medium text-brand">Turner & Townsend</p>
           <h1 className="mt-2 font-display text-2xl font-bold text-text">{m.signIn.title}</h1>
 
           <div

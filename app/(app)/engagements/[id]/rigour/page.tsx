@@ -65,7 +65,13 @@ function RigourEditor({
               {chartData.map((entry) => (
                 <Cell
                   key={entry.key}
-                  fill={entry.key === active ? 'var(--color-brand)' : 'var(--color-border)'}
+                  fill={
+                    entry.key === active
+                      ? 'var(--chart-primary)'
+                      : entry.score > 0
+                        ? 'var(--chart-secondary)'
+                        : 'var(--chart-neutral)'
+                  }
                 />
               ))}
             </Bar>

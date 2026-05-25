@@ -1,4 +1,5 @@
 import PDFDocument from 'pdfkit';
+import { BRAND } from '@/lib/brand';
 import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
 export interface BrandedReportInput {
@@ -11,10 +12,11 @@ export interface BrandedReportInput {
   advisoryFooter: string;
 }
 
-const BRAND = {
-  ink: '#1a1a2e',
-  accent: '#c45c26',
-  muted: '#5c6370',
+const PDF_COLORS = {
+  ink: BRAND.colors.charcoal,
+  accent: BRAND.colors.cyan,
+  muted: BRAND.colors.slate,
+  navy: BRAND.colors.navy,
 };
 
 export function buildBrandedReportPdf(input: BrandedReportInput): Promise<Buffer> {
@@ -25,18 +27,21 @@ export function buildBrandedReportPdf(input: BrandedReportInput): Promise<Buffer
     doc.on('end', () => resolve(Buffer.concat(chunks)));
     doc.on('error', reject);
 
-    doc.fillColor(BRAND.ink).fontSize(10).text('Amplified Ltd · Assemble', { align: 'left' });
+    doc
+      .fillColor(PDF_COLORS.ink)
+      .fontSize(10)
+      .text(`${BRAND.company} · ${BRAND.product}`, { align: 'left' });
     doc.moveDown(0.5);
     doc.fontSize(20).text(input.engagementName, { continued: false });
-    doc.fontSize(11).fillColor(BRAND.muted).text(`${input.standardLabel} · ${input.phase} phase`);
+    doc.fontSize(11).fillColor(PDF_COLORS.muted).text(`${input.standardLabel} · ${input.phase} phase`);
     doc.text(`Requirement: ${input.requirementTitle}`);
     doc.text(`Generated ${input.generatedAt.toLocaleString('en-GB')}`);
     doc.moveDown();
 
-    doc.fillColor(BRAND.accent).rect(50, doc.y, 495, 3).fill();
+    doc.fillColor(PDF_COLORS.accent).rect(50, doc.y, 495, 3).fill();
     doc.moveDown(0.8);
-    doc.fillColor(BRAND.ink).fontSize(14).text('Executive summary');
-    doc.fontSize(11).fillColor(BRAND.ink);
+    doc.fillColor(PDF_COLORS.ink).fontSize(14).text('Executive summary');
+    doc.fontSize(11).fillColor(PDF_COLORS.ink);
     doc.text(`Overall readiness: ${Math.round(input.result.overallReadiness)}% (${input.result.readinessBand})`);
     doc.text(`Team composition: ${Math.round(input.result.composition.overallPercent)}%`);
     if (input.result.rigour) {
@@ -74,7 +79,7 @@ export function buildBrandedReportPdf(input: BrandedReportInput): Promise<Buffer
     }
 
     doc.moveDown(2);
-    doc.fontSize(8).fillColor(BRAND.muted).text(input.advisoryFooter, { align: 'left' });
+    doc.fontSize(8).fillColor(PDF_COLORS.muted).text(input.advisoryFooter, { align: 'left' });
 
     doc.end();
   });

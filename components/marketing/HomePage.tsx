@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, BarChart3, ClipboardCheck, Users } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
+import { BrandMark } from '@/components/brand/BrandMark';
 import { Button } from '@/components/ui/Button';
 import { useI18n } from '@/components/app/LocaleProvider';
 
@@ -20,18 +21,7 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
     <div className="min-h-screen bg-bg">
       <header className="border-b border-border bg-surface">
         <div className="mx-auto flex max-w-container items-center justify-between gap-4 px-6 py-4">
-          <Link href="/" className="flex items-center gap-3">
-            <div
-              className="grid h-10 w-10 place-items-center rounded-lg"
-              style={{ background: 'var(--tt-ink)' }}
-            >
-              <span className="font-display text-lg font-semibold text-brand">A</span>
-            </div>
-            <div>
-              <div className="text-base font-semibold text-text">Assemble</div>
-              <div className="text-[11px] text-text-muted">{m.app.tagline}</div>
-            </div>
-          </Link>
+          <BrandMark href="/" />
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
             {isSignedIn ? (
@@ -52,15 +42,18 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
         </div>
       </header>
 
-      <section className="border-b border-border bg-surface">
+      <section
+        className="border-b border-border"
+        style={{ background: 'var(--tt-charcoal)', color: 'var(--tt-white)' }}
+      >
         <div className="mx-auto max-w-container px-6 py-16 md:py-24">
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brand-hover">
-            GDS · Wales digital standards · DDaT
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[color:var(--tt-cyan)]">
+            {m.app.brandName}
           </p>
-          <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-tight text-text md:text-5xl">
+          <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-tight md:text-5xl">
             {m.home.heroTitle}
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-text-muted">{m.home.heroSubtitle}</p>
+          <p className="mt-6 max-w-2xl text-lg text-slate-300">{m.home.heroSubtitle}</p>
           <div className="mt-10 flex flex-wrap gap-4">
             {isSignedIn ? (
               <Link href="/engagements">
