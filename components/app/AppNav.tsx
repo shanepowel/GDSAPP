@@ -19,7 +19,8 @@ export function AppNav() {
     },
     { href: '/benchmarking', label: m.nav.benchmarking },
     { href: '/framework', label: m.nav.framework },
-    { href: '/handover', label: m.nav.handover },
+    ...(features.handoverPack ? [{ href: '/handover', label: m.nav.handover }] : []),
+    { href: '/settings', label: 'Settings' },
     { href: '/profile', label: m.nav.profile },
   ];
 

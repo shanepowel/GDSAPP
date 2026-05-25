@@ -4,6 +4,10 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
+import { AppNav } from '@/components/app/AppNav';
+import { EngagementSubNav } from '@/components/app/EngagementSubNav';
+import { RequirementSelector } from '@/components/app/RequirementSelector';
+import { useRequirementId } from '@/lib/hooks/use-requirement-id';
 import { Button } from '@/components/ui/Button';
 import { RationaleDisclosure } from '@/components/app/RationaleDisclosure';
 import { useI18n } from '@/components/app/LocaleProvider';
@@ -18,8 +22,9 @@ export default function TenderPage() {
   const params = useParams();
   const id = params.id as string;
   const { data: engagement } = trpc.engagement.byId.useQuery({ id });
+  const { requirementId, setRequirementId } = useRequirementId(id, engagement?.requirements);
   const { data: tenders, refetch: refetchTenders } = trpc.extension.tender.list.useQuery({ engagementId: id });
-  const req = engagement?.requirements[0];
+  const req = engagement?.requirements.find((r) => r.id === requirementId) ?? engagement?.requirements[0];
   const tender = tenders?.[0];
   const result = req?.runs[0]?.result as ExtendedAnalysisResult | undefined;
   const bidFromRun = result?.bidOutlook;
@@ -51,6 +56,15 @@ export default function TenderPage() {
     <AppShell
       title={features.clientAssuranceLabels ? 'Assurance criteria' : 'Call-off evaluation'}
     >
+      <AppNav />
+      <EngagementSubNav engagementId={id} />
+      {engagement && engagement.requirements.length > 1 && (
+        <RequirementSelector
+          requirements={engagement.requirements}
+          value={requirementId}
+          onChange={setRequirementId}
+        />
+      )}
       <p className="mb-4 text-sm text-text-muted">
         {features.clientAssuranceLabels
           ? 'Map call-off specification criteria to roles, skills and standard points. View predicted assurance bands and gaps. For authority self-assurance, not supplier scoring.'

@@ -27,6 +27,24 @@ export const engagementRouter = router({
     }));
   }),
 
+  delete: protectedProcedure
+    .input(z.object({ engagementId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      await ctx.prisma.engagement.delete({ where: { id: input.engagementId } });
+      return { ok: true };
+    }),
+
+  standardPoints: protectedProcedure
+    .input(z.object({ standardId: z.enum(['gds', 'wales']) }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.standardPoint.findMany({
+        where: { standardId: input.standardId },
+        orderBy: { number: 'asc' },
+        select: { id: true, number: true, title: true },
+      });
+    }),
+
   create: protectedProcedure
     .input(
       z.object({
@@ -183,6 +201,18 @@ export const engagementRouter = router({
           skills: { create: input.skills },
         },
       });
+    }),
+
+  deletePerson: protectedProcedure
+    .input(z.object({ engagementId: z.string(), personId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      const person = await ctx.prisma.person.findFirst({
+        where: { id: input.personId, engagementId: input.engagementId },
+      });
+      if (!person) throw new TRPCError({ code: 'NOT_FOUND' });
+      await ctx.prisma.person.delete({ where: { id: input.personId } });
+      return { ok: true };
     }),
 
   setAssignment: protectedProcedure

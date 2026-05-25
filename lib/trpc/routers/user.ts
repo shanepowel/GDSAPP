@@ -123,4 +123,43 @@ export const userRouter = router({
         organisationName: updated.org.name,
       };
     }),
+
+  listMembers: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.user.findMany({
+      where: { orgId: ctx.orgId },
+      select: { id: true, email: true, name: true, role: true },
+      orderBy: { email: 'asc' },
+    });
+  }),
+
+  inviteMember: protectedProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        name: z.string().min(1),
+        password: z.string().min(8),
+        role: z.enum(['admin', 'member']).default('member'),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.userRole !== 'admin') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Only admins can invite members.' });
+      }
+      const email = input.email.trim().toLowerCase();
+      const existing = await ctx.prisma.user.findUnique({ where: { email } });
+      if (existing) {
+        throw new TRPCError({ code: 'CONFLICT', message: 'Email already registered.' });
+      }
+      const passwordHash = await bcrypt.hash(input.password, 10);
+      const user = await ctx.prisma.user.create({
+        data: {
+          email,
+          name: input.name.trim(),
+          role: input.role,
+          orgId: ctx.orgId,
+          passwordHash,
+        },
+      });
+      return { id: user.id, email: user.email, name: user.name, role: user.role };
+    }),
 });

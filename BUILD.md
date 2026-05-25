@@ -58,7 +58,9 @@ Extension (sections 18–27): bid evaluation, agile rigour, evidence layer, adap
 
 **Shipped (Tier 4):** Automated tender PDF parsing (`/api/tender/parse-pdf`), branded PDF report (`/api/export/report`), benchmarking UI (`/benchmarking`), framework drift (`/framework`), bilingual EN/CY UI (language switcher).
 
-**Still deferred:** Multi-reviewer collaboration workflow, client tenancy enforcement in code, dark theme.
+**Still deferred:** Multi-reviewer collaboration workflow, client tenancy enforcement in code, enterprise SSO (Entra ID), full field-level Welsh on all engagement screens, tender question dependency mapper UI.
+
+**Recently added:** Engagement sub-navigation, multi-requirement on all workflows, evidence→point linking, delivery constraints editor, team skill editor & delete, org member invites (admin), settings + dark theme, share link revoke, engagement search/delete.
 
 Hard rule: scoring stays deterministic; bid layer never fabricates evidence or capability.
 

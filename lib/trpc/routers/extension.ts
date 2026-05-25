@@ -381,6 +381,19 @@ export const extensionRouter = router({
   },
 
   constraint: {
+    get: protectedProcedure
+      .input(z.object({ requirementId: z.string() }))
+      .query(async ({ ctx, input }) => {
+        const req = await ctx.prisma.requirement.findUnique({
+          where: { id: input.requirementId },
+          include: { engagement: true },
+        });
+        if (!req || req.engagement.orgId !== ctx.orgId) throw new TRPCError({ code: 'NOT_FOUND' });
+        return ctx.prisma.constraint.findFirst({
+          where: { requirementId: input.requirementId },
+        });
+      }),
+
     upsert: protectedProcedure
       .input(
         z.object({

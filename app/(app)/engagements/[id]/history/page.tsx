@@ -12,6 +12,8 @@ import {
   CartesianGrid,
 } from 'recharts';
 import { AppShell } from '@/components/app/AppShell';
+import { AppNav } from '@/components/app/AppNav';
+import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
 import { diffAnalysisRuns } from '@/lib/analysis-run-diff';
@@ -40,6 +42,8 @@ export default function HistoryPage() {
 
   return (
     <AppShell title="History">
+      <AppNav />
+      <EngagementSubNav engagementId={id} />
       {engagement?.requirements && (
         <RequirementSelector
           requirements={engagement.requirements}

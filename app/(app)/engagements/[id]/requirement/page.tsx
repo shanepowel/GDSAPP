@@ -4,7 +4,11 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
+import { AppNav } from '@/components/app/AppNav';
+import { EngagementSubNav } from '@/components/app/EngagementSubNav';
+import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
+import { useRequirementId } from '@/lib/hooks/use-requirement-id';
 import { trpc } from '@/lib/trpc/client';
 
 const PHASES = ['discovery', 'alpha', 'beta', 'live'] as const;
@@ -145,12 +149,22 @@ export default function RequirementPage() {
     },
   });
 
-  const req = data?.requirements[0];
+  const { requirementId, setRequirementId } = useRequirementId(id, data?.requirements);
+  const req = data?.requirements.find((r) => r.id === requirementId) ?? data?.requirements[0];
 
   if (!req) return <AppShell title="Requirement">Loading…</AppShell>;
 
   return (
     <AppShell title="Requirement">
+      <AppNav />
+      <EngagementSubNav engagementId={id} />
+      {data && data.requirements.length > 1 && (
+        <RequirementSelector
+          requirements={data.requirements}
+          value={requirementId}
+          onChange={setRequirementId}
+        />
+      )}
       <RequirementForm
         key={req.id}
         req={req}
