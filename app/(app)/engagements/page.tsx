@@ -24,7 +24,10 @@ export default function EngagementsPage() {
   const features = getClientDeploymentFeatures();
   const { messages: m } = useI18n();
   const listTitle = engagementsListTitle(features);
-  const { data, isLoading } = trpc.engagement.list.useQuery();
+  const { data, isLoading, refetch } = trpc.engagement.list.useQuery();
+  const remove = trpc.engagement.delete.useMutation({ onSuccess: () => refetch() });
+  const [query, setQuery] = useState('');
+  const [standardFilter, setStandardFilter] = useState<'all' | 'gds' | 'wales'>('all');
   const create = trpc.engagement.create.useMutation({
     onSuccess: (e) => {
       window.location.href = `/engagements/${e.id}`;
@@ -86,16 +89,45 @@ export default function EngagementsPage() {
     >
       <DeploymentBanner />
       <AppNav />
+      <div className="mb-6 flex flex-wrap gap-3">
+        <input
+          type="search"
+          placeholder="Search call-offs…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="min-w-[200px] flex-1 rounded-md border border-border px-3 py-2 text-sm"
+        />
+        <select
+          value={standardFilter}
+          onChange={(e) => setStandardFilter(e.target.value as typeof standardFilter)}
+          className="rounded-md border border-border px-3 py-2 text-sm"
+        >
+          <option value="all">All standards</option>
+          <option value="wales">Wales only</option>
+          <option value="gds">GDS only</option>
+        </select>
+      </div>
       {isLoading && <p className="text-text-muted">Loading…</p>}
       {!isLoading && !data?.length && (
         <p className="rounded-lg border border-border bg-surface p-6 text-text-muted">{m.engagements.empty}</p>
       )}
       <ul className="grid gap-4 md:grid-cols-2">
-        {data?.map((e) => (
-          <li key={e.id}>
+        {data
+          ?.filter((e) => {
+            if (standardFilter !== 'all' && e.standardId !== standardFilter) return false;
+            if (!query.trim()) return true;
+            const q = query.toLowerCase();
+            return (
+              e.name.toLowerCase().includes(q) ||
+              (e.supplierTag?.toLowerCase().includes(q) ?? false) ||
+              (e.lotTag?.toLowerCase().includes(q) ?? false)
+            );
+          })
+          .map((e) => (
+          <li key={e.id} className="rounded-lg border border-border bg-surface shadow-sm">
             <Link
               href={`/engagements/${e.id}`}
-              className="block rounded-lg border border-border bg-surface p-5 shadow-sm transition-shadow hover:shadow-md"
+              className="block p-5 transition-shadow hover:shadow-md"
             >
               <h2 className="font-semibold text-text">{e.name}</h2>
               <p className="mt-1 text-sm text-text-muted">
@@ -112,6 +144,17 @@ export default function EngagementsPage() {
                 )}
               </div>
             </Link>
+            <div className="border-t border-border px-5 py-2">
+              <button
+                type="button"
+                className="text-xs text-status-gap hover:underline"
+                onClick={() => {
+                  if (confirm(`Delete "${e.name}"?`)) remove.mutate({ engagementId: e.id });
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>

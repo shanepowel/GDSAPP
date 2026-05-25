@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
+import { getDeploymentMode, getDeploymentFeatures } from '@/lib/deployment-mode';
 import { publicProcedure, protectedProcedure, router } from '@/lib/trpc/trpc';
 
 const registerInput = z.object({
@@ -31,7 +32,10 @@ export const userRouter = router({
     const passwordHash = await bcrypt.hash(input.password, 10);
     const user = await ctx.prisma.$transaction(async (tx) => {
       const org = await tx.organisation.create({
-        data: { name: input.organisationName.trim() },
+        data: {
+          name: input.organisationName.trim(),
+          deploymentMode: getDeploymentMode(),
+        },
       });
       return tx.user.create({
         data: {
@@ -55,9 +59,11 @@ export const userRouter = router({
   me: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findFirst({
       where: { id: ctx.userId, orgId: ctx.orgId },
-      include: { org: true },
+      include: { org: { select: { name: true, deploymentMode: true } } },
     });
     if (!user) throw new TRPCError({ code: 'NOT_FOUND' });
+    const instanceMode = getDeploymentMode();
+    const orgMode = user.org.deploymentMode === 'client' ? 'client' : 'internal';
     return {
       id: user.id,
       email: user.email,
@@ -65,6 +71,10 @@ export const userRouter = router({
       role: user.role,
       orgId: user.orgId,
       organisationName: user.org.name,
+      organisationDeploymentMode: orgMode,
+      instanceDeploymentMode: instanceMode,
+      tenantMatchesInstance: orgMode === instanceMode,
+      deploymentFeatures: getDeploymentFeatures(),
     };
   }),
 
@@ -122,5 +132,44 @@ export const userRouter = router({
         role: updated.role,
         organisationName: updated.org.name,
       };
+    }),
+
+  listMembers: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.user.findMany({
+      where: { orgId: ctx.orgId },
+      select: { id: true, email: true, name: true, role: true },
+      orderBy: { email: 'asc' },
+    });
+  }),
+
+  inviteMember: protectedProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        name: z.string().min(1),
+        password: z.string().min(8),
+        role: z.enum(['admin', 'member']).default('member'),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.userRole !== 'admin') {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Only admins can invite members.' });
+      }
+      const email = input.email.trim().toLowerCase();
+      const existing = await ctx.prisma.user.findUnique({ where: { email } });
+      if (existing) {
+        throw new TRPCError({ code: 'CONFLICT', message: 'Email already registered.' });
+      }
+      const passwordHash = await bcrypt.hash(input.password, 10);
+      const user = await ctx.prisma.user.create({
+        data: {
+          email,
+          name: input.name.trim(),
+          role: input.role,
+          orgId: ctx.orgId,
+          passwordHash,
+        },
+      });
+      return { id: user.id, email: user.email, name: user.name, role: user.role };
     }),
 });

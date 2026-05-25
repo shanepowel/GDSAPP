@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
+import { entraSignInEnabled } from '@/lib/auth-client';
 
 type Tab = 'sign-in' | 'register';
 
@@ -43,7 +44,7 @@ export function AuthTabs({ initialTab = 'sign-in' }: { initialTab?: Tab }) {
     setSuccess('');
     const res = await signIn('credentials', { email, password, redirect: false });
     if (res?.error) {
-      setError('Invalid email or password.');
+      setError(m.signIn.invalidCredentials);
       return;
     }
     window.location.href = '/engagements';
@@ -107,6 +108,19 @@ export function AuthTabs({ initialTab = 'sign-in' }: { initialTab?: Tab }) {
 
           {tab === 'sign-in' ? (
             <form onSubmit={onSignIn} className="mt-6 space-y-4">
+              {entraSignInEnabled() && (
+                <>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="w-full"
+                    onClick={() => signIn('azure-ad', { callbackUrl: '/engagements' })}
+                  >
+                    {m.signIn.entraSignIn}
+                  </Button>
+                  <p className="text-center text-xs text-text-muted">{m.signIn.orDivider}</p>
+                </>
+              )}
               <p className="text-sm text-text-muted">{m.signIn.signInHint}</p>
               <div>
                 <label htmlFor="email" className="text-sm font-medium text-text">

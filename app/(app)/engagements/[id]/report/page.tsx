@@ -3,6 +3,11 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { AppShell } from '@/components/app/AppShell';
+import { AppNav } from '@/components/app/AppNav';
+import { EngagementSubNav } from '@/components/app/EngagementSubNav';
+import { RequirementSelector } from '@/components/app/RequirementSelector';
+import { useRequirementId } from '@/lib/hooks/use-requirement-id';
+import { Button } from '@/components/ui/Button';
 import { ScoreBar } from '@/components/app/ScoreBar';
 import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
 import { useI18n } from '@/components/app/LocaleProvider';
@@ -14,9 +19,11 @@ export default function ReportPage() {
   const params = useParams();
   const id = params.id as string;
   const { data } = trpc.engagement.byId.useQuery({ id });
+  const { requirementId, setRequirementId } = useRequirementId(id, data?.requirements);
   const createShare = trpc.extension.share.create.useMutation();
+  const revokeShare = trpc.extension.share.revoke.useMutation({ onSuccess: () => refetchShares() });
   const { data: shares, refetch: refetchShares } = trpc.extension.share.list.useQuery({ engagementId: id });
-  const req = data?.requirements[0];
+  const req = data?.requirements.find((r) => r.id === requirementId) ?? data?.requirements[0];
   const result = req?.runs[0]?.result as ExtendedAnalysisResult | undefined;
 
   const topGaps = result?.readiness.points
@@ -27,7 +34,16 @@ export default function ReportPage() {
   return (
     <div className="min-h-screen bg-white text-black print:bg-white">
       <div className="no-print">
-        <AppShell title="Report">
+        <AppShell title={m.engagement.reportTitle}>
+          <AppNav />
+          <EngagementSubNav engagementId={id} />
+          {data && data.requirements.length > 1 && (
+            <RequirementSelector
+              requirements={data.requirements}
+              value={requirementId}
+              onChange={setRequirementId}
+            />
+          )}
           <p className="text-text-muted">Use Print to PDF for a client-ready export.</p>
           <button
             type="button"
@@ -63,14 +79,38 @@ export default function ReportPage() {
           >
             Create share link
           </button>
-          {shares?.[0] && (
-            <p className="mt-2 text-xs text-text-muted">
-              Latest link expires {new Date(shares[0].expiresAt).toLocaleDateString('en-GB')}
-            </p>
+          {shares && shares.length > 0 && (
+            <ul className="mt-4 space-y-2 rounded-lg border border-border bg-surface p-4 text-sm">
+              {shares.map((link) => (
+                <li key={link.id} className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-text-muted">
+                    Expires {new Date(link.expiresAt).toLocaleDateString('en-GB')} ·{' '}
+                    <code className="text-xs">{link.token.slice(0, 8)}…</code>
+                  </span>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="secondary"
+                      type="button"
+                      onClick={() =>
+                        void navigator.clipboard?.writeText(
+                          `${window.location.origin}/share/${link.token}`,
+                        )
+                      }
+                    >
+                      Copy URL
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      type="button"
+                      onClick={() => revokeShare.mutate({ id: link.id, engagementId: id })}
+                    >
+                      Revoke
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           )}
-          <Link href={`/engagements/${id}/analysis`} className="ml-3 text-sm text-brand">
-            Back to analysis
-          </Link>
         </AppShell>
       </div>
       <article className="mx-auto max-w-[210mm] px-8 py-10 print:px-12">

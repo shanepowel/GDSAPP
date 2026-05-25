@@ -109,6 +109,32 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
         </div>
       </section>
 
+      <section className="border-y border-border bg-surface-alt">
+        <div className="mx-auto max-w-container px-6 py-16">
+          <h2 className="font-display text-2xl font-semibold text-text">Platform features</h2>
+          <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              'Readiness & composition analysis against GDS or Wales points',
+              'Agile rigour rubric (7 dimensions) with history and diffs',
+              'Evidence register linked to standard points',
+              'Call-off criteria, PDF import, bid outlook & draft scaffolds',
+              'Human assurance judgements and executive reports',
+              'Portfolio rollup by supplier and lot',
+              'Benchmarking outcomes and framework drift detection',
+              'Shareable read-only reports and branded PDF export',
+              'Bilingual UI (English / Welsh) and dark theme',
+            ].map((item) => (
+              <li
+                key={item}
+                className="rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-container px-6 py-16">
         <h2 className="font-display text-2xl font-semibold text-text">{m.home.whoTitle}</h2>
         <p className="mt-4 max-w-3xl text-text-muted leading-relaxed">{m.home.whoBody}</p>

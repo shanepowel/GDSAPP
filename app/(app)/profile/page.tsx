@@ -8,6 +8,7 @@ import { AppNav } from '@/components/app/AppNav';
 import { Card } from '@/components/app/Card';
 import { Button } from '@/components/ui/Button';
 import { useI18n } from '@/components/app/LocaleProvider';
+import { useTheme } from '@/components/app/ThemeProvider';
 import { trpc } from '@/lib/trpc/client';
 
 const inputClass =
@@ -130,6 +131,7 @@ function ProfileForm({
 
 export default function ProfilePage() {
   const { messages: m } = useI18n();
+  const { theme, toggle } = useTheme();
   const { data, isLoading, refetch } = trpc.user.me.useQuery();
 
   return (
@@ -153,6 +155,12 @@ export default function ProfilePage() {
             <Button variant="secondary" onClick={() => signOut({ callbackUrl: '/' })}>
               {m.profile.signOut}
             </Button>
+            <Button variant="secondary" type="button" onClick={toggle}>
+              {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            </Button>
+            <Link href="/settings" className="text-sm text-brand hover:underline">
+              Organisation settings
+            </Link>
             <Link href="/engagements" className="text-sm text-brand hover:underline">
               ← {m.nav.engagements}
             </Link>

@@ -15,5 +15,6 @@ export const config = {
     '/benchmarking',
     '/framework',
     '/profile',
+    '/settings',
   ],
 };

@@ -1,6 +1,7 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 import type { Context } from '@/lib/trpc/context';
+import { assertOrgDeploymentMode } from '@/lib/tenant-firewall';
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -9,18 +10,19 @@ const t = initTRPC.context<Context>().create({
 export const router = t.router;
 export const publicProcedure = t.procedure;
 
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
   if (!ctx.session?.user?.orgId) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
-  return next({
-    ctx: {
-      ...ctx,
-      orgId: ctx.session.user.orgId,
-      userId: ctx.session.user.id!,
-      userRole: ctx.session.user.role ?? 'member',
-    },
-  });
+  const orgId = ctx.session.user.orgId;
+  const enriched = {
+    ...ctx,
+    orgId,
+    userId: ctx.session.user.id!,
+    userRole: ctx.session.user.role ?? 'member',
+  };
+  await assertOrgDeploymentMode({ prisma: ctx.prisma, orgId });
+  return next({ ctx: enriched });
 });
 
 async function assertEngagementInOrg(ctx: Context & { orgId: string }, engagementId: string) {

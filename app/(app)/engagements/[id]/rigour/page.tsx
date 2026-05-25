@@ -13,7 +13,12 @@ import {
   Cell,
 } from 'recharts';
 import { AppShell } from '@/components/app/AppShell';
+import { AppNav } from '@/components/app/AppNav';
+import { EngagementSubNav } from '@/components/app/EngagementSubNav';
+import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
+import { useRequirementId } from '@/lib/hooks/use-requirement-id';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 import { RIGOUR_DIMENSIONS, type RigourDimensionKey } from '@/lib/engine/rigour-config';
 
@@ -142,10 +147,12 @@ function RigourEditor({
 }
 
 export default function RigourPage() {
+  const { messages: m } = useI18n();
   const params = useParams();
   const id = params.id as string;
   const { data: engagement } = trpc.engagement.byId.useQuery({ id });
-  const req = engagement?.requirements[0];
+  const { requirementId, setRequirementId } = useRequirementId(id, engagement?.requirements);
+  const req = engagement?.requirements.find((r) => r.id === requirementId) ?? engagement?.requirements[0];
   const { data: latest, refetch } = trpc.extension.rigour.latest.useQuery(
     { requirementId: req?.id ?? '' },
     { enabled: !!req?.id },
@@ -162,10 +169,17 @@ export default function RigourPage() {
   }, [latest]);
 
   return (
-    <AppShell title="Agile rigour assessment">
-      <p className="mb-4 text-sm text-text-muted">
-        Score each dimension 0 to 4. Feeds Service Standard point 7 and bid approach questions.
-      </p>
+    <AppShell title={m.engagement.rigourTitle}>
+      <AppNav />
+      <EngagementSubNav engagementId={id} />
+      {engagement && engagement.requirements.length > 1 && (
+        <RequirementSelector
+          requirements={engagement.requirements}
+          value={requirementId}
+          onChange={setRequirementId}
+        />
+      )}
+      <p className="mb-4 text-sm text-text-muted">{m.engagement.rigourIntro}</p>
       {req ? (
         <RigourEditor
           key={latest?.id ?? 'new'}
@@ -175,7 +189,7 @@ export default function RigourPage() {
           onSave={(dimensions) => save.mutate({ requirementId: req.id, dimensions })}
         />
       ) : (
-        <p className="text-text-muted">Loading…</p>
+        <p className="text-text-muted">{m.common.loading}</p>
       )}
     </AppShell>
   );

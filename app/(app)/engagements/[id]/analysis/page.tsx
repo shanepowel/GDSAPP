@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react';
 import { FileText, ShieldAlert } from 'lucide-react';
 import { AppShell } from '@/components/app/AppShell';
 import { AppNav } from '@/components/app/AppNav';
+import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { AnalysisTabs, type AnalysisTabId } from '@/components/app/AnalysisTabs';
 import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { Card } from '@/components/app/Card';
@@ -17,6 +18,7 @@ import { Button } from '@/components/ui/Button';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
@@ -30,6 +32,7 @@ function compositionStatus(
 }
 
 export default function AnalysisPage() {
+  const { messages: m } = useI18n();
   const params = useParams();
   const id = params.id as string;
   const { data } = trpc.engagement.byId.useQuery({ id });
@@ -65,10 +68,10 @@ export default function AnalysisPage() {
 
   if (!result) {
     return (
-      <AppShell title="Analysis" standardId={data?.standardId}>
-        <p className="mt-4 text-text-muted">No analysis yet.</p>
+      <AppShell title={m.engagement.analysisTitle} standardId={data?.standardId}>
+        <p className="mt-4 text-text-muted">{m.engagement.noAnalysis}</p>
         <Link href={`/engagements/${id}`}>
-          <Button className="mt-4">Back to run analysis</Button>
+          <Button className="mt-4">{m.engagement.backToRunAnalysis}</Button>
         </Link>
       </AppShell>
     );
@@ -84,9 +87,7 @@ export default function AnalysisPage() {
   );
 
   const standardLabel =
-    data?.standardId === 'wales'
-      ? 'Digital Service Standard for Wales'
-      : 'GDS Service Standard';
+    data?.standardId === 'wales' ? m.engagement.standardWales : m.engagement.standardGds;
 
   return (
     <AppShell
@@ -97,6 +98,7 @@ export default function AnalysisPage() {
     >
       <DeploymentBanner />
       <AppNav />
+      <EngagementSubNav engagementId={id} />
       {data?.requirements && data.requirements.length > 1 && (
         <RequirementSelector
           requirements={data.requirements}

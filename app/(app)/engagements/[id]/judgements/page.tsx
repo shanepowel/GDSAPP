@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { AppNav } from '@/components/app/AppNav';
+import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 
 const SUBJECT_TYPES = [
@@ -22,6 +24,7 @@ const SUBJECT_TYPES = [
 const STATUSES = ['approved', 'rejected', 'deferred', 'override'] as const;
 
 export default function JudgementsPage() {
+  const { messages: m } = useI18n();
   const params = useParams();
   const id = params.id as string;
   const { data: engagement } = trpc.engagement.byId.useQuery({ id });
@@ -54,13 +57,11 @@ export default function JudgementsPage() {
     (subjectType === 'readiness_overall' && requirementId ? requirementId : 'general');
 
   return (
-    <AppShell title="Human judgements" standardId={engagement?.standardId}>
+    <AppShell title={m.engagement.judgementsTitle} standardId={engagement?.standardId}>
       <DeploymentBanner />
       <AppNav />
-      <p className="mb-4 text-sm text-text-muted">
-        Record assessor decisions alongside deterministic scores. Advisory tool: judgements do not
-        replace formal procurement or sift decisions.
-      </p>
+      <EngagementSubNav engagementId={id} />
+      <p className="mb-4 text-sm text-text-muted">{m.engagement.judgementsIntro}</p>
       {engagement?.requirements && (
         <RequirementSelector
           requirements={engagement.requirements}
@@ -84,7 +85,7 @@ export default function JudgementsPage() {
           });
         }}
       >
-        <h2 className="font-semibold">Record judgement</h2>
+        <h2 className="font-semibold">{m.engagement.recordJudgement}</h2>
         <div className="mt-4 grid gap-3">
           <label className="text-sm">
             Subject type
@@ -154,12 +155,12 @@ export default function JudgementsPage() {
           </label>
         </div>
         <Button type="submit" className="mt-4" disabled={record.isPending}>
-          Save judgement
+          {m.common.save}
         </Button>
       </form>
 
       <section>
-        <h2 className="font-semibold">History</h2>
+        <h2 className="font-semibold">{m.engagement.subHistory}</h2>
         <ul className="mt-3 space-y-3">
           {judgements?.map((j) => (
             <li key={j.id} className="rounded-lg border border-border bg-surface p-4 text-sm">
@@ -180,7 +181,7 @@ export default function JudgementsPage() {
       </section>
 
       <Link href={`/engagements/${id}`} className="mt-6 inline-block text-sm text-brand hover:underline">
-        Back to overview
+        ← {m.engagement.subOverview}
       </Link>
     </AppShell>
   );

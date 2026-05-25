@@ -7,6 +7,8 @@ import { AppShell } from '@/components/app/AppShell';
 import { AppNav } from '@/components/app/AppNav';
 import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { EngagementAssuranceHub } from '@/components/app/EngagementAssuranceHub';
+import { EngagementSubNav } from '@/components/app/EngagementSubNav';
+import { ConstraintsCard } from '@/components/app/ConstraintsCard';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
@@ -27,6 +29,11 @@ export default function EngagementOverviewPage() {
   const { requirementId, setRequirementId } = useRequirementId(id, data?.requirements);
   const updateMeta = trpc.engagement.updateMeta.useMutation({ onSuccess: () => refetch() });
   const addRequirement = trpc.engagement.addRequirement.useMutation({ onSuccess: () => refetch() });
+  const deleteEngagement = trpc.engagement.delete.useMutation({
+    onSuccess: () => {
+      window.location.href = '/engagements';
+    },
+  });
   const run = trpc.engagement.runAnalysis.useMutation({
     onSuccess: () => {
       window.location.href = `/engagements/${id}/analysis`;
@@ -57,6 +64,7 @@ export default function EngagementOverviewPage() {
         <>
           <DeploymentBanner />
           <AppNav />
+          <EngagementSubNav engagementId={id} />
           <p className="mb-2 text-sm text-text-muted">
             {standardLabel} · {req?.phase ?? 'discovery'} phase
           </p>
@@ -129,6 +137,12 @@ export default function EngagementOverviewPage() {
             evidenceCount={data._count.evidence}
             judgementCount={data._count.judgements}
           />
+
+          {req && (
+            <div className="mt-8">
+              <ConstraintsCard requirementId={req.id} engagementId={id} />
+            </div>
+          )}
 
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
@@ -203,6 +217,20 @@ export default function EngagementOverviewPage() {
               }
             >
               Add requirement
+            </Button>
+            <Button
+              variant="tertiary"
+              onClick={() => {
+                if (
+                  confirm(
+                    'Delete this engagement and all related data? This cannot be undone.',
+                  )
+                ) {
+                  deleteEngagement.mutate({ engagementId: id });
+                }
+              }}
+            >
+              Delete engagement
             </Button>
           </nav>
         </>

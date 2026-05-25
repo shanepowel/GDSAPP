@@ -18,10 +18,14 @@ async function main() {
     console.warn(e);
   }
 
+  const deploymentMode =
+    process.env.DEPLOYMENT_MODE === 'client' || process.env.NEXT_PUBLIC_DEPLOYMENT_MODE === 'client'
+      ? 'client'
+      : 'internal';
   const org = await prisma.organisation.upsert({
     where: { id: 'demo-org' },
-    create: { id: 'demo-org', name: 'Amplified Demo' },
-    update: {},
+    create: { id: 'demo-org', name: 'Amplified Demo', deploymentMode },
+    update: { deploymentMode },
   });
 
   const passwordHash = await bcrypt.hash('demo-password', 10);

@@ -15,7 +15,7 @@ export function getClientDeploymentFeatures(): DeploymentFeatures {
     mode,
     supplierWinFraming: !client,
     portfolioRollup: true,
-    handoverPack: true,
+    handoverPack: client,
     clientAssuranceLabels: client,
   };
 }

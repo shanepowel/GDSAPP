@@ -4,7 +4,12 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
+import { AppNav } from '@/components/app/AppNav';
+import { EngagementSubNav } from '@/components/app/EngagementSubNav';
+import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
+import { useRequirementId } from '@/lib/hooks/use-requirement-id';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 
 const PHASES = ['discovery', 'alpha', 'beta', 'live'] as const;
@@ -31,6 +36,7 @@ function RequirementForm({
   roleLevels,
   onSave,
   isPending,
+  labels,
 }: {
   req: RequirementData;
   engagementId: string;
@@ -45,6 +51,14 @@ function RequirementForm({
     roleLevelIds: string[];
   }) => void;
   isPending: boolean;
+  labels: {
+    title: string;
+    phase: string;
+    outcome: string;
+    roles: string;
+    save: string;
+    cancel: string;
+  };
 }) {
   const [title, setTitle] = useState(req.title);
   const [phase, setPhase] = useState<(typeof PHASES)[number]>(
@@ -70,7 +84,7 @@ function RequirementForm({
         }}
       >
         <div>
-          <label className="text-sm font-medium">Title</label>
+          <label className="text-sm font-medium">{labels.title}</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -78,7 +92,7 @@ function RequirementForm({
           />
         </div>
         <fieldset>
-          <legend className="text-sm font-medium">Phase</legend>
+          <legend className="text-sm font-medium">{labels.phase}</legend>
           <div className="mt-2 flex flex-wrap gap-2">
             {PHASES.map((p) => (
               <button
@@ -95,7 +109,7 @@ function RequirementForm({
           </div>
         </fieldset>
         <div>
-          <label className="text-sm font-medium">Outcome</label>
+          <label className="text-sm font-medium">{labels.outcome}</label>
           <textarea
             value={outcome}
             onChange={(e) => setOutcome(e.target.value)}
@@ -104,7 +118,7 @@ function RequirementForm({
           />
         </div>
         <div>
-          <label className="text-sm font-medium">Required roles</label>
+          <label className="text-sm font-medium">{labels.roles}</label>
           <div className="mt-2 max-h-48 overflow-y-auto rounded-md border border-border p-3 text-sm">
             {roleLevels?.map((rl) => (
               <label key={rl.id} className="mb-2 flex items-center gap-2">
@@ -124,10 +138,10 @@ function RequirementForm({
         </div>
         <div className="flex gap-3">
           <Button type="submit" disabled={isPending}>
-            Save
+            {labels.save}
           </Button>
           <Link href={`/engagements/${engagementId}`}>
-            <Button variant="secondary">Cancel</Button>
+            <Button variant="secondary">{labels.cancel}</Button>
           </Link>
         </div>
       </form>
@@ -135,6 +149,7 @@ function RequirementForm({
 }
 
 export default function RequirementPage() {
+  const { messages: m } = useI18n();
   const params = useParams();
   const id = params.id as string;
   const { data } = trpc.engagement.byId.useQuery({ id });
@@ -145,18 +160,42 @@ export default function RequirementPage() {
     },
   });
 
-  const req = data?.requirements[0];
+  const { requirementId, setRequirementId } = useRequirementId(id, data?.requirements);
+  const req = data?.requirements.find((r) => r.id === requirementId) ?? data?.requirements[0];
 
-  if (!req) return <AppShell title="Requirement">Loading…</AppShell>;
+  if (!req) {
+    return (
+      <AppShell title={m.engagement.requirementTitle}>
+        {m.common.loading}
+      </AppShell>
+    );
+  }
 
   return (
-    <AppShell title="Requirement">
+    <AppShell title={m.engagement.requirementTitle}>
+      <AppNav />
+      <EngagementSubNav engagementId={id} />
+      {data && data.requirements.length > 1 && (
+        <RequirementSelector
+          requirements={data.requirements}
+          value={requirementId}
+          onChange={setRequirementId}
+        />
+      )}
       <RequirementForm
         key={req.id}
         req={req}
         engagementId={id}
         roleLevels={roleLevels}
         isPending={update.isPending}
+        labels={{
+          title: m.engagement.reqTitle,
+          phase: m.engagement.reqPhase,
+          outcome: m.engagement.reqOutcome,
+          roles: m.engagement.rolesRequired,
+          save: m.common.save,
+          cancel: m.common.cancel,
+        }}
         onSave={(input) => update.mutate(input)}
       />
     </AppShell>

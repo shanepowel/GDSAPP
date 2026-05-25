@@ -1,44 +1,109 @@
 import '@/lib/auth-env';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import AzureADProvider from 'next-auth/providers/azure-ad';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/db/client';
 import { getAuthSecret } from '@/lib/auth-env';
+import { getDeploymentMode } from '@/lib/deployment-mode';
+
+function entraConfigured(): boolean {
+  return Boolean(
+    process.env.AUTH_MICROSOFT_ENTRA_ID_ID &&
+      process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET &&
+      (process.env.AUTH_MICROSOFT_ENTRA_ID_TENANT_ID ||
+        process.env.AUTH_MICROSOFT_ENTRA_ID_ISSUER),
+  );
+}
+
+async function upsertUserFromProfile(profile: {
+  email: string;
+  name?: string | null;
+}) {
+  const email = profile.email.trim().toLowerCase();
+  const existing = await prisma.user.findUnique({ where: { email }, include: { org: true } });
+  if (existing) return existing;
+
+  const org = await prisma.organisation.create({
+    data: {
+      name: `${profile.name ?? email.split('@')[0]} organisation`,
+      deploymentMode: getDeploymentMode(),
+    },
+  });
+  return prisma.user.create({
+    data: {
+      email,
+      name: profile.name,
+      role: 'admin',
+      orgId: org.id,
+    },
+    include: { org: true },
+  });
+}
+
+const providers: NextAuthOptions['providers'] = [
+  CredentialsProvider({
+    name: 'Credentials',
+    credentials: {
+      email: { label: 'Email', type: 'email' },
+      password: { label: 'Password', type: 'password' },
+    },
+    async authorize(credentials) {
+      if (!credentials?.email || !credentials?.password) return null;
+      const user = await prisma.user.findUnique({
+        where: { email: credentials.email.trim().toLowerCase() },
+      });
+      if (!user?.passwordHash) return null;
+      const valid = await bcrypt.compare(credentials.password, user.passwordHash);
+      if (!valid) return null;
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        orgId: user.orgId,
+        role: user.role,
+      };
+    },
+  }),
+];
+
+if (entraConfigured()) {
+  providers.push(
+    AzureADProvider({
+      clientId: process.env.AUTH_MICROSOFT_ENTRA_ID_ID!,
+      clientSecret: process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET!,
+      tenantId: process.env.AUTH_MICROSOFT_ENTRA_ID_TENANT_ID,
+      issuer: process.env.AUTH_MICROSOFT_ENTRA_ID_ISSUER,
+    }),
+  );
+}
 
 export const authOptions: NextAuthOptions = {
   secret: getAuthSecret(),
   session: { strategy: 'jwt' },
   pages: { signIn: '/sign-in' },
-  providers: [
-    CredentialsProvider({
-      name: 'Credentials',
-      credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        });
-        if (!user?.passwordHash) return null;
-        const valid = await bcrypt.compare(credentials.password, user.passwordHash);
-        if (!valid) return null;
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          orgId: user.orgId,
-          role: user.role,
-        };
-      },
-    }),
-  ],
+  providers,
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, account }) {
+      if (account?.provider === 'azure-ad' && user.email) {
+        await upsertUserFromProfile({ email: user.email, name: user.name });
+      }
+      return true;
+    },
+    async jwt({ token, user, account }) {
       if (user) {
         token.orgId = (user as { orgId?: string }).orgId;
         token.role = (user as { role?: string }).role;
+      }
+      if (account?.provider === 'azure-ad' && token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: String(token.email).toLowerCase() },
+        });
+        if (dbUser) {
+          token.sub = dbUser.id;
+          token.orgId = dbUser.orgId;
+          token.role = dbUser.role;
+        }
       }
       return token;
     },

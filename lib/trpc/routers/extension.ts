@@ -6,6 +6,7 @@ import { buildAnswerScaffold } from '@/lib/engine/draft-scaffold';
 import { computeBidOutlook } from '@/lib/engine/bid';
 import { buildEvidenceMapsForBid, loadEvidenceMaps } from '@/lib/db/extension';
 import { buildAnalysisInput } from '@/lib/db/analysis';
+import { assertNotCompetitorSubject, assertPlayAOnly } from '@/lib/tenant-firewall';
 
 const evidenceStrength = z.enum([
   'none',
@@ -265,6 +266,7 @@ export const extensionRouter = router({
     bidOutlook: protectedProcedure
       .input(z.object({ tenderId: z.string(), requirementId: z.string() }))
       .query(async ({ ctx, input }) => {
+        assertPlayAOnly('Bid quality outlook');
         const tender = await ctx.prisma.tender.findUnique({
           where: { id: input.tenderId },
           include: {
@@ -381,6 +383,19 @@ export const extensionRouter = router({
   },
 
   constraint: {
+    get: protectedProcedure
+      .input(z.object({ requirementId: z.string() }))
+      .query(async ({ ctx, input }) => {
+        const req = await ctx.prisma.requirement.findUnique({
+          where: { id: input.requirementId },
+          include: { engagement: true },
+        });
+        if (!req || req.engagement.orgId !== ctx.orgId) throw new TRPCError({ code: 'NOT_FOUND' });
+        return ctx.prisma.constraint.findFirst({
+          where: { requirementId: input.requirementId },
+        });
+      }),
+
     upsert: protectedProcedure
       .input(
         z.object({
@@ -426,6 +441,7 @@ export const extensionRouter = router({
       )
       .mutation(async ({ ctx, input }) => {
         await assertEngagementInOrg(ctx, input.engagementId);
+        assertNotCompetitorSubject(input.subjectType);
         return ctx.prisma.judgement.create({ data: input });
       }),
 
