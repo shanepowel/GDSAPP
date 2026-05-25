@@ -1,19 +1,26 @@
 import { describe, expect, it } from 'vitest';
 import { diffAnalysisRuns } from '@/lib/analysis-run-diff';
-import type { AnalysisResult } from '@/lib/types/analysis';
+import type { AnalysisResult, ReadinessPointResult } from '@/lib/types/analysis';
 
-function minimalResult(readiness: number, composition: number, gapCount: number): AnalysisResult {
-  const points = Array.from({ length: gapCount }, (_, i) => ({
+function readinessPoint(i: number): ReadinessPointResult {
+  return {
     pointId: `p${i}`,
     number: i + 1,
     title: `Point ${i}`,
     category: 'General',
     score: 0.3,
-    status: 'gap' as const,
+    status: 'gap',
+    capabilityScore: 30,
+    evidenceStrength: 0,
+    phaseWeight: 1,
     evidenceGaps: [],
     rationale: [],
     statutoryNote: null,
-  }));
+  };
+}
+
+function minimalResult(readiness: number, composition: number, gapCount: number): AnalysisResult {
+  const points = Array.from({ length: gapCount }, (_, i) => readinessPoint(i));
   return {
     overallReadiness: readiness,
     readinessBand: 'At risk',
@@ -21,8 +28,15 @@ function minimalResult(readiness: number, composition: number, gapCount: number)
     composition: {
       overallPercent: composition,
       roles: [],
+      singlePointsOfFailure: [],
+      rationale: [],
     },
-    readiness: { points },
+    readiness: {
+      points,
+      overallPercent: readiness,
+      bandLabel: 'At risk',
+      bandKey: 'partial',
+    },
     adaptation: { actions: [] },
   };
 }
