@@ -17,7 +17,7 @@ export default function TenderPage() {
   const features = getClientDeploymentFeatures();
   const params = useParams();
   const id = params.id as string;
-  const { data: engagement, refetch } = trpc.engagement.byId.useQuery({ id });
+  const { data: engagement } = trpc.engagement.byId.useQuery({ id });
   const { data: tenders, refetch: refetchTenders } = trpc.extension.tender.list.useQuery({ engagementId: id });
   const req = engagement?.requirements[0];
   const tender = tenders?.[0];

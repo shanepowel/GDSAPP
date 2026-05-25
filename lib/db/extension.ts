@@ -7,7 +7,7 @@ import { computeComposition } from '@/lib/engine/composition';
 import { computeAllPersonFit } from '@/lib/engine/person-fit';
 import { computeReadiness } from '@/lib/engine/readiness';
 import { computeRigour } from '@/lib/engine/rigour';
-import type { AnalysisInput, AnalysisResult } from '@/lib/types/analysis';
+import type { AnalysisInput } from '@/lib/types/analysis';
 import type {
   BidScoringInput,
   EngineEvidenceItem,

@@ -56,7 +56,9 @@ Extension (sections 18–27): bid evaluation, agile rigour, evidence layer, adap
 
 **MVP:** Base build + 18.A (manual tender ingestion), 18.B, 18.C, 19, 20, parts of 21, schema for 22 without benchmarking UI.
 
-**Deferred:** Automated tender PDF parsing, server-side branded PDF generation, collaboration workflow, benchmarking views, framework drift job, client tenancy deployment, full Welsh UI, dark theme.
+**Shipped (Tier 4):** Automated tender PDF parsing (`/api/tender/parse-pdf`), branded PDF report (`/api/export/report`), benchmarking UI (`/benchmarking`), framework drift (`/framework`), bilingual EN/CY UI (language switcher).
+
+**Still deferred:** Multi-reviewer collaboration workflow, client tenancy enforcement in code, dark theme.
 
 Hard rule: scoring stays deterministic; bid layer never fabricates evidence or capability.
 
@@ -91,7 +93,7 @@ See [docs/NRW-FRAMEWORK-STRATEGY.md](docs/NRW-FRAMEWORK-STRATEGY.md) and [docs/W
 | **1 Core** | Engines, screens, demo, auth, deploy | Code complete; set `AUTH_SECRET` on Vercel |
 | **2 Play A** | Call-off, evidence, rigour, judgements UI, history diff, share/export | Complete in repo |
 | **3 Play B** | Portfolio by supplier, handover, `DEPLOYMENT_MODE=client`, assurance hub | Complete in repo; provision separate Vercel + Neon for NRW |
-| **4 Platform** | PDF parse, benchmarking UI, drift job, Welsh UI | Deferred per section 24 |
+| **4 Platform** | PDF parse, branded PDF, benchmarking, drift, Welsh UI | Complete in repo |
 
 ### Routes
 

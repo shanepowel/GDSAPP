@@ -8,6 +8,7 @@ import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { Eyebrow } from '@/components/app/Eyebrow';
 import { ScoreBar } from '@/components/app/ScoreBar';
 import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import { trpc } from '@/lib/trpc/client';
 
@@ -22,7 +23,10 @@ function bandToKind(band: string | null | undefined): StatusKind {
 export default function PortfolioPage() {
   const { data, isLoading } = trpc.portfolio.summary.useQuery();
   const features = getClientDeploymentFeatures();
-  const title = features.clientAssuranceLabels ? 'Portfolio assurance' : 'Portfolio';
+  const { messages } = useI18n();
+  const title = features.clientAssuranceLabels
+    ? messages.portfolio.titleAssurance
+    : messages.portfolio.title;
 
   return (
     <AppShell title={title} orgLabel="Organisation-wide">
@@ -83,7 +87,7 @@ export default function PortfolioPage() {
           {data.supplierGroups.length > 0 && (
             <Card className="mb-8 overflow-hidden p-0">
               <div className="border-b border-border px-5 py-3">
-                <Eyebrow>{m.portfolio.bySupplier}</Eyebrow>
+                <Eyebrow>{messages.portfolio.bySupplier}</Eyebrow>
               </div>
               <table className="w-full text-sm">
                 <thead>

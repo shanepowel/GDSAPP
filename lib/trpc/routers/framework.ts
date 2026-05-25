@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { protectedProcedure, router } from '@/lib/trpc/trpc';
 import {
   buildDriftReport,
-  hashFrameworkPoints,
   loadCurrentPointSnapshots,
   serializeBaselineSnapshot,
 } from '@/lib/framework/drift';

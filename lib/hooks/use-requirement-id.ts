@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 type RequirementLike = { id: string };
 
@@ -8,30 +8,34 @@ function storageKey(engagementId: string) {
   return `assemble-req-${engagementId}`;
 }
 
+function resolveRequirementId(
+  engagementId: string,
+  requirements: RequirementLike[] | undefined,
+  overrideId: string | undefined,
+): string | undefined {
+  if (!requirements?.length) return undefined;
+  if (overrideId && requirements.some((r) => r.id === overrideId)) return overrideId;
+  if (typeof sessionStorage !== 'undefined') {
+    const stored = sessionStorage.getItem(storageKey(engagementId));
+    if (stored && requirements.some((r) => r.id === stored)) return stored;
+  }
+  return requirements[0].id;
+}
+
 export function useRequirementId(
   engagementId: string,
   requirements: RequirementLike[] | undefined,
 ) {
-  const [selectedId, setSelectedId] = useState<string | undefined>();
+  const [overrideId, setOverrideId] = useState<string | undefined>();
 
-  useEffect(() => {
-    if (!requirements?.length) return;
-    const stored = sessionStorage.getItem(storageKey(engagementId));
-    if (stored && requirements.some((r) => r.id === stored)) {
-      setSelectedId(stored);
-      return;
-    }
-    setSelectedId(requirements[0].id);
-  }, [engagementId, requirements]);
-
-  const requirementId = useMemo(() => {
-    if (selectedId && requirements?.some((r) => r.id === selectedId)) return selectedId;
-    return requirements?.[0]?.id;
-  }, [selectedId, requirements]);
+  const requirementId = useMemo(
+    () => resolveRequirementId(engagementId, requirements, overrideId),
+    [engagementId, requirements, overrideId],
+  );
 
   const setRequirementId = useCallback(
     (id: string) => {
-      setSelectedId(id);
+      setOverrideId(id);
       sessionStorage.setItem(storageKey(engagementId), id);
     },
     [engagementId],
