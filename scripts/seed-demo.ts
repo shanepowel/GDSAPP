@@ -44,8 +44,29 @@ async function main() {
       name: 'NRW regulatory permitting service (discovery)',
       standardId: 'wales',
       orgId: org.id,
+      supplierTag: 'Amplified Demo',
+      lotTag: 'Lot 1 Digital delivery',
     },
-    update: {},
+    update: {
+      supplierTag: 'Amplified Demo',
+      lotTag: 'Lot 1 Digital delivery',
+    },
+  });
+
+  await prisma.engagement.upsert({
+    where: { id: 'nrw-demo-2' },
+    create: {
+      id: 'nrw-demo-2',
+      name: 'NRW biodiversity data platform (alpha)',
+      standardId: 'wales',
+      orgId: org.id,
+      supplierTag: 'Partner Co',
+      lotTag: 'Lot 2 Data',
+    },
+    update: {
+      supplierTag: 'Partner Co',
+      lotTag: 'Lot 2 Data',
+    },
   });
 
   const serviceOwnerLevel = await prisma.roleLevel.findFirst({
@@ -188,8 +209,25 @@ async function main() {
     update: { budgetCap: 120000 },
   });
 
+  const engagement2 = await prisma.engagement.findUnique({ where: { id: 'nrw-demo-2' } });
+  if (engagement2) {
+    await prisma.requirement.upsert({
+      where: { id: 'nrw-req-2' },
+      create: {
+        id: 'nrw-req-2',
+        engagementId: engagement2.id,
+        title: 'Alpha requirement',
+        phase: 'alpha',
+        outcome: 'Prototype biodiversity reporting APIs.',
+        channels: ['web'],
+        sensitivity: 'official',
+      },
+      update: {},
+    });
+  }
+
   console.log(
-    `Seeded demo org, admin@demo.local / demo-password, NRW engagement, tender ${tender.id}.`,
+    `Seeded demo org, admin@demo.local / demo-password, NRW engagements, tender ${tender.id}.`,
   );
 }
 

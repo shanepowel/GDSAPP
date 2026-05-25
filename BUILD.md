@@ -83,3 +83,22 @@ See [docs/NRW-FRAMEWORK-STRATEGY.md](docs/NRW-FRAMEWORK-STRATEGY.md) and [docs/W
 5. **Portfolio rollup UI** at `/portfolio` ([lib/portfolio/rollup.ts](lib/portfolio/rollup.ts)).
 6. **Handover pack** at `/handover` ([lib/handover/sections.ts](lib/handover/sections.ts)).
 7. Lead demos with **Welsh language** and **wellbeing duty** gaps on NRW scenario.
+
+## Completion status (product tiers)
+
+| Tier | Scope | Status |
+|------|--------|--------|
+| **1 Core** | Engines, screens, demo, auth, deploy | Code complete; set `AUTH_SECRET` on Vercel |
+| **2 Play A** | Call-off, evidence, rigour, judgements UI, history diff, share/export | Complete in repo |
+| **3 Play B** | Portfolio by supplier, handover, `DEPLOYMENT_MODE=client`, assurance hub | Complete in repo; provision separate Vercel + Neon for NRW |
+| **4 Platform** | PDF parse, benchmarking UI, drift job, Welsh UI | Deferred per section 24 |
+
+### Routes
+
+| Route | Purpose |
+|-------|---------|
+| `/engagements` | List call-offs / services |
+| `/engagements/[id]` | Assurance dashboard |
+| `/engagements/[id]/judgements` | Human sign-off |
+| `/portfolio` | Org rollup + supplier groups |
+| `/handover` | Play B training pack |

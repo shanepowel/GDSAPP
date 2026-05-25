@@ -12,16 +12,19 @@ import {
   CartesianGrid,
 } from 'recharts';
 import { AppShell } from '@/components/app/AppShell';
+import { RequirementSelector } from '@/components/app/RequirementSelector';
+import { useRequirementId } from '@/lib/hooks/use-requirement-id';
+import { diffAnalysisRuns } from '@/lib/analysis-run-diff';
 import { trpc } from '@/lib/trpc/client';
 
 export default function HistoryPage() {
   const params = useParams();
   const id = params.id as string;
   const { data: engagement } = trpc.engagement.byId.useQuery({ id });
-  const req = engagement?.requirements[0];
+  const { requirementId, setRequirementId } = useRequirementId(id, engagement?.requirements);
   const { data: runs } = trpc.engagement.analysisHistory.useQuery(
-    { requirementId: req?.id ?? '' },
-    { enabled: !!req?.id },
+    { requirementId: requirementId ?? '' },
+    { enabled: !!requirementId },
   );
 
   const chartData =
@@ -31,8 +34,19 @@ export default function HistoryPage() {
       band: r.readinessBand,
     })) ?? [];
 
+  const latest = runs?.[runs.length - 1];
+  const previous = runs && runs.length > 1 ? runs[runs.length - 2] : undefined;
+  const diff = latest ? diffAnalysisRuns(previous, latest) : [];
+
   return (
     <AppShell title="History">
+      {engagement?.requirements && (
+        <RequirementSelector
+          requirements={engagement.requirements}
+          value={requirementId}
+          onChange={setRequirementId}
+        />
+      )}
       <div className="h-64 rounded-lg border border-border bg-surface p-4">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
@@ -55,6 +69,50 @@ export default function HistoryPage() {
           <p className="text-sm text-text-muted">No saved runs yet.</p>
         )}
       </div>
+
+      {diff.length > 0 && previous && (
+        <section className="mt-6 rounded-lg border border-border bg-surface p-4">
+          <h2 className="font-semibold">Change since previous run</h2>
+          <table className="mt-3 w-full text-sm">
+            <thead>
+              <tr className="text-left text-text-muted">
+                <th className="py-1">Metric</th>
+                <th className="py-1">Before</th>
+                <th className="py-1">After</th>
+                <th className="py-1">Delta</th>
+              </tr>
+            </thead>
+            <tbody>
+              {diff.map((row) => (
+                <tr key={row.label} className="border-t border-border">
+                  <td className="py-2">{row.label}</td>
+                  <td className="py-2 tabular-nums">{row.before}</td>
+                  <td className="py-2 tabular-nums">{row.after}</td>
+                  <td
+                    className={`py-2 tabular-nums ${
+                      row.label === 'Open readiness points'
+                        ? row.delta < 0
+                          ? 'text-status-strong'
+                          : row.delta > 0
+                            ? 'text-status-gap'
+                            : ''
+                        : row.delta > 0
+                          ? 'text-status-strong'
+                          : row.delta < 0
+                            ? 'text-status-gap'
+                            : ''
+                    }`}
+                  >
+                    {row.delta > 0 ? '+' : ''}
+                    {row.delta}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
+
       <table className="mt-6 w-full text-sm">
         <thead>
           <tr className="text-left text-text-muted">

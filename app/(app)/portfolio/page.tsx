@@ -80,6 +80,36 @@ export default function PortfolioPage() {
             </Card>
           )}
 
+          {data.supplierGroups.length > 0 && (
+            <Card className="mb-8 overflow-hidden p-0">
+              <div className="border-b border-border px-5 py-3">
+                <Eyebrow>By supplier</Eyebrow>
+              </div>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-surface-alt text-left text-text-muted">
+                    <th className="px-5 py-3 font-medium">Supplier</th>
+                    <th className="px-5 py-3 font-medium">Services</th>
+                    <th className="px-5 py-3 font-medium">Mean readiness</th>
+                    <th className="px-5 py-3 font-medium">Open gaps</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.supplierGroups.map((g) => (
+                    <tr key={g.supplierTag} className="border-t border-border">
+                      <td className="px-5 py-3 font-medium">{g.supplierTag}</td>
+                      <td className="px-5 py-3 tabular-nums">{g.engagementCount}</td>
+                      <td className="px-5 py-3 tabular-nums">
+                        {g.averageReadiness != null ? `${g.averageReadiness}%` : '—'}
+                      </td>
+                      <td className="px-5 py-3 tabular-nums">{g.totalGapPoints}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Card>
+          )}
+
           <Card className="overflow-hidden p-0">
             <table className="w-full text-sm">
               <thead>
@@ -102,7 +132,11 @@ export default function PortfolioPage() {
                       <Link href={`/engagements/${row.id}`} className="font-medium text-brand-hover hover:underline">
                         {row.name}
                       </Link>
-                      <p className="text-xs text-text-muted">{row.phase ?? '—'}</p>
+                      <p className="text-xs text-text-muted">
+                        {row.phase ?? '—'}
+                        {row.supplierTag ? ` · ${row.supplierTag}` : ''}
+                        {row.lotTag ? ` · ${row.lotTag}` : ''}
+                      </p>
                     </td>
                     <td className="px-5 py-3 capitalize">{row.standardId}</td>
                     <td className="px-5 py-3">

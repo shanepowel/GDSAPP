@@ -8,6 +8,8 @@ describe('portfolio row shape', () => {
         id: '1',
         name: 'A',
         standardId: 'wales',
+        supplierTag: 'Supplier A',
+        lotTag: 'Lot 1',
         phase: 'discovery',
         readinessPercent: 41,
         readinessBand: 'At risk',

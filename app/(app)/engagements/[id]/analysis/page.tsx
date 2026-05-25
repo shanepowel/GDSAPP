@@ -15,6 +15,8 @@ import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
 import { RationaleDisclosure } from '@/components/app/RationaleDisclosure';
 import { Button } from '@/components/ui/Button';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
+import { useRequirementId } from '@/lib/hooks/use-requirement-id';
+import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { trpc } from '@/lib/trpc/client';
 import type { ExtendedAnalysisResult } from '@/lib/types/extension';
 
@@ -33,7 +35,8 @@ export default function AnalysisPage() {
   const { data } = trpc.engagement.byId.useQuery({ id });
   const [tab, setTab] = useState<AnalysisTabId>('readiness');
   const features = getClientDeploymentFeatures();
-  const req = data?.requirements[0];
+  const { requirementId, setRequirementId } = useRequirementId(id, data?.requirements);
+  const req = data?.requirements.find((r) => r.id === requirementId) ?? data?.requirements[0];
   const result = req?.runs[0]?.result as ExtendedAnalysisResult | undefined;
 
   const topBidRisk = useMemo(() => {
@@ -94,6 +97,13 @@ export default function AnalysisPage() {
     >
       <DeploymentBanner />
       <AppNav />
+      {data?.requirements && data.requirements.length > 1 && (
+        <RequirementSelector
+          requirements={data.requirements}
+          value={requirementId}
+          onChange={setRequirementId}
+        />
+      )}
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <Eyebrow>{data?.name}</Eyebrow>
@@ -166,7 +176,11 @@ export default function AnalysisPage() {
         </Card>
       </div>
 
-      <AnalysisTabs active={tab} onChange={setTab} showBid={!!result.bidOutlook} />
+      <AnalysisTabs
+        active={tab}
+        onChange={setTab}
+        showBid={features.supplierWinFraming && !!result.bidOutlook}
+      />
 
       <div>
         {tab === 'fit' && (
