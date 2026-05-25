@@ -6,15 +6,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/db/client';
 import { getAuthSecret } from '@/lib/auth-env';
 import { getDeploymentMode } from '@/lib/deployment-mode';
-
-function entraConfigured(): boolean {
-  return Boolean(
-    process.env.AUTH_MICROSOFT_ENTRA_ID_ID &&
-      process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET &&
-      (process.env.AUTH_MICROSOFT_ENTRA_ID_TENANT_ID ||
-        process.env.AUTH_MICROSOFT_ENTRA_ID_ISSUER),
-  );
-}
+import { entraConfigured, getAuthMode } from '@/lib/auth-config';
 
 async function upsertUserFromProfile(profile: {
   email: string;
@@ -53,7 +45,10 @@ const providers: NextAuthOptions['providers'] = [
       const user = await prisma.user.findUnique({
         where: { email: credentials.email.trim().toLowerCase() },
       });
-      if (!user?.passwordHash) return null;
+      if (!user?.passwordHash) {
+        // Account exists for SSO only — same email, one login service (Microsoft).
+        return null;
+      }
       const valid = await bcrypt.compare(credentials.password, user.passwordHash);
       if (!valid) return null;
       return {
@@ -67,7 +62,8 @@ const providers: NextAuthOptions['providers'] = [
   }),
 ];
 
-if (entraConfigured()) {
+const authMode = getAuthMode();
+if (entraConfigured() && authMode !== 'credentials') {
   providers.push(
     AzureADProvider({
       clientId: process.env.AUTH_MICROSOFT_ENTRA_ID_ID!,
@@ -91,19 +87,21 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async jwt({ token, user, account }) {
+      const email = (user?.email ?? token.email)?.toString().trim().toLowerCase();
       if (user) {
         token.orgId = (user as { orgId?: string }).orgId;
         token.role = (user as { role?: string }).role;
       }
-      if (account?.provider === 'azure-ad' && token.email) {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: String(token.email).toLowerCase() },
-        });
+      if (email) {
+        const dbUser = await prisma.user.findUnique({ where: { email } });
         if (dbUser) {
           token.sub = dbUser.id;
           token.orgId = dbUser.orgId;
           token.role = dbUser.role;
         }
+      }
+      if (account?.provider === 'credentials' && user?.email) {
+        token.email = user.email;
       }
       return token;
     },

@@ -143,6 +143,7 @@ export const engagementRouter = router({
         outcome: z.string(),
         channels: z.array(z.string()),
         sensitivity: z.string(),
+        flexPriority: z.enum(['balanced', 'cost', 'speed', 'quality']).optional(),
         roleLevelIds: z.array(z.string()),
       }),
     )
@@ -162,6 +163,7 @@ export const engagementRouter = router({
           outcome: input.outcome,
           channels: input.channels,
           sensitivity: input.sensitivity,
+          ...(input.flexPriority ? { flexPriority: input.flexPriority } : {}),
           roles: {
             create: input.roleLevelIds.map((roleLevelId) => ({ roleLevelId, weight: 1 })),
           },

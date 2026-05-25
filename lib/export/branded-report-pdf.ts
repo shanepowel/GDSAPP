@@ -30,7 +30,7 @@ export function buildBrandedReportPdf(input: BrandedReportInput): Promise<Buffer
     doc
       .fillColor(PDF_COLORS.ink)
       .fontSize(10)
-      .text(`${BRAND.company} · ${BRAND.product}`, { align: 'left' });
+      .text(BRAND.productLine, { align: 'left' });
     doc.moveDown(0.5);
     doc.fontSize(20).text(input.engagementName, { continued: false });
     doc.fontSize(11).fillColor(PDF_COLORS.muted).text(`${input.standardLabel} · ${input.phase} phase`);

@@ -116,7 +116,7 @@ export default function ReportPage() {
       <article className="mx-auto max-w-[210mm] px-8 py-10 print:px-12">
         <header className="border-b-2 border-[color:var(--color-brand)] pb-4">
           <p className="text-sm font-medium text-[color:var(--color-brand)]">
-            Turner & Townsend · Standard Readiness
+            Assemble by Turner & Townsend
           </p>
           <h1 className="mt-2 font-display text-2xl font-bold">{data?.name}</h1>
           <p className="text-sm">

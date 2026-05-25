@@ -21,8 +21,11 @@ type RequirementData = {
   outcome: string;
   channels: string[];
   sensitivity: string;
+  flexPriority: string;
   roles: { roleLevelId: string }[];
 };
+
+const FLEX_PRIORITIES = ['balanced', 'cost', 'speed', 'quality'] as const;
 
 type RoleLevelRow = {
   id: string;
@@ -49,6 +52,7 @@ function RequirementForm({
     channels: string[];
     sensitivity: string;
     roleLevelIds: string[];
+    flexPriority: (typeof FLEX_PRIORITIES)[number];
   }) => void;
   isPending: boolean;
   labels: {
@@ -56,11 +60,19 @@ function RequirementForm({
     phase: string;
     outcome: string;
     roles: string;
+    flexPriority: string;
+    flexBalanced: string;
+    flexCost: string;
+    flexSpeed: string;
+    flexQuality: string;
     save: string;
     cancel: string;
   };
 }) {
   const [title, setTitle] = useState(req.title);
+  const [flexPriority, setFlexPriority] = useState<(typeof FLEX_PRIORITIES)[number]>(
+    (req.flexPriority as (typeof FLEX_PRIORITIES)[number]) ?? 'balanced',
+  );
   const [phase, setPhase] = useState<(typeof PHASES)[number]>(
     req.phase as (typeof PHASES)[number],
   );
@@ -80,6 +92,7 @@ function RequirementForm({
             channels: req.channels,
             sensitivity: req.sensitivity,
             roleLevelIds: selectedRoles,
+            flexPriority,
           });
         }}
       >
@@ -108,6 +121,21 @@ function RequirementForm({
             ))}
           </div>
         </fieldset>
+        <div>
+          <label className="text-sm font-medium">{labels.flexPriority}</label>
+          <select
+            className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm"
+            value={flexPriority}
+            onChange={(e) =>
+              setFlexPriority(e.target.value as (typeof FLEX_PRIORITIES)[number])
+            }
+          >
+            <option value="balanced">{labels.flexBalanced}</option>
+            <option value="cost">{labels.flexCost}</option>
+            <option value="speed">{labels.flexSpeed}</option>
+            <option value="quality">{labels.flexQuality}</option>
+          </select>
+        </div>
         <div>
           <label className="text-sm font-medium">{labels.outcome}</label>
           <textarea
@@ -193,6 +221,11 @@ export default function RequirementPage() {
           phase: m.engagement.reqPhase,
           outcome: m.engagement.reqOutcome,
           roles: m.engagement.rolesRequired,
+          flexPriority: m.engagement.flexPriorityLabel,
+          flexBalanced: m.engagement.flexBalanced,
+          flexCost: m.engagement.flexCost,
+          flexSpeed: m.engagement.flexSpeed,
+          flexQuality: m.engagement.flexQuality,
           save: m.common.save,
           cancel: m.common.cancel,
         }}

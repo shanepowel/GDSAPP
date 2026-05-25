@@ -15,6 +15,9 @@ export type Messages = {
     entraSignIn: string;
     orDivider: string;
     invalidCredentials: string;
+    invalidCredentialsOrSso: string;
+    singleLoginHint: string;
+    emailSignIn: string;
   };
   reviews: {
     title: string;
@@ -105,6 +108,14 @@ export type Messages = {
     removeConfirm: string;
     saveSkills: string;
     updateEvidence: string;
+    flexTitle: string;
+    flexPriority: string;
+    flexPriorityLabel: string;
+    flexNoOptions: string;
+    flexBalanced: string;
+    flexCost: string;
+    flexSpeed: string;
+    flexQuality: string;
   };
   settings: {
     title: string;

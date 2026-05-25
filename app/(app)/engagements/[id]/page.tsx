@@ -9,6 +9,7 @@ import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { EngagementAssuranceHub } from '@/components/app/EngagementAssuranceHub';
 import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { ConstraintsCard } from '@/components/app/ConstraintsCard';
+import { RequirementFlexCard } from '@/components/app/RequirementFlexCard';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
@@ -139,8 +140,11 @@ export default function EngagementOverviewPage() {
           />
 
           {req && (
-            <div className="mt-8">
+            <div className="mt-8 space-y-6">
               <ConstraintsCard requirementId={req.id} engagementId={id} />
+              {result?.requirementFlex && (
+                <RequirementFlexCard flex={result.requirementFlex} />
+              )}
             </div>
           )}
 

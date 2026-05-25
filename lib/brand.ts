@@ -1,7 +1,8 @@
-/** Turner & Townsend product identity (UI + exports). */
+/** Assemble by Turner & Townsend — product identity (UI + exports). */
 export const BRAND = {
   company: 'Turner & Townsend',
-  product: 'Standard Readiness',
+  product: 'Assemble',
+  productLine: 'Assemble by Turner & Townsend',
   legalLine: 'Turner & Townsend',
   site: 'https://www.turnerandtownsend.com',
   colors: {

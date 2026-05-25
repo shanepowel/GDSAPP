@@ -7,6 +7,7 @@ import { computeComposition } from '@/lib/engine/composition';
 import { computeAllPersonFit } from '@/lib/engine/person-fit';
 import { computeReadiness } from '@/lib/engine/readiness';
 import { computeRigour } from '@/lib/engine/rigour';
+import { computeRequirementFlex, type FlexPriority } from '@/lib/engine/requirement-flex';
 import type { AnalysisInput } from '@/lib/types/analysis';
 import type {
   BidScoringInput,
@@ -118,6 +119,24 @@ export async function runExtendedAnalysis(requirementId: string): Promise<Extend
     overallReadiness: readiness.overallPercent,
     readinessBand: readiness.bandLabel,
     rigour,
+    requirementFlex: computeRequirementFlex({
+      phase: requirement.phase,
+      outcome: requirement.outcome,
+      sensitivity: requirement.sensitivity,
+      flexPriority: (requirement.flexPriority ?? 'balanced') as FlexPriority,
+      readiness,
+      composition,
+      adaptation,
+      constraint: constraint
+        ? {
+            budgetCap: constraint.budgetCap,
+            startBy: constraint.startBy,
+            endBy: constraint.endBy,
+            internalRatePerDay: constraint.internalRatePerDay,
+            partnerRatePerDay: constraint.partnerRatePerDay,
+          }
+        : null,
+    }),
   };
 
   const tender = requirement.engagement.tenders[0];

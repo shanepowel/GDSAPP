@@ -2,7 +2,7 @@ import type { Messages } from '@/lib/i18n/types';
 
 export const cy: Messages = {
   signIn: {
-    title: 'Croeso i Barodrwydd Safonol',
+    title: 'Mewngofnodi i Assemble',
     tabSignIn: 'Mewngofnodi',
     tabRegister: 'Creu cyfrif',
     email: 'E-bost',
@@ -18,6 +18,10 @@ export const cy: Messages = {
     entraSignIn: 'Mewngofnodi gyda Microsoft',
     orDivider: 'neu',
     invalidCredentials: 'E-bost neu gyfrinair annilys.',
+    invalidCredentialsOrSso:
+      'Cyfrinair annilys, neu mae’r cyfrif hwn yn defnyddio Microsoft yn unig. Defnyddiwch Mewngofnodi gyda Microsoft.',
+    singleLoginHint: 'Defnyddiwch eich cyfrif Microsoft sefydliad (Entra ID Turner & Townsend).',
+    emailSignIn: 'Mewngofnodi gydag e-bost yn lle hynny',
   },
   reviews: {
     title: 'Cadwyn cymeradwyo',
@@ -114,6 +118,14 @@ export const cy: Messages = {
     removeConfirm: 'Tynnu’r person hwn o’r galwad?',
     saveSkills: 'Cadw sgiliau',
     updateEvidence: 'Diweddaru tystiolaeth',
+    flexTitle: 'Hyblygrwydd gofyniad',
+    flexPriority: 'Blaenoriaeth hyblyg',
+    flexPriorityLabel: 'Sut y dylid hyblygu cwmpas pan fo pwysau?',
+    flexNoOptions: 'Dim argymhellion hyblyg — mae’r strwythur yn edrych yn gadarn ar gyfer y blaenoriaeth hon.',
+    flexBalanced: 'Cytbwys',
+    flexCost: 'Rheoli cost',
+    flexSpeed: 'Cyflymder',
+    flexQuality: 'Ansawdd / parodrwydd',
   },
   settings: {
     title: 'Gosodiadau',
@@ -125,11 +137,11 @@ export const cy: Messages = {
   home: {
     heroTitle: 'Gwybod a all eich tîm ddarparu safon y gwasanaeth',
     heroSubtitle:
-      'Mae Turner & Townsend Standard Readiness yn sgorio gallu tîm, trwmder ystwyth, a thystiolaeth yn erbyn safonau gwasanaeth digidol GDS neu Gymru — cyn i chi ymrwymo i dendr neu adolygiad sicrwydd.',
+      'Mae Assemble gan Turner & Townsend yn sgorio gallu tîm, trwmder ystwyth, a thystiolaeth yn erbyn safonau gwasanaeth digidol GDS neu Gymru — cyn i chi ymrwymo i dendr neu adolygiad sicrwydd.',
     ctaSignIn: 'Mewngofnodi',
     ctaRegister: 'Creu cyfrif',
     ctaDashboard: 'Agor dangosfwrdd',
-    whatTitle: 'Beth mae Barodrwydd Safonol yn ei wneud',
+    whatTitle: 'Beth mae Assemble yn ei wneud',
     whatBody:
       'Ar gyfer pob galwad i dendro rydych yn diffinio gofyniad y gwasanaeth, y tîm, a thystiolaeth. Mae’r injin yn mapio sgiliau DDaT i bwyntiau safon, yn rhedeg dadansoddiad parodrwydd a thrwmder, ac yn cynhyrchu adroddiadau cyngorol.',
     howTitle: 'Sut i’w ddefnyddio',
@@ -207,8 +219,8 @@ export const cy: Messages = {
   },
   app: {
     brandName: 'Turner & Townsend',
-    productName: 'Barodrwydd Safonol',
-    tagline: 'Parodrwydd safon gwasanaeth a ffit tîm',
+    productName: 'Assemble',
+    tagline: 'gan Turner & Townsend',
     advisoryFooter:
       'Turner & Townsend · Wedi ei adeiladu ar fframweithiau cyhoeddus o dan Drwydded Llywodraeth Agored. Offeryn cyngorol; nid penderfyniad swyddi.',
     language: 'Iaith',

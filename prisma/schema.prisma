@@ -157,6 +157,8 @@ model Requirement {
   outcome      String             @db.Text
   channels     String[]
   sensitivity  String
+  /// balanced | cost | speed | quality — drives requirement-flex reasoning
+  flexPriority String             @default("balanced")
   engagement   Engagement         @relation(fields: [engagementId], references: [id], onDelete: Cascade)
   roles        RequirementRole[]
   assignments  Assignment[]

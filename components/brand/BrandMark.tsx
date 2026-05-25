@@ -1,22 +1,20 @@
 import Link from 'next/link';
 
-/** Turner & Townsend logo lockup: charcoal mark + cyan accent. */
+/** Assemble by Turner & Townsend lockup. */
 export function BrandMark({
   href = '/',
   size = 'md',
-  showProduct = true,
 }: {
   href?: string;
   size?: 'sm' | 'md';
-  showProduct?: boolean;
 }) {
-  const markSize = size === 'sm' ? 'h-9 w-9 text-sm' : 'h-10 w-10 text-base';
-  const companyClass = size === 'sm' ? 'text-[15px]' : 'text-base';
+  const markSize = size === 'sm' ? 'h-9 w-9 text-xs' : 'h-10 w-10 text-sm';
+  const productClass = size === 'sm' ? 'text-[15px]' : 'text-lg';
 
   const content = (
     <>
       <div
-        className={`grid ${markSize} place-items-center rounded-lg font-semibold tracking-tight`}
+        className={`grid ${markSize} place-items-center rounded-lg font-bold tracking-tight`}
         style={{
           background: 'var(--tt-charcoal)',
           color: 'var(--tt-cyan)',
@@ -24,15 +22,11 @@ export function BrandMark({
         }}
         aria-hidden
       >
-        T&T
+        A
       </div>
       <div>
-        <div className={`${companyClass} font-semibold leading-none text-text`}>
-          Turner & Townsend
-        </div>
-        {showProduct && (
-          <div className="mt-0.5 text-[11px] font-medium text-brand">Standard Readiness</div>
-        )}
+        <div className={`${productClass} font-semibold leading-none text-text`}>Assemble</div>
+        <div className="mt-0.5 text-[11px] text-text-muted">by Turner & Townsend</div>
       </div>
     </>
   );

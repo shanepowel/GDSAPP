@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
+import { allowSelfRegistration, getPublicAuthConfig } from '@/lib/auth-config';
 import { getDeploymentMode, getDeploymentFeatures } from '@/lib/deployment-mode';
 import { publicProcedure, protectedProcedure, router } from '@/lib/trpc/trpc';
 
@@ -19,7 +20,15 @@ const updateProfileInput = z.object({
 });
 
 export const userRouter = router({
+  authConfig: publicProcedure.query(() => getPublicAuthConfig()),
+
   register: publicProcedure.input(registerInput).mutation(async ({ ctx, input }) => {
+    if (!allowSelfRegistration()) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Self-registration is disabled. Sign in with your organisation Microsoft account.',
+      });
+    }
     const email = input.email.trim().toLowerCase();
     const existing = await ctx.prisma.user.findUnique({ where: { email } });
     if (existing) {

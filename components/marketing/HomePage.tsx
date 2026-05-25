@@ -48,7 +48,7 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
       >
         <div className="mx-auto max-w-container px-6 py-16 md:py-24">
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[color:var(--tt-cyan)]">
-            {m.app.brandName}
+            {m.app.productName} {m.app.tagline}
           </p>
           <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-tight md:text-5xl">
             {m.home.heroTitle}

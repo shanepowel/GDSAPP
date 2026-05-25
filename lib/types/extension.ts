@@ -1,6 +1,7 @@
 import type { AnalysisInput, AnalysisResult } from '@/lib/types/analysis';
 import type { Proficiency } from '@/lib/engine/standards-dependency-map';
 import type { RigourResult } from '@/lib/engine/rigour';
+import type { RequirementFlexResult } from '@/lib/engine/requirement-flex';
 
 export interface EngineEvidenceItem {
   id: string;
@@ -73,4 +74,5 @@ export interface PersonAvailabilityInput {
 export type ExtendedAnalysisResult = AnalysisResult & {
   rigour?: RigourResult;
   bidOutlook?: BidOutlookResult;
+  requirementFlex?: RequirementFlexResult;
 };

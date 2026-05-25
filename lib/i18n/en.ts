@@ -2,7 +2,7 @@ import type { Messages } from '@/lib/i18n/types';
 
 export const en: Messages = {
   signIn: {
-    title: 'Welcome to Standard Readiness',
+    title: 'Sign in to Assemble',
     tabSignIn: 'Sign in',
     tabRegister: 'Create account',
     email: 'Email',
@@ -17,6 +17,10 @@ export const en: Messages = {
     entraSignIn: 'Sign in with Microsoft',
     orDivider: 'or',
     invalidCredentials: 'Invalid email or password.',
+    invalidCredentialsOrSso:
+      'Invalid password, or this account uses Microsoft sign-in only. Use Sign in with Microsoft.',
+    singleLoginHint: 'Use your organisation Microsoft account (Turner & Townsend Entra ID).',
+    emailSignIn: 'Sign in with email instead',
   },
   reviews: {
     title: 'Approval chain',
@@ -113,6 +117,14 @@ export const en: Messages = {
     removeConfirm: 'Remove this person from the engagement?',
     saveSkills: 'Save skills',
     updateEvidence: 'Update evidence',
+    flexTitle: 'Requirement flexibility',
+    flexPriority: 'Flex priority',
+    flexPriorityLabel: 'How should scope flex when under pressure?',
+    flexNoOptions: 'No flex recommendations — structure looks sound for this priority.',
+    flexBalanced: 'Balanced',
+    flexCost: 'Cost control',
+    flexSpeed: 'Speed',
+    flexQuality: 'Quality / readiness',
   },
   settings: {
     title: 'Settings',
@@ -124,11 +136,11 @@ export const en: Messages = {
   home: {
     heroTitle: 'Know if your team can deliver the service standard',
     heroSubtitle:
-      'Turner & Townsend Standard Readiness scores team capability, agile rigour, and evidence against GDS or Wales digital service standards — before you commit to a bid or assurance review.',
+      'Assemble by Turner & Townsend scores team capability, agile rigour, and evidence against GDS or Wales digital service standards — before you commit to a bid or assurance review.',
     ctaSignIn: 'Sign in',
     ctaRegister: 'Create account',
     ctaDashboard: 'Open dashboard',
-    whatTitle: 'What Standard Readiness does',
+    whatTitle: 'What Assemble does',
     whatBody:
       'For each call-off or engagement you define the service requirement, team, and evidence. The engine maps DDaT skills to standard points, runs readiness and rigour analysis, and produces advisory reports for suppliers and authorities.',
     howTitle: 'How to use it',
@@ -205,8 +217,8 @@ export const en: Messages = {
   },
   app: {
     brandName: 'Turner & Townsend',
-    productName: 'Standard Readiness',
-    tagline: 'Service standard readiness and team fit',
+    productName: 'Assemble',
+    tagline: 'by Turner & Townsend',
     advisoryFooter:
       'Turner & Townsend · Built on public frameworks under the Open Government Licence. Advisory tool; not a hiring decision.',
     language: 'Language',
