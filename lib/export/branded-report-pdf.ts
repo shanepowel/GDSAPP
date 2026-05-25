@@ -13,8 +13,8 @@ export interface BrandedReportInput {
 }
 
 const PDF_COLORS = {
-  ink: BRAND.colors.charcoal,
-  accent: BRAND.colors.cyan,
+  ink: BRAND.colors.ink,
+  accent: BRAND.colors.blue,
   muted: BRAND.colors.slate,
   navy: BRAND.colors.navy,
 };

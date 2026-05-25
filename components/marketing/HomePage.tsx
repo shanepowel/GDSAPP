@@ -1,7 +1,8 @@
 'use client';
 
+import { BRAND } from '@/lib/brand';
 import Link from 'next/link';
-import { ArrowRight, BarChart3, ClipboardCheck, Users } from 'lucide-react';
+import { ArrowRight, BarChart3, ClipboardCheck, Eye, Scale, Users } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { BrandMark } from '@/components/brand/BrandMark';
 import { Button } from '@/components/ui/Button';
@@ -17,11 +18,17 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
     { title: m.home.step4Title, body: m.home.step4Body, icon: ArrowRight },
   ];
 
+  const pillars = [
+    { icon: Eye, title: m.home.pillarWorkingTitle, body: m.home.pillarWorkingBody },
+    { icon: Scale, title: m.home.pillarAssessTitle, body: m.home.pillarAssessBody },
+    { icon: ArrowRight, title: m.home.pillarHandoverTitle, body: m.home.pillarHandoverBody },
+  ];
+
   return (
     <div className="min-h-screen bg-bg">
-      <header className="border-b border-border bg-surface">
+      <header style={{ background: 'var(--tt-navy)', color: 'var(--tt-white)' }}>
         <div className="mx-auto flex max-w-container items-center justify-between gap-4 px-6 py-4">
-          <BrandMark href="/" />
+          <BrandMark href="/" variant="dark" />
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
             {isSignedIn ? (
@@ -40,21 +47,16 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
             )}
           </div>
         </div>
-      </header>
 
-      <section
-        className="border-b border-border"
-        style={{ background: 'var(--tt-charcoal)', color: 'var(--tt-white)' }}
-      >
-        <div className="mx-auto max-w-container px-6 py-16 md:py-24">
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[color:var(--tt-cyan)]">
-            {m.app.productName} {m.app.tagline}
-          </p>
-          <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-tight md:text-5xl">
+        <div className="mx-auto max-w-container px-6 pb-14 pt-4">
+          <p className="text-xs text-slate-400">{BRAND.tagline}</p>
+          <h1 className="mt-4 max-w-3xl font-display text-4xl font-extrabold leading-tight md:text-[38px]">
             {m.home.heroTitle}
+            <br />
+            <span style={{ color: 'var(--tt-blue-hero)' }}>{m.home.heroTitleAccent}</span>
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-slate-300">{m.home.heroSubtitle}</p>
-          <div className="mt-10 flex flex-wrap gap-4">
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-300">{m.home.heroSubtitle}</p>
+          <div className="mt-8 flex flex-wrap gap-4">
             {isSignedIn ? (
               <Link href="/engagements">
                 <Button className="gap-2">
@@ -64,9 +66,9 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
               </Link>
             ) : (
               <>
-                <Link href="/sign-in?tab=register">
+                <Link href="/sign-in?callbackUrl=%2Fengagements%2Fnrw-demo">
                   <Button className="gap-2">
-                    {m.home.ctaRegister}
+                    {m.home.ctaDemo}
                     <ArrowRight className="h-4 w-4" aria-hidden />
                   </Button>
                 </Link>
@@ -77,16 +79,16 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
             )}
           </div>
         </div>
-      </section>
+      </header>
 
       <section className="mx-auto max-w-container px-6 py-16">
-        <h2 className="font-display text-2xl font-semibold text-text">{m.home.whatTitle}</h2>
+        <h2 className="font-display text-2xl font-bold text-text">{m.home.whatTitle}</h2>
         <p className="mt-4 max-w-3xl text-text-muted leading-relaxed">{m.home.whatBody}</p>
       </section>
 
       <section className="border-y border-border bg-surface-alt">
         <div className="mx-auto max-w-container px-6 py-16">
-          <h2 className="font-display text-2xl font-semibold text-text">{m.home.howTitle}</h2>
+          <h2 className="font-display text-2xl font-bold text-text">{m.home.howTitle}</h2>
           <ol className="mt-10 grid gap-6 sm:grid-cols-2">
             {steps.map(({ title, body, icon: Icon }) => (
               <li
@@ -102,49 +104,47 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
         </div>
       </section>
 
-      <section className="border-y border-border bg-surface-alt">
-        <div className="mx-auto max-w-container px-6 py-16">
-          <h2 className="font-display text-2xl font-semibold text-text">Platform features</h2>
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              'Readiness & composition analysis against GDS or Wales points',
-              'Agile rigour rubric (7 dimensions) with history and diffs',
-              'Evidence register linked to standard points',
-              'Call-off criteria, PDF import, bid outlook & draft scaffolds',
-              'Human assurance judgements and executive reports',
-              'Portfolio rollup by supplier and lot',
-              'Benchmarking outcomes and framework drift detection',
-              'Shareable read-only reports and branded PDF export',
-              'Bilingual UI (English / Welsh) and dark theme',
-            ].map((item) => (
-              <li
-                key={item}
-                className="rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text-muted"
+      <section className="mx-auto max-w-container px-6 py-16">
+        <div className="grid gap-4 md:grid-cols-3">
+          {pillars.map(({ icon: Icon, title, body }) => (
+            <div
+              key={title}
+              className="rounded-2xl border border-border bg-surface p-5 shadow-sm"
+            >
+              <div
+                className="grid h-10 w-10 place-items-center rounded-lg"
+                style={{ background: 'var(--tt-blue-050)' }}
               >
-                {item}
-              </li>
-            ))}
-          </ul>
+                <Icon className="h-5 w-5 text-brand" aria-hidden />
+              </div>
+              <h3 className="mt-3 font-display text-[15px] font-bold text-text">{title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-text-muted">{body}</p>
+            </div>
+          ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-container px-6 py-16">
-        <h2 className="font-display text-2xl font-semibold text-text">{m.home.whoTitle}</h2>
-        <p className="mt-4 max-w-3xl text-text-muted leading-relaxed">{m.home.whoBody}</p>
-        {!isSignedIn && (
-          <div className="mt-10 rounded-xl border border-brand/30 bg-brand-tint p-8">
-            <p className="font-medium text-text">Try the demo after signing in</p>
-            <p className="mt-2 text-sm text-text-muted">
-              <code className="rounded bg-surface px-1.5 py-0.5">admin@demo.local</code> /{' '}
-              <code className="rounded bg-surface px-1.5 py-0.5">demo-password</code> (seeded
-              environments only)
+      {!isSignedIn && (
+        <section className="mx-auto max-w-container px-6 pb-16">
+          <div className="rounded-xl border border-brand/30 bg-brand-tint p-8">
+            <p className="font-medium text-text">{m.home.demoTitle}</p>
+            <p className="mt-2 text-sm text-text-muted">{m.home.demoBody}</p>
+            <p className="mt-3 font-mono text-sm">
+              <code className="rounded bg-surface px-2 py-1">admin@demo.local</code>
+              {' / '}
+              <code className="rounded bg-surface px-2 py-1">demo-password</code>
             </p>
-            <Link href="/sign-in" className="mt-4 inline-block">
-              <Button variant="secondary">{m.home.ctaSignIn}</Button>
-            </Link>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link href="/sign-in">
+                <Button>{m.home.ctaSignIn}</Button>
+              </Link>
+              <Link href="/sign-in?callbackUrl=%2Fengagements%2Fnrw-demo">
+                <Button variant="secondary">{m.home.ctaDemoEngagement}</Button>
+              </Link>
+            </div>
           </div>
-        )}
-      </section>
+        </section>
+      )}
 
       <footer className="border-t border-border px-6 py-8 text-center text-xs text-text-muted">
         {m.app.advisoryFooter}

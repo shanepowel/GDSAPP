@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
+import { runAndPersistAnalysis } from '../lib/db/analysis';
 import { ensureFixtureCsvs } from './seed-fixtures';
 import { execSync } from 'child_process';
 
@@ -241,6 +242,13 @@ async function main() {
       },
       update: {},
     });
+  }
+
+  const analysis = await runAndPersistAnalysis(requirement.id);
+  if (analysis) {
+    console.log(
+      `Initial analysis: preparedness ${Math.round(analysis.overallReadiness)}% (${analysis.readinessBand}).`,
+    );
   }
 
   console.log(

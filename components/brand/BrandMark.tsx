@@ -1,43 +1,39 @@
 import Link from 'next/link';
+import { BRAND } from '@/lib/brand';
 
-/** Assemble by Turner & Townsend lockup. */
+/** Header lockup: Turner & Townsend + Assemble badge (matches showcase prototype). */
 export function BrandMark({
   href = '/',
-  size = 'md',
+  variant = 'light',
 }: {
   href?: string;
-  size?: 'sm' | 'md';
+  variant?: 'light' | 'dark';
 }) {
-  const markSize = size === 'sm' ? 'h-9 w-9 text-xs' : 'h-10 w-10 text-sm';
-  const productClass = size === 'sm' ? 'text-[15px]' : 'text-lg';
+  const onDark = variant === 'dark';
 
   const content = (
-    <>
-      <div
-        className={`grid ${markSize} place-items-center rounded-lg font-bold tracking-tight`}
-        style={{
-          background: 'var(--tt-charcoal)',
-          color: 'var(--tt-cyan)',
-          borderBottom: '2px solid var(--tt-cyan)',
-        }}
-        aria-hidden
+    <div className="flex items-center gap-2.5">
+      <span
+        className={`font-display text-[17px] font-extrabold tracking-tight ${onDark ? 'text-white' : 'text-text'}`}
       >
-        A
-      </div>
-      <div>
-        <div className={`${productClass} font-semibold leading-none text-text`}>Assemble</div>
-        <div className="mt-0.5 text-[11px] text-text-muted">by Turner & Townsend</div>
-      </div>
-    </>
+        {BRAND.company}
+      </span>
+      <span
+        className="rounded px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white"
+        style={{ background: 'var(--tt-blue)' }}
+      >
+        {BRAND.product}
+      </span>
+    </div>
   );
 
   if (href) {
     return (
-      <Link href={href} className="flex items-center gap-3">
+      <Link href={href} className="flex items-center">
         {content}
       </Link>
     );
   }
 
-  return <div className="flex items-center gap-3">{content}</div>;
+  return content;
 }

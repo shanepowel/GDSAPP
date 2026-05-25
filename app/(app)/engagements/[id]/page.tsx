@@ -9,12 +9,13 @@ import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { EngagementAssuranceHub } from '@/components/app/EngagementAssuranceHub';
 import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { ConstraintsCard } from '@/components/app/ConstraintsCard';
+import { PreparednessIndexCard } from '@/components/app/PreparednessIndexCard';
 import { RequirementFlexCard } from '@/components/app/RequirementFlexCard';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
+import { WhatIfMovesCard } from '@/components/app/WhatIfMovesCard';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
 import { engagementEntityLabel } from '@/lib/labels';
-import { ScoreBar } from '@/components/app/ScoreBar';
 import { Button } from '@/components/ui/Button';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
@@ -26,6 +27,7 @@ export default function EngagementOverviewPage() {
   const features = getClientDeploymentFeatures();
   const { messages: m } = useI18n();
   const entityLabel = engagementEntityLabel(features);
+  const utils = trpc.useUtils();
   const { data, isLoading, refetch } = trpc.engagement.byId.useQuery({ id });
   const { requirementId, setRequirementId } = useRequirementId(id, data?.requirements);
   const updateMeta = trpc.engagement.updateMeta.useMutation({ onSuccess: () => refetch() });
@@ -36,8 +38,9 @@ export default function EngagementOverviewPage() {
     },
   });
   const run = trpc.engagement.runAnalysis.useMutation({
-    onSuccess: () => {
-      window.location.href = `/engagements/${id}/analysis`;
+    onSuccess: async () => {
+      await utils.engagement.byId.invalidate({ id });
+      await utils.engagement.whatIfMoves.invalidate({ engagementId: id });
     },
   });
 
@@ -54,11 +57,17 @@ export default function EngagementOverviewPage() {
       ? 'Digital Service Standard for Wales'
       : 'GDS Service Standard';
 
+  const onWhatIfUpdated = () => {
+    void refetch();
+    void utils.engagement.byId.invalidate({ id });
+  };
+
   return (
     <AppShell
       title={data?.name ?? entityLabel}
       standardId={data?.standardId}
       orgLabel={entityLabel}
+      hideTitle
     >
       {isLoading && <p className="mt-4 text-text-muted">Loading…</p>}
       {data && (
@@ -66,16 +75,51 @@ export default function EngagementOverviewPage() {
           <DeploymentBanner />
           <AppNav />
           <EngagementSubNav engagementId={id} />
-          <p className="mb-2 text-sm text-text-muted">
-            {standardLabel} · {req?.phase ?? 'discovery'} phase
-          </p>
-          {(data.supplierTag || data.lotTag) && (
-            <p className="mb-4 text-sm text-text-muted">
-              {data.supplierTag && <>Supplier: {data.supplierTag}</>}
-              {data.supplierTag && data.lotTag && ' · '}
-              {data.lotTag && <>Lot: {data.lotTag}</>}
+
+          <section
+            className="-mx-6 mb-8 rounded-none px-6 py-8 md:rounded-2xl"
+            style={{ background: 'var(--tt-navy)' }}
+          >
+            <h1 className="font-display text-2xl font-semibold text-white md:text-[34px] md:leading-tight">
+              {data.name}
+            </h1>
+            <p className="mt-2 text-sm text-slate-400">
+              {standardLabel} · {req?.phase ?? 'discovery'} {m.engagement.phaseLabel}
             </p>
-          )}
+            {(data.supplierTag || data.lotTag) && (
+              <p className="mt-1 text-sm text-slate-400">
+                {data.supplierTag && <>Supplier: {data.supplierTag}</>}
+                {data.supplierTag && data.lotTag && ' · '}
+                {data.lotTag && <>Lot: {data.lotTag}</>}
+              </p>
+            )}
+            <p className="mt-4 max-w-2xl text-sm text-slate-300">{m.engagement.showWorkingTagline}</p>
+
+            {result && req ? (
+              <div className="mt-6">
+                <PreparednessIndexCard
+                  result={result}
+                  standardLabel={standardLabel}
+                  phase={req.phase}
+                />
+              </div>
+            ) : (
+              <div className="mt-6 rounded-2xl border border-dashed border-white/20 px-6 py-8 text-center">
+                <p className="text-sm text-slate-300">
+                  Run analysis to see the Preparedness Index for this requirement.
+                </p>
+                {req && (
+                  <Button
+                    className="mt-4"
+                    onClick={() => run.mutate({ requirementId: req.id })}
+                    disabled={run.isPending}
+                  >
+                    {m.common.runAnalysis}
+                  </Button>
+                )}
+              </div>
+            )}
+          </section>
 
           {editingMeta ? (
             <form
@@ -131,7 +175,18 @@ export default function EngagementOverviewPage() {
             />
           )}
 
-          <h2 className="mb-4 font-semibold">Assurance dashboard</h2>
+          {req && (
+            <section className="mt-8">
+              <h2 className="mb-4 font-display text-lg font-semibold text-text">What-if moves</h2>
+              <WhatIfMovesCard
+                engagementId={id}
+                requirementId={req.id}
+                onUpdated={onWhatIfUpdated}
+              />
+            </section>
+          )}
+
+          <h2 className="mb-4 mt-10 font-semibold">Assurance dashboard</h2>
           <EngagementAssuranceHub
             engagementId={id}
             result={result}
@@ -171,15 +226,6 @@ export default function EngagementOverviewPage() {
               </Link>
             </section>
           </div>
-
-          {lastRun && (
-            <div className="mt-6 rounded-2xl border border-border bg-surface p-5 shadow-sm">
-              <h2 className="font-semibold">Latest readiness</h2>
-              <div className="mt-3">
-                <ScoreBar value={lastRun.overallReadiness} />
-              </div>
-            </div>
-          )}
 
           <nav className="no-print mt-8 flex flex-wrap gap-3">
             {req && (

@@ -40,7 +40,7 @@ export function AppShell({
       <header className="border-b border-border bg-surface">
         <div className="mx-auto flex max-w-container items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-6">
-            <BrandMark href="/" size="sm" />
+            <BrandMark href="/" variant="light" />
           </div>
           <div className="flex items-center gap-3">
             {standardBadge && (

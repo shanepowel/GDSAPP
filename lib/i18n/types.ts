@@ -18,6 +18,9 @@ export type Messages = {
     invalidCredentialsOrSso: string;
     singleLoginHint: string;
     emailSignIn: string;
+    demoHint: string;
+    demoEmail: string;
+    demoPassword: string;
   };
   reviews: {
     title: string;
@@ -116,6 +119,20 @@ export type Messages = {
     flexCost: string;
     flexSpeed: string;
     flexQuality: string;
+    preparednessIndex: string;
+    live: string;
+    bandReady: string;
+    bandOnTrack: string;
+    bandAtRisk: string;
+    bandNotReady: string;
+    phaseLabel: string;
+    pointsMet: string;
+    toClose: string;
+    statutoryAtRisk: string;
+    whatIfIntro: string;
+    applyMove: string;
+    applied: string;
+    showWorkingTagline: string;
   };
   settings: {
     title: string;
@@ -125,6 +142,7 @@ export type Messages = {
   };
   home: {
     heroTitle: string;
+    heroTitleAccent: string;
     heroSubtitle: string;
     ctaSignIn: string;
     ctaRegister: string;
@@ -142,6 +160,16 @@ export type Messages = {
     step4Body: string;
     whoTitle: string;
     whoBody: string;
+    ctaDemo: string;
+    demoTitle: string;
+    demoBody: string;
+    ctaDemoEngagement: string;
+    pillarWorkingTitle: string;
+    pillarWorkingBody: string;
+    pillarAssessTitle: string;
+    pillarAssessBody: string;
+    pillarHandoverTitle: string;
+    pillarHandoverBody: string;
   };
   profile: {
     title: string;

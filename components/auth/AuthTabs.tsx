@@ -1,7 +1,7 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
@@ -14,7 +14,13 @@ type Tab = 'sign-in' | 'register';
 const inputClass =
   'mt-1 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text';
 
-export function AuthTabs({ initialTab = 'sign-in' }: { initialTab?: Tab }) {
+export function AuthTabs({
+  initialTab = 'sign-in',
+  callbackUrl = '/engagements',
+}: {
+  initialTab?: Tab;
+  callbackUrl?: string;
+}) {
   const { messages: m } = useI18n();
   const { data: authConfig } = trpc.user.authConfig.useQuery();
   const [tab, setTab] = useState<Tab>(initialTab);
@@ -26,6 +32,11 @@ export function AuthTabs({ initialTab = 'sign-in' }: { initialTab?: Tab }) {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [organisationName, setOrganisationName] = useState('');
+  const [redirectAfterSignIn, setRedirectAfterSignIn] = useState(callbackUrl);
+
+  useEffect(() => {
+    setRedirectAfterSignIn(callbackUrl);
+  }, [callbackUrl]);
 
   const entraEnabled = authConfig?.entraEnabled ?? false;
   const allowRegister = authConfig?.allowRegister ?? true;
@@ -49,12 +60,17 @@ export function AuthTabs({ initialTab = 'sign-in' }: { initialTab?: Tab }) {
     e.preventDefault();
     setError('');
     setSuccess('');
-    const res = await signIn('credentials', { email, password, redirect: false });
+    const res = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+      callbackUrl,
+    });
     if (res?.error) {
       setError(entraEnabled ? m.signIn.invalidCredentialsOrSso : m.signIn.invalidCredentials);
       return;
     }
-    window.location.href = '/engagements';
+    window.location.href = redirectAfterSignIn;
   }
 
   function onRegister(e: React.FormEvent) {
@@ -68,7 +84,7 @@ export function AuthTabs({ initialTab = 'sign-in' }: { initialTab?: Tab }) {
     <div className="flex min-h-screen flex-col bg-bg">
       <header className="border-b border-border bg-surface px-6 py-4">
         <div className="mx-auto flex max-w-container items-center justify-between">
-          <BrandMark href="/" size="sm" />
+          <BrandMark href="/" variant="light" />
           <LanguageSwitcher />
         </div>
       </header>
@@ -114,6 +130,26 @@ export function AuthTabs({ initialTab = 'sign-in' }: { initialTab?: Tab }) {
             </p>
           )}
           {error && <p className="mt-4 text-sm text-status-gap">{error}</p>}
+
+          <div className="mt-4 rounded-lg border border-brand/25 bg-brand-tint px-4 py-3 text-sm">
+            <p className="font-medium text-text">{m.signIn.demoHint}</p>
+            <p className="mt-2 font-mono text-xs text-text-muted">
+              {m.signIn.demoEmail} / {m.signIn.demoPassword}
+            </p>
+            <Button
+              type="button"
+              variant="secondary"
+              className="mt-3 w-full"
+              onClick={() => {
+                setEmail(m.signIn.demoEmail);
+                setPassword(m.signIn.demoPassword);
+                setShowEmailLogin(true);
+                setRedirectAfterSignIn('/engagements/nrw-demo');
+              }}
+            >
+              {m.home.ctaDemoEngagement}
+            </Button>
+          </div>
 
           {tab === 'sign-in' || !allowRegister ? (
             <div className="mt-6 space-y-4">
