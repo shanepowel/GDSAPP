@@ -8,6 +8,7 @@ import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { Eyebrow } from '@/components/app/Eyebrow';
 import { ScoreBar } from '@/components/app/ScoreBar';
 import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
+import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import { trpc } from '@/lib/trpc/client';
 
@@ -22,7 +23,8 @@ function bandToKind(band: string | null | undefined): StatusKind {
 export default function PortfolioPage() {
   const { data, isLoading } = trpc.portfolio.summary.useQuery();
   const features = getClientDeploymentFeatures();
-  const title = features.clientAssuranceLabels ? 'Portfolio assurance' : 'Portfolio';
+  const { messages: m } = useI18n();
+  const title = features.clientAssuranceLabels ? m.portfolio.titleAssurance : m.portfolio.title;
 
   return (
     <AppShell title={title} orgLabel="Organisation-wide">

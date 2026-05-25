@@ -4,12 +4,10 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from 'react';
-import { cy } from '@/lib/i18n/cy';
 import { en } from '@/lib/i18n/en';
 import { getMessages, isLocale, LOCALE_COOKIE, type Locale } from '@/lib/i18n/index';
 import type { Messages } from '@/lib/i18n/types';
@@ -34,11 +32,7 @@ function readCookieLocale(): Locale {
 }
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>('en');
-
-  useEffect(() => {
-    setLocaleState(readCookieLocale());
-  }, []);
+  const [locale, setLocaleState] = useState<Locale>(readCookieLocale);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);

@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -17,32 +17,25 @@ import { Button } from '@/components/ui/Button';
 import { trpc } from '@/lib/trpc/client';
 import { RIGOUR_DIMENSIONS, type RigourDimensionKey } from '@/lib/engine/rigour-config';
 
-export default function RigourPage() {
-  const params = useParams();
-  const id = params.id as string;
-  const { data: engagement } = trpc.engagement.byId.useQuery({ id });
-  const req = engagement?.requirements[0];
-  const { data: latest, refetch } = trpc.extension.rigour.latest.useQuery(
-    { requirementId: req?.id ?? '' },
-    { enabled: !!req?.id },
-  );
-  const save = trpc.extension.rigour.save.useMutation({ onSuccess: () => refetch() });
+type RigourScoreRow = {
+  dimension: string;
+  score: number;
+  evidenceNote: string;
+};
 
-  const initial = useMemo(() => {
-    const map = new Map(latest?.dimensions.map((d) => [d.dimension, d.score]) ?? []);
-    return RIGOUR_DIMENSIONS.map((d) => ({
-      dimension: d.key,
-      score: map.get(d.key) ?? 2,
-      evidenceNote: latest?.dimensions.find((x) => x.dimension === d.key)?.evidenceNote ?? '',
-    }));
-  }, [latest]);
-
+function RigourEditor({
+  initial,
+  onSave,
+  isPending,
+  engagementId,
+}: {
+  initial: RigourScoreRow[];
+  onSave: (dimensions: { dimension: string; score: number; evidenceNote?: string }[]) => void;
+  isPending: boolean;
+  engagementId: string;
+}) {
   const [scores, setScores] = useState(initial);
   const [active, setActive] = useState<RigourDimensionKey>(RIGOUR_DIMENSIONS[0].key);
-
-  useEffect(() => {
-    setScores(initial);
-  }, [initial]);
 
   const dimConfig = RIGOUR_DIMENSIONS.find((d) => d.key === active)!;
   const activeScore = scores.find((s) => s.dimension === active)?.score ?? 0;
@@ -53,10 +46,7 @@ export default function RigourPage() {
   });
 
   return (
-    <AppShell title="Agile rigour assessment">
-      <p className="mb-4 text-sm text-text-muted">
-        Score each dimension 0 to 4. Feeds Service Standard point 7 and bid approach questions.
-      </p>
+    <>
       <div className="h-64 rounded-lg border border-border bg-surface p-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} layout="vertical" margin={{ left: 80 }}>
@@ -126,27 +116,67 @@ export default function RigourPage() {
           />
         </section>
       </div>
-      {req && (
-        <Button
-          className="mt-6"
-          onClick={() =>
-            save.mutate({
-              requirementId: req.id,
-              dimensions: scores.map(({ dimension, score, evidenceNote }) => ({
-                dimension,
-                score,
-                evidenceNote: evidenceNote || undefined,
-              })),
-            })
-          }
-          disabled={save.isPending}
-        >
-          Save assessment
-        </Button>
-      )}
-      <Link href={`/engagements/${id}`} className="mt-4 inline-block text-sm text-brand hover:underline">
+      <Button
+        className="mt-6"
+        onClick={() =>
+          onSave(
+            scores.map(({ dimension, score, evidenceNote }) => ({
+              dimension,
+              score,
+              evidenceNote: evidenceNote || undefined,
+            })),
+          )
+        }
+        disabled={isPending}
+      >
+        Save assessment
+      </Button>
+      <Link
+        href={`/engagements/${engagementId}`}
+        className="mt-4 inline-block text-sm text-brand hover:underline"
+      >
         Back to engagement
       </Link>
+    </>
+  );
+}
+
+export default function RigourPage() {
+  const params = useParams();
+  const id = params.id as string;
+  const { data: engagement } = trpc.engagement.byId.useQuery({ id });
+  const req = engagement?.requirements[0];
+  const { data: latest, refetch } = trpc.extension.rigour.latest.useQuery(
+    { requirementId: req?.id ?? '' },
+    { enabled: !!req?.id },
+  );
+  const save = trpc.extension.rigour.save.useMutation({ onSuccess: () => refetch() });
+
+  const initial = useMemo(() => {
+    const map = new Map(latest?.dimensions.map((d) => [d.dimension, d.score]) ?? []);
+    return RIGOUR_DIMENSIONS.map((d) => ({
+      dimension: d.key,
+      score: map.get(d.key) ?? 2,
+      evidenceNote: latest?.dimensions.find((x) => x.dimension === d.key)?.evidenceNote ?? '',
+    }));
+  }, [latest]);
+
+  return (
+    <AppShell title="Agile rigour assessment">
+      <p className="mb-4 text-sm text-text-muted">
+        Score each dimension 0 to 4. Feeds Service Standard point 7 and bid approach questions.
+      </p>
+      {req ? (
+        <RigourEditor
+          key={latest?.id ?? 'new'}
+          initial={initial}
+          engagementId={id}
+          isPending={save.isPending}
+          onSave={(dimensions) => save.mutate({ requirementId: req.id, dimensions })}
+        />
+      ) : (
+        <p className="text-text-muted">Loading…</p>
+      )}
     </AppShell>
   );
 }

@@ -2,48 +2,63 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { Button } from '@/components/ui/Button';
 import { trpc } from '@/lib/trpc/client';
 
 const PHASES = ['discovery', 'alpha', 'beta', 'live'] as const;
 
-export default function RequirementPage() {
-  const params = useParams();
-  const id = params.id as string;
-  const { data } = trpc.engagement.byId.useQuery({ id });
-  const { data: roleLevels } = trpc.engagement.roleLevels.useQuery();
-  const update = trpc.engagement.updateRequirement.useMutation({
-    onSuccess: () => {
-      window.location.href = `/engagements/${id}`;
-    },
-  });
+type RequirementData = {
+  id: string;
+  title: string;
+  phase: string;
+  outcome: string;
+  channels: string[];
+  sensitivity: string;
+  roles: { roleLevelId: string }[];
+};
 
-  const req = data?.requirements[0];
-  const [title, setTitle] = useState('');
-  const [phase, setPhase] = useState<(typeof PHASES)[number]>('discovery');
-  const [outcome, setOutcome] = useState('');
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+type RoleLevelRow = {
+  id: string;
+  name: string;
+  role: { name: string };
+};
 
-  useEffect(() => {
-    if (req) {
-      setTitle(req.title);
-      setPhase(req.phase as (typeof PHASES)[number]);
-      setOutcome(req.outcome);
-      setSelectedRoles(req.roles.map((r) => r.roleLevelId));
-    }
-  }, [req]);
-
-  if (!req) return <AppShell title="Requirement">Loading…</AppShell>;
+function RequirementForm({
+  req,
+  engagementId,
+  roleLevels,
+  onSave,
+  isPending,
+}: {
+  req: RequirementData;
+  engagementId: string;
+  roleLevels: RoleLevelRow[] | undefined;
+  onSave: (input: {
+    requirementId: string;
+    title: string;
+    phase: (typeof PHASES)[number];
+    outcome: string;
+    channels: string[];
+    sensitivity: string;
+    roleLevelIds: string[];
+  }) => void;
+  isPending: boolean;
+}) {
+  const [title, setTitle] = useState(req.title);
+  const [phase, setPhase] = useState<(typeof PHASES)[number]>(
+    req.phase as (typeof PHASES)[number],
+  );
+  const [outcome, setOutcome] = useState(req.outcome);
+  const [selectedRoles, setSelectedRoles] = useState(req.roles.map((r) => r.roleLevelId));
 
   return (
-    <AppShell title="Requirement">
-      <form
+    <form
         className="max-w-2xl space-y-6"
         onSubmit={(e) => {
           e.preventDefault();
-          update.mutate({
+          onSave({
             requirementId: req.id,
             title,
             phase,
@@ -108,14 +123,42 @@ export default function RequirementPage() {
           </div>
         </div>
         <div className="flex gap-3">
-          <Button type="submit" disabled={update.isPending}>
+          <Button type="submit" disabled={isPending}>
             Save
           </Button>
-          <Link href={`/engagements/${id}`}>
+          <Link href={`/engagements/${engagementId}`}>
             <Button variant="secondary">Cancel</Button>
           </Link>
         </div>
       </form>
+  );
+}
+
+export default function RequirementPage() {
+  const params = useParams();
+  const id = params.id as string;
+  const { data } = trpc.engagement.byId.useQuery({ id });
+  const { data: roleLevels } = trpc.engagement.roleLevels.useQuery();
+  const update = trpc.engagement.updateRequirement.useMutation({
+    onSuccess: () => {
+      window.location.href = `/engagements/${id}`;
+    },
+  });
+
+  const req = data?.requirements[0];
+
+  if (!req) return <AppShell title="Requirement">Loading…</AppShell>;
+
+  return (
+    <AppShell title="Requirement">
+      <RequirementForm
+        key={req.id}
+        req={req}
+        engagementId={id}
+        roleLevels={roleLevels}
+        isPending={update.isPending}
+        onSave={(input) => update.mutate(input)}
+      />
     </AppShell>
   );
 }
