@@ -3,7 +3,7 @@ export const BRAND = {
   company: 'Turner & Townsend',
   product: 'Assemble',
   productLine: 'Assemble by Turner & Townsend',
-  tagline: 'Service standard assurance accelerator',
+  tagline: 'Live standard assurance for bids that must win',
   legalLine: 'Turner & Townsend',
   site: 'https://www.turnerandtownsend.com',
   logos: {
