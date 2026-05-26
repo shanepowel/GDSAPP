@@ -127,7 +127,7 @@ export default function EvidencePage() {
                   <ul className="mt-2 text-xs text-text-muted">
                     {e.links.map((l) => (
                       <li key={l.id}>
-                        Point: {l.pointId ?? '—'}
+                        Point: {l.pointId ?? '-'}
                         {l.questionId ? ` · Question ${l.questionId}` : ''}
                       </li>
                     ))}

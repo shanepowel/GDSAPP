@@ -92,7 +92,7 @@ export function EngagementWorkflowGuide({
       {nextId && (
         <p className="mt-4 text-sm text-text">
           <span className="font-medium text-brand">{m.engagement.workflowUpNext}</span>{' '}
-          {meta[nextId].label} — {meta[nextId].hint}
+          {meta[nextId].label}: {meta[nextId].hint}
         </p>
       )}
     </section>

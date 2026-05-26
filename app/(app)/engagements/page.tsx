@@ -153,7 +153,7 @@ export default function EngagementsPage() {
             >
               <h2 className="font-semibold text-text">{e.name}</h2>
               <p className="mt-1 text-sm text-text-muted">
-                {e.standardId === 'wales' ? 'Wales' : 'GDS'} · {e.phase ?? '—'}
+                {e.standardId === 'wales' ? 'Wales' : 'GDS'} · {e.phase ?? '-'}
                 {e.supplierTag ? ` · ${e.supplierTag}` : ''}
               </p>
               <div className="mt-3">

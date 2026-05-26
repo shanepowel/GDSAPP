@@ -7,7 +7,7 @@ export function buildAnswerScaffold(
   analysis: AnalysisResult | null,
 ): string {
   const lines: string[] = [
-    '[Advisory draft scaffold — human approval required before use]',
+    '[Advisory draft scaffold: human approval required before use]',
     '',
     `Question: ${questionText}`,
     '',
@@ -33,7 +33,7 @@ export function buildAnswerScaffold(
       .slice(0, 3);
     topGaps.forEach((g) => lines.push(`- Related standard point ${g.number}: ${g.title} (${g.status}).`));
     analysis.adaptation.actions.slice(0, 3).forEach((a) => {
-      lines.push(`- Adaptation: ${a.title} — ${a.description}`);
+      lines.push(`- Adaptation: ${a.title}: ${a.description}`);
     });
   }
 

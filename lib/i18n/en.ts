@@ -4,7 +4,7 @@ export const en: Messages = {
   signIn: {
     title: 'Sign in to Assemble',
     subtitle:
-      'The Turner & Townsend accelerator that turns GDS and Wales standard assurance into a live, panel-ready story — before you sign the bid or walk into the gate.',
+      'The Turner & Townsend accelerator that turns GDS and Wales standard assurance into a live, panel-ready story, before you sign the bid or walk into the gate.',
     tabSignIn: 'Sign in',
     tabRegister: 'Create account',
     email: 'Email',
@@ -25,7 +25,7 @@ export const en: Messages = {
       'The database is not provisioned yet. Run npm run db:provision against this environment, or redeploy after migrations are configured (DIRECT_URL on Vercel).',
     singleLoginHint: 'Use your organisation Microsoft account (Turner & Townsend Entra ID).',
     emailSignIn: 'Sign in with email instead',
-    demoHint: 'Live demo — NRW discovery in two minutes',
+    demoHint: 'Live demo: NRW discovery in two minutes',
     demoEmail: 'admin@demo.local',
     demoPassword: 'demo-password',
     demoFillButton: 'Launch demo · NRW discovery',
@@ -87,7 +87,7 @@ export const en: Messages = {
     recordJudgement: 'Record judgement',
     historyTitle: 'History',
     reportTitle: 'Report',
-    reportIntro: 'Export the assurance pack you walk into the room with — branded, printable, shareable.',
+    reportIntro: 'Export the assurance pack you walk into the room with, branded, printable, shareable.',
     printReport: 'Print report',
     shareCreate: 'Create share link',
     shareRevoke: 'Revoke',
@@ -128,7 +128,7 @@ export const en: Messages = {
     flexTitle: 'Requirement flexibility',
     flexPriority: 'Flex priority',
     flexPriorityLabel: 'How should scope flex when under pressure?',
-    flexNoOptions: 'No flex recommendations — structure looks sound for this priority.',
+    flexNoOptions: 'No flex recommendations: structure looks sound for this priority.',
     flexBalanced: 'Balanced',
     flexCost: 'Cost control',
     flexSpeed: 'Speed',
@@ -144,18 +144,18 @@ export const en: Messages = {
     toClose: 'To close',
     statutoryAtRisk: 'Statutory at risk',
     whatIfIntro:
-      'The moves that change the conversation. Apply one and watch the Preparedness Index shift — live proof you can close the gap.',
+      'The moves that change the conversation. Apply one and watch the Preparedness Index shift, live proof you can close the gap.',
     applyMove: 'Model this fix',
     applied: 'Applied',
     showWorkingTagline:
-      'This is what we mean by showing our working — every point traceable, every gap with a named fix.',
+      'This is what we mean by showing our working, every point traceable, every gap with a named fix.',
     overviewIntro:
       'Your assurance narrative starts here. Follow the path below, run the index live, then model the moves that turn “at risk” into “ready” before you export.',
     preparednessHelp:
       'The number you put in front of the panel: readiness for this phase, with statutory risk called out in the open.',
     noAnalysisTitle: 'Your story starts with one click',
     noAnalysisBody:
-      'Load the team you would actually bid with, then run the assessment. The index and gap list appear in seconds — ready to narrate.',
+      'Load the team you would actually bid with, then run the assessment. The index and gap list appear in seconds, ready to narrate.',
     whatIfTitle: 'Close the gap (live what-if)',
     workflowTitle: 'Your path to panel-ready',
     workflowIntro: 'Five steps from requirement to report. We highlight what to do next so nothing blocks the sell.',
@@ -167,11 +167,11 @@ export const en: Messages = {
     workflowStepTeam: 'Team',
     workflowStepTeamHint: 'The real people, skills, and gaps you would defend in the room.',
     workflowStepEvidence: 'Evidence',
-    workflowStepEvidenceHint: 'Strengthen the story — artefacts linked to standard points.',
+    workflowStepEvidenceHint: 'Strengthen the story: artefacts linked to standard points.',
     workflowStepAnalysis: 'Analysis',
     workflowStepAnalysisHint: 'Run live. Open any gap and show the reasoning on the spot.',
     workflowStepReport: 'Report',
-    workflowStepReportHint: 'Panel-ready PDF — your branded assurance pack.',
+    workflowStepReportHint: 'Panel-ready PDF: your branded assurance pack.',
     navGroupPrepare: 'Prepare',
     navGroupAssess: 'Assess',
     navGroupDecide: 'Decide',
@@ -191,7 +191,7 @@ export const en: Messages = {
     peopleCount: '{n} people on this engagement',
     primaryActions: 'Actions',
     hubNoAnalysis:
-      'Run the assessment once and this becomes your bid-room briefing — readiness, rigour, evidence, and call-off outlook in one view.',
+      'Run the assessment once and this becomes your bid-room briefing: readiness, rigour, evidence, and call-off outlook in one view.',
   },
   settings: {
     title: 'Settings',
@@ -205,8 +205,8 @@ export const en: Messages = {
     heroTitle: 'Win the room',
     heroTitleAccent: 'before you win the work.',
     heroSubtitle:
-      'Stop defending a slide deck. Model your team against every point of the GDS or Wales standard, watch the score move live, and show the exact move that closes each gap — in front of the panel.',
-    proof1: 'Live Preparedness Index — updates as you change the team',
+      'Stop defending a slide deck. Model your team against every point of the GDS or Wales standard, watch the score move live, and show the exact move that closes each gap, in front of the panel.',
+    proof1: 'Live Preparedness Index: updates as you change the team',
     proof2: 'Every gap named with reasoning the panel can challenge',
     proof3: 'What-if moves that prove you can close statutory risk',
     ctaSignIn: 'Sign in',
@@ -214,16 +214,16 @@ export const en: Messages = {
     ctaDashboard: 'Open dashboard',
     whatTitle: 'Why teams choose Assemble',
     whatBody:
-      'One Preparedness Index your client can trust. Point-level gaps with statutory flags. Agile rigour and call-off quality outlook in the same session. Every number opens to its reasoning — so you sell rigour, not promises.',
+      'One Preparedness Index your client can trust. Point-level gaps with statutory flags. Agile rigour and call-off quality outlook in the same session. Every number opens to its reasoning, so you sell rigour, not promises.',
     howTitle: 'From blank page to panel-ready',
     step1Title: 'Set the engagement',
     step1Body: 'Capture the service, standard, and phase your bid depends on.',
     step2Title: 'Put your real team in',
-    step2Body: 'Skills, roles, vacancies — exactly what you would send to tender.',
+    step2Body: 'Skills, roles, vacancies, exactly what you would send to tender.',
     step3Title: 'Run it live',
     step3Body: 'Scores update as you change the team. Model what-if fixes before anyone asks “what would you do?”',
     step4Title: 'Walk in with the PDF',
-    step4Body: 'Branded report, human judgements, portfolio roll-up — your assurance story, packaged.',
+    step4Body: 'Branded report, human judgements, portfolio roll-up, your assurance story, packaged.',
     whoTitle: 'Built for the deals that matter',
     whoBody:
       'Framework mini-competitions, NRW-style client assurance, and portfolio leaders who need one honest view of readiness across suppliers and lots.',
@@ -231,17 +231,17 @@ export const en: Messages = {
     ctaDemo: 'Watch the NRW demo',
     demoTitle: 'See the sell live',
     demoBody:
-      'Pre-loaded NRW discovery: real gaps, Welsh statutory risk, and what-if moves that lift the index in one click — the story you tell in the room.',
+      'Pre-loaded NRW discovery: real gaps, Welsh statutory risk, and what-if moves that lift the index in one click. The story you tell in the room.',
     ctaDemoEngagement: 'Open NRW demo after sign-in',
     pillarWorkingTitle: 'Prove it, don’t promise it',
     pillarWorkingBody:
-      'Every score traces to the standard and opens on demand. When the panel pushes back, you show the working — not a footnote.',
+      'Every score traces to the standard and opens on demand. When the panel pushes back, you show the working, not a footnote.',
     pillarAssessTitle: 'De-risk the gate',
     pillarAssessBody:
       'Statutory gaps and skill shortfalls named before submission. You control the narrative instead of discovering surprises in review.',
     pillarHandoverTitle: 'They keep the instrument',
     pillarHandoverBody:
-      'Hand the client a capability they can run themselves. You win on rigour today — and on trust that lasts after contract award.',
+      'Hand the client a capability they can run themselves. You win on rigour today, and on trust that lasts after contract award.',
   },
   profile: {
     title: 'Your profile',
@@ -261,10 +261,10 @@ export const en: Messages = {
     new: 'New call-off',
     empty: 'No call-offs yet. Create one to assess team readiness against a service standard.',
     listIntro:
-      'Every call-off in one assurance view. Open any engagement to run the narrative your panel expects — live scores, named gaps, traceable reasoning.',
+      'Every call-off in one assurance view. Open any engagement to run the narrative your panel expects: live scores, named gaps, traceable reasoning.',
     emptyTitle: 'Your first win starts here',
     emptyBody:
-      'Create a call-off and model the team you would actually bid with — or open the NRW demo to see a discovery assessment ready to present.',
+      'Create a call-off and model the team you would actually bid with, or open the NRW demo to see a discovery assessment ready to present.',
     emptyCtaDemo: 'Watch the NRW demo',
     createNamePlaceholder: 'Call-off name',
     createSupplierPlaceholder: 'Supplier (optional)',

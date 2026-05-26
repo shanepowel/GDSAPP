@@ -61,7 +61,7 @@ export default function PortfolioPage() {
             <Card className="p-5">
               <Eyebrow>Mean agile rigour</Eyebrow>
               <p className="mt-2 text-2xl font-bold tabular-nums">
-                {data.averageRigour != null ? `${data.averageRigour}%` : '—'}
+                {data.averageRigour != null ? `${data.averageRigour}%` : '-'}
               </p>
             </Card>
             <Card className="p-5">
@@ -104,7 +104,7 @@ export default function PortfolioPage() {
                       <td className="px-5 py-3 font-medium">{g.supplierTag}</td>
                       <td className="px-5 py-3 tabular-nums">{g.engagementCount}</td>
                       <td className="px-5 py-3 tabular-nums">
-                        {g.averageReadiness != null ? `${g.averageReadiness}%` : '—'}
+                        {g.averageReadiness != null ? `${g.averageReadiness}%` : '-'}
                       </td>
                       <td className="px-5 py-3 tabular-nums">{g.totalGapPoints}</td>
                     </tr>
@@ -137,7 +137,7 @@ export default function PortfolioPage() {
                         {row.name}
                       </Link>
                       <p className="text-xs text-text-muted">
-                        {row.phase ?? '—'}
+                        {row.phase ?? '-'}
                         {row.supplierTag ? ` · ${row.supplierTag}` : ''}
                         {row.lotTag ? ` · ${row.lotTag}` : ''}
                       </p>
@@ -153,10 +153,10 @@ export default function PortfolioPage() {
                       )}
                     </td>
                     <td className="px-5 py-3 tabular-nums">
-                      {row.rigourPercent != null ? `${row.rigourPercent}%` : '—'}
+                      {row.rigourPercent != null ? `${row.rigourPercent}%` : '-'}
                     </td>
                     <td className="px-5 py-3 tabular-nums">
-                      {row.callOffOutlook != null ? `${row.callOffOutlook}%` : '—'}
+                      {row.callOffOutlook != null ? `${row.callOffOutlook}%` : '-'}
                       {row.passFailRiskCount > 0 && (
                         <span className="ml-1 text-status-gap">({row.passFailRiskCount} risk)</span>
                       )}

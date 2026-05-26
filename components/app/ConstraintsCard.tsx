@@ -56,27 +56,27 @@ export function ConstraintsCard({
           <div>
             <dt className="text-text-muted">Budget cap</dt>
             <dd className="font-medium tabular-nums">
-              {data.budgetCap != null ? `£${data.budgetCap.toLocaleString('en-GB')}` : '—'}
+              {data.budgetCap != null ? `£${data.budgetCap.toLocaleString('en-GB')}` : '-'}
             </dd>
           </div>
           <div>
             <dt className="text-text-muted">Internal day rate</dt>
             <dd className="font-medium tabular-nums">
-              {data.internalRatePerDay != null ? `£${data.internalRatePerDay}` : '—'}
+              {data.internalRatePerDay != null ? `£${data.internalRatePerDay}` : '-'}
             </dd>
           </div>
           <div>
             <dt className="text-text-muted">Partner day rate</dt>
             <dd className="font-medium tabular-nums">
-              {data.partnerRatePerDay != null ? `£${data.partnerRatePerDay}` : '—'}
+              {data.partnerRatePerDay != null ? `£${data.partnerRatePerDay}` : '-'}
             </dd>
           </div>
           <div>
             <dt className="text-text-muted">Window</dt>
             <dd className="font-medium">
               {data.startBy || data.endBy
-                ? `${data.startBy ? new Date(data.startBy).toLocaleDateString('en-GB') : '—'} → ${data.endBy ? new Date(data.endBy).toLocaleDateString('en-GB') : '—'}`
-                : '—'}
+                ? `${data.startBy ? new Date(data.startBy).toLocaleDateString('en-GB') : '-'} → ${data.endBy ? new Date(data.endBy).toLocaleDateString('en-GB') : '-'}`
+                : '-'}
             </dd>
           </div>
         </dl>
