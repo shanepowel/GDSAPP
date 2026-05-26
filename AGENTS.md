@@ -25,8 +25,8 @@ See `README.md` and `package.json` scripts. Key commands:
 
 - **Migrate:** `npx prisma migrate dev` (with `DATABASE_URL` and `DIRECT_URL` exported)
 - **Seed:** `npm run seed` (runs ingest + seed:standards + seed:demo)
-- **Unit tests:** `npm test` (Vitest, 9 tests)
-- **E2E tests:** `npm run test:e2e` (Playwright + axe; requires `npx playwright install` first)
+- **Unit tests:** `npm test` (Vitest, 19 tests across 8 files)
+- **E2E tests:** `npm run test:e2e` (Playwright + axe; requires `npx playwright install` first; the smoke test has pre-existing a11y failures from color-contrast and landmark violations on the sign-in page)
 - **Lint:** `npm run lint` (ESLint; 2 pre-existing errors in repo)
 - **Typecheck:** `npm run typecheck`
 
