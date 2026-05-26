@@ -58,6 +58,18 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
             <span style={{ color: 'var(--tt-blue-hero)' }}>{m.home.heroTitleAccent}</span>
           </h1>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-300">{m.home.heroSubtitle}</p>
+          <ul className="mt-8 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-8 sm:gap-y-2">
+            {[m.home.proof1, m.home.proof2, m.home.proof3].map((line) => (
+              <li key={line} className="flex items-center gap-2 text-sm text-slate-300">
+                <span
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ background: 'var(--tt-blue-hero)' }}
+                  aria-hidden
+                />
+                {line}
+              </li>
+            ))}
+          </ul>
           <div className="mt-8 flex flex-wrap gap-4">
             {isSignedIn ? (
               <Link href="/engagements">

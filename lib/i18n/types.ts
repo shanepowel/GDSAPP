@@ -214,6 +214,9 @@ export type Messages = {
     pillarHandoverBody: string;
     heroEyebrow: string;
     ctaTryDemo: string;
+    proof1: string;
+    proof2: string;
+    proof3: string;
   };
   profile: {
     title: string;
