@@ -4,7 +4,7 @@ export const cy: Messages = {
   signIn: {
     title: 'Mewngofnodi i Assemble',
     subtitle:
-      'Cyflymydd Turner & Townsend sy’n troi sicrwydd safon GDS a Chymru yn stori fyw, barod i’r panel — cyn i chi lofnodi’r tendr neu gerdded drwy’r porth.',
+      'Cyflymydd Turner & Townsend sy’n troi sicrwydd safon GDS a Chymru yn stori fyw, barod i’r panel, cyn i chi lofnodi’r tendr neu gerdded drwy’r porth.',
     tabSignIn: 'Mewngofnodi',
     tabRegister: 'Creu cyfrif',
     email: 'E-bost',
@@ -26,7 +26,7 @@ export const cy: Messages = {
       'Nid yw’r gronfa ddata wedi’i darparu eto. Rhedegwch npm run db:provision ar gyfer yr amgylchedd hwn, neu ail-ddatblygu ar ôl ffurfweddu migrasiynau (DIRECT_URL ar Vercel).',
     singleLoginHint: 'Defnyddiwch eich cyfrif Microsoft sefydliad (Entra ID Turner & Townsend).',
     emailSignIn: 'Mewngofnodi gydag e-bost yn lle hynny',
-    demoHint: 'Demo byw — darganfod NRW mewn dwy funud',
+    demoHint: 'Demo byw: darganfod NRW mewn dwy funud',
     demoEmail: 'admin@demo.local',
     demoPassword: 'demo-password',
     demoFillButton: 'Lansio demo · darganfod NRW',
@@ -129,7 +129,7 @@ export const cy: Messages = {
     flexTitle: 'Hyblygrwydd gofyniad',
     flexPriority: 'Blaenoriaeth hyblyg',
     flexPriorityLabel: 'Sut y dylid hyblygu cwmpas pan fo pwysau?',
-    flexNoOptions: 'Dim argymhellion hyblyg — mae’r strwythur yn edrych yn gadarn ar gyfer y blaenoriaeth hon.',
+    flexNoOptions: 'Dim argymhellion hyblyg: mae’r strwythur yn edrych yn gadarn ar gyfer y blaenoriaeth hon.',
     flexBalanced: 'Cytbwys',
     flexCost: 'Rheoli cost',
     flexSpeed: 'Cyflymder',
@@ -145,18 +145,18 @@ export const cy: Messages = {
     toClose: 'I’w gau',
     statutoryAtRisk: 'Statudol mewn perygl',
     whatIfIntro:
-      'Y symudiadau sy’n newid y sgwrs. Defnyddiwch un a gwylio’r Mynegai Parodrwydd yn symud — prawf byw y gallwch gau’r bwlch.',
+      'Y symudiadau sy’n newid y sgwrs. Defnyddiwch un a gwylio’r Mynegai Parodrwydd yn symud, prawf byw y gallwch gau’r bwlch.',
     applyMove: 'Modelu’r fix hwn',
     applied: 'Wedi modelu',
     showWorkingTagline:
-      'Dyma’r ystyr o ddangos ein gwaith — pob pwynt yn olrhainadwy, pob bwlch gyda fix wedi’i enwi.',
+      'Dyma’r ystyr o ddangos ein gwaith, pob pwynt yn olrhainadwy, pob bwlch gyda fix wedi’i enwi.',
     overviewIntro:
       'Mae eich naratif sicrwydd yn dechrau yma. Dilynwch y llwybr, rhedegwch y mynegai’n fyw, yna modelwch y symudiadau sy’n troi “mewn perygl” yn “barod” cyn allforio.',
     preparednessHelp:
       'Y rhif rydych chi’n ei roi o flaen y panel: parodrwydd ar gyfer y cyfnod hwn, gyda risg statudol yn agored.',
     noAnalysisTitle: 'Mae eich stori’n dechrau gydag un clic',
     noAnalysisBody:
-      'Llwythwch y tîm y byddech chi’n tendro ag ef mewn gwirionedd, yna rhedegwch yr asesiad. Mae’r mynegai a’r rhestr o fylchau yn ymddangos mewn eiliadau — barod i’w hadrodd.',
+      'Llwythwch y tîm y byddech chi’n tendro ag ef mewn gwirionedd, yna rhedegwch yr asesiad. Mae’r mynegai a’r rhestr o fylchau yn ymddangos mewn eiliadau, barod i’w hadrodd.',
     whatIfTitle: 'Cau’r bwlch (what-if byw)',
     workflowTitle: 'Eich llwybr i barod i’r panel',
     workflowIntro: 'Pum cam o ofyniad i adroddiad. Rydym yn amlygu beth i’w wneud nesaf fel na rwystr unrhyw beth y gwerthu.',
@@ -168,11 +168,11 @@ export const cy: Messages = {
     workflowStepTeam: 'Tîm',
     workflowStepTeamHint: 'Y bobl, sgiliau, a bylchau go iawn y byddech chi’n eu hamddiffyn yn yr ystafell.',
     workflowStepEvidence: 'Tystiolaeth',
-    workflowStepEvidenceHint: 'Cryfhewch y stori — artefaktau wedi’u cysylltu â phwyntiau safon.',
+    workflowStepEvidenceHint: 'Cryfhewch y stori: artefaktau wedi’u cysylltu â phwyntiau safon.',
     workflowStepAnalysis: 'Dadansoddiad',
     workflowStepAnalysisHint: 'Rhedeg yn fyw. Agorwch unrhyw bwlch a dangoswch y rhesymeg ar y pryd.',
     workflowStepReport: 'Adroddiad',
-    workflowStepReportHint: 'PDF barod i’r panel — eich pecyn sicrwydd brandiedig.',
+    workflowStepReportHint: 'PDF barod i’r panel: eich pecyn sicrwydd brandiedig.',
     navGroupPrepare: 'Paratoi',
     navGroupAssess: 'Asesu',
     navGroupDecide: 'Penderfynu',
@@ -192,7 +192,7 @@ export const cy: Messages = {
     peopleCount: '{n} o bobl ar yr ymgysylltiad hwn',
     primaryActions: 'Gweithredoedd',
     hubNoAnalysis:
-      'Rhedegwch yr asesiad unwaith a daw hyn yn eich briffing ystafell tendr — parodrwydd, trwmder, tystiolaeth, a rhagolygon galwad i dendro mewn un golwg.',
+      'Rhedegwch yr asesiad unwaith a daw hyn yn eich briffing ystafell tendr, parodrwydd, trwmder, tystiolaeth, a rhagolygon galwad i dendro mewn un golwg.',
   },
   settings: {
     title: 'Gosodiadau',
@@ -206,8 +206,8 @@ export const cy: Messages = {
     heroTitle: 'Ennill yr ystafell',
     heroTitleAccent: 'cyn i chi ennill y gwaith.',
     heroSubtitle:
-      'Peidiwch amddiffyn sleid. Modelwch eich tîm yn erbyn pob pwynt o’r safon GDS neu Gymru, gwylio’r sgôr yn symud yn fyw, a dangos y cam union sy’n cau pob bwlch — o flaen y panel.',
-    proof1: 'Mynegai Parodrwydd byw — yn diweddaru wrth i chi newid y tîm',
+      'Peidiwch amddiffyn sleid. Modelwch eich tîm yn erbyn pob pwynt o’r safon GDS neu Gymru, gwylio’r sgôr yn symud yn fyw, a dangos y cam union sy’n cau pob bwlch, o flaen y panel.',
+    proof1: 'Mynegai Parodrwydd byw: yn diweddaru wrth i chi newid y tîm',
     proof2: 'Pob bwlch wedi’i enwi gyda rhesymeg y gall y panel herio',
     proof3: 'Symudiadau what-if sy’n profi y gallwch gau risg statudol',
     ctaSignIn: 'Mewngofnodi',
@@ -215,16 +215,16 @@ export const cy: Messages = {
     ctaDashboard: 'Agor dangosfwrdd',
     whatTitle: 'Pam mae timau’n dewis Assemble',
     whatBody:
-      'Un Mynegai Parodrwydd y gall eich cleient ymddiried ynddo. Bylchau fesul pwynt gyda fflagau statudol. Trwmder ystwyth a rhagolygon galwad i dendro yn yr un sesiwn. Mae pob rhif yn agor i’w resymeg — fel y gwerthwch rigour, nid addewidion.',
+      'Un Mynegai Parodrwydd y gall eich cleient ymddiried ynddo. Bylchau fesul pwynt gyda fflagau statudol. Trwmder ystwyth a rhagolygon galwad i dendro yn yr un sesiwn. Mae pob rhif yn agor i’w resymeg, fel y gwerthwch rigour, nid addewidion.',
     howTitle: 'O dudalen wag i barod i’r panel',
     step1Title: 'Gosod yr ymgysylltiad',
     step1Body: 'Cofnodwch y gwasanaeth, y safon, a’r cyfnod y mae eich tendr yn dibynnu arnynt.',
     step2Title: 'Rhowch eich tîm go iawn',
-    step2Body: 'Sgiliau, rolau, gwagddaliadau — yn union fel y byddech chi’n eu hanfon i dendr.',
+    step2Body: 'Sgiliau, rolau, gwagddaliadau, yn union fel y byddech chi’n eu hanfon i dendr.',
     step3Title: 'Rhedeg yn fyw',
     step3Body: 'Mae sgoriau’n diweddaru wrth i chi newid y tîm. Modelwch fix what-if cyn i neb ofyn “beth fyddech chi’n ei wneud?”',
     step4Title: 'Cerdded i mewn gyda’r PDF',
-    step4Body: 'Adroddiad brandiedig, barnau dynol, portffolio — eich stori sicrwydd, wedi’i pecynnu.',
+    step4Body: 'Adroddiad brandiedig, barnau dynol, portffolio, eich stori sicrwydd, wedi’i pecynnu.',
     whoTitle: 'Wedi’i adeiladu ar gyfer y cytundebau sy’n cyfrif',
     whoBody:
       'Cystadlaethau mini fframwaith, sicrwydd cleientiaid ar ffurf NRW, ac arweinwyr portffolio sydd angen un golwg gonest ar barodrwydd ar draws cyflenwyr a lotiau.',
@@ -232,17 +232,17 @@ export const cy: Messages = {
     ctaDemo: 'Gwylio demo NRW',
     demoTitle: 'Gweld y gwerthu’n fyw',
     demoBody:
-      'Darganfod NRW wedi’i lwytho: bylchau go iawn, risg statudol Gymraeg, a symudiadau what-if sy’n codi’r mynegai mewn un clic — y stori rydych chi’n ei hadrodd yn yr ystafell.',
+      'Darganfod NRW wedi’i lwytho: bylchau go iawn, risg statudol Gymraeg, a symudiadau what-if sy’n codi’r mynegai mewn un clic, y stori rydych chi’n ei hadrodd yn yr ystafell.',
     ctaDemoEngagement: 'Agor demo NRW ar ôl mewngofnodi',
     pillarWorkingTitle: 'Profwch, peidiwch addo',
     pillarWorkingBody:
-      'Mae pob sgôr yn olrhain i’r safon ac yn agor ar alwad. Pan fydd y panel yn gwthio’n ôl, rydych chi’n dangos y gwaith — nid throednodyn.',
+      'Mae pob sgôr yn olrhain i’r safon ac yn agor ar alwad. Pan fydd y panel yn gwthio’n ôl, rydych chi’n dangos y gwaith, nid throednodyn.',
     pillarAssessTitle: 'Lleihau’r risg wrth y porth',
     pillarAssessBody:
       'Bylchau statudol a byrder sgiliau wedi’u henwi cyn cyflwyno. Chi sy’n rheoli’r naratif, nid syndod yn yr adolygiad.',
     pillarHandoverTitle: 'Maent yn cadw’r offeryn',
     pillarHandoverBody:
-      'Rhowch i’r cleient allu y gallant ei redeg eu hunain. Ennillwch ar rigour heddiw — ac ar ymddiriedolaeth sy’n parha ar ôl dyfarnu’r contract.',
+      'Rhowch i’r cleient allu y gallant ei redeg eu hunain. Ennillwch ar rigour heddiw, ac ar ymddiriedolaeth sy’n parha ar ôl dyfarnu’r contract.',
   },
   profile: {
     title: 'Eich proffil',
@@ -263,10 +263,10 @@ export const cy: Messages = {
     empty:
       'Dim galwadau i dendro eto. Crëwch un i asesu parodrwydd y tîm yn erbyn safon gwasanaeth.',
     listIntro:
-      'Pob galwad i dendro mewn un golwg sicrwydd. Agorwch unrhyw ymgysylltiad i redeg y naratif y mae eich panel yn ei ddisgwyl — sgoriau byw, bylchau wedi’u henwi, rhesymeg yn olrhainadwy.',
+      'Pob galwad i dendro mewn un golwg sicrwydd. Agorwch unrhyw ymgysylltiad i redeg y naratif y mae eich panel yn ei ddisgwyl, sgoriau byw, bylchau wedi’u henwi, rhesymeg yn olrhainadwy.',
     emptyTitle: 'Mae eich enill cyntaf yn dechrau yma',
     emptyBody:
-      'Crëwch alwad i dendro a modelwch y tîm y byddech chi’n tendro ag ef mewn gwirionedd — neu agorwch demo NRW i weld asesiad darganfod barod i’w gyflwyno.',
+      'Crëwch alwad i dendro a modelwch y tîm y byddech chi’n tendro ag ef mewn gwirionedd, neu agorwch demo NRW i weld asesiad darganfod barod i’w gyflwyno.',
     emptyCtaDemo: 'Gwylio demo NRW',
     createNamePlaceholder: 'Enw galwad i dendro',
     createSupplierPlaceholder: 'Cyflenwr (dewisol)',

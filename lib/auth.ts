@@ -49,7 +49,7 @@ const providers: NextAuthOptions['providers'] = [
 
       if (!(await isDatabaseSchemaReady())) {
         console.error(
-          '[auth] Database schema missing — run npm run db:deploy (or redeploy after migrate in build).',
+          '[auth] Database schema missing: run npm run db:deploy (or redeploy after migrate in build).',
         );
         return null;
       }
@@ -60,7 +60,7 @@ const providers: NextAuthOptions['providers'] = [
 
       const user = await prisma.user.findUnique({ where: { email } });
       if (!user?.passwordHash) {
-        // Account exists for SSO only — same email, one login service (Microsoft).
+        // Account exists for SSO only: same email, one login service (Microsoft).
         return null;
       }
       const valid = await bcrypt.compare(password, user.passwordHash);

@@ -58,7 +58,7 @@ export function buildBrandedReportPdf(input: BrandedReportInput): Promise<Buffer
     doc.fontSize(14).text('Top gaps');
     doc.fontSize(10);
     for (const g of gaps.slice(0, 8)) {
-      doc.text(`• ${g.number}. ${g.title} — ${g.status}`);
+      doc.text(`• ${g.number}. ${g.title}: ${g.status}`);
     }
     doc.moveDown();
 
@@ -75,7 +75,7 @@ export function buildBrandedReportPdf(input: BrandedReportInput): Promise<Buffer
       if (doc.y > 720) {
         doc.addPage();
       }
-      doc.text(`${p.number}. ${p.title} [${p.status}] — score ${Math.round(p.score * 100)}%`);
+      doc.text(`${p.number}. ${p.title} [${p.status}]: score ${Math.round(p.score * 100)}%`);
     }
 
     doc.moveDown(2);

@@ -240,9 +240,9 @@ export default function EngagementOverviewPage() {
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
               <h2 className="font-semibold">{m.engagement.cardRequirement}</h2>
-              <p className="mt-2 text-sm text-text-muted">{req?.title ?? '—'}</p>
+              <p className="mt-2 text-sm text-text-muted">{req?.title ?? '-'}</p>
               <p className="text-sm text-text-muted">
-                {m.engagement.reqPhase}: {req?.phase ?? '—'}
+                {m.engagement.reqPhase}: {req?.phase ?? '-'}
               </p>
               <Link
                 href={`/engagements/${id}/requirement`}

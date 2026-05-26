@@ -20,7 +20,7 @@ async function main() {
       );
     }
   } else {
-    console.warn('nrw-req-1 not found — run npm run db:seed-all first.');
+    console.warn('nrw-req-1 not found: run npm run db:seed-all first.');
   }
 
   console.log(`Demo account ready: ${DEMO_ACCOUNT.email} / ${DEMO_ACCOUNT.password}`);

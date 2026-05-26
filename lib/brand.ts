@@ -1,4 +1,4 @@
-/** Assemble by Turner & Townsend — product identity (UI + exports). */
+/** Assemble by Turner & Townsend: product identity (UI + exports). */
 export const BRAND = {
   company: 'Turner & Townsend',
   product: 'Assemble',

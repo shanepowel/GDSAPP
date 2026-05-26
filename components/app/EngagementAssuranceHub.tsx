@@ -54,7 +54,7 @@ export function EngagementAssuranceHub({
       <Card className="p-5">
         <Eyebrow>Agile rigour</Eyebrow>
         <p className="mt-2 text-2xl font-bold tabular-nums">
-          {result.rigour ? `${result.rigour.overallPercent}%` : '—'}
+          {result.rigour ? `${result.rigour.overallPercent}%` : '-'}
         </p>
         <Link href={`/engagements/${engagementId}/rigour`} className="mt-2 inline-block text-xs text-brand hover:underline">
           {result.rigour ? 'Review rigour' : 'Assess rigour'}
