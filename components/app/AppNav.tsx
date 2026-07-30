@@ -12,6 +12,7 @@ export function AppNav() {
 
   const links = [
     { href: '/engagements', label: m.nav.engagements },
+    { href: '/org-design', label: m.nav.orgDesign },
     {
       href: '/portfolio',
       label: features.clientAssuranceLabels ? m.nav.portfolioAssurance : m.nav.portfolio,

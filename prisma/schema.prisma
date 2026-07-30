@@ -109,12 +109,21 @@ model FrameworkVersion {
 }
 
 model Organisation {
-  id              String       @id @default(cuid())
-  name            String
+  id                String              @id @default(cuid())
+  name              String
   /// Must match instance DEPLOYMENT_MODE (internal = Play A, client = Play B firewall).
-  deploymentMode  String       @default("internal")
-  users           User[]
-  engagements     Engagement[]
+  deploymentMode    String              @default("internal")
+  users             User[]
+  engagements       Engagement[]
+  designEntities    DesignEntity[]
+  designRelationships DesignRelationship[]
+  designPeople      DesignPerson[]
+  designAssignments DesignAssignment[]
+  designComments    DesignComment[]
+  designActivity    DesignActivity[]
+  designSnapshots   DesignSnapshot[]
+  designScenarios   DesignScenario[]
+  designShareLinks  DesignShareLink[]
 }
 
 model User {
@@ -129,24 +138,29 @@ model User {
 }
 
 model Engagement {
-  id           String        @id @default(cuid())
-  name         String
-  standardId   String
+  id                String        @id @default(cuid())
+  name              String
+  standardId        String
   /// Supplier or delivery partner label (Play B portfolio grouping)
-  supplierTag  String?
+  supplierTag       String?
   /// Framework lot or workstream (Play B portfolio grouping)
-  lotTag       String?
-  orgId        String
-  org          Organisation  @relation(fields: [orgId], references: [id])
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  requirements Requirement[]
-  people       Person[]
-  tenders      Tender[]
-  evidence     Evidence[]
-  shareLinks   ShareLink[]
-  judgements      Judgement[]
-  reviewRequests  ReviewRequest[]
+  lotTag            String?
+  orgId             String
+  org               Organisation  @relation(fields: [orgId], references: [id])
+  /// live | scenario | snapshot — which org-design graph feeds this engagement
+  designBinding     String        @default("live")
+  designScenarioId  String?
+  designSnapshotId  String?
+  designSyncedAt    DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  requirements      Requirement[]
+  people            Person[]
+  tenders           Tender[]
+  evidence          Evidence[]
+  shareLinks        ShareLink[]
+  judgements        Judgement[]
+  reviewRequests    ReviewRequest[]
 }
 
 model Requirement {
@@ -403,4 +417,131 @@ model ShareLink {
   expiresAt    DateTime
   createdAt    DateTime   @default(now())
   engagement   Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+}
+
+/// Live org-design node (circle | role | product). Scenarios/snapshots hold JSON copies.
+model DesignEntity {
+  id               String       @id @default(cuid())
+  orgId            String
+  org              Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name             String
+  type             String
+  purpose          String?      @db.Text
+  domain           String?      @db.Text
+  accountabilities Json         @default("[]")
+  policies         Json         @default("[]")
+  parentId         String?
+  /// Optional bridge to DDaT Role catalogue
+  ddatRoleId       String?
+  /// Optional bridge to DDaT RoleLevel for sync-to-team
+  ddatRoleLevelId  String?
+  metadata         Json         @default("{}")
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([orgId])
+}
+
+model DesignRelationship {
+  id        String       @id @default(cuid())
+  orgId     String
+  org       Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  sourceId  String
+  targetId  String
+  type      String
+  metadata  Json         @default("{}")
+  createdAt DateTime     @default(now())
+
+  @@index([orgId])
+}
+
+model DesignPerson {
+  id        String       @id @default(cuid())
+  orgId     String
+  org       Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name      String
+  email     String?
+  fte       Int          @default(100)
+  skills    Json         @default("[]")
+  notes     String?      @db.Text
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([orgId])
+}
+
+model DesignAssignment {
+  id         String       @id @default(cuid())
+  orgId      String
+  org        Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  personId   String
+  entityId   String
+  allocation Int          @default(100)
+  createdAt  DateTime     @default(now())
+
+  @@index([orgId])
+}
+
+model DesignComment {
+  id        String       @id @default(cuid())
+  orgId     String
+  org       Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  entityId  String
+  author    String       @default("Guest")
+  content   String       @db.Text
+  createdAt DateTime     @default(now())
+
+  @@index([orgId])
+  @@index([entityId])
+}
+
+model DesignActivity {
+  id        String       @id @default(cuid())
+  orgId     String
+  org       Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  action    String
+  target    String?
+  details   Json         @default("{}")
+  createdAt DateTime     @default(now())
+
+  @@index([orgId])
+}
+
+model DesignSnapshot {
+  id          String       @id @default(cuid())
+  orgId       String
+  org         Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name        String
+  description String?      @db.Text
+  data        Json
+  createdAt   DateTime     @default(now())
+
+  @@index([orgId])
+}
+
+model DesignScenario {
+  id          String       @id @default(cuid())
+  orgId       String
+  org         Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name        String
+  description String?      @db.Text
+  /// { entities, relationships } — optional people/assignments for engagement forks
+  data        Json
+  engagementId String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([orgId])
+}
+
+model DesignShareLink {
+  id         String       @id @default(cuid())
+  orgId      String
+  org        Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  token      String       @unique
+  name       String?
+  snapshotId String?
+  createdAt  DateTime     @default(now())
+
+  @@index([orgId])
 }

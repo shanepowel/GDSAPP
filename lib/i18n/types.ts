@@ -48,6 +48,7 @@ export type Messages = {
     subOverview: string;
     subRequirement: string;
     subTeam: string;
+    subStructure: string;
     subEvidence: string;
     subRigour: string;
     subAnalysis: string;
@@ -69,6 +70,7 @@ export type Messages = {
     linkPoints: string;
     addEvidence: string;
     teamTitle: string;
+    structureTitle: string;
     pseudonymise: string;
     assignRole: string;
     addPerson: string;
@@ -256,6 +258,7 @@ export type Messages = {
   };
   nav: {
     engagements: string;
+    orgDesign: string;
     portfolio: string;
     portfolioAssurance: string;
     handover: string;
@@ -268,6 +271,9 @@ export type Messages = {
     title: string;
     titleAssurance: string;
     bySupplier: string;
+  };
+  orgDesign: {
+    title: string;
   };
   framework: {
     title: string;

@@ -5,10 +5,10 @@ import { usePathname } from 'next/navigation';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 
-type Suffix = '' | '/requirement' | '/team' | '/evidence' | '/rigour' | '/analysis' | '/tender' | '/judgements' | '/reviews' | '/history' | '/report';
+type Suffix = '' | '/requirement' | '/team' | '/structure' | '/evidence' | '/rigour' | '/analysis' | '/tender' | '/judgements' | '/reviews' | '/history' | '/report';
 
 const GROUPS: { groupKey: 'navGroupPrepare' | 'navGroupAssess' | 'navGroupDecide' | 'navGroupShare'; suffixes: Suffix[] }[] = [
-  { groupKey: 'navGroupPrepare', suffixes: ['', '/requirement', '/team', '/evidence'] },
+  { groupKey: 'navGroupPrepare', suffixes: ['', '/requirement', '/team', '/structure', '/evidence'] },
   { groupKey: 'navGroupAssess', suffixes: ['/rigour', '/analysis'] },
   { groupKey: 'navGroupDecide', suffixes: ['/tender', '/judgements', '/reviews'] },
   { groupKey: 'navGroupShare', suffixes: ['/history', '/report'] },
@@ -24,6 +24,7 @@ export function EngagementSubNav({ engagementId }: { engagementId: string }) {
     '': m.engagement.subOverview,
     '/requirement': m.engagement.subRequirement,
     '/team': m.engagement.subTeam,
+    '/structure': m.engagement.subStructure,
     '/evidence': m.engagement.subEvidence,
     '/rigour': m.engagement.subRigour,
     '/analysis': m.engagement.subAnalysis,

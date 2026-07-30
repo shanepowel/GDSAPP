@@ -55,6 +55,7 @@ export const cy: Messages = {
     subOverview: 'Crynodeb',
     subRequirement: 'Gofyniad',
     subTeam: 'Tîm',
+    subStructure: 'Strwythur',
     subEvidence: 'Tystiolaeth',
     subRigour: 'Trwmder',
     subAnalysis: 'Dadansoddiad',
@@ -77,6 +78,7 @@ export const cy: Messages = {
     linkPoints: 'Cysylltu â phwyntiau safon',
     addEvidence: 'Ychwanegu tystiolaeth',
     teamTitle: 'Tîm',
+    structureTitle: 'Strwythur gwasanaeth',
     pseudonymise: 'Cyfrin enwau (dangos labeli rolau yn unig)',
     assignRole: 'Neilltuo rôl…',
     addPerson: 'Ychwanegu person',
@@ -285,6 +287,7 @@ export const cy: Messages = {
   },
   nav: {
     engagements: 'Galwadau i dendro',
+    orgDesign: 'Dylunio’r sefydliad',
     portfolio: 'Portffolio',
     portfolioAssurance: 'Sicrwydd portffolio',
     handover: 'Pecyn trosglwyddo',
@@ -297,6 +300,9 @@ export const cy: Messages = {
     title: 'Portffolio',
     titleAssurance: 'Sicrwydd portffolio',
     bySupplier: 'Yn ôl cyflenwr',
+  },
+  orgDesign: {
+    title: 'Dylunio’r sefydliad',
   },
   framework: {
     title: 'Canfod difft fframwaith',

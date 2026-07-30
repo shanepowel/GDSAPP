@@ -54,6 +54,7 @@ export const en: Messages = {
     subOverview: 'Summary',
     subRequirement: 'Requirement',
     subTeam: 'Team',
+    subStructure: 'Structure',
     subEvidence: 'Evidence',
     subRigour: 'Rigour',
     subAnalysis: 'Analysis',
@@ -76,6 +77,7 @@ export const en: Messages = {
     linkPoints: 'Link to standard points',
     addEvidence: 'Add evidence',
     teamTitle: 'Team',
+    structureTitle: 'Service structure',
     pseudonymise: 'Pseudonymise names (show role labels only)',
     assignRole: 'Assign role…',
     addPerson: 'Add person',
@@ -283,6 +285,7 @@ export const en: Messages = {
   },
   nav: {
     engagements: 'Call-offs',
+    orgDesign: 'Org design',
     portfolio: 'Portfolio',
     portfolioAssurance: 'Portfolio assurance',
     handover: 'Handover pack',
@@ -295,6 +298,9 @@ export const en: Messages = {
     title: 'Portfolio',
     titleAssurance: 'Portfolio assurance',
     bySupplier: 'By supplier',
+  },
+  orgDesign: {
+    title: 'Organisation design',
   },
   framework: {
     title: 'Framework drift detection',

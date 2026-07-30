@@ -41,6 +41,7 @@ export default function AnalysisPage() {
   const { requirementId, setRequirementId } = useRequirementId(id, data?.requirements);
   const req = data?.requirements.find((r) => r.id === requirementId) ?? data?.requirements[0];
   const result = req?.runs[0]?.result as ExtendedAnalysisResult | undefined;
+  const structureHints = trpc.orgDesign.structureReadinessHints.useQuery({ engagementId: id });
 
   const topBidRisk = useMemo(() => {
     if (!result?.bidOutlook) return null;
@@ -177,6 +178,40 @@ export default function AnalysisPage() {
           )}
         </Card>
       </div>
+
+      {structureHints.data && structureHints.data.hints.length > 0 && (
+        <Card className="mb-8 p-5">
+          <Eyebrow>Structure readiness</Eyebrow>
+          <p className="mt-1 text-sm text-text-muted">
+            Org design health {structureHints.data.healthScore}/100
+            {structureHints.data.vacancies > 0
+              ? ` · ${structureHints.data.vacancies} vacant role(s)`
+              : ''}
+            .{' '}
+            <Link href={`/engagements/${id}/structure`} className="text-brand-hover hover:underline">
+              Review structure
+            </Link>
+          </p>
+          <ul className="mt-3 space-y-2">
+            {structureHints.data.hints.slice(0, 5).map((h) => (
+              <li key={h.issueId} className="text-sm">
+                <span
+                  className={`mr-2 text-[10px] font-semibold uppercase ${
+                    h.severity === 'high'
+                      ? 'text-status-gap'
+                      : h.severity === 'medium'
+                        ? 'text-status-partial'
+                        : 'text-text-muted'
+                  }`}
+                >
+                  {h.severity}
+                </span>
+                {h.title}
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
 
       <AnalysisTabs
         active={tab}

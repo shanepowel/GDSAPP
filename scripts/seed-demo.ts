@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import { runAndPersistAnalysis } from '../lib/db/analysis';
 import { ensureFixtureCsvs } from './seed-fixtures';
 import { execSync } from 'child_process';
+import { ORG_TEMPLATES } from '../lib/org-design/templates';
+import { applyTemplateToLive } from '../lib/org-design/storage';
 
 const prisma = new PrismaClient();
 
@@ -250,6 +252,24 @@ async function main() {
       `Initial analysis: preparedness ${Math.round(analysis.overallReadiness)}% (${analysis.readinessBand}).`,
     );
   }
+
+  // Seed GDS service-team org design on the demo org
+  const existingEntities = await prisma.designEntity.count({ where: { orgId: org.id } });
+  if (existingEntities === 0) {
+    const gdsTemplate = ORG_TEMPLATES.find((t) => t.id === 'gds-service-team');
+    if (gdsTemplate) {
+      const result = await applyTemplateToLive(prisma, org.id, gdsTemplate);
+      console.log(
+        `Seeded org design template "${gdsTemplate.name}" (${result.entitiesCreated} entities).`,
+      );
+    }
+  }
+
+  // Bind NRW demo engagement to live design
+  await prisma.engagement.update({
+    where: { id: engagement.id },
+    data: { designBinding: 'live' },
+  });
 
   console.log(
     `Seeded demo org, admin@demo.local / demo-password, NRW engagements, tender ${tender.id}.`,
