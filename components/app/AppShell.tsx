@@ -6,6 +6,7 @@ import { Globe } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { BrandMark } from '@/components/brand/BrandMark';
 import { useI18n } from '@/components/app/LocaleProvider';
+import { useEngagementPlate } from '@/components/product/TitleBlock';
 
 export function AppShell({
   title,
@@ -22,8 +23,15 @@ export function AppShell({
   orgLabel?: string;
   hideTitle?: boolean;
 }) {
+  const plate = useEngagementPlate();
   const { messages: m } = useI18n();
   const { data: session } = useSession();
+
+  // Inside engagement plate layout: title block + rail already render — content only.
+  if (plate) {
+    return <>{children}</>;
+  }
+
   const userInitial =
     session?.user?.name?.trim()?.charAt(0) ||
     session?.user?.email?.charAt(0)?.toUpperCase() ||

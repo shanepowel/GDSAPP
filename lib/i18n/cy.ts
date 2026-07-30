@@ -112,6 +112,15 @@ export const cy: Messages = {
       'Nid yw’r maen prawf hwn yn yr hidlydd cyfnod cyfredol. Newidiwch gyfnod i’w weld.',
     assessJudgementComing:
       'Bydd barn a chasglu tystiolaeth ar gyfer y maen prawf hwn yn y cyfnod nesaf o’r adeiladwaith.',
+    assureTitle: 'Sicrhau',
+    assureIntro:
+      'Pecynnau porth a chroesgerddedigaeth ar gyfer NISTA, ISO 19650 a fframweithiau cysylltiedig. Daw’r cynnwys yng Nghyfnod 5.',
+    assureEmpty: 'Dim cwmpas mapiedig ar gyfer y porth hwn eto ar {name}. Awduraeth croesgerddedigaeth yw’r cyfnod adeiladu nesaf.',
+    engagementSettingsTitle: 'Gosodiadau’r alwad',
+    engagementSettingsIntro:
+      'Mae cyfnod, modd a safonau yn newid rhagosodiadau a hidlo. Nid ydynt byth yn cuddio data sydd eisoes wedi’i gofnodi.',
+    standardsSettingsTitle: 'Safonau',
+    standardsSettingsIntro: 'Dewiswch brif fersiwn y safon ar gyfer yr alwad hon.',
     tenderTitle: 'Gwerthuso galwad i dendro',
     tenderTitleAssurance: 'Meini prawf sicrwydd',
     tenderIntroInternal:

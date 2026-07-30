@@ -4,8 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
+import { useEngagementPlate } from '@/components/product/TitleBlock';
 
 export function AppNav() {
+  const plate = useEngagementPlate();
+  if (plate) return null;
+
   const pathname = usePathname();
   const features = getClientDeploymentFeatures();
   const { messages: m } = useI18n();

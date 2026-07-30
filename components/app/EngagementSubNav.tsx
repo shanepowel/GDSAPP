@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
+import { useEngagementPlate } from '@/components/product/TitleBlock';
 
 type Suffix =
   | ''
@@ -31,6 +32,10 @@ const GROUPS: {
 ];
 
 export function EngagementSubNav({ engagementId }: { engagementId: string }) {
+  const plate = useEngagementPlate();
+  // Plate layout owns navigation via EngagementRail.
+  if (plate) return null;
+
   const pathname = usePathname();
   const features = getClientDeploymentFeatures();
   const { messages: m } = useI18n();

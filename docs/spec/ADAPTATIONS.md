@@ -43,3 +43,13 @@ Phases 0–6 still apply. Prefer PR-sized tasks from `06-build-plan.md`, adapted
 | 1.5 engagement_standards + `/assess` | Done — join table, phase filter, assess list + criterion detail |
 | 1.6 Retire Express | Already complete (tRPC) |
 | 1.7 Entra-only + assessor | Partial — `assessor` role added to invite enum; Entra cutover deferred |
+
+## Phase 2 status (in progress)
+
+| Task | Status |
+|---|---|
+| 2.1 Engagement layout shell | Done — `EngagementPlate`, `TitleBlock`, left rail (6 destinations) |
+| 2.2–2.4 Org graph/table/people port | Partial — `/organise` redirects to existing `/structure` |
+| 2.5 Rewrite templates | Done — GDS discovery/alpha/beta + LA / capital / enterprise / data |
+| 2.6 Creation wizard | Not started |
+| 2.7 Dark mode | Deferred (spec: after light theme) |

@@ -112,6 +112,15 @@ export const en: Messages = {
       'This criterion is not in the current phase filter. Change phase to see it.',
     assessJudgementComing:
       'Judgement and evidence capture for this criterion land in the next phase of the build.',
+    assureTitle: 'Assure',
+    assureIntro:
+      'Gate packs and crosswalk coverage for NISTA, ISO 19650 and related frameworks. Content lands in Phase 5.',
+    assureEmpty: 'No mapped coverage for this gate yet on {name}. Crosswalk authoring is the next build phase.',
+    engagementSettingsTitle: 'Engagement settings',
+    engagementSettingsIntro:
+      'Phase, mode and standards change defaults and filtering. They never hide data already recorded.',
+    standardsSettingsTitle: 'Standards',
+    standardsSettingsIntro: 'Select the primary standard version for this engagement.',
     tenderTitle: 'Call-off evaluation',
     tenderTitleAssurance: 'Assurance criteria',
     tenderIntroInternal:

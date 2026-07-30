@@ -99,6 +99,13 @@ export type Messages = {
     assessMachineTranslation: string;
     assessCriterionMissing: string;
     assessJudgementComing: string;
+    assureTitle: string;
+    assureIntro: string;
+    assureEmpty: string;
+    engagementSettingsTitle: string;
+    engagementSettingsIntro: string;
+    standardsSettingsTitle: string;
+    standardsSettingsIntro: string;
     tenderTitle: string;
     tenderTitleAssurance: string;
     tenderIntroInternal: string;
