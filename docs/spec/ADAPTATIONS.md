@@ -28,11 +28,12 @@ dedicated migration PR is scheduled.
 | 2 Shell & organise | Done including dark theme tokens + toggle |
 | 3 Evidence & chain | Done including freshness job + owner nudge |
 | 4 Live index | Done — `lib/scoring`, IndexValue, GapCard, snapshots, auto-match |
-| 5–6 | Not started |
+| 5 Crosswalk & gate packs | Done — frameworks seed, CrosswalkMatrix, gap list, evidence hints, pack export |
+| 6 Report & compliance | Not started |
 
 ### Deferred remnants
 
 - Full axe CI baseline hardening (0.4)
 - Blob upload for evidence files (URI field used; storage key optional)
 - Outbound email provider for nudges (activity trail + deep link recorded)
-- Phase 5 crosswalk / Phase 6 report pack
+- Phase 6 report pack / integrations / compliance pages

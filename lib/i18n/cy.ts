@@ -119,8 +119,8 @@ export const cy: Messages = {
       'Bydd barn a chasglu tystiolaeth ar gyfer y maen prawf hwn yn y cyfnod nesaf o’r adeiladwaith.',
     assureTitle: 'Sicrhau',
     assureIntro:
-      'Pecynnau porth a chroesgerddedigaeth ar gyfer NISTA, ISO 19650 a fframweithiau cysylltiedig. Daw’r cynnwys yng Nghyfnod 5.',
-    assureEmpty: 'Dim cwmpas mapiedig ar gyfer y porth hwn eto ar {name}. Awduraeth croesgerddedigaeth yw’r cyfnod adeiladu nesaf.',
+      'Dewiswch becyn porth neu darged asesu. Mae’r croesgerddedigaeth yn dangos pa feini prawf a thystiolaeth sydd eisoes yn ateb.',
+    assureEmpty: 'Dim cwmpas mapiedig ar gyfer y porth hwn eto ar {name}. Hadwch fframweithiau i lenwi pecynnau.',
     engagementSettingsTitle: 'Gosodiadau’r alwad',
     engagementSettingsIntro:
       'Mae cyfnod, modd a safonau yn newid rhagosodiadau a hidlo. Nid ydynt byth yn cuddio data sydd eisoes wedi’i gofnodi.',

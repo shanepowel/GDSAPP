@@ -119,8 +119,8 @@ export const en: Messages = {
       'Judgement and evidence capture for this criterion land in the next phase of the build.',
     assureTitle: 'Assure',
     assureIntro:
-      'Gate packs and crosswalk coverage for NISTA, ISO 19650 and related frameworks. Content lands in Phase 5.',
-    assureEmpty: 'No mapped coverage for this gate yet on {name}. Crosswalk authoring is the next build phase.',
+      'Choose a gate pack or assessment target. The crosswalk shows which of your criteria and evidence already answer it.',
+    assureEmpty: 'No mapped coverage for this gate yet on {name}. Seed frameworks to populate packs.',
     engagementSettingsTitle: 'Engagement settings',
     engagementSettingsIntro:
       'Phase, mode and standards change defaults and filtering. They never hide data already recorded.',

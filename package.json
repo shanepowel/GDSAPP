@@ -17,12 +17,13 @@
     "job:freshness": "tsx scripts/freshness-decay.ts",
     "seed:demo": "tsx scripts/seed-demo.ts",
     "ensure:demo": "tsx scripts/ensure-demo.ts",
-    "seed": "npm run ingest && npm run seed:standards && npm run seed:catalog && npm run seed:capabilities && npm run seed:demo",
+    "seed": "npm run ingest && npm run seed:standards && npm run seed:catalog && npm run seed:capabilities && npm run seed:frameworks && npm run seed:demo",
     "db:seed-all": "npm run db:deploy && npm run seed",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seed:frameworks": "tsx scripts/seed-frameworks.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

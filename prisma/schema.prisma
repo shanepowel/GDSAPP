@@ -241,6 +241,7 @@ model Criterion {
   evidenceLinks          EvidenceCriterion[]
   judgements             CriterionJudgement[]
   evidenceOwners         CriterionEvidenceOwner[]
+  crosswalkMappings      CrosswalkMapping[]
 
   @@unique([standardVersionId, ref])
   @@index([standardVersionId])
@@ -782,4 +783,56 @@ model DesignShareLink {
   createdAt  DateTime     @default(now())
 
   @@index([orgId])
+}
+
+/// Gate / construction frameworks for crosswalk (distinct from FrameworkVersion drift table).
+model AssuranceFramework {
+  id          String                   @id @default(cuid())
+  code        String                   @unique
+  name        String
+  publisher   String
+  version     String?
+  licence     String?
+  attribution String?                  @db.Text
+  items       AssuranceFrameworkItem[]
+
+  @@map("assurance_frameworks")
+}
+
+model AssuranceFrameworkItem {
+  id          String             @id @default(cuid())
+  frameworkId String
+  ref         String
+  title       String
+  question    String?            @db.Text
+  parentRef   String?
+  sortOrder   Int                @default(0)
+  /// Optional pack grouping, e.g. gate-3, riba-3
+  packRef     String?
+  framework   AssuranceFramework @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
+  mappings    CrosswalkMapping[]
+
+  @@unique([frameworkId, ref])
+  @@index([frameworkId])
+  @@index([packRef])
+  @@map("assurance_framework_items")
+}
+
+model CrosswalkMapping {
+  id              String                 @id @default(cuid())
+  criterionId     String
+  frameworkItemId String
+  /// satisfies | partially | informs
+  relation        String
+  note            String?                @db.Text
+  authoredBy      String
+  reviewedBy      String
+  reviewedAt      DateTime
+  criterion       Criterion              @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+  frameworkItem   AssuranceFrameworkItem @relation(fields: [frameworkItemId], references: [id], onDelete: Cascade)
+
+  @@unique([criterionId, frameworkItemId])
+  @@index([criterionId])
+  @@index([frameworkItemId])
+  @@map("crosswalk_mappings")
 }

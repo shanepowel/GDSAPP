@@ -1,0 +1,807 @@
+{
+  "frameworks": [
+    {
+      "code": "nista-gateway",
+      "name": "NISTA Gateway",
+      "publisher": "Infrastructure and Projects Authority",
+      "version": "2024",
+      "licence": "OGL-3.0",
+      "attribution": "Contains public sector information licensed under the Open Government Licence v3.0.",
+      "items": [
+        {
+          "ref": "Gate 0 / Purpose",
+          "title": "Strategic assessment — purpose",
+          "question": "Is there a clear strategic case?",
+          "parentRef": "Gate 0",
+          "packRef": "nista-gate-0",
+          "sortOrder": 1
+        },
+        {
+          "ref": "Gate 1 / Options",
+          "title": "Business justification — options",
+          "question": "Have options been assessed?",
+          "parentRef": "Gate 1",
+          "packRef": "nista-gate-1",
+          "sortOrder": 2
+        },
+        {
+          "ref": "Gate 2 / Delivery",
+          "title": "Delivery strategy",
+          "question": "Is the delivery approach sound?",
+          "parentRef": "Gate 2",
+          "packRef": "nista-gate-2",
+          "sortOrder": 3
+        },
+        {
+          "ref": "Gate 3 / Q1.1",
+          "title": "Investment decision — user need",
+          "question": "Is the investment based on clear user need?",
+          "parentRef": "Gate 3",
+          "packRef": "nista-gate-3",
+          "sortOrder": 10
+        },
+        {
+          "ref": "Gate 3 / Q1.2",
+          "title": "Investment decision — whole service",
+          "question": "Does the solution address the whole problem for users?",
+          "parentRef": "Gate 3",
+          "packRef": "nista-gate-3",
+          "sortOrder": 11
+        },
+        {
+          "ref": "Gate 3 / Q2.1",
+          "title": "Investment decision — team",
+          "question": "Is a multidisciplinary team in place?",
+          "parentRef": "Gate 3",
+          "packRef": "nista-gate-3",
+          "sortOrder": 12
+        },
+        {
+          "ref": "Gate 3 / Q2.2",
+          "title": "Investment decision — agile",
+          "question": "Are agile ways of working established?",
+          "parentRef": "Gate 3",
+          "packRef": "nista-gate-3",
+          "sortOrder": 13
+        },
+        {
+          "ref": "Gate 3 / Q2.3",
+          "title": "Investment decision — accessibility",
+          "question": "Can everyone use the service?",
+          "parentRef": "Gate 3",
+          "packRef": "nista-gate-3",
+          "sortOrder": 14
+        },
+        {
+          "ref": "Gate 3 / Q2.4",
+          "title": "Investment decision — security",
+          "question": "Is the service secure and private by design?",
+          "parentRef": "Gate 3",
+          "packRef": "nista-gate-3",
+          "sortOrder": 15
+        },
+        {
+          "ref": "Gate 3 / Q3.1",
+          "title": "Investment decision — technology",
+          "question": "Are technology choices justified and open where appropriate?",
+          "parentRef": "Gate 3",
+          "packRef": "nista-gate-3",
+          "sortOrder": 16
+        },
+        {
+          "ref": "Gate 3 / Q3.2",
+          "title": "Investment decision — performance",
+          "question": "Is success defined and will performance be published?",
+          "parentRef": "Gate 3",
+          "packRef": "nista-gate-3",
+          "sortOrder": 17
+        },
+        {
+          "ref": "Gate 4 / Readiness",
+          "title": "Readiness for service",
+          "question": "Is the service ready to go live?",
+          "parentRef": "Gate 4",
+          "packRef": "nista-gate-4",
+          "sortOrder": 20
+        },
+        {
+          "ref": "Gate 5 / Benefits",
+          "title": "Operations review — benefits",
+          "question": "Are benefits being realised?",
+          "parentRef": "Gate 5",
+          "packRef": "nista-gate-5",
+          "sortOrder": 21
+        }
+      ]
+    },
+    {
+      "code": "iso-19650",
+      "name": "ISO 19650 Information management",
+      "publisher": "BSI / ISO",
+      "version": "2018",
+      "licence": "Standards — fair dealing citation",
+      "attribution": "ISO 19650 series referenced for information management roles and requirements.",
+      "items": [
+        {
+          "ref": "ISO 19650 / 5.1",
+          "title": "Information requirements",
+          "question": "Have exchange information requirements been defined?",
+          "parentRef": null,
+          "packRef": "iso-19650",
+          "sortOrder": 1
+        },
+        {
+          "ref": "ISO 19650 / 5.3",
+          "title": "Common data environment",
+          "question": "Is a CDE established and governed?",
+          "parentRef": null,
+          "packRef": "iso-19650",
+          "sortOrder": 2
+        },
+        {
+          "ref": "ISO 19650 / 5.6",
+          "title": "Delivery team capability",
+          "question": "Does the delivery team have the capability to manage information?",
+          "parentRef": null,
+          "packRef": "iso-19650",
+          "sortOrder": 3
+        },
+        {
+          "ref": "ISO 19650 / 6.2",
+          "title": "Information quality",
+          "question": "Are information quality assurance processes in place?",
+          "parentRef": null,
+          "packRef": "iso-19650",
+          "sortOrder": 4
+        }
+      ]
+    },
+    {
+      "code": "riba-2020",
+      "name": "RIBA Plan of Work 2020",
+      "publisher": "RIBA",
+      "version": "2020",
+      "licence": "Citation",
+      "attribution": "RIBA Plan of Work 2020 stages referenced for capital programme alignment.",
+      "items": [
+        {
+          "ref": "Stage 0",
+          "title": "Strategic definition",
+          "question": null,
+          "parentRef": null,
+          "packRef": "riba-stages",
+          "sortOrder": 0
+        },
+        {
+          "ref": "Stage 1",
+          "title": "Preparation and briefing",
+          "question": null,
+          "parentRef": null,
+          "packRef": "riba-stages",
+          "sortOrder": 1
+        },
+        {
+          "ref": "Stage 2",
+          "title": "Concept design",
+          "question": null,
+          "parentRef": null,
+          "packRef": "riba-stages",
+          "sortOrder": 2
+        },
+        {
+          "ref": "Stage 3",
+          "title": "Spatial coordination",
+          "question": null,
+          "parentRef": null,
+          "packRef": "riba-stages",
+          "sortOrder": 3
+        },
+        {
+          "ref": "Stage 4",
+          "title": "Technical design",
+          "question": null,
+          "parentRef": null,
+          "packRef": "riba-stages",
+          "sortOrder": 4
+        },
+        {
+          "ref": "Stage 5",
+          "title": "Manufacturing and construction",
+          "question": null,
+          "parentRef": null,
+          "packRef": "riba-stages",
+          "sortOrder": 5
+        },
+        {
+          "ref": "Stage 6",
+          "title": "Handover",
+          "question": null,
+          "parentRef": null,
+          "packRef": "riba-stages",
+          "sortOrder": 6
+        },
+        {
+          "ref": "Stage 7",
+          "title": "Use",
+          "question": null,
+          "parentRef": null,
+          "packRef": "riba-stages",
+          "sortOrder": 7
+        }
+      ]
+    },
+    {
+      "code": "tcop",
+      "name": "Technology Code of Practice",
+      "publisher": "Central Digital and Data Office",
+      "version": "1.0",
+      "licence": "OGL-3.0",
+      "attribution": "Contains public sector information licensed under the Open Government Licence v3.0.",
+      "items": [
+        {
+          "ref": "TCoP 1",
+          "title": "Define user needs",
+          "question": "Start with user needs?",
+          "parentRef": null,
+          "packRef": "tcop-review",
+          "sortOrder": 1
+        },
+        {
+          "ref": "TCoP 2",
+          "title": "Make things accessible and inclusive",
+          "question": null,
+          "parentRef": null,
+          "packRef": "tcop-review",
+          "sortOrder": 2
+        },
+        {
+          "ref": "TCoP 3",
+          "title": "Be open and use open source",
+          "question": null,
+          "parentRef": null,
+          "packRef": "tcop-review",
+          "sortOrder": 3
+        },
+        {
+          "ref": "TCoP 4",
+          "title": "Make use of shared platforms",
+          "question": null,
+          "parentRef": null,
+          "packRef": "tcop-review",
+          "sortOrder": 4
+        },
+        {
+          "ref": "TCoP 5",
+          "title": "Use cloud first",
+          "question": null,
+          "parentRef": null,
+          "packRef": "tcop-review",
+          "sortOrder": 5
+        },
+        {
+          "ref": "TCoP 6",
+          "title": "Make things secure",
+          "question": null,
+          "parentRef": null,
+          "packRef": "tcop-review",
+          "sortOrder": 6
+        },
+        {
+          "ref": "TCoP 7",
+          "title": "Make common technology decisions carefully",
+          "question": null,
+          "parentRef": null,
+          "packRef": "tcop-review",
+          "sortOrder": 7
+        },
+        {
+          "ref": "TCoP 8",
+          "title": "Share and reuse technology",
+          "question": null,
+          "parentRef": null,
+          "packRef": "tcop-review",
+          "sortOrder": 8
+        },
+        {
+          "ref": "TCoP 9",
+          "title": "Define your buying strategy",
+          "question": null,
+          "parentRef": null,
+          "packRef": "tcop-review",
+          "sortOrder": 9
+        },
+        {
+          "ref": "TCoP 10",
+          "title": "Support a diverse IT industry",
+          "question": null,
+          "parentRef": null,
+          "packRef": "tcop-review",
+          "sortOrder": 10
+        }
+      ]
+    },
+    {
+      "code": "construction-playbook",
+      "name": "Construction Playbook",
+      "publisher": "Cabinet Office",
+      "version": "2022",
+      "licence": "OGL-3.0",
+      "attribution": "Contains public sector information licensed under the Open Government Licence v3.0.",
+      "items": [
+        {
+          "ref": "CP / Outcomes",
+          "title": "Focus on outcomes",
+          "question": "Are outcomes clear and measurable?",
+          "parentRef": null,
+          "packRef": "construction-playbook",
+          "sortOrder": 1
+        },
+        {
+          "ref": "CP / Early",
+          "title": "Early supply chain involvement",
+          "question": null,
+          "parentRef": null,
+          "packRef": "construction-playbook",
+          "sortOrder": 2
+        },
+        {
+          "ref": "CP / Digital",
+          "title": "Digital by default",
+          "question": "Is digital delivery planned?",
+          "parentRef": null,
+          "packRef": "construction-playbook",
+          "sortOrder": 3
+        }
+      ]
+    },
+    {
+      "code": "cgs",
+      "name": "Constructing the Gold Standard",
+      "publisher": "Cabinet Office",
+      "version": "2021",
+      "licence": "OGL-3.0",
+      "attribution": "Contains public sector information licensed under the Open Government Licence v3.0.",
+      "items": [
+        {
+          "ref": "CGS / Capability",
+          "title": "Contracting authority capability",
+          "question": null,
+          "parentRef": null,
+          "packRef": "cgs",
+          "sortOrder": 1
+        },
+        {
+          "ref": "CGS / Pipeline",
+          "title": "Pipeline and planning",
+          "question": null,
+          "parentRef": null,
+          "packRef": "cgs",
+          "sortOrder": 2
+        }
+      ]
+    },
+    {
+      "code": "gds-assessment",
+      "name": "GDS Service Standard assessment packs",
+      "publisher": "GDS / DSIT",
+      "version": "2019.1",
+      "licence": "OGL-3.0",
+      "attribution": "Contains public sector information licensed under the Open Government Licence v3.0.",
+      "items": [
+        {
+          "ref": "Alpha pack",
+          "title": "GDS alpha assessment",
+          "question": "Criteria applicable at alpha",
+          "parentRef": null,
+          "packRef": "gds-alpha",
+          "sortOrder": 1
+        },
+        {
+          "ref": "Beta pack",
+          "title": "GDS beta assessment",
+          "question": "Criteria applicable at beta",
+          "parentRef": null,
+          "packRef": "gds-beta",
+          "sortOrder": 2
+        },
+        {
+          "ref": "Live pack",
+          "title": "GDS live assessment",
+          "question": "Criteria applicable at live",
+          "parentRef": null,
+          "packRef": "gds-live",
+          "sortOrder": 3
+        }
+      ]
+    }
+  ],
+  "mappings": [
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "1",
+      "frameworkCode": "nista-gateway",
+      "itemRef": "Gate 3 / Q1.1",
+      "relation": "satisfies",
+      "note": "GDS point 1 (user needs) directly answers Gate 3 user-need assurance."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "2",
+      "frameworkCode": "nista-gateway",
+      "itemRef": "Gate 3 / Q1.2",
+      "relation": "satisfies",
+      "note": "Whole problem framing maps to Gate 3 whole-service question."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "5",
+      "frameworkCode": "nista-gateway",
+      "itemRef": "Gate 3 / Q2.3",
+      "relation": "satisfies",
+      "note": "Accessibility and inclusion map to Gate 3 everyone-can-use."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "6",
+      "frameworkCode": "nista-gateway",
+      "itemRef": "Gate 3 / Q2.1",
+      "relation": "satisfies",
+      "note": "Multidisciplinary team is a Gate 3 delivery assurance question."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "7",
+      "frameworkCode": "nista-gateway",
+      "itemRef": "Gate 3 / Q2.2",
+      "relation": "satisfies",
+      "note": "Agile ways of working map to Gate 3 delivery approach."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "9",
+      "frameworkCode": "nista-gateway",
+      "itemRef": "Gate 3 / Q2.4",
+      "relation": "satisfies",
+      "note": "Security and privacy map to Gate 3 security assurance."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "10",
+      "frameworkCode": "nista-gateway",
+      "itemRef": "Gate 3 / Q3.2",
+      "relation": "satisfies",
+      "note": "Performance and success criteria map to Gate 3 benefits measurement."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "11",
+      "frameworkCode": "nista-gateway",
+      "itemRef": "Gate 3 / Q3.1",
+      "relation": "partially",
+      "note": "Technology choices inform Gate 3 technology assurance."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "12",
+      "frameworkCode": "nista-gateway",
+      "itemRef": "Gate 3 / Q3.1",
+      "relation": "informs",
+      "note": "Open source practice informs technology openness at Gate 3."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "14",
+      "frameworkCode": "nista-gateway",
+      "itemRef": "Gate 4 / Readiness",
+      "relation": "partially",
+      "note": "Reliable operation informs readiness for service."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "1",
+      "frameworkCode": "tcop",
+      "itemRef": "TCoP 1",
+      "relation": "satisfies",
+      "note": "GDS user needs aligns with TCoP define user needs."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "5",
+      "frameworkCode": "tcop",
+      "itemRef": "TCoP 2",
+      "relation": "satisfies",
+      "note": "Accessibility maps to TCoP inclusive design."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "9",
+      "frameworkCode": "tcop",
+      "itemRef": "TCoP 6",
+      "relation": "satisfies",
+      "note": "Security maps to TCoP make things secure."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "11",
+      "frameworkCode": "tcop",
+      "itemRef": "TCoP 7",
+      "relation": "satisfies",
+      "note": "Technology choices map to TCoP careful decisions."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "12",
+      "frameworkCode": "tcop",
+      "itemRef": "TCoP 3",
+      "relation": "satisfies",
+      "note": "Open source maps to TCoP be open."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "13",
+      "frameworkCode": "tcop",
+      "itemRef": "TCoP 4",
+      "relation": "partially",
+      "note": "Common components inform shared platforms."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "6",
+      "frameworkCode": "iso-19650",
+      "itemRef": "ISO 19650 / 5.6",
+      "relation": "informs",
+      "note": "Multidisciplinary team capability informs information management capability."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "10",
+      "frameworkCode": "iso-19650",
+      "itemRef": "ISO 19650 / 6.2",
+      "relation": "informs",
+      "note": "Performance monitoring informs information quality assurance culture."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "11",
+      "frameworkCode": "iso-19650",
+      "itemRef": "ISO 19650 / 5.3",
+      "relation": "partially",
+      "note": "Technology choices affect CDE platform selection."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "1",
+      "frameworkCode": "construction-playbook",
+      "itemRef": "CP / Outcomes",
+      "relation": "informs",
+      "note": "User needs inform outcome definition in the playbook."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "10",
+      "frameworkCode": "construction-playbook",
+      "itemRef": "CP / Outcomes",
+      "relation": "partially",
+      "note": "Published performance supports outcomes focus."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "11",
+      "frameworkCode": "construction-playbook",
+      "itemRef": "CP / Digital",
+      "relation": "satisfies",
+      "note": "Technology choices support digital-by-default delivery."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "1",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 1 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "1",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Alpha pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 1 is typically emphasised at alpha."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "2",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 2 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "2",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Alpha pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 2 is typically emphasised at alpha."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "3",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 3 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "3",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Live pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 3 is typically emphasised at live."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "4",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 4 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "4",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Live pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 4 is typically emphasised at live."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "5",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 5 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "5",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Live pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 5 is typically emphasised at live."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "6",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 6 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "6",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Alpha pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 6 is typically emphasised at alpha."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "7",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 7 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "7",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Alpha pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 7 is typically emphasised at alpha."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "8",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 8 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "8",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Live pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 8 is typically emphasised at live."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "9",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 9 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "9",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Live pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 9 is typically emphasised at live."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "10",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 10 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "10",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Live pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 10 is typically emphasised at live."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "11",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 11 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "12",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 12 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "12",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Live pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 12 is typically emphasised at live."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "13",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 13 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "14",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Beta pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 14 is in scope for a beta assessment pack when phase-applicable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "14",
+      "frameworkCode": "gds-assessment",
+      "itemRef": "Live pack",
+      "relation": "satisfies",
+      "note": "GDS criterion 14 is typically emphasised at live."
+    }
+  ],
+  "authoredBy": "S Powell",
+  "reviewedBy": "A Graves",
+  "reviewedAt": "2026-07-30"
+}

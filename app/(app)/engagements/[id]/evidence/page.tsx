@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
@@ -40,6 +41,11 @@ export default function EvidenceLedgerPage() {
   const [expiresAt, setExpiresAt] = useState('');
   const [criterionIds, setCriterionIds] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  const crosswalkHints = trpc.crosswalk.hintsForCriteria.useQuery(
+    { engagementId: id, criterionIds },
+    { enabled: criterionIds.length > 0 },
+  );
 
   function toggleCriterion(cid: string) {
     setCriterionIds((prev) =>
@@ -138,6 +144,42 @@ export default function EvidenceLedgerPage() {
             ))}
           </div>
         </fieldset>
+        {criterionIds.length > 0 && (crosswalkHints.data?.length ?? 0) > 0 && (
+          <aside
+            className="border border-rule bg-stock-1 px-3 py-3"
+            style={{ borderRadius: 'var(--radius)' }}
+            aria-live="polite"
+          >
+            <p className="text-[13px] font-semibold text-ink-0">
+              Also answers these framework items
+            </p>
+            <p className="mt-1 text-[12px] text-ink-1">
+              Saving this evidence contributes to the packs below via the reviewed crosswalk.
+            </p>
+            <ul className="mt-2 space-y-1.5">
+              {crosswalkHints.data!.map((h) => (
+                <li key={`${h.criterionId}-${h.itemRef}`} className="text-[13px] text-ink-0">
+                  <span className="font-data text-ink-2">{h.criterionRef}</span>
+                  {' → '}
+                  <span className="font-medium">
+                    {h.frameworkName}: {h.itemTitle}
+                  </span>
+                  <span className="ml-1 font-data text-[11px] uppercase text-ink-2">
+                    {h.relation}
+                  </span>
+                  {h.packRef && (
+                    <Link
+                      href={`/engagements/${id}/assure/${encodeURIComponent(h.packRef)}`}
+                      className="ml-2 text-signal-ink underline-offset-2 hover:underline"
+                    >
+                      Open pack
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
         <Button type="submit" disabled={upsert.isPending || criterionIds.length < 1}>
           {editingId ? m.engagement.updateEvidence : m.engagement.addEvidence}
         </Button>
