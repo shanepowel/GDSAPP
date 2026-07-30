@@ -7,7 +7,10 @@ import { trpc } from '@/lib/trpc/client';
 
 export function PreparednessOverview({ engagementId }: { engagementId: string }) {
   const utils = trpc.useUtils();
-  const { data, isLoading } = trpc.assurance.preparednessIndex.useQuery({ engagementId });
+  const { data, isLoading } = trpc.assurance.preparednessIndex.useQuery(
+    { engagementId },
+    { staleTime: 60_000 },
+  );
   const autoMatch = trpc.assurance.autoMatchCapabilities.useMutation({
     onSuccess: () => void utils.assurance.preparednessIndex.invalidate({ engagementId }),
   });

@@ -24,10 +24,9 @@ export function EngagementPlate({
 }) {
   const { messages: m } = useI18n();
   const { data: session } = useSession();
-  const { data } = trpc.engagement.byId.useQuery({ id: engagementId });
-  const { data: assess } = trpc.standards.assessList.useQuery(
-    { engagementId },
-    { enabled: !!data },
+  const { data } = trpc.engagement.byId.useQuery(
+    { id: engagementId },
+    { staleTime: 30_000 },
   );
 
   const userInitial =
@@ -35,9 +34,9 @@ export function EngagementPlate({
     session?.user?.email?.charAt(0)?.toUpperCase() ||
     '?';
 
-  const primary = assess?.criteria[0];
+  const primary = data?.catalogStandards?.[0]?.standardVersion;
   const standardLabel = primary
-    ? `${primary.standardName} v${primary.standardVersion}`
+    ? `${primary.standard.name} v${primary.version}`
     : data?.standardId === 'wales'
       ? 'Wales DSS'
       : data?.standardId === 'gds'
@@ -47,9 +46,7 @@ export function EngagementPlate({
   const titleData = {
     reference: data?.reference ?? '—',
     standardLabel,
-    phase: (data?.phase ?? assess?.phase ?? 'discovery').replace(/^./, (c: string) =>
-      c.toUpperCase(),
-    ),
+    phase: (data?.phase ?? 'discovery').replace(/^./, (c: string) => c.toUpperCase()),
     revision: data?.revision ?? 'A',
     preparedBy: session?.user?.name?.trim() || session?.user?.email || '—',
     dateLabel: formatDate(new Date()),

@@ -131,11 +131,20 @@ export const engagementRouter = router({
         requirements: {
           include: {
             roles: true,
-            runs: { orderBy: { createdAt: 'desc' }, take: 5 },
+            runs: { orderBy: { createdAt: 'desc' }, take: 1 },
             assignments: { include: { person: true } },
           },
         },
         people: { include: { skills: true, assignments: true } },
+        catalogStandards: {
+          where: { isPrimary: true },
+          take: 1,
+          include: {
+            standardVersion: {
+              include: { standard: { select: { name: true, code: true } } },
+            },
+          },
+        },
         _count: { select: { evidence: true, judgements: true } },
       },
     });

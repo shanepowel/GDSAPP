@@ -196,28 +196,71 @@ export const assuranceRouter = router({
     }),
 
   preparednessIndex: protectedProcedure
-    .input(z.object({ engagementId: z.string() }))
+    .input(
+      z.object({
+        engagementId: z.string(),
+        /** Bypass snapshot cache and recompute. */
+        force: z.boolean().optional(),
+      }),
+    )
     .query(async ({ ctx, input }) => {
       await assertEngagementInOrg(ctx, input.engagementId);
-      const scoringInput = await loadScoringInput(ctx.prisma, input.engagementId, new Date());
-      const result = score(scoringInput);
+      const now = new Date();
       const snapshots = await ctx.prisma.indexSnapshot.findMany({
         where: { engagementId: input.engagementId },
         orderBy: { computedAt: 'desc' },
         take: 12,
-        select: { computedAt: true, value: true, cause: true },
+        select: { computedAt: true, value: true, cause: true, breakdown: true },
       });
+
+      const latest = snapshots[0];
+      const cacheFreshMs = 5 * 60 * 1000;
+      const useCache =
+        !input.force &&
+        latest?.breakdown &&
+        now.getTime() - latest.computedAt.getTime() < cacheFreshMs;
+
+      const result = useCache
+        ? (latest.breakdown as unknown as ReturnType<typeof score>)
+        : score(await loadScoringInput(ctx.prisma, input.engagementId, now));
+
+      if (!useCache) {
+        await ctx.prisma.indexSnapshot.create({
+          data: {
+            engagementId: input.engagementId,
+            computedAt: now,
+            value: result.index,
+            breakdown: result as unknown as object,
+            cause: 'overview-load',
+          },
+        });
+        snapshots.unshift({
+          computedAt: now,
+          value: result.index,
+          cause: 'overview-load',
+          breakdown: result as unknown as object,
+        });
+      }
+
       const expiring = await ctx.prisma.assuranceEvidence.findMany({
         where: {
           engagementId: input.engagementId,
           expiresAt: {
-            gte: new Date(),
-            lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            gte: now,
+            lte: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
           },
         },
         select: { id: true, title: true, expiresAt: true },
       });
-      return { result, snapshots: snapshots.reverse(), expiring };
+      return {
+        result,
+        snapshots: snapshots
+          .slice(0, 12)
+          .reverse()
+          .map(({ computedAt, value, cause }) => ({ computedAt, value, cause })),
+        expiring,
+        cached: Boolean(useCache),
+      };
     }),
 
   autoMatchCapabilities: protectedProcedure

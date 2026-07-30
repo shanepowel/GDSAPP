@@ -113,6 +113,24 @@ export async function listAssessCriteria(
   reference: string | null;
   criteria: ListedCriterion[];
 }> {
+  const engagementMeta = await prisma.engagement.findUniqueOrThrow({
+    where: { id: opts.engagementId },
+    select: {
+      phase: true,
+      mode: true,
+      locale: true,
+      reference: true,
+      standardId: true,
+    },
+  });
+
+  const phase = opts.phase ?? engagementMeta.phase;
+  const locale = opts.locale ?? engagementMeta.locale ?? 'en';
+  const phaseFilter =
+    !opts.ignorePhaseFilter && phase && phase !== 'gate'
+      ? ({ phases: { has: phase } } as const)
+      : undefined;
+
   const engagement = await prisma.engagement.findUniqueOrThrow({
     where: { id: opts.engagementId },
     include: {
@@ -122,6 +140,7 @@ export async function listAssessCriteria(
             include: {
               standard: true,
               criteria: {
+                where: phaseFilter,
                 include: { translations: true },
                 orderBy: { sortOrder: 'asc' },
               },
@@ -131,9 +150,6 @@ export async function listAssessCriteria(
       },
     },
   });
-
-  const phase = opts.phase ?? engagement.phase;
-  const locale = opts.locale ?? engagement.locale ?? 'en';
 
   const versionRows = engagement.catalogStandards;
   if (!versionRows.length) {
@@ -186,8 +202,8 @@ export async function listAssessCriteria(
 
   return {
     phase,
-    mode: engagement.mode,
-    reference: engagement.reference,
+    mode: engagementMeta.mode,
+    reference: engagementMeta.reference,
     criteria,
   };
 }

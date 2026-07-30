@@ -11,10 +11,44 @@ export const DEMO_ACCOUNT = {
   userName: 'Demo Admin',
 } as const;
 
+/** Cached hash so login does not re-hash on every authorize. */
+let cachedDemoHash: string | null = null;
+
+async function demoPasswordHash(): Promise<string> {
+  if (!cachedDemoHash) {
+    cachedDemoHash = await bcrypt.hash(DEMO_ACCOUNT.password, 8);
+  }
+  return cachedDemoHash;
+}
+
 /** Idempotent demo org + password user (safe to call before credential authorize). */
-export async function ensureDemoAccount(prisma: PrismaClient): Promise<void> {
+export async function ensureDemoAccount(client: PrismaClient): Promise<void> {
   const deploymentMode = getDeploymentMode();
-  const org = await prisma.organisation.upsert({
+  const existing = await client.user.findUnique({
+    where: { email: DEMO_ACCOUNT.email },
+    select: { id: true, passwordHash: true, orgId: true },
+  });
+
+  if (existing?.passwordHash) {
+    // Fast path: account already seeded — only ensure org mode stays in sync.
+    await client.organisation.update({
+      where: { id: DEMO_ACCOUNT.orgId },
+      data: { deploymentMode },
+    }).catch(async () => {
+      await client.organisation.upsert({
+        where: { id: DEMO_ACCOUNT.orgId },
+        create: {
+          id: DEMO_ACCOUNT.orgId,
+          name: DEMO_ACCOUNT.orgName,
+          deploymentMode,
+        },
+        update: { deploymentMode },
+      });
+    });
+    return;
+  }
+
+  const org = await client.organisation.upsert({
     where: { id: DEMO_ACCOUNT.orgId },
     create: {
       id: DEMO_ACCOUNT.orgId,
@@ -24,8 +58,8 @@ export async function ensureDemoAccount(prisma: PrismaClient): Promise<void> {
     update: { deploymentMode },
   });
 
-  const passwordHash = await bcrypt.hash(DEMO_ACCOUNT.password, 10);
-  await prisma.user.upsert({
+  const passwordHash = await demoPasswordHash();
+  await client.user.upsert({
     where: { email: DEMO_ACCOUNT.email },
     create: {
       email: DEMO_ACCOUNT.email,

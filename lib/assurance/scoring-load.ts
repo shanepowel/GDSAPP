@@ -8,30 +8,35 @@ export async function loadScoringInput(
   engagementId: string,
   now: Date,
 ): Promise<FullScoringInput> {
-  const listed = await listAssessCriteria(prisma, { engagementId, ignorePhaseFilter: false });
-  const criterionIds = listed.criteria.map((c) => c.id);
-
-  const judgements = await prisma.criterionJudgement.findMany({
-    where: { engagementId, criterionId: { in: criterionIds }, supersededById: null },
-  });
-
-  const evidenceRows = await prisma.assuranceEvidence.findMany({
-    where: { engagementId },
-    include: { criteria: true },
-  });
-
-  const capabilityRequirements = await prisma.capabilityRequirement.findMany({
-    where: { criterionId: { in: criterionIds } },
-  });
-
-  const capabilityLinks = await prisma.capabilityLink.findMany({
-    where: { engagementId },
-  });
-
   const engagement = await prisma.engagement.findUniqueOrThrow({
     where: { id: engagementId },
+    select: { orgId: true },
   });
-  const graph = await getLiveGraph(prisma, engagement.orgId);
+
+  const [listed, judgements, evidenceRows, capabilityLinks, graph] = await Promise.all([
+    listAssessCriteria(prisma, { engagementId, ignorePhaseFilter: false }),
+    prisma.criterionJudgement.findMany({
+      where: { engagementId, supersededById: null },
+    }),
+    prisma.assuranceEvidence.findMany({
+      where: { engagementId },
+      include: { criteria: true },
+    }),
+    prisma.capabilityLink.findMany({
+      where: { engagementId },
+    }),
+    getLiveGraph(prisma, engagement.orgId),
+  ]);
+
+  const criterionIds = listed.criteria.map((c) => c.id);
+  const criterionIdSet = new Set(criterionIds);
+
+  const capabilityRequirements =
+    criterionIds.length === 0
+      ? []
+      : await prisma.capabilityRequirement.findMany({
+          where: { criterionId: { in: criterionIds } },
+        });
 
   return {
     criteria: listed.criteria.map((c) => ({
@@ -43,15 +48,17 @@ export async function loadScoringInput(
       statutory: c.statutory,
       phases: c.phases,
     })),
-    judgements: judgements.map((j) => ({
-      id: j.id,
-      criterionId: j.criterionId,
-      verdict: j.verdict as FullScoringInput['judgements'][number]['verdict'],
-      rationale: j.rationale,
-      confirmedByUserId: j.confirmedByUserId,
-      supersededById: j.supersededById,
-      createdAt: j.confirmedAt,
-    })),
+    judgements: judgements
+      .filter((j) => criterionIdSet.has(j.criterionId))
+      .map((j) => ({
+        id: j.id,
+        criterionId: j.criterionId,
+        verdict: j.verdict as FullScoringInput['judgements'][number]['verdict'],
+        rationale: j.rationale,
+        confirmedByUserId: j.confirmedByUserId,
+        supersededById: j.supersededById,
+        createdAt: j.confirmedAt,
+      })),
     evidence: evidenceRows.map((e) => ({
       id: e.id,
       title: e.title,
@@ -119,11 +126,13 @@ export async function autoMatchCapabilityLinks(
   orgId: string,
   engagementId: string,
 ) {
-  const listed = await listAssessCriteria(prisma, { engagementId, ignorePhaseFilter: true });
+  const [listed, graph] = await Promise.all([
+    listAssessCriteria(prisma, { engagementId, ignorePhaseFilter: true }),
+    getLiveGraph(prisma, orgId),
+  ]);
   const reqs = await prisma.capabilityRequirement.findMany({
     where: { criterionId: { in: listed.criteria.map((c) => c.id) } },
   });
-  const graph = await getLiveGraph(prisma, orgId);
   let created = 0;
 
   for (const req of reqs) {
