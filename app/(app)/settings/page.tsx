@@ -32,6 +32,15 @@ export default function SettingsPage() {
         </Card>
 
         <Card className="p-6">
+          <h2 className="font-semibold text-text">Sign-in</h2>
+          <p className="mt-2 text-sm text-text-muted">
+            When Microsoft Entra is configured, it is the primary sign-in. Credentials remain only
+            when <code className="font-data text-xs">AUTH_ALLOW_CREDENTIALS=true</code> (local/demo).
+            Assessor role: read and comment; no structural edits.
+          </p>
+        </Card>
+
+        <Card className="p-6">
           <h2 className="font-semibold text-text">Organisation</h2>
           <p className="mt-2 text-sm text-text-muted">{me?.organisationName}</p>
           <p className="mt-1 text-xs text-text-muted">Your role: {me?.role}</p>

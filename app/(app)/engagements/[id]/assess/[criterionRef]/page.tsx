@@ -40,11 +40,21 @@ export default function CriterionDetailPage() {
   const evidenceQ = trpc.assurance.listEvidence.useQuery({ engagementId: id });
   const linkedEvidence =
     evidenceQ.data?.filter((e) => e.criteria.some((c) => c.criterionId === criterion?.id)) ?? [];
+  const ownerQ = trpc.assurance.getEvidenceOwner.useQuery(
+    { engagementId: id, criterionId: criterion?.id ?? '' },
+    { enabled: !!criterion?.id },
+  );
+  const structureQ = trpc.orgDesign.engagementStructure.useQuery({ engagementId: id });
+  const setOwner = trpc.assurance.setEvidenceOwner.useMutation({
+    onSuccess: () => void utils.assurance.getEvidenceOwner.invalidate(),
+  });
+  const nudge = trpc.assurance.nudgeEvidenceOwner.useMutation();
 
   const confirm = trpc.assurance.confirmJudgement.useMutation({
     onSuccess: () => {
       void utils.assurance.currentJudgement.invalidate();
       void utils.assurance.judgementHistory.invalidate();
+      void utils.assurance.preparednessIndex.invalidate({ engagementId: id });
     },
   });
 
@@ -124,6 +134,51 @@ export default function CriterionDetailPage() {
                 ))}
               </ul>
             )}
+          </section>
+
+          <section>
+            <h2 className="text-[17px] font-semibold text-ink-0">Evidence owner</h2>
+            <div className="mt-3 flex flex-wrap items-end gap-3">
+              <label className="block text-[13px] font-medium text-ink-1">
+                Owner
+                <select
+                  className="mt-1 block rounded-[2px] border border-rule px-3 py-2 text-sm"
+                  value={ownerQ.data?.personId ?? ''}
+                  onChange={(e) => {
+                    if (!criterion || !e.target.value) return;
+                    setOwner.mutate({
+                      engagementId: id,
+                      criterionId: criterion.id,
+                      personId: e.target.value,
+                    });
+                  }}
+                >
+                  <option value="">Assign…</option>
+                  {(structureQ.data?.graph.people ?? []).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                      {p.email ? ` · ${p.email}` : ''}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button
+                type="button"
+                className="rounded-[2px] border border-rule px-3 py-2 text-sm text-ink-0 disabled:opacity-50"
+                disabled={!ownerQ.data || nudge.isPending}
+                onClick={() =>
+                  criterion &&
+                  nudge.mutate({ engagementId: id, criterionId: criterion.id })
+                }
+              >
+                Nudge owner
+              </button>
+              {nudge.data && (
+                <p className="text-sm text-verdict-met" role="status">
+                  Nudge sent to {nudge.data.recipient}
+                </p>
+              )}
+            </div>
           </section>
 
           <section>

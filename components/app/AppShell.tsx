@@ -6,6 +6,7 @@ import { Globe } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { BrandMark } from '@/components/brand/BrandMark';
 import { useI18n } from '@/components/app/LocaleProvider';
+import { ThemeToggle } from '@/components/product/ThemeToggle';
 import { useEngagementPlate } from '@/components/product/TitleBlock';
 
 export function AppShell({
@@ -58,6 +59,7 @@ export function AppShell({
               </span>
             )}
             <LanguageSwitcher />
+            <ThemeToggle />
             {actions}
             <Link
               href="/profile"

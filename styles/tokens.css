@@ -130,15 +130,40 @@
 }
 
 html.dark {
-  --color-bg: #0b0f14;
-  --color-surface: var(--tt-navy);
-  --color-surface-alt: var(--tt-charcoal-800);
-  --color-border: #334155;
-  --color-text: #f8fafc;
-  --color-text-muted: #94a3b8;
-  --color-text-inverse: var(--tt-white);
-  --color-brand-tint: rgba(0, 60, 180, 0.22);
-  --chart-grid: #334155;
+  /* Spec Phase 2 dark: invert stock/ink; lift verdict lightness ~12%; signal #FF4D9D */
+  --stock-0: #1a1e22;
+  --stock-1: #16191c;
+  --stock-2: #22262b;
+  --rule: #3a424a;
+  --rule-soft: #2c3238;
+  --ink-0: #eaedef;
+  --ink-1: #b4bcc4;
+  --ink-2: #8a929c;
+  --signal: #ff4d9d;
+  --signal-ink: #ff7eb5;
+  --signal-wash: #3a1528;
+  --verdict-met: #3d9a6e;
+  --verdict-met-wash: #1a3228;
+  --verdict-at-risk: #c48a2a;
+  --verdict-at-risk-wash: #322814;
+  --verdict-not-met: #d45a5a;
+  --verdict-not-met-wash: #321818;
+  --verdict-unassessed: #8a929c;
+  --verdict-unassessed-wash: #2a2e32;
+  --focus: #ffd400;
+  --focus-shadow: #eaedef;
+
+  --color-bg: var(--stock-1);
+  --color-surface: var(--stock-0);
+  --color-surface-alt: var(--stock-2);
+  --color-border: var(--rule);
+  --color-text: var(--ink-0);
+  --color-text-muted: var(--ink-2);
+  --color-text-inverse: #14181c;
+  --color-brand-tint: rgba(127, 163, 245, 0.18);
+  --chart-grid: var(--rule);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --tt-surface-alt: var(--stock-2);
+  --tt-border: var(--rule);
 }

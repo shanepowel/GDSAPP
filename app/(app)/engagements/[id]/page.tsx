@@ -18,6 +18,7 @@ import { PreparednessIndexCard } from '@/components/app/PreparednessIndexCard';
 import { RequirementFlexCard } from '@/components/app/RequirementFlexCard';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { WhatIfMovesCard } from '@/components/app/WhatIfMovesCard';
+import { PreparednessOverview } from '@/components/product/PreparednessOverview';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
 import { engagementEntityLabel } from '@/lib/labels';
@@ -95,6 +96,8 @@ export default function EngagementOverviewPage() {
             title={m.engagement.subOverview}
             description={m.engagement.overviewIntro}
           />
+
+          <PreparednessOverview engagementId={id} />
 
           <EngagementWorkflowGuide engagementId={id} steps={workflowSteps} />
 

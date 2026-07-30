@@ -7,6 +7,7 @@ import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { EngagementPlateProvider, TitleBlock } from '@/components/product/TitleBlock';
 import { EngagementRail } from '@/components/product/EngagementRail';
+import { ThemeToggle } from '@/components/product/ThemeToggle';
 import { EvidenceChainProvider } from '@/components/chain/EvidenceChainRail';
 import { trpc } from '@/lib/trpc/client';
 
@@ -71,6 +72,7 @@ export function EngagementPlate({
           </div>
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
+            <ThemeToggle />
             <Link
               href="/profile"
               className="grid h-9 w-9 place-items-center text-sm font-semibold text-text-inverse"

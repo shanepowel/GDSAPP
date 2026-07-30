@@ -186,6 +186,7 @@ model Engagement {
   criterionJudgements CriterionJudgement[]
   capabilityLinks     CapabilityLink[]
   evidenceOwners      CriterionEvidenceOwner[]
+  indexSnapshots      IndexSnapshot[]
 
   @@index([orgId])
   @@index([reference])
@@ -385,6 +386,19 @@ model CriterionEvidenceOwner {
 
   @@id([engagementId, criterionId])
   @@map("criterion_evidence_owners")
+}
+
+model IndexSnapshot {
+  id           String     @id @default(cuid())
+  engagementId String
+  computedAt   DateTime   @default(now())
+  value        Int?
+  breakdown    Json
+  cause        String?
+  engagement   Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@index([engagementId, computedAt])
+  @@map("index_snapshots")
 }
 
 model Requirement {

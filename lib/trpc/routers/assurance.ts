@@ -2,6 +2,13 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { assertEngagementInOrg, protectedProcedure, router } from '@/lib/trpc/trpc';
 import { buildEvidenceChain } from '@/lib/assurance/chain';
+import {
+  autoMatchCapabilityLinks,
+  computeAndSnapshotIndex,
+  loadScoringInput,
+} from '@/lib/assurance/scoring-load';
+import { score } from '@/lib/scoring';
+import { logActivity } from '@/lib/org-design/storage';
 
 const verdictSchema = z.enum(['met', 'at-risk', 'not-met', 'not-assessed']);
 const evidenceKindSchema = z.enum([
@@ -176,7 +183,125 @@ export const assuranceRouter = router({
         }
 
         return created;
+      }).then(async (created) => {
+        await computeAndSnapshotIndex(
+          ctx.prisma,
+          input.engagementId,
+          'judgement-confirmed',
+        );
+        return created;
       });
+    }),
+
+  preparednessIndex: protectedProcedure
+    .input(z.object({ engagementId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      const scoringInput = await loadScoringInput(ctx.prisma, input.engagementId, new Date());
+      const result = score(scoringInput);
+      const snapshots = await ctx.prisma.indexSnapshot.findMany({
+        where: { engagementId: input.engagementId },
+        orderBy: { computedAt: 'desc' },
+        take: 12,
+        select: { computedAt: true, value: true, cause: true },
+      });
+      const expiring = await ctx.prisma.assuranceEvidence.findMany({
+        where: {
+          engagementId: input.engagementId,
+          expiresAt: {
+            gte: new Date(),
+            lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          },
+        },
+        select: { id: true, title: true, expiresAt: true },
+      });
+      return { result, snapshots: snapshots.reverse(), expiring };
+    }),
+
+  autoMatchCapabilities: protectedProcedure
+    .input(z.object({ engagementId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const engagement = await assertEngagementInOrg(ctx, input.engagementId);
+      return autoMatchCapabilityLinks(ctx.prisma, engagement.orgId, input.engagementId);
+    }),
+
+  setEvidenceOwner: protectedProcedure
+    .input(
+      z.object({
+        engagementId: z.string(),
+        criterionId: z.string(),
+        personId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      return ctx.prisma.criterionEvidenceOwner.upsert({
+        where: {
+          engagementId_criterionId: {
+            engagementId: input.engagementId,
+            criterionId: input.criterionId,
+          },
+        },
+        create: {
+          engagementId: input.engagementId,
+          criterionId: input.criterionId,
+          personId: input.personId,
+        },
+        update: { personId: input.personId },
+      });
+    }),
+
+  getEvidenceOwner: protectedProcedure
+    .input(z.object({ engagementId: z.string(), criterionId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      return ctx.prisma.criterionEvidenceOwner.findUnique({
+        where: {
+          engagementId_criterionId: {
+            engagementId: input.engagementId,
+            criterionId: input.criterionId,
+          },
+        },
+      });
+    }),
+
+  nudgeEvidenceOwner: protectedProcedure
+    .input(z.object({ engagementId: z.string(), criterionId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const engagement = await assertEngagementInOrg(ctx, input.engagementId);
+      const owner = await ctx.prisma.criterionEvidenceOwner.findUnique({
+        where: {
+          engagementId_criterionId: {
+            engagementId: input.engagementId,
+            criterionId: input.criterionId,
+          },
+        },
+      });
+      if (!owner) {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'No evidence owner assigned' });
+      }
+      const person = await ctx.prisma.designPerson.findFirst({
+        where: { id: owner.personId, orgId: engagement.orgId },
+      });
+      const criterion = await ctx.prisma.criterion.findUniqueOrThrow({
+        where: { id: input.criterionId },
+      });
+      const deepLink = `/engagements/${input.engagementId}/assess/${encodeURIComponent(criterion.ref)}`;
+
+      // Email delivery is environment-specific; record the nudge for the activity trail.
+      await logActivity(ctx.prisma, engagement.orgId, 'evidence.nudge', criterion.ref, {
+        personId: owner.personId,
+        personName: person?.name ?? null,
+        email: person?.email ?? null,
+        deepLink,
+      });
+
+      return {
+        ok: true as const,
+        deepLink,
+        emailed: Boolean(person?.email),
+        recipient: person?.email ?? person?.name ?? owner.personId,
+      };
     }),
 
   evidenceChain: protectedProcedure

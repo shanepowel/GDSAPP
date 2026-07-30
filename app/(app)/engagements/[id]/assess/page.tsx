@@ -8,7 +8,6 @@ import { AppNav } from '@/components/app/AppNav';
 import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { useEvidenceChain } from '@/components/chain/EvidenceChainRail';
-import { Verdict } from '@/components/product/Verdict';
 import { ENGAGEMENT_PHASES } from '@/lib/standards/catalog';
 import { trpc } from '@/lib/trpc/client';
 

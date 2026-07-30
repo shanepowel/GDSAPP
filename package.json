@@ -14,6 +14,7 @@
     "seed:standards": "tsx scripts/seed-standards.ts",
     "seed:catalog": "tsx scripts/seed-catalog-standards.ts",
     "seed:capabilities": "tsx scripts/seed-capability-requirements.ts",
+    "job:freshness": "tsx scripts/freshness-decay.ts",
     "seed:demo": "tsx scripts/seed-demo.ts",
     "ensure:demo": "tsx scripts/ensure-demo.ts",
     "seed": "npm run ingest && npm run seed:standards && npm run seed:catalog && npm run seed:capabilities && npm run seed:demo",

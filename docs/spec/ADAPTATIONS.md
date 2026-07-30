@@ -11,57 +11,28 @@ dedicated migration PR is scheduled.
 | pnpm + Turborepo `apps/web` + `packages/*` | Single Next.js App Router app at repo root |
 | Express org-tool routes → Next handlers | Already ported as **tRPC** `orgDesign` router |
 | `workspace` ≡ `engagement` | Org design is org-scoped; engagements **bind** to live/scenario graphs |
-| Auth is Entra-only | Entra when configured; credentials remain for local/demo |
-| Scoring in `packages/scoring` | Starts as `lib/scoring/` (same pure-function contract); may move to a package later |
+| Auth is Entra-only | Entra when configured; credentials only if `AUTH_ALLOW_CREDENTIALS=true` |
+| Scoring in `packages/scoring` | `lib/scoring/` (pure function contract) |
 | Tokens in `apps/web/app/globals.css` | `styles/tokens.css` + `app/globals.css` |
 | Standards seed in `packages/standards/seed` | `data/standards/seed/*.json` + `npm run seed:catalog` |
 | Monorepo scaffold (Phase 0.1) | Skipped — stay single-app until a dedicated migration PR |
 | Axe CI gate (Phase 0.4) | Existing Playwright + axe smoke; tighten baseline in a dedicated PR |
 | next-intl for all UI (1.4) | UI stays on `lib/i18n`; **criterion** EN/CY live in `criterion_translations` |
 
-Phases 0–6 still apply. Prefer PR-sized tasks from `06-build-plan.md`, adapted to paths above.
+## Phase status summary
 
-## Phase 0 status
-
-| Task | Status |
+| Phase | Status |
 |---|---|
-| 0.1 Monorepo | Deferred |
-| 0.2 Design tokens | Done |
-| 0.3 Fonts | Done |
-| 0.4 A11y CI | Deferred |
-| 0.5 Cursor rules | Done |
-| 0.6 Scoring skeleton | Done |
+| 0 Foundations | Done (monorepo/axe deferred) |
+| 1 Schema & standards | Done (Entra-only when configured; credentials optional for demo) |
+| 2 Shell & organise | Done including dark theme tokens + toggle |
+| 3 Evidence & chain | Done including freshness job + owner nudge |
+| 4 Live index | Done — `lib/scoring`, IndexValue, GapCard, snapshots, auto-match |
+| 5–6 | Not started |
 
-## Phase 1 status
+### Deferred remnants
 
-| Task | Status |
-|---|---|
-| 1.1 workspaces → engagements | N/A — engagements already exist; org-design stays org-scoped |
-| 1.2 Extend engagements | Done — reference, mode, phase, client/service fields, owner, revision |
-| 1.3 Catalog standards + seed | Done — `CatalogStandard` / versions / `Criterion`; GDS, Wales, TCoP JSON seeds |
-| 1.4 Criterion translations | Done — EN human + CY machine rows; UI locale selects translation |
-| 1.5 engagement_standards + `/assess` | Done — join table, phase filter, assess list + criterion detail |
-| 1.6 Retire Express | Already complete (tRPC) |
-| 1.7 Entra-only + assessor | Partial — `assessor` role added to invite enum; Entra cutover deferred |
-
-## Phase 2 status
-
-| Task | Status |
-|---|---|
-| 2.1 Engagement layout shell | Done — `EngagementPlate`, `TitleBlock`, left rail |
-| 2.2–2.4 Org graph/table/people | Done — `/organise` + people/scenarios; `OrgTable` Graph\|Table toggle |
-| 2.5 Rewrite templates | Done |
-| 2.6 Creation wizard | Done — `/engagements/new` four steps |
-| 2.7 Dark mode | Deferred (spec: after light theme) |
-
-## Phase 3 status
-
-| Task | Status |
-|---|---|
-| 3.1 M4 evidence/judgement tables | Done — `AssuranceEvidence`, `CriterionJudgement`, capability tables |
-| 3.2 Evidence ledger | Done — `/evidence` uses catalog criteria; ≥1 link enforced |
-| 3.3 Criterion detail | Done — verdict + rationale (≥40) + history |
-| 3.4 ProvenanceChip | Done |
-| 3.5 Evidence Chain rail | Done — plate provider, Esc/focus trap, segment states |
-| 3.6 Freshness/decay job | Partial — freshness on ledger; nightly job deferred |
-| 3.7 Evidence owner nudge | Schema `CriterionEvidenceOwner` present; nudge email deferred |
+- Full axe CI baseline hardening (0.4)
+- Blob upload for evidence files (URI field used; storage key optional)
+- Outbound email provider for nudges (activity trail + deep link recorded)
+- Phase 5 crosswalk / Phase 6 report pack
