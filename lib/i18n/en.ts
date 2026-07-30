@@ -56,6 +56,7 @@ export const en: Messages = {
     subTeam: 'Team',
     subStructure: 'Structure',
     subEvidence: 'Evidence',
+    subAssess: 'Criteria',
     subRigour: 'Rigour',
     subAnalysis: 'Analysis',
     subTender: 'Call-off',
@@ -99,6 +100,18 @@ export const en: Messages = {
       'Score each dimension 0 to 4. Feeds Service Standard point 7 and bid approach questions.',
     requirementTitle: 'Requirement',
     analysisTitle: 'Analysis',
+    assessTitle: 'Assess',
+    assessIntro:
+      'Criteria for the selected standard version(s), filtered to this engagement’s phase. Changing phase changes the list; it does not remove judgements.',
+    assessEmpty:
+      'No criteria apply at this phase. Change phase or bind a standard version.',
+    assessApplicableCount: '{count} criteria apply at {phase}',
+    assessStatutory: 'Statutory',
+    assessMachineTranslation: 'Machine translation',
+    assessCriterionMissing:
+      'This criterion is not in the current phase filter. Change phase to see it.',
+    assessJudgementComing:
+      'Judgement and evidence capture for this criterion land in the next phase of the build.',
     tenderTitle: 'Call-off evaluation',
     tenderTitleAssurance: 'Assurance criteria',
     tenderIntroInternal:

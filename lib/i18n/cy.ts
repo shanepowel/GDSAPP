@@ -57,6 +57,7 @@ export const cy: Messages = {
     subTeam: 'Tîm',
     subStructure: 'Strwythur',
     subEvidence: 'Tystiolaeth',
+    subAssess: 'Meini prawf',
     subRigour: 'Trwmder',
     subAnalysis: 'Dadansoddiad',
     subTender: 'Galwad i dendro',
@@ -100,6 +101,17 @@ export const cy: Messages = {
       'Sgoriwch pob dimensiwn 0 i 4. Yn bwydo pwynt 7 Safon Gwasanaeth a chwestiynau dull tendr.',
     requirementTitle: 'Gofyniad',
     analysisTitle: 'Dadansoddiad',
+    assessTitle: 'Asesu',
+    assessIntro:
+      'Meini prawf ar gyfer fersiwn(au) y safon a ddewiswyd, wedi’u hidlo i gyfnod y galwad. Newid cyfnod yn newid y rhestr; nid yw’n dileu barnau.',
+    assessEmpty: 'Dim meini prawf yn berthnasol i’r cyfnod hwn. Newidiwch gyfnod neu gysylltwch fersiwn safon.',
+    assessApplicableCount: '{count} meini prawf yn berthnasol yn {phase}',
+    assessStatutory: 'Statudol',
+    assessMachineTranslation: 'Cyfieithiad peiriant',
+    assessCriterionMissing:
+      'Nid yw’r maen prawf hwn yn yr hidlydd cyfnod cyfredol. Newidiwch gyfnod i’w weld.',
+    assessJudgementComing:
+      'Bydd barn a chasglu tystiolaeth ar gyfer y maen prawf hwn yn y cyfnod nesaf o’r adeiladwaith.',
     tenderTitle: 'Gwerthuso galwad i dendro',
     tenderTitleAssurance: 'Meini prawf sicrwydd',
     tenderIntroInternal:

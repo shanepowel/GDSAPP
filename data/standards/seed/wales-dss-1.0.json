@@ -1,0 +1,329 @@
+{
+  "code": "wales-dss",
+  "name": "Digital Service Standard for Wales",
+  "publisher": "Welsh Government",
+  "licence": "OGL-3.0",
+  "attribution": "Contains public sector information licensed under the Open Government Licence v3.0.",
+  "sourceUrl": "https://digitalpublicservices.gov.wales/",
+  "version": "1.0",
+  "effectiveFrom": "2021-01-01",
+  "criteria": [
+    {
+      "ref": "1",
+      "title": "Focus on the current and future wellbeing of people in Wales",
+      "statement": "Long term, preventative, sustainable thinking aligned to the Welsh wellbeing duty.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": true,
+      "weight": 1,
+      "sortOrder": 1,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Focus on the current and future wellbeing of people in Wales",
+          "statement": "Long term, preventative, sustainable thinking aligned to the Welsh wellbeing duty.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Focus on the current and future wellbeing of people in Wales",
+          "statement": "Long term, preventative, sustainable thinking aligned to the Welsh wellbeing duty.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "2",
+      "title": "Design services in Welsh and English",
+      "statement": "Genuine bilingual design capability, treated as statutory not optional.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": true,
+      "weight": 1,
+      "sortOrder": 2,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Design services in Welsh and English",
+          "statement": "Genuine bilingual design capability, treated as statutory not optional.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Design services in Welsh and English",
+          "statement": "Genuine bilingual design capability, treated as statutory not optional.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "3",
+      "title": "Understand users and their needs",
+      "statement": "Mirrors GDS point 1, with explicit attention to Welsh speaking users.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 3,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Understand users and their needs",
+          "statement": "Mirrors GDS point 1, with explicit attention to Welsh speaking users.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Understand users and their needs",
+          "statement": "Mirrors GDS point 1, with explicit attention to Welsh speaking users.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "4",
+      "title": "Provide a joined up experience",
+      "statement": "Mirrors GDS point 3, joined up across channels and bodies.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 4,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Provide a joined up experience",
+          "statement": "Mirrors GDS point 3, joined up across channels and bodies.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Provide a joined up experience",
+          "statement": "Mirrors GDS point 3, joined up across channels and bodies.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "5",
+      "title": "Make sure everyone can use the service",
+      "statement": "Mirrors GDS point 5.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 5,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Make sure everyone can use the service",
+          "statement": "Mirrors GDS point 5.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Make sure everyone can use the service",
+          "statement": "Mirrors GDS point 5.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "6",
+      "title": "Have an empowered service owner",
+      "statement": "A present but under-levelled service owner should not pass this point. Seniority is checked, not just presence.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": true,
+      "weight": 1,
+      "sortOrder": 6,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Have an empowered service owner",
+          "statement": "A present but under-levelled service owner should not pass this point. Seniority is checked, not just presence.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Have an empowered service owner",
+          "statement": "A present but under-levelled service owner should not pass this point. Seniority is checked, not just presence.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "7",
+      "title": "Have a multidisciplinary team",
+      "statement": "Mirrors GDS point 6. Mainly computed from composition coverage.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 7,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Have a multidisciplinary team",
+          "statement": "Mirrors GDS point 6. Mainly computed from composition coverage.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Have a multidisciplinary team",
+          "statement": "Mirrors GDS point 6. Mainly computed from composition coverage.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "8",
+      "title": "Iterate and improve frequently",
+      "statement": "Mirrors GDS point 8.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 8,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Iterate and improve frequently",
+          "statement": "Mirrors GDS point 8.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Iterate and improve frequently",
+          "statement": "Mirrors GDS point 8.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "9",
+      "title": "Work in the open",
+      "statement": "Broader than GDS open code. Includes a culture of working and sharing in the open.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 9,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Work in the open",
+          "statement": "Broader than GDS open code. Includes a culture of working and sharing in the open.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Work in the open",
+          "statement": "Broader than GDS open code. Includes a culture of working and sharing in the open.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "10",
+      "title": "Use scalable technology",
+      "statement": "Combines GDS points 11 and 13 around scalable, proportionate technology choices.",
+      "phases": [
+        "alpha",
+        "beta"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 10,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Use scalable technology",
+          "statement": "Combines GDS points 11 and 13 around scalable, proportionate technology choices.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Use scalable technology",
+          "statement": "Combines GDS points 11 and 13 around scalable, proportionate technology choices.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "11",
+      "title": "Consider ethics, privacy and security throughout",
+      "statement": "Combines GDS point 9 with an explicit ethics dimension, applied throughout.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 11,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Consider ethics, privacy and security throughout",
+          "statement": "Combines GDS point 9 with an explicit ethics dimension, applied throughout.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Consider ethics, privacy and security throughout",
+          "statement": "Combines GDS point 9 with an explicit ethics dimension, applied throughout.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "12",
+      "title": "Use data to make decisions",
+      "statement": "Mirrors GDS point 10 with a decision making emphasis.",
+      "phases": [
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 12,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Use data to make decisions",
+          "statement": "Mirrors GDS point 10 with a decision making emphasis.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Use data to make decisions",
+          "statement": "Mirrors GDS point 10 with a decision making emphasis.",
+          "reviewStatus": "machine"
+        }
+      }
+    }
+  ]
+}

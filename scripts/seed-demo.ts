@@ -20,6 +20,11 @@ async function main() {
   } catch (e) {
     console.warn(e);
   }
+  try {
+    execSync('npm run seed:catalog', { stdio: 'inherit' });
+  } catch (e) {
+    console.warn(e);
+  }
 
   const deploymentMode =
     process.env.DEPLOYMENT_MODE === 'client' || process.env.NEXT_PUBLIC_DEPLOYMENT_MODE === 'client'
@@ -32,7 +37,7 @@ async function main() {
   });
 
   const passwordHash = await bcrypt.hash('demo-password', 10);
-  await prisma.user.upsert({
+  const admin = await prisma.user.upsert({
     where: { email: 'admin@demo.local' },
     create: {
       email: 'admin@demo.local',
@@ -49,12 +54,26 @@ async function main() {
     create: {
       id: 'nrw-demo',
       name: 'NRW regulatory permitting service (discovery)',
+      reference: 'NRW-DISC-01',
       standardId: 'wales',
+      clientOrg: 'Natural Resources Wales',
+      sector: 'digital-service',
+      serviceName: 'Regulatory permitting',
+      phase: 'discovery',
+      mode: 'bid',
+      ownerId: admin.id,
       orgId: org.id,
       supplierTag: 'Turner & Townsend Demo',
       lotTag: 'Lot 1 Digital delivery',
     },
     update: {
+      reference: 'NRW-DISC-01',
+      clientOrg: 'Natural Resources Wales',
+      sector: 'digital-service',
+      serviceName: 'Regulatory permitting',
+      phase: 'discovery',
+      mode: 'bid',
+      ownerId: admin.id,
       supplierTag: 'Turner & Townsend Demo',
       lotTag: 'Lot 1 Digital delivery',
     },
@@ -65,16 +84,52 @@ async function main() {
     create: {
       id: 'nrw-demo-2',
       name: 'NRW biodiversity data platform (alpha)',
+      reference: 'NRW-ALPHA-02',
       standardId: 'wales',
+      clientOrg: 'Natural Resources Wales',
+      sector: 'digital-service',
+      serviceName: 'Biodiversity data platform',
+      phase: 'alpha',
+      mode: 'mobilise',
+      ownerId: admin.id,
       orgId: org.id,
       supplierTag: 'Partner Co',
       lotTag: 'Lot 2 Data',
     },
     update: {
+      reference: 'NRW-ALPHA-02',
+      clientOrg: 'Natural Resources Wales',
+      sector: 'digital-service',
+      serviceName: 'Biodiversity data platform',
+      phase: 'alpha',
+      mode: 'mobilise',
+      ownerId: admin.id,
       supplierTag: 'Partner Co',
       lotTag: 'Lot 2 Data',
     },
   });
+
+  const walesVersion = await prisma.catalogStandardVersion.findFirst({
+    where: { status: 'current', standard: { code: 'wales-dss' } },
+  });
+  if (walesVersion) {
+    for (const engagementId of ['nrw-demo', 'nrw-demo-2']) {
+      await prisma.engagementStandard.upsert({
+        where: {
+          engagementId_standardVersionId: {
+            engagementId,
+            standardVersionId: walesVersion.id,
+          },
+        },
+        create: {
+          engagementId,
+          standardVersionId: walesVersion.id,
+          isPrimary: true,
+        },
+        update: { isPrimary: true },
+      });
+    }
+  }
 
   const serviceOwnerLevel = await prisma.roleLevel.findFirst({
     where: { roleId: 'service-owner' },

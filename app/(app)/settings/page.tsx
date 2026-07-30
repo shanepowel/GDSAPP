@@ -73,7 +73,7 @@ export default function SettingsPage() {
                   name: String(fd.get('name')),
                   email: String(fd.get('email')),
                   password: String(fd.get('password')),
-                  role: (fd.get('role') as 'admin' | 'member') || 'member',
+                  role: (fd.get('role') as 'admin' | 'member' | 'assessor') || 'member',
                 });
                 e.currentTarget.reset();
               }}
@@ -106,6 +106,7 @@ export default function SettingsPage() {
                 defaultValue="member"
               >
                 <option value="member">Member</option>
+                <option value="assessor">Assessor</option>
                 <option value="admin">Admin</option>
               </select>
               <Button type="submit" disabled={invite.isPending} className="sm:col-span-2">

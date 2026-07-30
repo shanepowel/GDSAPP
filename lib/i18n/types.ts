@@ -50,6 +50,7 @@ export type Messages = {
     subTeam: string;
     subStructure: string;
     subEvidence: string;
+    subAssess: string;
     subRigour: string;
     subAnalysis: string;
     subTender: string;
@@ -90,6 +91,14 @@ export type Messages = {
     rigourIntro: string;
     requirementTitle: string;
     analysisTitle: string;
+    assessTitle: string;
+    assessIntro: string;
+    assessEmpty: string;
+    assessApplicableCount: string;
+    assessStatutory: string;
+    assessMachineTranslation: string;
+    assessCriterionMissing: string;
+    assessJudgementComing: string;
     tenderTitle: string;
     tenderTitleAssurance: string;
     tenderIntroInternal: string;

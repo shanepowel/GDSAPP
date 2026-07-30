@@ -1,0 +1,274 @@
+{
+  "code": "tcop",
+  "name": "Technology Code of Practice",
+  "publisher": "Central Digital and Data Office",
+  "licence": "OGL-3.0",
+  "attribution": "Contains public sector information licensed under the Open Government Licence v3.0.",
+  "sourceUrl": "https://www.gov.uk/guidance/the-technology-code-of-practice",
+  "version": "1.0",
+  "effectiveFrom": "2021-01-01",
+  "criteria": [
+    {
+      "ref": "1",
+      "title": "Define user needs",
+      "statement": "Start with user needs, not with technology.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta",
+        "live",
+        "gate"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 1,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Define user needs",
+          "statement": "Start with user needs, not with technology.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Define user needs",
+          "statement": "Start with user needs, not with technology.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "2",
+      "title": "Make things accessible and inclusive",
+      "statement": "Services must be accessible and inclusive.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live",
+        "gate"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 2,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Make things accessible and inclusive",
+          "statement": "Services must be accessible and inclusive.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Make things accessible and inclusive",
+          "statement": "Services must be accessible and inclusive.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "3",
+      "title": "Be open and use open source",
+      "statement": "Share your code and use open standards.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live",
+        "gate"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 3,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Be open and use open source",
+          "statement": "Share your code and use open standards.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Be open and use open source",
+          "statement": "Share your code and use open standards.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "4",
+      "title": "Make use of shared platforms",
+      "statement": "Reuse shared platforms and components where they meet the need.",
+      "phases": [
+        "alpha",
+        "beta",
+        "gate"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 4,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Make use of shared platforms",
+          "statement": "Reuse shared platforms and components where they meet the need.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Make use of shared platforms",
+          "statement": "Reuse shared platforms and components where they meet the need.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "5",
+      "title": "Use cloud first",
+      "statement": "Prefer public cloud unless there is a clear reason not to.",
+      "phases": [
+        "alpha",
+        "beta",
+        "gate"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 5,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Use cloud first",
+          "statement": "Prefer public cloud unless there is a clear reason not to.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Use cloud first",
+          "statement": "Prefer public cloud unless there is a clear reason not to.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "6",
+      "title": "Make things secure",
+      "statement": "Security and privacy by design.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live",
+        "gate"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 6,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Make things secure",
+          "statement": "Security and privacy by design.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Make things secure",
+          "statement": "Security and privacy by design.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "7",
+      "title": "Make common technology decisions carefully",
+      "statement": "Justify technology choices; avoid unnecessary lock-in.",
+      "phases": [
+        "alpha",
+        "beta",
+        "gate"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 7,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Make common technology decisions carefully",
+          "statement": "Justify technology choices; avoid unnecessary lock-in.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Make common technology decisions carefully",
+          "statement": "Justify technology choices; avoid unnecessary lock-in.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "8",
+      "title": "Share and reuse technology",
+      "statement": "Share what you build so others can reuse it.",
+      "phases": [
+        "beta",
+        "live",
+        "gate"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 8,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Share and reuse technology",
+          "statement": "Share what you build so others can reuse it.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Share and reuse technology",
+          "statement": "Share what you build so others can reuse it.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "9",
+      "title": "Define your buying strategy",
+      "statement": "Buy in a way that supports competition and reuse.",
+      "phases": [
+        "discovery",
+        "gate"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 9,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Define your buying strategy",
+          "statement": "Buy in a way that supports competition and reuse.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Define your buying strategy",
+          "statement": "Buy in a way that supports competition and reuse.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "10",
+      "title": "Support a diverse IT industry",
+      "statement": "Create opportunities for SMEs and open markets.",
+      "phases": [
+        "gate"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 10,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Support a diverse IT industry",
+          "statement": "Create opportunities for SMEs and open markets.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Support a diverse IT industry",
+          "statement": "Create opportunities for SMEs and open markets.",
+          "reviewStatus": "machine"
+        }
+      }
+    }
+  ]
+}
