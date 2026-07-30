@@ -10,6 +10,8 @@ export default withAuth({
 export const config = {
   matcher: [
     '/engagements/:path*',
+    '/org-design',
+    '/org-design/:path*',
     '/portfolio',
     '/handover',
     '/benchmarking',
