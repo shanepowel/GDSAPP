@@ -80,6 +80,11 @@ export const cy: Messages = {
     addEvidence: 'Ychwanegu tystiolaeth',
     teamTitle: 'Tîm',
     structureTitle: 'Strwythur gwasanaeth',
+    organiseTitle: 'Trefnu',
+    organisePeopleTitle: 'Pobl',
+    organiseScenariosTitle: 'Senarios',
+    organiseScenariosIntro:
+      'Cangenwch y tîm byw i fodelio cywiriad heb ei gyffwrdd. Hyrwyddwch pan gytunir ar y symudiad.',
     pseudonymise: 'Cyfrin enwau (dangos labeli rolau yn unig)',
     assignRole: 'Neilltuo rôl…',
     addPerson: 'Ychwanegu person',

@@ -44,12 +44,24 @@ Phases 0–6 still apply. Prefer PR-sized tasks from `06-build-plan.md`, adapted
 | 1.6 Retire Express | Already complete (tRPC) |
 | 1.7 Entra-only + assessor | Partial — `assessor` role added to invite enum; Entra cutover deferred |
 
-## Phase 2 status (in progress)
+## Phase 2 status
 
 | Task | Status |
 |---|---|
-| 2.1 Engagement layout shell | Done — `EngagementPlate`, `TitleBlock`, left rail (6 destinations) |
-| 2.2–2.4 Org graph/table/people port | Partial — `/organise` redirects to existing `/structure` |
-| 2.5 Rewrite templates | Done — GDS discovery/alpha/beta + LA / capital / enterprise / data |
-| 2.6 Creation wizard | Not started |
+| 2.1 Engagement layout shell | Done — `EngagementPlate`, `TitleBlock`, left rail |
+| 2.2–2.4 Org graph/table/people | Done — `/organise` + people/scenarios; `OrgTable` Graph\|Table toggle |
+| 2.5 Rewrite templates | Done |
+| 2.6 Creation wizard | Done — `/engagements/new` four steps |
 | 2.7 Dark mode | Deferred (spec: after light theme) |
+
+## Phase 3 status
+
+| Task | Status |
+|---|---|
+| 3.1 M4 evidence/judgement tables | Done — `AssuranceEvidence`, `CriterionJudgement`, capability tables |
+| 3.2 Evidence ledger | Done — `/evidence` uses catalog criteria; ≥1 link enforced |
+| 3.3 Criterion detail | Done — verdict + rationale (≥40) + history |
+| 3.4 ProvenanceChip | Done |
+| 3.5 Evidence Chain rail | Done — plate provider, Esc/focus trap, segment states |
+| 3.6 Freshness/decay job | Partial — freshness on ledger; nightly job deferred |
+| 3.7 Evidence owner nudge | Schema `CriterionEvidenceOwner` present; nudge email deferred |

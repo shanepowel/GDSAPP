@@ -7,6 +7,8 @@ import { AppShell } from '@/components/app/AppShell';
 import { AppNav } from '@/components/app/AppNav';
 import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { useI18n } from '@/components/app/LocaleProvider';
+import { useEvidenceChain } from '@/components/chain/EvidenceChainRail';
+import { Verdict } from '@/components/product/Verdict';
 import { ENGAGEMENT_PHASES } from '@/lib/standards/catalog';
 import { trpc } from '@/lib/trpc/client';
 
@@ -15,6 +17,7 @@ export default function AssessPage() {
   const params = useParams();
   const id = params.id as string;
   const utils = trpc.useUtils();
+  const chain = useEvidenceChain();
 
   const { data: engagement } = trpc.engagement.byId.useQuery({ id });
   const ensureBound = trpc.standards.ensureBound.useMutation({
@@ -103,7 +106,16 @@ export default function AssessPage() {
               className="flex flex-col gap-1 px-1 py-4 transition-colors hover:bg-stock-1 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[var(--focus)]"
             >
               <div className="flex flex-wrap items-baseline gap-3">
-                <span className="font-data text-[12px] font-medium text-ink-0">{c.ref}</span>
+                <button
+                  type="button"
+                  className="font-data text-[12px] font-medium text-signal-ink underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[var(--focus)]"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    chain.open(id, c.id);
+                  }}
+                >
+                  {c.ref}
+                </button>
                 <span className="text-[15px] font-medium text-ink-0">{c.title}</span>
                 {c.statutory && (
                   <span className="font-data text-[11px] uppercase tracking-[0.04em] text-verdict-not-met">

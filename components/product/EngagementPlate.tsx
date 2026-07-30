@@ -7,6 +7,7 @@ import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { EngagementPlateProvider, TitleBlock } from '@/components/product/TitleBlock';
 import { EngagementRail } from '@/components/product/EngagementRail';
+import { EvidenceChainProvider } from '@/components/chain/EvidenceChainRail';
 import { trpc } from '@/lib/trpc/client';
 
 function formatDate(d: Date) {
@@ -56,6 +57,7 @@ export function EngagementPlate({
 
   return (
     <EngagementPlateProvider engagementId={engagementId}>
+      <EvidenceChainProvider>
       <div className="min-h-screen bg-stock-1 text-ink-0">
         <header className="flex h-14 items-center justify-between gap-4 border-b border-rule bg-stock-0 px-4 md:px-6">
           <div className="flex items-center gap-6">
@@ -100,6 +102,7 @@ export function EngagementPlate({
           {m.app.advisoryFooter}
         </footer>
       </div>
+      </EvidenceChainProvider>
     </EngagementPlateProvider>
   );
 }

@@ -72,6 +72,10 @@ export type Messages = {
     addEvidence: string;
     teamTitle: string;
     structureTitle: string;
+    organiseTitle: string;
+    organisePeopleTitle: string;
+    organiseScenariosTitle: string;
+    organiseScenariosIntro: string;
     pseudonymise: string;
     assignRole: string;
     addPerson: string;

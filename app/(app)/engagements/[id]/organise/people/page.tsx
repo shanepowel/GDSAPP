@@ -1,23 +1,23 @@
 'use client';
 
-import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
 import { DesignWorkspace } from '@/components/org-design/DesignWorkspace';
 import { useI18n } from '@/components/app/LocaleProvider';
 
-export default function OrganisePage() {
+export default function OrganisePeoplePage() {
   const params = useParams();
   const id = params.id as string;
   const { messages: m } = useI18n();
 
   return (
-    <AppShell title={m.engagement.organiseTitle} hideTitle>
+    <AppShell title={m.engagement.organisePeopleTitle} hideTitle>
       <div className="mb-4 flex flex-wrap gap-3 text-sm">
-        <Link href={`/engagements/${id}/organise`} className="font-medium text-signal-ink">
+        <Link href={`/engagements/${id}/organise`} className="text-ink-1 hover:text-ink-0">
           Graph
         </Link>
-        <Link href={`/engagements/${id}/organise/people`} className="text-ink-1 hover:text-ink-0">
+        <Link href={`/engagements/${id}/organise/people`} className="font-medium text-signal-ink">
           People
         </Link>
         <Link href={`/engagements/${id}/organise/scenarios`} className="text-ink-1 hover:text-ink-0">
@@ -26,9 +26,9 @@ export default function OrganisePage() {
       </div>
       <DesignWorkspace
         engagementId={id}
-        title={m.engagement.organiseTitle}
+        title={m.engagement.organisePeopleTitle}
         hideMainTabs
-        initialMainView="design"
+        initialMainView="people"
       />
     </AppShell>
   );

@@ -79,6 +79,11 @@ export const en: Messages = {
     addEvidence: 'Add evidence',
     teamTitle: 'Team',
     structureTitle: 'Service structure',
+    organiseTitle: 'Organise',
+    organisePeopleTitle: 'People',
+    organiseScenariosTitle: 'Scenarios',
+    organiseScenariosIntro:
+      'Branch the live team to model a fix without touching it. Promote when the move is agreed.',
     pseudonymise: 'Pseudonymise names (show role labels only)',
     assignRole: 'Assign role…',
     addPerson: 'Add person',

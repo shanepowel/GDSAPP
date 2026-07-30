@@ -5,36 +5,45 @@ import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { AppNav } from '@/components/app/AppNav';
 import { EngagementSubNav } from '@/components/app/EngagementSubNav';
-import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
-import { useRequirementId } from '@/lib/hooks/use-requirement-id';
+import { ProvenanceChip } from '@/components/product/ProvenanceChip';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
-import { EVIDENCE_STRENGTHS } from '@/lib/engine/evidence-config';
 
-export default function EvidencePage() {
-  const { messages: m } = useI18n();
+const KINDS = ['document', 'research', 'test', 'decision', 'code', 'metric', 'other'] as const;
+
+export default function EvidenceLedgerPage() {
+  const { messages: m, locale } = useI18n();
   const params = useParams();
   const id = params.id as string;
-  const { data: engagement } = trpc.engagement.byId.useQuery({ id });
-  const { requirementId, setRequirementId } = useRequirementId(id, engagement?.requirements);
-  const { data, refetch } = trpc.extension.evidence.list.useQuery({ engagementId: id });
-  const { data: points } = trpc.engagement.standardPoints.useQuery(
-    { standardId: (engagement?.standardId ?? 'gds') as 'gds' | 'wales' },
-    { enabled: !!engagement?.standardId },
-  );
-  const upsert = trpc.extension.evidence.upsert.useMutation({ onSuccess: () => refetch() });
-  const remove = trpc.extension.evidence.delete.useMutation({ onSuccess: () => refetch() });
+  const utils = trpc.useUtils();
+
+  const { data, refetch } = trpc.assurance.listEvidence.useQuery({ engagementId: id });
+  const criteria = trpc.standards.assessList.useQuery({
+    engagementId: id,
+    locale: locale === 'cy' ? 'cy' : 'en',
+    ignorePhaseFilter: true,
+  });
+  const upsert = trpc.assurance.upsertEvidence.useMutation({
+    onSuccess: () => {
+      void refetch();
+      void utils.assurance.listEvidence.invalidate();
+    },
+  });
+  const remove = trpc.assurance.deleteEvidence.useMutation({
+    onSuccess: () => void refetch(),
+  });
 
   const [title, setTitle] = useState('');
-  const [type, setType] = useState('research report');
-  const [strength, setStrength] = useState<(typeof EVIDENCE_STRENGTHS)[number]>('documented');
-  const [pointIds, setPointIds] = useState<string[]>([]);
+  const [kind, setKind] = useState<(typeof KINDS)[number]>('research');
+  const [uri, setUri] = useState('');
+  const [expiresAt, setExpiresAt] = useState('');
+  const [criterionIds, setCriterionIds] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  function togglePoint(pid: string) {
-    setPointIds((prev) =>
-      prev.includes(pid) ? prev.filter((x) => x !== pid) : [...prev, pid],
+  function toggleCriterion(cid: string) {
+    setCriterionIds((prev) =>
+      prev.includes(cid) ? prev.filter((x) => x !== cid) : [...prev, cid],
     );
   }
 
@@ -42,128 +51,146 @@ export default function EvidencePage() {
     <AppShell title={m.engagement.evidenceTitle}>
       <AppNav />
       <EngagementSubNav engagementId={id} />
-      {engagement && engagement.requirements.length > 1 && (
-        <RequirementSelector
-          requirements={engagement.requirements}
-          value={requirementId}
-          onChange={setRequirementId}
-        />
-      )}
-      <p className="mb-4 text-sm text-text-muted">{m.engagement.evidenceIntro}</p>
+      <p className="mb-4 text-sm text-ink-1">{m.engagement.evidenceIntro}</p>
+
       <form
-        className="mb-8 space-y-4 rounded-lg border border-border bg-surface p-4"
+        className="mb-8 space-y-4 rounded-[2px] border border-rule bg-stock-0 p-4"
         onSubmit={(e) => {
           e.preventDefault();
-          if (!title.trim()) return;
+          if (!title.trim() || criterionIds.length < 1) return;
           upsert.mutate({
             engagementId: id,
             id: editingId ?? undefined,
-            title,
-            type,
-            strength,
-            links: pointIds.map((pointId) => ({ pointId })),
+            title: title.trim(),
+            kind,
+            uri: uri.trim() || null,
+            expiresAt: expiresAt ? new Date(expiresAt) : null,
+            criterionIds,
+            provenance: 'manual',
           });
           setTitle('');
-          setPointIds([]);
+          setUri('');
+          setExpiresAt('');
+          setCriterionIds([]);
           setEditingId(null);
         }}
       >
-        <div className="flex flex-wrap gap-3">
+        <h2 className="text-[17px] font-semibold text-ink-0">
+          {editingId ? 'Update evidence' : m.engagement.addEvidence}
+        </h2>
+        <label className="block text-[13px] font-medium text-ink-1">
+          Title
           <input
-            className="min-w-[200px] flex-1 rounded border border-border px-3 py-2 text-sm"
-            placeholder="Title"
+            className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            required
           />
-          <input
-            className="rounded border border-border px-3 py-2 text-sm"
-            placeholder="Type"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-          />
-          <select
-            className="rounded border border-border px-3 py-2 text-sm"
-            value={strength}
-            onChange={(e) => setStrength(e.target.value as (typeof EVIDENCE_STRENGTHS)[number])}
-          >
-            {EVIDENCE_STRENGTHS.map((s) => (
-              <option key={s} value={s}>
-                {s.replace(/_/g, ' ')}
-              </option>
-            ))}
-          </select>
+        </label>
+        <div className="flex flex-wrap gap-3">
+          <label className="block text-[13px] font-medium text-ink-1">
+            Kind
+            <select
+              className="mt-1 block rounded-[2px] border border-rule px-3 py-2 text-sm"
+              value={kind}
+              onChange={(e) => setKind(e.target.value as (typeof KINDS)[number])}
+            >
+              {KINDS.map((k) => (
+                <option key={k} value={k}>
+                  {k}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-[13px] font-medium text-ink-1">
+            URI
+            <input
+              className="mt-1 block rounded-[2px] border border-rule px-3 py-2 text-sm"
+              value={uri}
+              onChange={(e) => setUri(e.target.value)}
+            />
+          </label>
+          <label className="block text-[13px] font-medium text-ink-1">
+            Expires
+            <input
+              type="date"
+              className="mt-1 block rounded-[2px] border border-rule px-3 py-2 text-sm"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+            />
+          </label>
         </div>
         <fieldset>
-          <legend className="text-sm font-medium text-text">{m.engagement.linkPoints}</legend>
-          <div className="mt-2 max-h-40 overflow-y-auto rounded border border-border p-3">
-            {points?.map((p) => (
-              <label key={p.id} className="mb-1 flex items-start gap-2 text-sm">
+          <legend className="text-[13px] font-medium text-ink-1">{m.engagement.linkPoints}</legend>
+          <div className="mt-2 flex max-h-40 flex-wrap gap-2 overflow-y-auto">
+            {(criteria.data?.criteria ?? []).map((c) => (
+              <label
+                key={c.id}
+                className="inline-flex items-center gap-1 rounded-[2px] border border-rule px-2 py-1 text-xs"
+              >
                 <input
                   type="checkbox"
-                  checked={pointIds.includes(p.id)}
-                  onChange={() => togglePoint(p.id)}
+                  checked={criterionIds.includes(c.id)}
+                  onChange={() => toggleCriterion(c.id)}
                 />
-                <span>
-                  {p.number}. {p.title}
-                </span>
+                <span className="font-data">{c.ref}</span> {c.title}
               </label>
             ))}
           </div>
         </fieldset>
-        <Button type="submit" disabled={upsert.isPending}>
+        <Button type="submit" disabled={upsert.isPending || criterionIds.length < 1}>
           {editingId ? m.engagement.updateEvidence : m.engagement.addEvidence}
         </Button>
       </form>
-      <ul className="space-y-3">
-        {data?.map((e) => (
-          <li key={e.id} className="rounded-lg border border-border bg-surface p-4">
-            <div className="flex flex-wrap items-start justify-between gap-2">
+
+      {!data?.length ? (
+        <p className="rounded-[2px] border border-rule bg-stock-1 px-4 py-6 text-[15px] text-ink-1">
+          No evidence yet. Evidence is what turns a judgement into something a panel can check.
+        </p>
+      ) : (
+        <ul className="divide-y divide-rule-soft border-y border-rule">
+          {data.map((row) => (
+            <li key={row.id} className="flex flex-wrap items-start justify-between gap-3 py-4">
               <div>
-                <p className="font-medium">{e.title}</p>
-                <p className="text-sm text-text-muted">
-                  {e.type} · {e.strength.replace(/_/g, ' ')}
+                <p className="font-medium text-ink-0">{row.title}</p>
+                <p className="mt-1 font-data text-[11px] uppercase tracking-[0.04em] text-ink-2">
+                  {row.kind} · {row.linkedCriteriaCount} criteria · {row.freshness}
                 </p>
-                {e.links.length > 0 && (
-                  <ul className="mt-2 text-xs text-text-muted">
-                    {e.links.map((l) => (
-                      <li key={l.id}>
-                        Point: {l.pointId ?? '-'}
-                        {l.questionId ? ` · Question ${l.questionId}` : ''}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <div className="mt-2">
+                  <ProvenanceChip kind={row.provenance} />
+                </div>
               </div>
               <div className="flex gap-2">
                 <Button
-                  variant="secondary"
                   type="button"
+                  variant="secondary"
+                  size="sm"
                   onClick={() => {
-                    setEditingId(e.id);
-                    setTitle(e.title);
-                    setType(e.type);
-                    setStrength(e.strength as (typeof EVIDENCE_STRENGTHS)[number]);
-                    setPointIds(e.links.map((l) => l.pointId).filter(Boolean) as string[]);
+                    setEditingId(row.id);
+                    setTitle(row.title);
+                    setKind(row.kind as (typeof KINDS)[number]);
+                    setUri(row.uri ?? '');
+                    setExpiresAt(
+                      row.expiresAt ? row.expiresAt.toISOString().slice(0, 10) : '',
+                    );
+                    setCriterionIds(row.criteria.map((c) => c.criterionId));
                   }}
                 >
                   Edit
                 </Button>
                 <Button
-                  variant="secondary"
                   type="button"
-                  onClick={() => {
-                    if (confirm('Delete this evidence item?')) {
-                      remove.mutate({ id: e.id, engagementId: id });
-                    }
-                  }}
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => remove.mutate({ engagementId: id, id: row.id })}
                 >
                   Delete
                 </Button>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      )}
     </AppShell>
   );
 }

@@ -8,6 +8,7 @@ import { userRouter } from '@/lib/trpc/routers/user';
 import { reviewRouter } from '@/lib/trpc/routers/review';
 import { orgDesignRouter } from '@/lib/trpc/routers/orgDesign';
 import { standardsRouter } from '@/lib/trpc/routers/standards';
+import { assuranceRouter } from '@/lib/trpc/routers/assurance';
 
 export const appRouter = router({
   engagement: engagementRouter,
@@ -19,6 +20,7 @@ export const appRouter = router({
   review: reviewRouter,
   orgDesign: orgDesignRouter,
   standards: standardsRouter,
+  assurance: assuranceRouter,
 });
 
 export type AppRouter = typeof appRouter;

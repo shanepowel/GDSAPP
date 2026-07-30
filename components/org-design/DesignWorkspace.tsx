@@ -19,23 +19,34 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/app/Card';
 import { trpc } from '@/lib/trpc/client';
 import OrgChart, { type LayoutMode, type OrgChartHandle } from '@/components/org-design/OrgChart';
+import { OrgTable } from '@/components/org/OrgTable';
 import type { DesignGraphEntity } from '@/lib/org-design/types';
 import { TEMPLATE_CATEGORIES } from '@/lib/org-design/templates';
 
 type MainView = 'design' | 'people' | 'insights' | 'history';
-type ViewMode = 'chart' | 'list';
+type ViewMode = 'chart' | 'table';
 
 type Props = {
   /** When set, loads engagement-bound graph and shows bridge actions */
   engagementId?: string;
   readOnly?: boolean;
   title?: string;
+  /** Open on a specific main tab (e.g. people for /organise/people). */
+  initialMainView?: MainView;
+  /** Hide the Design/People/Insights/History tab strip when the plate rail owns IA. */
+  hideMainTabs?: boolean;
 };
 
-export function DesignWorkspace({ engagementId, readOnly, title }: Props) {
+export function DesignWorkspace({
+  engagementId,
+  readOnly,
+  title,
+  initialMainView = 'design',
+  hideMainTabs,
+}: Props) {
   const utils = trpc.useUtils();
   const chartRef = useRef<OrgChartHandle>(null);
-  const [mainView, setMainView] = useState<MainView>('design');
+  const [mainView, setMainView] = useState<MainView>(initialMainView);
   const [view, setView] = useState<ViewMode>('chart');
   const [layout, setLayout] = useState<LayoutMode>('tree');
   const [search, setSearch] = useState('');
@@ -260,6 +271,12 @@ export function DesignWorkspace({ engagementId, readOnly, title }: Props) {
           )}
           {engagementId && (
             <>
+              <Button variant="secondary" size="sm" onClick={() => setShowScenarios(true)}>
+                <GitBranch className="h-4 w-4" /> Scenarios
+              </Button>
+              <Button variant="secondary" size="sm" onClick={() => setShowTemplates(true)}>
+                <Sparkles className="h-4 w-4" /> Templates
+              </Button>
               {liveLockedOnEngagement && (
                 <Button
                   variant="primary"
@@ -299,29 +316,31 @@ export function DesignWorkspace({ engagementId, readOnly, title }: Props) {
         </p>
       )}
 
-      <div className="flex flex-wrap gap-1 border-b border-border" role="tablist" aria-label="Org design views">
-        {tabs.map((t) => {
-          const Icon = t.icon;
-          const active = mainView === t.id;
-          return (
-            <button
-              key={t.id}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium"
-              style={{
-                color: active ? 'var(--color-text)' : 'var(--color-text-muted)',
-                borderBottom: active ? '2px solid var(--color-brand)' : '2px solid transparent',
-              }}
-              onClick={() => setMainView(t.id)}
-            >
-              <Icon className="h-4 w-4" />
-              {t.label}
-            </button>
-          );
-        })}
-      </div>
+      {!hideMainTabs && (
+        <div className="flex flex-wrap gap-1 border-b border-border" role="tablist" aria-label="Org design views">
+          {tabs.map((t) => {
+            const Icon = t.icon;
+            const active = mainView === t.id;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium"
+                style={{
+                  color: active ? 'var(--color-text)' : 'var(--color-text-muted)',
+                  borderBottom: active ? '2px solid var(--color-brand)' : '2px solid transparent',
+                }}
+                onClick={() => setMainView(t.id)}
+              >
+                <Icon className="h-4 w-4" />
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {mainView === 'design' && (
         <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
@@ -334,15 +353,15 @@ export function DesignWorkspace({ engagementId, readOnly, title }: Props) {
                   onClick={() => setView('chart')}
                 >
                   <Network className="mr-1 inline h-3 w-3" />
-                  Chart
+                  Graph
                 </button>
                 <button
                   type="button"
-                  className={`rounded px-2 py-1 text-xs ${view === 'list' ? 'bg-brand text-text-inverse' : ''}`}
-                  onClick={() => setView('list')}
+                  className={`rounded px-2 py-1 text-xs ${view === 'table' ? 'bg-brand text-text-inverse' : ''}`}
+                  onClick={() => setView('table')}
                 >
                   <List className="mr-1 inline h-3 w-3" />
-                  List
+                  Table
                 </button>
               </div>
               <select
@@ -399,30 +418,13 @@ export function DesignWorkspace({ engagementId, readOnly, title }: Props) {
                 />
               )
             ) : (
-              <ul className="divide-y divide-border">
-                {filtered.map((e) => (
-                  <li key={e.id}>
-                    <button
-                      type="button"
-                      className="flex w-full items-start justify-between gap-2 px-2 py-3 text-left hover:bg-surface-alt"
-                      onClick={() => setSelected(e)}
-                    >
-                      <span>
-                        <span className="font-medium text-text">{e.name}</span>
-                        <span className="ml-2 text-xs uppercase text-text-muted">{e.type}</span>
-                        {e.purpose && (
-                          <span className="mt-1 block text-sm text-text-muted">{e.purpose}</span>
-                        )}
-                      </span>
-                      {e.ddatRoleId && (
-                        <span className="rounded bg-brand-tint px-2 py-0.5 text-[10px] text-brand">
-                          {e.ddatRoleId}
-                        </span>
-                      )}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <OrgTable
+                entities={filtered}
+                people={people}
+                assignments={assignments}
+                selectedId={selected?.id}
+                onSelect={setSelected}
+              />
             )}
           </Card>
 

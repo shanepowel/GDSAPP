@@ -181,7 +181,11 @@ model Engagement {
   shareLinks        ShareLink[]
   judgements        Judgement[]
   reviewRequests    ReviewRequest[]
-  catalogStandards  EngagementStandard[]
+  catalogStandards    EngagementStandard[]
+  assuranceEvidence   AssuranceEvidence[]
+  criterionJudgements CriterionJudgement[]
+  capabilityLinks     CapabilityLink[]
+  evidenceOwners      CriterionEvidenceOwner[]
 
   @@index([orgId])
   @@index([reference])
@@ -231,7 +235,11 @@ model Criterion {
   weight            Int                    @default(1)
   sortOrder         Int                    @default(0)
   standardVersion   CatalogStandardVersion @relation(fields: [standardVersionId], references: [id], onDelete: Cascade)
-  translations      CriterionTranslation[]
+  translations           CriterionTranslation[]
+  capabilityRequirements CapabilityRequirement[]
+  evidenceLinks          EvidenceCriterion[]
+  judgements             CriterionJudgement[]
+  evidenceOwners         CriterionEvidenceOwner[]
 
   @@unique([standardVersionId, ref])
   @@index([standardVersionId])
@@ -264,6 +272,119 @@ model EngagementStandard {
   @@id([engagementId, standardVersionId])
   @@index([standardVersionId])
   @@map("engagement_standards")
+}
+
+/// Spec M4 — capability required by a criterion (global, versioned with criteria).
+model CapabilityRequirement {
+  id              String           @id @default(cuid())
+  criterionId     String
+  description     String           @db.Text
+  roleArchetype   String?
+  /// Basis points of an FTE (60 = 0.6)
+  minFte          Int?
+  skillTags       String[]
+  phasePersistent Boolean          @default(false)
+  criterion       Criterion        @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+  links           CapabilityLink[]
+
+  @@index([criterionId])
+  @@map("capability_requirements")
+}
+
+model CapabilityLink {
+  id                       String                @id @default(cuid())
+  engagementId             String
+  capabilityRequirementId  String
+  entityId                 String
+  accountabilityIndex      Int?
+  /// satisfies | partially | informs
+  strength                 String                @default("satisfies")
+  note                     String?               @db.Text
+  /// auto | human
+  provenance               String                @default("human")
+  confirmed                Boolean               @default(false)
+  engagement               Engagement            @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  capabilityRequirement    CapabilityRequirement @relation(fields: [capabilityRequirementId], references: [id], onDelete: Cascade)
+
+  @@index([engagementId])
+  @@index([capabilityRequirementId])
+  @@index([entityId])
+  @@map("capability_links")
+}
+
+/// Spec evidence ledger — distinct from legacy Evidence (StandardPoint links).
+model AssuranceEvidence {
+  id               String             @id @default(cuid())
+  engagementId     String
+  title            String
+  /// document | research | test | decision | code | metric | other
+  kind             String
+  uri              String?
+  storageKey       String?
+  ownerPersonId    String?
+  producedAt       DateTime?
+  expiresAt        DateTime?
+  /// internal | client | publishable
+  confidentiality  String             @default("client")
+  /// manual | integration | import
+  provenance       String             @default("manual")
+  sourceSystem     String?
+  externalId       String?
+  createdByUserId  String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  engagement       Engagement         @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  criteria         EvidenceCriterion[]
+
+  @@index([engagementId])
+  @@index([engagementId, expiresAt])
+  @@map("assurance_evidence")
+}
+
+model EvidenceCriterion {
+  evidenceId  String
+  criterionId String
+  /// supports | partially | contextual
+  strength    String            @default("supports")
+  evidence    AssuranceEvidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+  criterion   Criterion         @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+
+  @@id([evidenceId, criterionId])
+  @@map("evidence_criteria")
+}
+
+/// Spec criterion judgements — distinct from legacy Judgement (subject/status).
+model CriterionJudgement {
+  id                String    @id @default(cuid())
+  engagementId      String
+  criterionId       String
+  /// met | at-risk | not-met | not-assessed
+  verdict           String
+  rationale         String    @db.Text
+  /// human | ai | system
+  proposedBy        String    @default("human")
+  proposedByUserId  String?
+  aiModel           String?
+  aiPromptHash      String?
+  confirmedByUserId String
+  confirmedAt       DateTime  @default(now())
+  supersededById    String?
+  engagement        Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  criterion         Criterion  @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+
+  @@index([engagementId, criterionId, supersededById])
+  @@map("criterion_judgements")
+}
+
+model CriterionEvidenceOwner {
+  engagementId String
+  criterionId  String
+  personId     String
+  engagement   Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  criterion    Criterion  @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+
+  @@id([engagementId, criterionId])
+  @@map("criterion_evidence_owners")
 }
 
 model Requirement {
