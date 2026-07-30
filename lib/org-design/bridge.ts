@@ -139,7 +139,7 @@ export async function syncStructureToTeam(
   const entityToLevel = new Map<string, string>();
 
   for (const role of roleEntities) {
-    let roleId = role.ddatRoleId ?? suggestDdatRoleId(role.name);
+    const roleId = role.ddatRoleId ?? suggestDdatRoleId(role.name);
     let levelId = role.ddatRoleLevelId ?? null;
     if (roleId && !levelId) {
       levelId = levelByRoleId.get(roleId)?.id ?? null;

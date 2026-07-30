@@ -7,7 +7,6 @@ import {
   listAppliedMoves,
   revertWhatIfMove,
   WHAT_IF_MOVES,
-  type WhatIfMoveId,
 } from '@/lib/demo/what-if-moves';
 import {
   bindPrimaryStandardVersion,

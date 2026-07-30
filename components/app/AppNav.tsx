@@ -8,11 +8,12 @@ import { useEngagementPlate } from '@/components/product/TitleBlock';
 
 export function AppNav() {
   const plate = useEngagementPlate();
-  if (plate) return null;
-
   const pathname = usePathname();
   const features = getClientDeploymentFeatures();
   const { messages: m } = useI18n();
+
+  // Plate layout owns navigation via EngagementRail.
+  if (plate) return null;
 
   const links = [
     { href: '/engagements', label: m.nav.engagements },

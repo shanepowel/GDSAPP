@@ -27,7 +27,7 @@ export function useEvidenceChain() {
   const ctx = useContext(ChainContext);
   if (!ctx) {
     return {
-      open: (_e: string, _c: string) => undefined,
+      open: () => undefined,
       close: () => undefined,
       target: null as ChainTarget,
     };
@@ -194,14 +194,16 @@ function EvidenceChainPanel({
 
 export function EvidenceChainProvider({ children }: { children: React.ReactNode }) {
   const [target, setTarget] = useState<ChainTarget>(null);
-  const triggerRef = useRef<HTMLElement | null>(null);
+  const [returnFocusTo, setReturnFocusTo] = useState<HTMLElement | null>(null);
 
   const open = useCallback((engagementId: string, criterionId: string) => {
-    triggerRef.current = document.activeElement as HTMLElement | null;
+    setReturnFocusTo(document.activeElement as HTMLElement | null);
     setTarget({ engagementId, criterionId });
   }, []);
 
-  const close = useCallback(() => setTarget(null), []);
+  const close = useCallback(() => {
+    setTarget(null);
+  }, []);
 
   return (
     <ChainContext.Provider value={{ open, close, target }}>
@@ -211,7 +213,7 @@ export function EvidenceChainProvider({ children }: { children: React.ReactNode 
           engagementId={target.engagementId}
           criterionId={target.criterionId}
           onClose={close}
-          returnFocusTo={triggerRef.current}
+          returnFocusTo={returnFocusTo}
         />
       )}
     </ChainContext.Provider>

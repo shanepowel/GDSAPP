@@ -1,7 +1,7 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
@@ -32,11 +32,8 @@ export function AuthTabs({
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [organisationName, setOrganisationName] = useState('');
-  const [redirectAfterSignIn, setRedirectAfterSignIn] = useState(callbackUrl);
-
-  useEffect(() => {
-    setRedirectAfterSignIn(callbackUrl);
-  }, [callbackUrl]);
+  const [redirectOverride, setRedirectOverride] = useState<string | null>(null);
+  const redirectAfterSignIn = redirectOverride ?? callbackUrl;
 
   const entraEnabled = authConfig?.entraEnabled ?? false;
   const allowRegister = authConfig?.allowRegister ?? true;
@@ -154,7 +151,7 @@ export function AuthTabs({
                 setEmail(m.signIn.demoEmail);
                 setPassword(m.signIn.demoPassword);
                 setShowEmailLogin(true);
-                setRedirectAfterSignIn('/engagements/nrw-demo');
+                setRedirectOverride('/engagements/nrw-demo');
               }}
             >
               {m.signIn.demoFillButton}

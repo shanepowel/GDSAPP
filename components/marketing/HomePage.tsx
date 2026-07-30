@@ -1,6 +1,5 @@
 'use client';
 
-import { BRAND } from '@/lib/brand';
 import Link from 'next/link';
 import { ArrowRight, BarChart3, ClipboardCheck, Eye, Scale, Users } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';

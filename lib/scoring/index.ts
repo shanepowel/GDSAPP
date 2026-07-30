@@ -189,8 +189,6 @@ export function score(input: FullScoringInput): ScoringResult {
       ? null
       : Math.round((100 * totalContribution) / totalWeight);
 
-  const statutoryGaps = gaps.filter((g) => g.statutory && g.reason.includes('not-met'));
-  // Also include statutory criteria whose effective verdict is not-met
   const statutoryNotMet = byCriterion.some((c) => {
     const crit = input.criteria.find((x) => x.id === c.criterionId);
     return crit?.statutory && c.verdict === 'not-met';

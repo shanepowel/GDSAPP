@@ -135,7 +135,7 @@ export async function listAssessCriteria(
   const phase = opts.phase ?? engagement.phase;
   const locale = opts.locale ?? engagement.locale ?? 'en';
 
-  let versionRows = engagement.catalogStandards;
+  const versionRows = engagement.catalogStandards;
   if (!versionRows.length) {
     const code = legacyStandardToCatalogCode(engagement.standardId);
     const versionId = await currentVersionIdForCode(prisma, code);
