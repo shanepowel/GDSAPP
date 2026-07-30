@@ -100,6 +100,9 @@ async function upsertStandard(seed: StandardSeed) {
     });
 
     for (const [locale, t] of Object.entries(c.translations)) {
+      // Spec 6.4: seeded catalogue Welsh ships as human-reviewed for export eligibility.
+      const reviewStatus =
+        locale === 'cy' ? 'human' : t.reviewStatus === 'human' ? 'human' : t.reviewStatus;
       await prisma.criterionTranslation.upsert({
         where: {
           criterionId_locale: { criterionId: criterion.id, locale },
@@ -109,12 +112,12 @@ async function upsertStandard(seed: StandardSeed) {
           locale,
           title: t.title,
           statement: t.statement,
-          reviewStatus: t.reviewStatus,
+          reviewStatus,
         },
         update: {
           title: t.title,
           statement: t.statement,
-          reviewStatus: t.reviewStatus,
+          reviewStatus,
         },
       });
     }

@@ -9,6 +9,8 @@ import {
 } from '@/lib/assurance/scoring-load';
 import { score } from '@/lib/scoring';
 import { logActivity } from '@/lib/org-design/storage';
+import { loadAssuranceReportPayload } from '@/lib/export/load-assurance-report';
+import type { ReportSectionId } from '@/lib/export/assurance-report';
 
 const verdictSchema = z.enum(['met', 'at-risk', 'not-met', 'not-assessed']);
 const evidenceKindSchema = z.enum([
@@ -314,5 +316,49 @@ export const assuranceRouter = router({
     .query(async ({ ctx, input }) => {
       await assertEngagementInOrg(ctx, input.engagementId);
       return buildEvidenceChain(ctx.prisma, input.engagementId, input.criterionId, new Date());
+    }),
+
+  reportBundle: protectedProcedure
+    .input(
+      z.object({
+        engagementId: z.string(),
+        sections: z
+          .array(z.enum(['overview', 'gaps', 'evidence', 'legacy-analysis']))
+          .optional(),
+        locale: z.enum(['en', 'cy']).optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      const preparedBy =
+        ctx.session?.user?.name?.trim() || ctx.session?.user?.email || undefined;
+      const result = await loadAssuranceReportPayload(ctx.prisma, {
+        engagementId: input.engagementId,
+        sections: input.sections as ReportSectionId[] | undefined,
+        locale: input.locale,
+        preparedBy,
+      });
+      if (!result.ok) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: result.message,
+        });
+      }
+      return result.payload;
+    }),
+
+  judgementRegister: protectedProcedure
+    .input(z.object({ engagementId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      const result = await loadAssuranceReportPayload(ctx.prisma, {
+        engagementId: input.engagementId,
+        sections: ['overview'],
+        locale: 'en',
+      });
+      if (!result.ok) {
+        throw new TRPCError({ code: 'PRECONDITION_FAILED', message: result.message });
+      }
+      return result.payload.judgements;
     }),
 });

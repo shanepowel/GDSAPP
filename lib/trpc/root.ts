@@ -10,6 +10,7 @@ import { orgDesignRouter } from '@/lib/trpc/routers/orgDesign';
 import { standardsRouter } from '@/lib/trpc/routers/standards';
 import { assuranceRouter } from '@/lib/trpc/routers/assurance';
 import { crosswalkRouter } from '@/lib/trpc/routers/crosswalk';
+import { integrationsRouter } from '@/lib/trpc/routers/integrations';
 
 export const appRouter = router({
   engagement: engagementRouter,
@@ -23,6 +24,7 @@ export const appRouter = router({
   standards: standardsRouter,
   assurance: assuranceRouter,
   crosswalk: crosswalkRouter,
+  integrations: integrationsRouter,
 });
 
 export type AppRouter = typeof appRouter;

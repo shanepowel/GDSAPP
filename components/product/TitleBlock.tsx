@@ -1,16 +1,9 @@
 'use client';
 
 import { createContext, useContext } from 'react';
+import type { TitleBlockData } from '@/lib/export/assurance-report';
 
-export type TitleBlockData = {
-  reference: string;
-  standardLabel: string;
-  phase: string;
-  revision: string;
-  preparedBy: string;
-  dateLabel: string;
-  serviceName?: string | null;
-};
+export type { TitleBlockData };
 
 const EngagementPlateContext = createContext<{ engagementId: string } | null>(null);
 

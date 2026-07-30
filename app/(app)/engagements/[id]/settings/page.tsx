@@ -1,10 +1,70 @@
 'use client';
 
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { ENGAGEMENT_MODES, ENGAGEMENT_PHASES } from '@/lib/standards/catalog';
 import { trpc } from '@/lib/trpc/client';
+import { Button } from '@/components/ui/Button';
+
+function GitHubSyncPanel({ engagementId }: { engagementId: string }) {
+  const status = trpc.integrations.githubStatus.useQuery();
+  const sync = trpc.integrations.githubSync.useMutation();
+  const [owner, setOwner] = useState('');
+  const [repo, setRepo] = useState('');
+
+  return (
+    <section className="mt-10 max-w-lg space-y-3 border-t border-rule pt-8">
+      <h2 className="text-[17px] font-semibold text-ink-0">Delivery signals — GitHub</h2>
+      <p className="text-[15px] text-ink-1">
+        Pulls open accessibility issues and repo visibility into the evidence ledger (30-day expiry).
+        Connection failure surfaces here — never a silent stale value.
+      </p>
+      {!status.data?.configured && (
+        <p className="rounded-[2px] border border-verdict-at-risk bg-verdict-at-risk-wash px-3 py-2 text-[13px]">
+          {status.data?.reconnectHint ?? 'Reconnect required: set GITHUB_TOKEN.'}
+        </p>
+      )}
+      <div className="flex flex-wrap gap-2">
+        <input
+          className="rounded-[2px] border border-rule px-3 py-2 font-data text-sm"
+          placeholder="owner"
+          value={owner}
+          onChange={(e) => setOwner(e.target.value)}
+        />
+        <input
+          className="rounded-[2px] border border-rule px-3 py-2 font-data text-sm"
+          placeholder="repo"
+          value={repo}
+          onChange={(e) => setRepo(e.target.value)}
+        />
+        <Button
+          type="button"
+          disabled={sync.isPending || !owner || !repo}
+          onClick={() => sync.mutate({ engagementId, owner, repo })}
+        >
+          Sync now
+        </Button>
+      </div>
+      {sync.data && !sync.data.ok && (
+        <p className="text-[13px] text-ink-0">
+          {sync.data.message}{' '}
+          <button
+            type="button"
+            className="text-signal-ink underline"
+            onClick={() => sync.reset()}
+          >
+            Dismiss
+          </button>
+        </p>
+      )}
+      {sync.data && sync.data.ok && (
+        <p className="text-[13px] text-ink-1">{sync.data.summary}</p>
+      )}
+    </section>
+  );
+}
 
 export default function EngagementSettingsPage() {
   const { messages: m } = useI18n();
@@ -118,6 +178,8 @@ export default function EngagementSettingsPage() {
           {m.common.save}
         </button>
       </form>
+
+      <GitHubSyncPanel engagementId={id} />
 
       <section className="mt-10 max-w-lg">
         <h2 className="text-[17px] font-semibold text-ink-0">{m.engagement.standardsSettingsTitle}</h2>

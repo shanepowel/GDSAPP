@@ -2,8 +2,9 @@
 
 const LABELS = {
   human: 'Human',
-  ai: 'AI suggested',
+  ai: 'AI drafted · confirmed',
   integration: 'Pulled from integration',
+  github: 'Pulled from GitHub',
   import: 'Imported',
   manual: 'Human',
   system: 'System',

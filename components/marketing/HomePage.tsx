@@ -159,7 +159,18 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
       )}
 
       <footer className="border-t border-border px-6 py-8 text-center text-xs text-text-muted">
-        {m.app.advisoryFooter}
+        <p>{m.app.advisoryFooter}</p>
+        <p className="mt-3 space-x-3">
+          <Link href="/accessibility" className="underline-offset-2 hover:underline">
+            Accessibility
+          </Link>
+          <Link href="/ai-use" className="underline-offset-2 hover:underline">
+            AI use
+          </Link>
+          <Link href="/performance" className="underline-offset-2 hover:underline">
+            Performance
+          </Link>
+        </p>
       </footer>
     </div>
   );

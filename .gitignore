@@ -36,6 +36,10 @@ yarn-error.log*
 
 /data/source/*.csv
 
+# local ops artefacts
+/.data/
+/backups/
+
 # vercel
 .vercel
 

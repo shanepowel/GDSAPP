@@ -2,10 +2,13 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/db/client';
-import { buildBrandedReportPdf } from '@/lib/export/branded-report-pdf';
-import type { ExtendedAnalysisResult } from '@/lib/types/extension';
+import { buildAssuranceReportPdf } from '@/lib/export/assurance-report-pdf';
+import { buildReportFilename, type ReportSectionId } from '@/lib/export/assurance-report';
+import { loadAssuranceReportPayload } from '@/lib/export/load-assurance-report';
 
 export const runtime = 'nodejs';
+
+const SECTION_SET = new Set<ReportSectionId>(['overview', 'gaps', 'evidence', 'legacy-analysis']);
 
 export async function GET(req: Request) {
   const session = await getServerSession(authOptions);
@@ -15,7 +18,8 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const engagementId = searchParams.get('engagementId');
-  const requirementId = searchParams.get('requirementId');
+  const locale = searchParams.get('locale') === 'cy' ? 'cy' : 'en';
+  const sectionsParam = searchParams.get('sections');
 
   if (!engagementId) {
     return NextResponse.json({ error: 'engagementId required' }, { status: 400 });
@@ -23,42 +27,39 @@ export async function GET(req: Request) {
 
   const engagement = await prisma.engagement.findFirst({
     where: { id: engagementId, orgId: session.user.orgId },
-    include: {
-      requirements: {
-        include: { runs: { orderBy: { createdAt: 'desc' }, take: 1 } },
-      },
-    },
+    select: { id: true, name: true },
   });
-
   if (!engagement) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  const requirement =
-    engagement.requirements.find((r) => r.id === requirementId) ?? engagement.requirements[0];
-  const run = requirement?.runs[0];
-  if (!run?.result || !requirement) {
-    return NextResponse.json({ error: 'No analysis run to export' }, { status: 400 });
-  }
+  const sections = sectionsParam
+    ? (sectionsParam
+        .split(',')
+        .filter((s): s is ReportSectionId => SECTION_SET.has(s as ReportSectionId)) as ReportSectionId[])
+    : undefined;
 
-  const result = run.result as unknown as ExtendedAnalysisResult;
-  const standardLabel =
-    engagement.standardId === 'wales'
-      ? 'Digital Service Standard for Wales'
-      : 'GDS Service Standard';
-
-  const buffer = await buildBrandedReportPdf({
-    engagementName: engagement.name,
-    standardLabel,
-    requirementTitle: requirement.title,
-    phase: requirement.phase,
-    generatedAt: new Date(),
-    result,
-    advisoryFooter:
-      'Advisory report only. Not a hiring or procurement decision. Open Government Licence frameworks. Review by a qualified service assessor before client use.',
+  const preparedBy = session.user.name?.trim() || session.user.email || undefined;
+  const loaded = await loadAssuranceReportPayload(prisma, {
+    engagementId,
+    sections,
+    locale,
+    preparedBy,
   });
 
-  const filename = `${engagement.name.replace(/[^a-z0-9]+/gi, '-').slice(0, 40)}-report.pdf`;
+  if (!loaded.ok) {
+    return NextResponse.json(
+      {
+        error: loaded.message,
+        reason: 'machine-welsh',
+        machineCriterionRefs: loaded.machineCriterionRefs,
+      },
+      { status: 409 },
+    );
+  }
+
+  const buffer = await buildAssuranceReportPdf(loaded.payload);
+  const filename = buildReportFilename(engagement.name, new Date(loaded.payload.generatedAt));
 
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
