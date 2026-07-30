@@ -1,0 +1,49 @@
+---
+description: Core Assemble constraints — architecture decisions, vocabulary, and things never to do
+alwaysApply: true
+---
+
+# Assemble — core rules
+
+Assemble is an assurance platform for UK public sector digital and capital delivery. Full spec in
+`docs/spec/`. Stack adaptations (Prisma, single Next app) in `docs/spec/ADAPTATIONS.md`.
+
+## Locked product decisions — do not relitigate
+
+- **One Next.js App Router app on Vercel.** Do not reintroduce a separate Express org-tool server.
+- **Standards are data.** Never hardcode a criterion, a point number, a criterion count, or
+  "14 points" in application code once criteria tables exist.
+- **AI proposes, humans judge.** No code path may write a judgement without a confirming user id.
+  AI services write to suggestion rows only, never directly to judgements, entities, relationships
+  or evidence.
+- **Scoring lives in `lib/scoring`** as a pure function. Never compute an index, verdict, gap or
+  contribution in a component, route handler or PDF layer.
+- **Read from delivery tools, never replace them.** Do not build a backlog, sprint board, test
+  manager, document store or risk register.
+
+## Vocabulary — one word per concept, in code and in UI
+
+`engagement` · `criterion` · `judgement` · `verdict` (`met` / `at-risk` / `not-met` /
+`not-assessed`) · `Preparedness Index` · `evidence` · `gap` · `move` · `chain` · `accountability` ·
+`circle` / `role` / `product` · `vacant` · `framework` (for NISTA/ISO/RIBA, as distinct from
+`standard`) · `superseded`.
+
+Never use: workspace, project, score (for a single criterion), rating, RAG, pass/fail, issue,
+document (for evidence), recommendation, unstaffed, archived.
+
+## Refuse these patterns
+
+- A colour used as the only carrier of meaning. Every verdict needs glyph + label + wash.
+- `outline: none` or any removal of focus styling.
+- A raw Tailwind palette class (`bg-blue-500`, `text-red-600`). Semantic tokens only.
+- Hardcoded hex values in components. Every colour comes from tokens CSS.
+- `Date.now()` inside scoring or freshness logic. `now` is injected.
+- An index of `0` when data is insufficient. It is `null`, rendered `—`.
+- String concatenation to build a user-facing sentence.
+- A gap without a remedy attached.
+- Machine-translated Welsh reaching an export.
+
+## When uncertain
+
+If a task appears to require breaking one of the rules above, stop and say so rather than working
+around it.

@@ -1,0 +1,39 @@
+---
+description: Voice, microcopy and bilingual rules for any user-facing text
+globs:
+  - "lib/i18n/**/*.ts"
+  - "app/**/*.tsx"
+  - "components/**/*.tsx"
+---
+
+# Content and copy
+
+Full guidance in `docs/spec/04-content-and-bilingual.md`.
+
+## Voice: assessor-plain
+
+Write the way a good service assessor writes a report. Specific, unhurried, no persuasion.
+
+Banned in product UI: just, simply, easily, seamlessly, powerful, robust, leverage, unlock,
+supercharge, effortlessly. Landing-page voice must not appear past sign-in.
+
+No congratulation. An index of 82 is a fact, not an achievement.
+
+## Microcopy
+
+- A button states what happens; the toast echoes the same verb.
+- Destructive actions name the object and the consequence.
+- Errors identify the field and the fix, and do not apologise.
+- Empty states are an invitation plus why it matters, with one action.
+- No decimals on the index or on percentages. Dates as `30 Jul 2026`.
+
+## Bilingual
+
+- Prefer `next-intl` / existing i18n messages for UI strings.
+- ICU-style messages with named arguments; never concatenate for plurals.
+- Machine-translated Welsh must not reach an export.
+- User content (rationales, evidence titles) is stored as authored and never machine-translated.
+
+## Vocabulary
+
+Use the locked list in `00-assemble-core.mdc`.

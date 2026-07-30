@@ -1,18 +1,79 @@
 :root {
-  /* Turner & Townsend — blue primary (2026 identity, turnerandtownsend.com) */
-  --tt-blue: #003cb4;
-  --tt-blue-700: #002e8a;
-  --tt-blue-050: #e8eefb;
-  --tt-blue-hero: #7fa3f5;
-  --tt-navy: #0a1633;
-  --tt-ink: #14181f;
-  --tt-white: #ffffff;
+  /* ---- Assemble design system (docs/spec/01-design-system.md) ---- */
+
+  /* Surface: cool drafting stock */
+  --stock-0: #ffffff;
+  --stock-1: #f4f6f7;
+  --stock-2: #e8ecee;
+  --rule: #c6cdd2;
+  --rule-soft: #dde2e5;
+
+  /* Ink: near-black with a cold cast */
+  --ink-0: #14181c;
+  --ink-1: #3b444c;
+  --ink-2: #6b7480;
+
+  /* Signal: setting-out mark. Decisions only. */
+  --signal: #d6006e;
+  --signal-ink: #a30054;
+  --signal-wash: #fde8f1;
+
+  /* Verdicts. Always paired with label + glyph. */
+  --verdict-met: #1f6f4e;
+  --verdict-met-wash: #e6f2ec;
+  --verdict-at-risk: #8a5a00;
+  --verdict-at-risk-wash: #fbf0dc;
+  --verdict-not-met: #a32020;
+  --verdict-not-met-wash: #fae9e9;
+  --verdict-unassessed: #6b7480;
+  --verdict-unassessed-wash: #edeff1;
+
+  /* Brand — Turner & Townsend */
+  --brand: #003cb4;
+  --brand-ink: #002e8a;
+  --brand-wash: #e8eefb;
+  --brand-hero: #7fa3f5;
+  --brand-navy: #0a1633;
+
+  /* Type (faces applied via next/font on <body>) */
+  --font-ui: var(--font-instrument-sans), system-ui, sans-serif;
+  --font-data: var(--font-ibm-plex-mono), ui-monospace, monospace;
+  --font-doc: 'Source Serif 4', Georgia, serif;
+
+  /* Geometry — new work uses these; legacy radii kept below for Phase 0 stability */
+  --radius: 2px;
+  --radius-lg: 3px;
+  --rule-w: 1px;
+  --plate-w: 2px;
+
+  /* Focus: thick, high-contrast, never removed */
+  --focus: #ffd400;
+  --focus-shadow: #14181c;
+
+  /* Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+  --space-10: 64px;
+  --container-max: 1100px;
+
+  /* ---- Legacy T&T / app aliases (bridge until screens retokenise) ---- */
+  --tt-blue: var(--brand);
+  --tt-blue-700: var(--brand-ink);
+  --tt-blue-050: var(--brand-wash);
+  --tt-blue-hero: var(--brand-hero);
+  --tt-navy: var(--brand-navy);
+  --tt-ink: var(--ink-0);
+  --tt-white: var(--stock-0);
   --tt-slate: #64748b;
-  --tt-muted: #6b7280;
+  --tt-muted: var(--ink-2);
   --tt-border: #e5e9ef;
   --tt-surface-alt: #f8fafc;
 
-  /* Legacy aliases */
   --tt-charcoal: var(--tt-ink);
   --tt-charcoal-800: #1f2937;
   --tt-cyan: var(--tt-blue);
@@ -31,10 +92,10 @@
   --grey-100: #f2f5f9;
   --grey-050: var(--tt-surface-alt);
 
-  --status-strong: #1e7a46;
+  --status-strong: var(--verdict-met);
   --status-met: #2e7d32;
-  --status-partial: #b26a00;
-  --status-gap: #c62828;
+  --status-partial: var(--verdict-at-risk);
+  --status-gap: var(--verdict-not-met);
   --status-info: var(--tt-muted);
   --status-strong-hero: #2bd27a;
   --status-partial-hero: #f5b97f;
@@ -58,21 +119,13 @@
   --chart-neutral: var(--tt-slate);
   --chart-grid: var(--grey-200);
 
+  /* Legacy radii — do not change in Phase 0 (screens must not move) */
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 16px;
+  --radius-legacy-lg: 16px;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-8: 48px;
-  --space-10: 64px;
-  --container-max: 1100px;
   --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 

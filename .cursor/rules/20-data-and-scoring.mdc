@@ -1,0 +1,50 @@
+---
+description: Schema, migration, API and scoring rules
+globs:
+  - "prisma/**/*"
+  - "lib/scoring/**/*.ts"
+  - "lib/org-design/**/*.ts"
+  - "lib/trpc/**/*.ts"
+  - "lib/engine/**/*.ts"
+  - "app/api/**/*.ts"
+---
+
+# Data, API and scoring
+
+Full schema in `docs/spec/03-data-model.md`. Stack adaptations in `docs/spec/ADAPTATIONS.md`
+(Prisma instead of Drizzle; scoring lives in `lib/scoring/`).
+
+## Schema rules
+
+- Tenant-scoped engagement data uses `orgId` / `engagementId` with cascade deletes and indexes.
+- Judgements that confirm human decisions must record who confirmed. AI must not write verdicts.
+- Verdicts, phases, modes use string columns with Zod enums — not Postgres enums.
+- Weights and statutory flags belong on criterion data, never hardcoded constants.
+- Judgements and standard versions **supersede**; prefer history over silent overwrite.
+
+## Migrations
+
+- One logical change per migration, reversible where practical.
+- Seeds are idempotent. GDS/Wales content is OGL v3.0 — attribution in exports.
+
+## API / tRPC
+
+- Zod-validate every input. Never trust an `engagementId` / `orgId` from the client body —
+  inject from session context.
+- Enforce role checks server-side.
+- Evidence must link to at least one criterion (when that model lands).
+
+## Scoring — `lib/scoring`
+
+Pure, synchronous, no I/O. The only place an index or a verdict cap is computed.
+
+Rules (see `docs/spec/03-data-model.md`):
+
+1. `index` is `null` when fewer than three criteria have a confirmed judgement.
+2. Expired evidence cannot alone support `met`.
+3. A broken chain caps the verdict at `at-risk` and reports `chainBreak`.
+4. Statutory `not-met` sets low confidence and is reported separately.
+5. Weights come from criterion data.
+6. Deterministic. `now` is injected; no `Date.now()` inside scoring.
+
+If a caller needs a number scoring doesn't return, extend `ScoringResult` — do not compute at the call site.
