@@ -1,0 +1,101 @@
+# On-demand cleanup of stale Preview deployment records.
+# Triggered when this file or vercel.json lands on main; also workflow_dispatch.
+name: Cleanup preview deployments
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/cleanup-previews.yml"
+      - "vercel.json"
+
+permissions:
+  deployments: write
+  contents: read
+
+jobs:
+  github-previews:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inactivate and delete Preview deployments
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          DELETED=0
+          for PAGE in $(seq 1 20); do
+            IDS=$(gh api "repos/${{ github.repository }}/deployments?environment=Preview&per_page=100&page=1" --jq '.[].id')
+            if [ -z "${IDS}" ]; then
+              break
+            fi
+            for id in ${IDS}; do
+              gh api -X POST "repos/${{ github.repository }}/deployments/${id}/statuses" \
+                -f state=inactive \
+                -f description="cleaned up; production-only deploys" >/dev/null || true
+              if gh api -X DELETE "repos/${{ github.repository }}/deployments/${id}"; then
+                DELETED=$((DELETED + 1))
+              fi
+            done
+          done
+          echo "Deleted ${DELETED} Preview deployments"
+          REMAINING=$(gh api "repos/${{ github.repository }}/deployments?environment=Preview&per_page=100" --jq 'length')
+          echo "Remaining Preview deployments: ${REMAINING}"
+
+  vercel-previews:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete non-production Vercel deployments when token present
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          TEAM_ID: team_IHWxUj2cbcDUdNNfcXE8BroH
+          PROJECT_ID: prj_PAsdq79dpKOTfv3kjNpgO2BNaNOe
+          KEEP_ID: dpl_3Nc8BGKCzhor1QmQtRhWxwkuZeLK
+        run: |
+          set -euo pipefail
+          if [ -z "${VERCEL_TOKEN:-}" ]; then
+            echo "No VERCEL_TOKEN secret; skip Vercel deployment deletion"
+            echo "Add a Vercel token at repo Settings → Secrets → VERCEL_TOKEN to enable"
+            exit 0
+          fi
+          DELETED=0
+          SKIPPED_PROD=0
+          UNTIL=""
+          for _ in $(seq 1 30); do
+            URL="https://api.vercel.com/v6/deployments?projectId=${PROJECT_ID}&teamId=${TEAM_ID}&limit=100"
+            if [ -n "${UNTIL}" ]; then
+              URL="${URL}&until=${UNTIL}"
+            fi
+            RESP=$(curl -sS -H "Authorization: Bearer ${VERCEL_TOKEN}" "${URL}")
+            COUNT=$(echo "${RESP}" | jq '.deployments | length')
+            if [ "${COUNT}" = "0" ] || [ "${COUNT}" = "null" ]; then
+              break
+            fi
+            mapfile -t ROWS < <(echo "${RESP}" | jq -c '.deployments[]')
+            for row in "${ROWS[@]}"; do
+              ID=$(echo "${row}" | jq -r '.uid // .id')
+              TARGET=$(echo "${row}" | jq -r '.target // empty')
+              CREATED=$(echo "${row}" | jq -r '.created')
+              UNTIL="${CREATED}"
+              if [ "${ID}" = "${KEEP_ID}" ]; then
+                echo "Keep current production ${ID}"
+                continue
+              fi
+              if [ "${TARGET}" = "production" ]; then
+                SKIPPED_PROD=$((SKIPPED_PROD + 1))
+                echo "Skip older production ${ID}"
+                continue
+              fi
+              CODE=$(curl -sS -o /tmp/vdel.json -w "%{http_code}" -X DELETE \
+                -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+                "https://api.vercel.com/v13/deployments/${ID}?teamId=${TEAM_ID}")
+              echo "Delete ${ID} -> ${CODE}"
+              if [ "${CODE}" = "200" ] || [ "${CODE}" = "204" ]; then
+                DELETED=$((DELETED + 1))
+              fi
+            done
+            if [ "${COUNT}" -lt 100 ]; then
+              break
+            fi
+          done
+          echo "Deleted ${DELETED} non-production Vercel deployments (skipped ${SKIPPED_PROD} older production)"
