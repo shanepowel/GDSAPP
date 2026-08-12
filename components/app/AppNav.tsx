@@ -4,11 +4,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
+import { useEngagementPlate } from '@/components/product/TitleBlock';
 
 export function AppNav() {
+  const plate = useEngagementPlate();
   const pathname = usePathname();
   const features = getClientDeploymentFeatures();
   const { messages: m } = useI18n();
+
+  // Plate layout owns navigation via EngagementRail.
+  if (plate) return null;
 
   const links = [
     { href: '/engagements', label: m.nav.engagements },
@@ -20,6 +25,7 @@ export function AppNav() {
     },
     { href: '/benchmarking', label: m.nav.benchmarking },
     { href: '/framework', label: m.nav.framework },
+    { href: '/playbook', label: m.nav.playbook },
     ...(features.handoverPack ? [{ href: '/handover', label: m.nav.handover }] : []),
     { href: '/settings', label: m.nav.settings },
     { href: '/profile', label: m.nav.profile },

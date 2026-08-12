@@ -1,0 +1,52 @@
+---
+description: Design system and accessibility rules for any UI work
+globs:
+  - "app/**/*.tsx"
+  - "components/**/*.tsx"
+  - "styles/**/*.css"
+  - "app/**/*.css"
+---
+
+# UI and accessibility
+
+Full direction in `docs/spec/01-design-system.md`. Read it before creating a component.
+See `docs/spec/ADAPTATIONS.md` for stack path differences (Prisma, single app).
+
+## The direction in one line
+
+A controlled document, not a dashboard: title blocks, revisions, typed verdicts, 2px radius, cool
+drafting-stock surfaces, ink-on-paper contrast, one saturated signal colour used sparingly.
+
+## Non-negotiables
+
+- **Tokens only.** Every colour, radius, spacing and font from `styles/tokens.css` / `app/globals.css`.
+  If a value you need doesn't exist, propose adding a token — do not inline it.
+- **Spacing scale is 4 / 8 / 12 / 16 / 24 / 32 / 48.** Nothing else.
+- **`--radius: 2px`.** Never `rounded-lg`, `rounded-xl`, `rounded-full` except on avatars and chips.
+- **`--signal` (survey pink) appears only where a human decision is required**, and on the active link
+  in the Evidence Chain. If it exceeds roughly 2% of a screen, cut it back.
+- **Every numeral is tabular.** `font-variant-numeric: tabular-nums` on any score, count or date.
+- **Verdicts render glyph + label + wash.** Never colour alone.
+- **A statutory gap is not an amber.** `<StatutoryFlag/>` is visually distinct from `at-risk`.
+- **`<TitleBlock/>` is the same component on screen and in the PDF cover.** Do not fork it.
+
+## Accessibility — WCAG 2.2 AA is a release gate
+
+- 4.5:1 body contrast, 3:1 large text and UI boundaries.
+- 3px `--focus` outline with a 1px `--focus-shadow` inner ring. Never removed.
+- 24×24px minimum target size.
+- Every flow completable by keyboard. Org graph's accessible peer is `<OrgTable/>`.
+- `prefers-reduced-motion: reduce` respected by chain rail, index delta and D3 force simulation.
+- Visible persistent labels. Never placeholder-as-label.
+- `lang` follows the EN/CY toggle.
+
+Run axe-backed e2e before merging UI changes when practical.
+
+## Component conventions
+
+- Server components by default. `'use client'` only for graph, chain rail, forms, command palette.
+- Product domain components live in `components/product/`.
+
+## Motion budget
+
+One orchestrated moment: the index delta. Plus the chain rail slide. Nothing else animates.

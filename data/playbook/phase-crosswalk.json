@@ -1,0 +1,49 @@
+{
+  "phases": [
+    {
+      "gdsPhase": "discovery",
+      "indicativeWeeksMin": 6,
+      "indicativeWeeksMax": 10,
+      "gateway": "Gate 0 / 1",
+      "businessCase": "SOC",
+      "archetypeSlug": "discovery-squad",
+      "syncPoint": "Phase close, evidence pack"
+    },
+    {
+      "gdsPhase": "alpha",
+      "indicativeWeeksMin": 8,
+      "indicativeWeeksMax": 12,
+      "gateway": "Gate 2",
+      "businessCase": "OBC",
+      "archetypeSlug": "alpha-squad",
+      "syncPoint": "Phase close plus service assessment"
+    },
+    {
+      "gdsPhase": "beta",
+      "indicativeWeeksMin": 12,
+      "indicativeWeeksMax": 26,
+      "gateway": "Gate 3",
+      "businessCase": "FBC",
+      "archetypeSlug": "beta-live-squad",
+      "syncPoint": "Assessment plus investment decision"
+    },
+    {
+      "gdsPhase": "live",
+      "indicativeWeeksMin": 12,
+      "indicativeWeeksMax": 52,
+      "gateway": "Gate 4 / 5",
+      "businessCase": "Benefits realisation",
+      "archetypeSlug": "beta-live-squad",
+      "syncPoint": "Quarterly operations review"
+    },
+    {
+      "gdsPhase": "gate",
+      "indicativeWeeksMin": 2,
+      "indicativeWeeksMax": 6,
+      "gateway": "Assurance review",
+      "businessCase": "n/a",
+      "archetypeSlug": "assurance-review-team",
+      "syncPoint": "Gateway or service assessment"
+    }
+  ]
+}

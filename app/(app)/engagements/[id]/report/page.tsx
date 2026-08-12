@@ -1,200 +1,250 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
-import Link from 'next/link';
 import { AppShell } from '@/components/app/AppShell';
 import { AppNav } from '@/components/app/AppNav';
 import { EngagementSubNav } from '@/components/app/EngagementSubNav';
-import { RequirementSelector } from '@/components/app/RequirementSelector';
-import { useRequirementId } from '@/lib/hooks/use-requirement-id';
 import { Button } from '@/components/ui/Button';
-import { ScoreBar } from '@/components/app/ScoreBar';
-import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
+import { TitleBlock } from '@/components/product/TitleBlock';
+import { IndexValue } from '@/components/product/IndexValue';
+import { GapCard } from '@/components/product/GapCard';
+import { ProvenanceChip } from '@/components/product/ProvenanceChip';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
-import type { ExtendedAnalysisResult } from '@/lib/types/extension';
+import type { ReportSectionId } from '@/lib/export/assurance-report';
+
+const OPTIONAL_SECTIONS: { id: ReportSectionId; label: string }[] = [
+  { id: 'overview', label: 'Preparedness overview' },
+  { id: 'gaps', label: 'Gaps' },
+  { id: 'evidence', label: 'Evidence ledger' },
+];
 
 export default function ReportPage() {
-  const { messages: m } = useI18n();
+  const { messages: m, locale } = useI18n();
   const params = useParams();
   const id = params.id as string;
-  const { data } = trpc.engagement.byId.useQuery({ id });
-  const { requirementId, setRequirementId } = useRequirementId(id, data?.requirements);
-  const createShare = trpc.extension.share.create.useMutation();
-  const revokeShare = trpc.extension.share.revoke.useMutation({ onSuccess: () => refetchShares() });
-  const { data: shares, refetch: refetchShares } = trpc.extension.share.list.useQuery({ engagementId: id });
-  const req = data?.requirements.find((r) => r.id === requirementId) ?? data?.requirements[0];
-  const result = req?.runs[0]?.result as ExtendedAnalysisResult | undefined;
+  const [sections, setSections] = useState<ReportSectionId[]>(['overview', 'gaps', 'evidence']);
+  const [exportError, setExportError] = useState<string | null>(null);
 
-  const topGaps = result?.readiness.points
-    .filter((p) => p.status === 'gap' || p.status === 'partial')
-    .slice(0, 5);
-  const topActions = result?.adaptation.actions.slice(0, 5);
+  const bundle = trpc.assurance.reportBundle.useQuery({
+    engagementId: id,
+    sections,
+    locale: locale === 'cy' ? 'cy' : 'en',
+  });
+
+  const pdfHref = useMemo(() => {
+    const q = new URLSearchParams({
+      engagementId: id,
+      sections: sections.join(','),
+      locale: locale === 'cy' ? 'cy' : 'en',
+    });
+    return `/api/export/report?${q.toString()}`;
+  }, [id, sections, locale]);
+
+  function toggleSection(section: ReportSectionId) {
+    setSections((prev) =>
+      prev.includes(section) ? prev.filter((s) => s !== section) : [...prev, section],
+    );
+  }
+
+  async function downloadPdf() {
+    setExportError(null);
+    const res = await fetch(pdfHref);
+    if (res.status === 409) {
+      const body = (await res.json()) as { error?: string };
+      setExportError(body.error ?? 'Welsh export blocked — use English or review translations.');
+      return;
+    }
+    if (!res.ok) {
+      setExportError('Could not generate PDF.');
+      return;
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `assurance-report.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const payload = bundle.data;
 
   return (
-    <div className="min-h-screen bg-white text-black print:bg-white">
-      <div className="no-print">
-        <AppShell title={m.engagement.reportTitle}>
-          <AppNav />
-          <EngagementSubNav engagementId={id} />
-          {data && data.requirements.length > 1 && (
-            <RequirementSelector
-              requirements={data.requirements}
-              value={requirementId}
-              onChange={setRequirementId}
-            />
-          )}
-          <p className="text-text-muted">Use Print to PDF for a client-ready export.</p>
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="mt-4 rounded-md bg-brand px-4 py-2 text-sm text-text-inverse"
-          >
-            Print report
-          </button>
-          {req && (
-            <a
-              href={`/api/export/report?engagementId=${id}&requirementId=${req.id}`}
-              className="ml-3 mt-4 inline-block rounded-md border border-border px-4 py-2 text-sm"
-            >
-              {m.common.exportPdf}
-            </a>
-          )}
-          <button
-            type="button"
-            className="ml-3 rounded-md border border-border px-4 py-2 text-sm"
-            onClick={() =>
-              createShare.mutate(
-                { engagementId: id },
-                {
-                  onSuccess: (link) => {
-                    refetchShares();
-                    void navigator.clipboard?.writeText(
-                      `${window.location.origin}/share/${link.token}`,
-                    );
-                  },
-                },
-              )
-            }
-          >
-            Create share link
-          </button>
-          {shares && shares.length > 0 && (
-            <ul className="mt-4 space-y-2 rounded-lg border border-border bg-surface p-4 text-sm">
-              {shares.map((link) => (
-                <li key={link.id} className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-text-muted">
-                    Expires {new Date(link.expiresAt).toLocaleDateString('en-GB')} ·{' '}
-                    <code className="text-xs">{link.token.slice(0, 8)}…</code>
-                  </span>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="secondary"
-                      type="button"
-                      onClick={() =>
-                        void navigator.clipboard?.writeText(
-                          `${window.location.origin}/share/${link.token}`,
-                        )
-                      }
-                    >
-                      Copy URL
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      type="button"
-                      onClick={() => revokeShare.mutate({ id: link.id, engagementId: id })}
-                    >
-                      Revoke
-                    </Button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </AppShell>
+    <AppShell title={m.engagement.reportTitle}>
+      <AppNav />
+      <EngagementSubNav engagementId={id} />
+
+      <header className="mb-6 no-print">
+        <h1 className="text-[24px] font-semibold tracking-[-0.02em] text-ink-0">
+          {m.engagement.reportTitle}
+        </h1>
+        <p className="mt-2 max-w-2xl text-[15px] leading-[1.55] text-ink-1">
+          Same TitleBlock and preparedness scoring as the screen. The judgement register always
+          ships with the PDF.
+        </p>
+      </header>
+
+      <fieldset className="mb-6 no-print space-y-2 border border-rule bg-stock-0 px-4 py-3">
+        <legend className="px-1 text-[13px] font-medium text-ink-1">Sections</legend>
+        <div className="flex flex-wrap gap-3">
+          {OPTIONAL_SECTIONS.map((s) => (
+            <label key={s.id} className="inline-flex items-center gap-2 text-[13px] text-ink-0">
+              <input
+                type="checkbox"
+                checked={sections.includes(s.id)}
+                onChange={() => toggleSection(s.id)}
+              />
+              {s.label}
+            </label>
+          ))}
+          <label className="inline-flex items-center gap-2 text-[13px] text-ink-2">
+            <input type="checkbox" checked disabled readOnly />
+            Judgement register (required)
+          </label>
+        </div>
+      </fieldset>
+
+      <div className="mb-8 flex flex-wrap gap-3 no-print">
+        <Button type="button" onClick={() => void downloadPdf()}>
+          {m.common.exportPdf}
+        </Button>
+        <Button type="button" variant="secondary" onClick={() => window.print()}>
+          Print
+        </Button>
       </div>
-      <article className="mx-auto max-w-[210mm] px-8 py-10 print:px-12">
-        <header className="border-b-2 border-[color:var(--color-brand)] pb-4">
-          <p className="text-sm font-medium text-[color:var(--color-brand)]">
-            Assemble by Turner & Townsend
-          </p>
-          <h1 className="mt-2 font-display text-2xl font-bold">{data?.name}</h1>
-          <p className="text-sm">
-            {data?.standardId === 'wales' ? 'Digital Service Standard for Wales' : 'GDS Service Standard'}
-          </p>
-        </header>
-        {result ? (
-          <>
-            <section className="mt-8 print:break-inside-avoid">
-              <h2 className="text-lg font-semibold">Executive one-pager</h2>
-              <div className="mt-3 grid gap-4 text-sm md:grid-cols-3">
-                <div>
-                  <p className="font-medium">Readiness</p>
-                  <p>{result.overallReadiness}% ({result.readinessBand})</p>
-                </div>
-                {result.bidOutlook && (
-                  <div>
-                    <p className="font-medium">Bid quality outlook</p>
-                    <p>{result.bidOutlook.overallQualityOutlook}%</p>
-                  </div>
-                )}
-                {result.rigour && (
-                  <div>
-                    <p className="font-medium">Agile rigour</p>
-                    <p>{result.rigour.overallPercent}%</p>
-                  </div>
-                )}
-              </div>
-              {result.bidOutlook && (
-                <p className="mt-2 text-xs">
-                  Top mover: {result.bidOutlook.topPointMovers[0]?.text ?? 'None'}
+      {exportError && (
+        <p className="mb-4 rounded-[2px] border border-verdict-not-met bg-verdict-not-met-wash px-3 py-2 text-[13px] text-ink-0 no-print">
+          {exportError}
+        </p>
+      )}
+      {bundle.error && (
+        <p className="mb-4 text-[13px] text-ink-1 no-print">
+          {bundle.error.message.includes('machine')
+            ? bundle.error.message
+            : 'Could not load report bundle.'}
+        </p>
+      )}
+
+      {payload && (
+        <article className="mx-auto max-w-[210mm] space-y-8 font-[family-name:var(--font-doc)] text-ink-0">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <TitleBlock data={payload.titleBlock} />
+            <p className="font-data text-[11px] uppercase tracking-[0.04em] text-ink-2">
+              {payload.confidentiality === 'internal'
+                ? 'Confidential — internal'
+                : payload.confidentiality === 'client'
+                  ? 'Confidential — client'
+                  : 'Publishable'}
+            </p>
+          </div>
+
+          {sections.includes('overview') && (
+            <section>
+              <h2 className="text-[17px] font-semibold">Preparedness overview</h2>
+              <div className="mt-3">
+                <IndexValue
+                  value={payload.scoring.index}
+                  previous={null}
+                  engagementId={id}
+                  criterionIdForChain={payload.scoring.gaps[0]?.criterionId ?? null}
+                />
+                <p className="mt-2 font-data text-[11px] uppercase tracking-[0.04em] text-ink-2">
+                  Confidence: {payload.scoring.confidence}
                 </p>
+              </div>
+            </section>
+          )}
+
+          {sections.includes('gaps') && (
+            <section>
+              <h2 className="mb-3 text-[17px] font-semibold">Gaps</h2>
+              {payload.gaps.length === 0 ? (
+                <p className="text-[15px] text-ink-1">No open gaps in the current index.</p>
+              ) : (
+                <div className="space-y-3">
+                  {payload.gaps.map((g) => (
+                    <GapCard
+                      key={g.criterionRef}
+                      engagementId={id}
+                      criterionRef={g.criterionRef}
+                      title={g.title}
+                      reason={g.reason}
+                      move={g.move}
+                      statutory={g.statutory}
+                    />
+                  ))}
+                </div>
               )}
             </section>
-            <section className="mt-8">
-              <h2 className="text-lg font-semibold">Summary</h2>
-              <div className="mt-3">
-                <ScoreBar value={result.overallReadiness} />
-              </div>
-              <h3 className="mt-6 font-medium">Top gaps</h3>
-              <ul className="mt-2 list-disc pl-5 text-sm">
-                {topGaps?.map((g) => (
-                  <li key={g.pointId}>
-                    {g.number}. {g.title} ({g.status})
+          )}
+
+          {sections.includes('evidence') && (
+            <section>
+              <h2 className="mb-3 text-[17px] font-semibold">Evidence ledger</h2>
+              {payload.evidence.length === 0 ? (
+                <p className="text-[15px] text-ink-1">No evidence recorded.</p>
+              ) : (
+                <ul className="divide-y divide-rule-soft border-y border-rule">
+                  {payload.evidence.map((e) => (
+                    <li key={e.id} className="py-3">
+                      <p className="font-medium">{e.title}</p>
+                      <p className="mt-1 font-data text-[11px] uppercase text-ink-2">
+                        {e.kind} · {e.confidentiality} · points {e.criterionRefs.join(', ') || '—'}
+                      </p>
+                      <div className="mt-2">
+                        <ProvenanceChip
+                          kind={
+                            e.sourceSystem === 'github'
+                              ? 'github'
+                              : e.provenance === 'integration'
+                                ? 'integration'
+                                : e.provenance === 'import'
+                                  ? 'import'
+                                  : 'manual'
+                          }
+                        />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
+
+          <section>
+            <h2 className="mb-2 text-[17px] font-semibold">Judgement register</h2>
+            <p className="mb-3 text-[13px] text-ink-1">
+              Required appendix — every current judgement with provenance.
+            </p>
+            {payload.judgements.length === 0 ? (
+              <p className="text-[15px] text-ink-1">No judgements yet.</p>
+            ) : (
+              <ul className="space-y-4">
+                {payload.judgements.map((j) => (
+                  <li key={`${j.criterionRef}-${j.confirmedAt}`} className="border-b border-rule-soft pb-3">
+                    <div className="flex flex-wrap items-baseline gap-2">
+                      <span className="font-data text-[12px] text-signal-ink">{j.criterionRef}</span>
+                      <span className="font-medium">{j.criterionTitle}</span>
+                      <span className="font-data text-[11px] uppercase text-ink-2">{j.verdict}</span>
+                    </div>
+                    <p className="mt-2 text-[15px] leading-[1.55]">{j.rationale}</p>
+                    <p className="mt-2 font-data text-[11px] text-ink-2">
+                      {j.provenanceLabel} · {j.confirmedAt.slice(0, 10)}
+                      {j.aiModel ? ` · ${j.aiModel}` : ''}
+                    </p>
                   </li>
                 ))}
               </ul>
-              <h3 className="mt-4 font-medium">Headline adaptation actions</h3>
-              <ol className="mt-2 list-decimal pl-5 text-sm">
-                {topActions?.map((a) => (
-                  <li key={a.id}>{a.title}</li>
-                ))}
-              </ol>
-            </section>
-            <section className="mt-10 break-before-page">
-              <h2 className="text-lg font-semibold">Readiness detail</h2>
-              {result.readiness.points.map((p) => (
-                <div key={p.pointId} className="mt-4 border-t border-gray-200 pt-3 text-sm">
-                  <div className="flex items-center gap-2">
-                    <strong>
-                      {p.number}. {p.title}
-                    </strong>
-                    <StatusPill kind={p.status as StatusKind} />
-                  </div>
-                  {p.evidenceGaps.length > 0 && <p className="mt-1">Evidence gaps: {p.evidenceGaps.join('; ')}</p>}
-                </div>
-              ))}
-            </section>
-          </>
-        ) : (
-          <p className="mt-8 text-sm">No analysis available. Run analysis first.</p>
-        )}
-        <footer className="mt-12 border-t pt-4 text-xs text-gray-600">
-          DDaT Capability Framework: Open Government Licence v3.0. GDS Service Standard: Open Government Licence via
-          GOV.UK. Digital Service Standard for Wales: Centre for Digital Public Services. Dependency mapping: Amplified
-          Ltd (advisory; review by a qualified service assessor before client use).
-        </footer>
-      </article>
-    </div>
+            )}
+          </section>
+
+          <footer className="border-t border-rule pt-3 font-data text-[11px] text-ink-2">
+            Assemble v{payload.productVersion} · Generated {payload.generatedAt}
+          </footer>
+        </article>
+      )}
+    </AppShell>
   );
 }

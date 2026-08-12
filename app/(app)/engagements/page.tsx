@@ -34,6 +34,7 @@ export default function EngagementsPage() {
       window.location.href = `/engagements/${e.id}`;
     },
   });
+  // Inline create kept for quick adds; full wizard is /engagements/new
   const [name, setName] = useState('');
   const [standardId, setStandardId] = useState<'gds' | 'wales'>('wales');
   const [supplierTag, setSupplierTag] = useState('');
@@ -55,6 +56,13 @@ export default function EngagementsPage() {
     <AppShell
       title={listTitle}
       actions={
+        <div className="flex flex-wrap items-end gap-2">
+          <Link
+            href="/engagements/new"
+            className="inline-flex items-center rounded-md bg-brand px-3 py-2 text-sm font-medium text-text-inverse"
+          >
+            {m.engagements.new}
+          </Link>
         <form
           className="flex flex-wrap items-end gap-2"
           onSubmit={(e) => {
@@ -100,10 +108,11 @@ export default function EngagementsPage() {
             <option value="wales">{m.engagement.filterWales}</option>
             <option value="gds">{m.engagement.filterGds}</option>
           </select>
-          <Button type="submit" disabled={create.isPending}>
-            {m.engagements.new}
+          <Button type="submit" disabled={create.isPending} variant="secondary">
+            Quick add
           </Button>
         </form>
+        </div>
       }
     >
       <DeploymentBanner />

@@ -124,23 +124,49 @@ model Organisation {
   designSnapshots   DesignSnapshot[]
   designScenarios   DesignScenario[]
   designShareLinks  DesignShareLink[]
+  roleArchetypes    RoleArchetype[]
+  rigourSignals     RigourSignal[]
+  orgInsightsCache  OrgInsightsCache?
 }
 
 model User {
   id                 String              @id @default(cuid())
   email              String              @unique
   name               String?
+  /// admin | member | assessor (read + comment, no edit)
   role               String              @default("member")
   orgId              String
   org                Organisation        @relation(fields: [orgId], references: [id])
   passwordHash       String?
   reviewAssignments  ReviewAssignment[]
+  ownedEngagements   Engagement[]        @relation("EngagementOwner")
 }
 
 model Engagement {
   id                String        @id @default(cuid())
   name              String
+  /// Title-block reference, e.g. NRW-DISC-01
+  reference         String?
+  /// Legacy engine key: gds | wales (kept for readiness analysis)
   standardId        String
+  clientOrg         String?
+  /// digital-service | capital-programme | hybrid
+  sector            String?
+  serviceName       String?
+  serviceDescription String?      @db.Text
+  /// discovery | alpha | beta | live | gate — filters applicable criteria
+  phase             String        @default("discovery")
+  /// Playbook maturity (doc 09 §10): practising | evidenced | assured | compounding
+  /// Engagement attribute only — never enters fit score.
+  maturityLevel     String        @default("practising")
+  /// bid | mobilise | assure
+  mode              String        @default("bid")
+  /// Default report / UI content locale
+  locale            String        @default("en")
+  revision          String        @default("A")
+  aiEnabled         Boolean       @default(true)
+  ownerId           String?
+  owner             User?         @relation("EngagementOwner", fields: [ownerId], references: [id], onDelete: Restrict)
   /// Supplier or delivery partner label (Play B portfolio grouping)
   supplierTag       String?
   /// Framework lot or workstream (Play B portfolio grouping)
@@ -161,6 +187,229 @@ model Engagement {
   shareLinks        ShareLink[]
   judgements        Judgement[]
   reviewRequests    ReviewRequest[]
+  catalogStandards    EngagementStandard[]
+  assuranceEvidence   AssuranceEvidence[]
+  criterionJudgements CriterionJudgement[]
+  capabilityLinks     CapabilityLink[]
+  evidenceOwners      CriterionEvidenceOwner[]
+  indexSnapshots      IndexSnapshot[]
+  fitScores           FitScore[]
+  squadProposals      SquadProposal[]
+  capabilityGapsFit   CapabilityGap[]
+  rigourSignals       RigourSignal[]
+
+  @@index([orgId])
+  @@index([reference])
+}
+
+/// Versioned assurance catalogue (GDS / Wales / TCoP). Distinct from legacy Standard/StandardPoint.
+model CatalogStandard {
+  id          String                   @id @default(cuid())
+  code        String                   @unique
+  name        String
+  publisher   String
+  licence     String
+  attribution String                   @db.Text
+  sourceUrl   String?
+  versions    CatalogStandardVersion[]
+
+  @@map("catalog_standards")
+}
+
+model CatalogStandardVersion {
+  id            String              @id @default(cuid())
+  standardId    String
+  version       String
+  effectiveFrom DateTime
+  effectiveTo   DateTime?
+  /// draft | current | superseded
+  status        String              @default("current")
+  changeNote    String?             @db.Text
+  standard      CatalogStandard     @relation(fields: [standardId], references: [id], onDelete: Cascade)
+  criteria      Criterion[]
+  engagements   EngagementStandard[]
+
+  @@unique([standardId, version])
+  @@index([standardId])
+  @@map("catalog_standard_versions")
+}
+
+model Criterion {
+  id                String                 @id @default(cuid())
+  standardVersionId String
+  ref               String
+  title             String
+  statement         String                 @db.Text
+  guidanceUrl       String?
+  phases            String[]
+  statutory         Boolean                @default(false)
+  weight            Int                    @default(1)
+  sortOrder         Int                    @default(0)
+  standardVersion   CatalogStandardVersion @relation(fields: [standardVersionId], references: [id], onDelete: Cascade)
+  translations           CriterionTranslation[]
+  capabilityRequirements CapabilityRequirement[]
+  evidenceLinks          EvidenceCriterion[]
+  judgements             CriterionJudgement[]
+  evidenceOwners         CriterionEvidenceOwner[]
+  crosswalkMappings      CrosswalkMapping[]
+
+  @@unique([standardVersionId, ref])
+  @@index([standardVersionId])
+  @@map("criteria")
+}
+
+model CriterionTranslation {
+  id           String    @id @default(cuid())
+  criterionId  String
+  /// en | cy
+  locale       String
+  title        String
+  statement    String    @db.Text
+  /// human | machine
+  reviewStatus String    @default("human")
+  criterion    Criterion @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+
+  @@unique([criterionId, locale])
+  @@index([criterionId])
+  @@map("criterion_translations")
+}
+
+model EngagementStandard {
+  engagementId      String
+  standardVersionId String
+  isPrimary         Boolean                @default(false)
+  engagement        Engagement             @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  standardVersion   CatalogStandardVersion @relation(fields: [standardVersionId], references: [id])
+
+  @@id([engagementId, standardVersionId])
+  @@index([standardVersionId])
+  @@map("engagement_standards")
+}
+
+/// Spec M4 — capability required by a criterion (global, versioned with criteria).
+model CapabilityRequirement {
+  id              String           @id @default(cuid())
+  criterionId     String
+  description     String           @db.Text
+  roleArchetype   String?
+  /// Basis points of an FTE (60 = 0.6)
+  minFte          Int?
+  skillTags       String[]
+  phasePersistent Boolean          @default(false)
+  criterion       Criterion        @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+  links           CapabilityLink[]
+
+  @@index([criterionId])
+  @@map("capability_requirements")
+}
+
+model CapabilityLink {
+  id                       String                @id @default(cuid())
+  engagementId             String
+  capabilityRequirementId  String
+  entityId                 String
+  accountabilityIndex      Int?
+  /// satisfies | partially | informs
+  strength                 String                @default("satisfies")
+  note                     String?               @db.Text
+  /// auto | human
+  provenance               String                @default("human")
+  confirmed                Boolean               @default(false)
+  engagement               Engagement            @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  capabilityRequirement    CapabilityRequirement @relation(fields: [capabilityRequirementId], references: [id], onDelete: Cascade)
+
+  @@index([engagementId])
+  @@index([capabilityRequirementId])
+  @@index([entityId])
+  @@map("capability_links")
+}
+
+/// Spec evidence ledger — distinct from legacy Evidence (StandardPoint links).
+model AssuranceEvidence {
+  id               String             @id @default(cuid())
+  engagementId     String
+  title            String
+  /// document | research | test | decision | code | metric | other
+  kind             String
+  uri              String?
+  storageKey       String?
+  ownerPersonId    String?
+  producedAt       DateTime?
+  expiresAt        DateTime?
+  /// internal | client | publishable
+  confidentiality  String             @default("client")
+  /// manual | integration | import
+  provenance       String             @default("manual")
+  sourceSystem     String?
+  externalId       String?
+  createdByUserId  String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  engagement       Engagement         @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  criteria         EvidenceCriterion[]
+
+  @@index([engagementId])
+  @@index([engagementId, expiresAt])
+  @@map("assurance_evidence")
+}
+
+model EvidenceCriterion {
+  evidenceId  String
+  criterionId String
+  /// supports | partially | contextual
+  strength    String            @default("supports")
+  evidence    AssuranceEvidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+  criterion   Criterion         @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+
+  @@id([evidenceId, criterionId])
+  @@map("evidence_criteria")
+}
+
+/// Spec criterion judgements — distinct from legacy Judgement (subject/status).
+model CriterionJudgement {
+  id                String    @id @default(cuid())
+  engagementId      String
+  criterionId       String
+  /// met | at-risk | not-met | not-assessed
+  verdict           String
+  rationale         String    @db.Text
+  /// human | ai | system
+  proposedBy        String    @default("human")
+  proposedByUserId  String?
+  aiModel           String?
+  aiPromptHash      String?
+  confirmedByUserId String
+  confirmedAt       DateTime  @default(now())
+  supersededById    String?
+  engagement        Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  criterion         Criterion  @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+
+  @@index([engagementId, criterionId, supersededById])
+  @@map("criterion_judgements")
+}
+
+model CriterionEvidenceOwner {
+  engagementId String
+  criterionId  String
+  personId     String
+  engagement   Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  criterion    Criterion  @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+
+  @@id([engagementId, criterionId])
+  @@map("criterion_evidence_owners")
+}
+
+model IndexSnapshot {
+  id           String     @id @default(cuid())
+  engagementId String
+  computedAt   DateTime   @default(now())
+  value        Int?
+  breakdown    Json
+  cause        String?
+  engagement   Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@index([engagementId, computedAt])
+  @@map("index_snapshots")
 }
 
 model Requirement {
@@ -482,6 +731,18 @@ model DesignAssignment {
   @@index([orgId])
 }
 
+/// Cached org-design insights (doc 08 §2.4). Recomputed on write; served on read by inputsHash.
+model OrgInsightsCache {
+  id          String       @id @default(cuid())
+  orgId       String       @unique
+  org         Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  inputsHash  String
+  insights    Json
+  computedAt  DateTime     @default(now())
+
+  @@map("org_insights_cache")
+}
+
 model DesignComment {
   id        String       @id @default(cuid())
   orgId     String
@@ -544,4 +805,207 @@ model DesignShareLink {
   createdAt  DateTime     @default(now())
 
   @@index([orgId])
+}
+
+/// Gate / construction frameworks for crosswalk (distinct from FrameworkVersion drift table).
+model AssuranceFramework {
+  id          String                   @id @default(cuid())
+  code        String                   @unique
+  name        String
+  publisher   String
+  version     String?
+  licence     String?
+  attribution String?                  @db.Text
+  items       AssuranceFrameworkItem[]
+
+  @@map("assurance_frameworks")
+}
+
+model AssuranceFrameworkItem {
+  id          String             @id @default(cuid())
+  frameworkId String
+  ref         String
+  title       String
+  question    String?            @db.Text
+  parentRef   String?
+  sortOrder   Int                @default(0)
+  /// Optional pack grouping, e.g. gate-3, riba-3
+  packRef     String?
+  framework   AssuranceFramework @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
+  mappings    CrosswalkMapping[]
+
+  @@unique([frameworkId, ref])
+  @@index([frameworkId])
+  @@index([packRef])
+  @@map("assurance_framework_items")
+}
+
+model CrosswalkMapping {
+  id              String                 @id @default(cuid())
+  criterionId     String
+  frameworkItemId String
+  /// satisfies | partially | informs
+  relation        String
+  note            String?                @db.Text
+  authoredBy      String
+  reviewedBy      String
+  reviewedAt      DateTime
+  criterion       Criterion              @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+  frameworkItem   AssuranceFrameworkItem @relation(fields: [frameworkItemId], references: [id], onDelete: Cascade)
+
+  @@unique([criterionId, frameworkItemId])
+  @@index([criterionId])
+  @@index([frameworkItemId])
+  @@map("crosswalk_mappings")
+}
+
+// --- Team Fit (spec 07 / migration 007) ---
+
+/// Named template of roles a delivery context requires.
+model RoleArchetype {
+  id           String          @id @default(cuid())
+  orgId        String
+  name         String
+  slug         String
+  /// gds_discovery | gds_alpha | gds_beta_live | capital_integration | assurance_review | bilingual_service | custom
+  context      String
+  description  String?         @db.Text
+  /// Standard catalogue refs this archetype supports, e.g. gds-service-standard@2019.1
+  standardRefs Json            @default("[]")
+  version      Int             @default(1)
+  isSystem     Boolean         @default(false)
+  createdAt    DateTime        @default(now())
+  archivedAt   DateTime?
+  org          Organisation    @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  roles        ArchetypeRole[]
+  proposals    SquadProposal[]
+
+  @@unique([orgId, slug, version])
+  @@index([orgId])
+  @@map("role_archetypes")
+}
+
+model ArchetypeRole {
+  id             String            @id @default(cuid())
+  archetypeId    String
+  ddatRoleId     String
+  displayTitle   String
+  /// awareness | working | practitioner | expert
+  minLevel       String
+  fteRequired    Float
+  /// core | supporting | optional
+  criticality    String            @default("core")
+  sortOrder      Int
+  /// Array<{ skillId, requiredLevel, weight }>
+  requiredSkills Json              @default("[]")
+  archetype      RoleArchetype     @relation(fields: [archetypeId], references: [id], onDelete: Cascade)
+  fitScores      FitScore[]
+  assignments    SquadAssignment[]
+  gaps           CapabilityGap[]
+
+  @@index([archetypeId])
+  @@map("archetype_roles")
+}
+
+model RigourSignal {
+  id                String       @id @default(cuid())
+  orgId             String
+  /// DesignPerson id (Organise people)
+  personId          String
+  engagementId      String?
+  /// sustained_assignment | capacity_discipline | nfr_planning | spike_discipline | assurance_participation | handover_quality
+  type              String
+  /// derived | asserted
+  provenance        String
+  /// -1.0 .. 1.0
+  value             Float
+  evidenceId        String?
+  note              String?      @db.Text
+  observedAt        DateTime
+  confirmedByUserId String?
+  createdAt         DateTime     @default(now())
+  org               Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  engagement        Engagement?  @relation(fields: [engagementId], references: [id], onDelete: SetNull)
+
+  @@index([personId])
+  @@index([orgId])
+  @@index([engagementId])
+  @@map("rigour_signals")
+}
+
+model FitScore {
+  id                String         @id @default(cuid())
+  engagementId      String
+  archetypeRoleId   String
+  personId          String
+  skillScore        Float
+  rigourMultiplier  Float
+  compositeScore    Float
+  /// strong | viable | stretch | gap
+  band              String
+  breakdown         Json
+  scoringVersion    String
+  inputsHash        String
+  computedAt        DateTime       @default(now())
+  engagement        Engagement     @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  archetypeRole     ArchetypeRole  @relation(fields: [archetypeRoleId], references: [id], onDelete: Cascade)
+  assignments       SquadAssignment[]
+
+  @@unique([engagementId, archetypeRoleId, personId])
+  @@index([engagementId, archetypeRoleId, compositeScore])
+  @@map("fit_scores")
+}
+
+model SquadProposal {
+  id                String            @id @default(cuid())
+  engagementId      String
+  archetypeId       String
+  /// draft | confirmed | superseded
+  status            String            @default("draft")
+  confirmedByUserId String?
+  confirmedAt       DateTime?
+  createdAt         DateTime          @default(now())
+  engagement        Engagement        @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  archetype         RoleArchetype     @relation(fields: [archetypeId], references: [id])
+  assignments       SquadAssignment[]
+
+  @@index([engagementId])
+  @@map("squad_proposals")
+}
+
+model SquadAssignment {
+  id              String        @id @default(cuid())
+  proposalId      String
+  archetypeRoleId String
+  personId        String
+  fteAllocated    Float
+  fitScoreId      String?
+  rationale       String?       @db.Text
+  overrideReason  String?       @db.Text
+  proposal        SquadProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  archetypeRole   ArchetypeRole @relation(fields: [archetypeRoleId], references: [id])
+  fitScore        FitScore?     @relation(fields: [fitScoreId], references: [id])
+
+  @@index([proposalId])
+  @@map("squad_assignments")
+}
+
+model CapabilityGap {
+  id                 String        @id @default(cuid())
+  engagementId       String
+  archetypeRoleId    String
+  /// skills_gap | rigour_gap | capacity_gap
+  kind               String
+  severity           Int
+  bestAvailableScore Float?
+  /// upskill | second | recruit | rescope
+  recommendation     String
+  narrative          String        @db.Text
+  standardRefs       Json          @default("[]")
+  computedAt         DateTime      @default(now())
+  engagement         Engagement    @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  archetypeRole      ArchetypeRole @relation(fields: [archetypeRoleId], references: [id])
+
+  @@index([engagementId])
+  @@map("capability_gaps")
 }

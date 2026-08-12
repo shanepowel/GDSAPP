@@ -87,8 +87,16 @@ describe('GDS templates', () => {
   it('includes core GDS and Wales templates', () => {
     const ids = ORG_TEMPLATES.map((t) => t.id);
     expect(ids).toContain('gds-service-team');
+    expect(ids).toContain('gds-discovery-team');
+    expect(ids).toContain('gds-alpha-team');
+    expect(ids).toContain('gds-beta-team');
+    expect(ids).toContain('digital-service-local-authority');
+    expect(ids).toContain('capital-iso-19650');
+    expect(ids).toContain('enterprise-asset-management');
+    expect(ids).toContain('data-platform-digital-twin');
     expect(ids).toContain('wales-dss-team');
     expect(ids).toContain('assessment-skeleton');
+    expect(ids).not.toContain('functional-hierarchy');
   });
 
   it('maps common role names to DDaT ids', () => {

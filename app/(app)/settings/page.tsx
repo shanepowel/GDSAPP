@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { AppShell } from '@/components/app/AppShell';
 import { AppNav } from '@/components/app/AppNav';
 import { Card } from '@/components/app/Card';
@@ -29,6 +30,15 @@ export default function SettingsPage() {
           <Button className="mt-4" variant="secondary" type="button" onClick={toggle}>
             {theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           </Button>
+        </Card>
+
+        <Card className="p-6">
+          <h2 className="font-semibold text-text">Sign-in</h2>
+          <p className="mt-2 text-sm text-text-muted">
+            When Microsoft Entra is configured, it is the primary sign-in. Credentials remain only
+            when <code className="font-data text-xs">AUTH_ALLOW_CREDENTIALS=true</code> (local/demo).
+            Assessor role: read and comment; no structural edits.
+          </p>
         </Card>
 
         <Card className="p-6">
@@ -73,7 +83,7 @@ export default function SettingsPage() {
                   name: String(fd.get('name')),
                   email: String(fd.get('email')),
                   password: String(fd.get('password')),
-                  role: (fd.get('role') as 'admin' | 'member') || 'member',
+                  role: (fd.get('role') as 'admin' | 'member' | 'assessor') || 'member',
                 });
                 e.currentTarget.reset();
               }}
@@ -106,6 +116,7 @@ export default function SettingsPage() {
                 defaultValue="member"
               >
                 <option value="member">Member</option>
+                <option value="assessor">Assessor</option>
                 <option value="admin">Admin</option>
               </select>
               <Button type="submit" disabled={invite.isPending} className="sm:col-span-2">
@@ -118,6 +129,33 @@ export default function SettingsPage() {
           )}
         </Card>
       </div>
+
+      <Card className="mt-6 p-6">
+        <h2 className="font-semibold text-text">Delivery Playbook</h2>
+        <p className="mt-2 text-sm text-text-muted">
+          Public sector operating model — Keel rules, phase crosswalk, Compass targets. Team Fit
+          scores against this playbook.
+        </p>
+        <Link
+          href="/playbook"
+          className="mt-4 inline-block text-sm font-medium text-brand underline-offset-2 hover:underline"
+        >
+          Open playbook
+        </Link>
+      </Card>
+
+      <Card className="mt-6 p-6">
+        <h2 className="font-semibold text-text">Team Fit</h2>
+        <p className="mt-2 text-sm text-text-muted">
+          Role archetypes for squad proposals. System templates are read-only; clone to customise.
+        </p>
+        <Link
+          href="/settings/archetypes"
+          className="mt-4 inline-block text-sm font-medium text-brand underline-offset-2 hover:underline"
+        >
+          Open archetype library
+        </Link>
+      </Card>
     </AppShell>
   );
 }

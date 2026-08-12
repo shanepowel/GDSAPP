@@ -45,21 +45,95 @@ export function toGraphEntity(e: {
   };
 }
 
-export async function getLiveGraph(db: Db, orgId: string): Promise<DesignGraph> {
+export async function getLiveGraph(
+  db: Db,
+  orgId: string,
+  opts: { mode?: 'list' | 'detail' } = {},
+): Promise<DesignGraph> {
+  const mode = opts.mode ?? 'list';
   const [entities, relationships, people, assignments] = await Promise.all([
-    db.designEntity.findMany({ where: { orgId }, orderBy: { createdAt: 'asc' } }),
-    db.designRelationship.findMany({ where: { orgId }, orderBy: { createdAt: 'asc' } }),
-    db.designPerson.findMany({ where: { orgId }, orderBy: { createdAt: 'asc' } }),
-    db.designAssignment.findMany({ where: { orgId }, orderBy: { createdAt: 'asc' } }),
+    db.designEntity.findMany({
+      where: { orgId },
+      orderBy: { createdAt: 'asc' },
+      select:
+        mode === 'detail'
+          ? {
+              id: true,
+              name: true,
+              type: true,
+              purpose: true,
+              domain: true,
+              accountabilities: true,
+              policies: true,
+              parentId: true,
+              ddatRoleId: true,
+              ddatRoleLevelId: true,
+              metadata: true,
+            }
+          : {
+              id: true,
+              name: true,
+              type: true,
+              purpose: true,
+              domain: true,
+              accountabilities: true,
+              parentId: true,
+              ddatRoleId: true,
+              ddatRoleLevelId: true,
+            },
+    }),
+    db.designRelationship.findMany({
+      where: { orgId },
+      orderBy: { createdAt: 'asc' },
+      select: {
+        id: true,
+        sourceId: true,
+        targetId: true,
+        type: true,
+        ...(mode === 'detail' ? { metadata: true } : {}),
+      },
+    }),
+    db.designPerson.findMany({
+      where: { orgId },
+      orderBy: { createdAt: 'asc' },
+      select:
+        mode === 'detail'
+          ? {
+              id: true,
+              name: true,
+              email: true,
+              fte: true,
+              skills: true,
+              notes: true,
+            }
+          : {
+              id: true,
+              name: true,
+              email: true,
+              fte: true,
+              skills: true,
+            },
+    }),
+    db.designAssignment.findMany({
+      where: { orgId },
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, personId: true, entityId: true, allocation: true },
+    }),
   ]);
   return {
-    entities: entities.map(toGraphEntity),
+    entities: entities.map((e) =>
+      toGraphEntity({
+        ...e,
+        policies: 'policies' in e ? e.policies : [],
+        metadata: 'metadata' in e ? e.metadata : {},
+      }),
+    ),
     relationships: relationships.map((r) => ({
       id: r.id,
       sourceId: r.sourceId,
       targetId: r.targetId,
       type: r.type,
-      metadata: asRecord(r.metadata),
+      metadata: 'metadata' in r ? asRecord(r.metadata) : {},
     })),
     people: people.map((p) => ({
       id: p.id,
@@ -67,7 +141,7 @@ export async function getLiveGraph(db: Db, orgId: string): Promise<DesignGraph> 
       email: p.email,
       fte: p.fte,
       skills: asStringArray(p.skills),
-      notes: p.notes,
+      notes: 'notes' in p ? (p.notes as string | null) : null,
     })),
     assignments: assignments.map((a) => ({
       id: a.id,
@@ -76,6 +150,13 @@ export async function getLiveGraph(db: Db, orgId: string): Promise<DesignGraph> 
       allocation: a.allocation,
     })),
   };
+}
+
+/** Full fields for a single entity inspector — avoids shipping metadata on the list payload. */
+export async function getEntityDetail(db: Db, orgId: string, entityId: string) {
+  const e = await db.designEntity.findFirst({ where: { id: entityId, orgId } });
+  if (!e) return null;
+  return toGraphEntity(e);
 }
 
 export async function logActivity(

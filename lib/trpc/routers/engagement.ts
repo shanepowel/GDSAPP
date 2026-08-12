@@ -7,8 +7,15 @@ import {
   listAppliedMoves,
   revertWhatIfMove,
   WHAT_IF_MOVES,
-  type WhatIfMoveId,
 } from '@/lib/demo/what-if-moves';
+import {
+  bindPrimaryStandardVersion,
+  currentVersionIdForCode,
+  ENGAGEMENT_MODES,
+  ENGAGEMENT_PHASES,
+  legacyStandardToCatalogCode,
+  nextEngagementReference,
+} from '@/lib/standards/catalog';
 
 export const engagementRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -26,10 +33,12 @@ export const engagementRouter = router({
     return engagements.map((e) => ({
       id: e.id,
       name: e.name,
+      reference: e.reference,
       standardId: e.standardId,
       supplierTag: e.supplierTag,
       lotTag: e.lotTag,
-      phase: e.requirements[0]?.phase ?? null,
+      phase: e.phase || e.requirements[0]?.phase || null,
+      mode: e.mode,
       lastRun: e.requirements[0]?.runs[0] ?? null,
     }));
   }),
@@ -59,20 +68,47 @@ export const engagementRouter = router({
         standardId: z.enum(['gds', 'wales']),
         supplierTag: z.string().optional(),
         lotTag: z.string().optional(),
+        clientOrg: z.string().optional(),
+        sector: z.enum(['digital-service', 'capital-programme', 'hybrid']).optional(),
+        serviceName: z.string().optional(),
+        serviceDescription: z.string().optional(),
+        phase: z.enum(ENGAGEMENT_PHASES).optional(),
+        mode: z.enum(ENGAGEMENT_MODES).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.engagement.create({
+      const phase = input.phase ?? 'discovery';
+      const mode = input.mode ?? 'bid';
+      const reference = await nextEngagementReference(
+        ctx.prisma,
+        ctx.orgId,
+        input.clientOrg,
+        input.name,
+      );
+      const versionId = await currentVersionIdForCode(
+        ctx.prisma,
+        legacyStandardToCatalogCode(input.standardId),
+      );
+
+      const engagement = await ctx.prisma.engagement.create({
         data: {
           name: input.name,
+          reference,
           standardId: input.standardId,
           supplierTag: input.supplierTag,
           lotTag: input.lotTag,
+          clientOrg: input.clientOrg,
+          sector: input.sector,
+          serviceName: input.serviceName ?? input.name,
+          serviceDescription: input.serviceDescription,
+          phase,
+          mode,
+          ownerId: ctx.userId,
           orgId: ctx.orgId,
           requirements: {
             create: {
               title: 'Initial requirement',
-              phase: 'discovery',
+              phase: phase === 'gate' ? 'discovery' : phase,
               outcome: '',
               channels: ['web'],
               sensitivity: 'official',
@@ -80,6 +116,12 @@ export const engagementRouter = router({
           },
         },
       });
+
+      if (versionId) {
+        await bindPrimaryStandardVersion(ctx.prisma, engagement.id, versionId);
+      }
+
+      return engagement;
     }),
 
   byId: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
@@ -89,11 +131,20 @@ export const engagementRouter = router({
         requirements: {
           include: {
             roles: true,
-            runs: { orderBy: { createdAt: 'desc' }, take: 5 },
+            runs: { orderBy: { createdAt: 'desc' }, take: 1 },
             assignments: { include: { person: true } },
           },
         },
         people: { include: { skills: true, assignments: true } },
+        catalogStandards: {
+          where: { isPrimary: true },
+          take: 1,
+          include: {
+            standardVersion: {
+              include: { standard: { select: { name: true, code: true } } },
+            },
+          },
+        },
         _count: { select: { evidence: true, judgements: true } },
       },
     });
@@ -108,15 +159,36 @@ export const engagementRouter = router({
         name: z.string().min(1).optional(),
         supplierTag: z.string().nullable().optional(),
         lotTag: z.string().nullable().optional(),
+        clientOrg: z.string().nullable().optional(),
+        sector: z.enum(['digital-service', 'capital-programme', 'hybrid']).nullable().optional(),
+        serviceName: z.string().nullable().optional(),
+        serviceDescription: z.string().nullable().optional(),
+        phase: z.enum(ENGAGEMENT_PHASES).optional(),
+        mode: z.enum(ENGAGEMENT_MODES).optional(),
+        revision: z.string().min(1).max(8).optional(),
+        maturityLevel: z.enum(['practising', 'evidenced', 'assured', 'compounding']).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       await assertEngagementInOrg(ctx, input.engagementId);
       const { engagementId, ...data } = input;
-      return ctx.prisma.engagement.update({
+      const updated = await ctx.prisma.engagement.update({
         where: { id: engagementId },
         data,
       });
+      if (data.phase && data.phase !== 'gate') {
+        const req = await ctx.prisma.requirement.findFirst({
+          where: { engagementId },
+          orderBy: { id: 'asc' },
+        });
+        if (req) {
+          await ctx.prisma.requirement.update({
+            where: { id: req.id },
+            data: { phase: data.phase },
+          });
+        }
+      }
+      return updated;
     }),
 
   addRequirement: protectedProcedure

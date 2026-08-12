@@ -1,0 +1,289 @@
+[
+  {
+    "slug": "discovery-squad",
+    "name": "Discovery squad",
+    "context": "gds_discovery",
+    "description": "GDS Service Standard points 1–3 and 5 — research-led discovery.",
+    "standardRefs": ["gds-service-standard@2019.1", "wales-dss@1.0"],
+    "roles": [
+      {
+        "ddatRoleId": "user-researcher",
+        "displayTitle": "Lead user researcher",
+        "minLevel": "practitioner",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 1,
+        "requiredSkills": [
+          { "skillId": "user-research", "requiredLevel": "practitioner", "weight": 1 },
+          { "skillId": "user-centred-practice-and-advocacy", "requiredLevel": "working", "weight": 0.5 }
+        ]
+      },
+      {
+        "ddatRoleId": "service-designer",
+        "displayTitle": "Service designer",
+        "minLevel": "practitioner",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 2,
+        "requiredSkills": [
+          { "skillId": "iterative-design", "requiredLevel": "practitioner", "weight": 1 },
+          { "skillId": "designing-for-everyone", "requiredLevel": "working", "weight": 0.5 }
+        ]
+      },
+      {
+        "ddatRoleId": "delivery-manager",
+        "displayTitle": "Delivery manager",
+        "minLevel": "working",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 3,
+        "requiredSkills": [
+          { "skillId": "agile-working", "requiredLevel": "working", "weight": 1 }
+        ]
+      },
+      {
+        "ddatRoleId": "product-manager",
+        "displayTitle": "Product manager",
+        "minLevel": "practitioner",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 4,
+        "requiredSkills": [
+          { "skillId": "strategic-ownership", "requiredLevel": "practitioner", "weight": 1 }
+        ]
+      },
+      {
+        "ddatRoleId": "technical-architect",
+        "displayTitle": "Technical architect",
+        "minLevel": "working",
+        "fteRequired": 0.5,
+        "criticality": "supporting",
+        "sortOrder": 5,
+        "requiredSkills": [
+          { "skillId": "architecture", "requiredLevel": "working", "weight": 1 }
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "alpha-squad",
+    "name": "Alpha squad",
+    "context": "gds_alpha",
+    "description": "Adds developers and performance analysis against points 4–9.",
+    "standardRefs": ["gds-service-standard@2019.1"],
+    "roles": [
+      {
+        "ddatRoleId": "product-manager",
+        "displayTitle": "Product manager",
+        "minLevel": "practitioner",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 1,
+        "requiredSkills": [{ "skillId": "strategic-ownership", "requiredLevel": "practitioner", "weight": 1 }]
+      },
+      {
+        "ddatRoleId": "software-developer",
+        "displayTitle": "Developer",
+        "minLevel": "practitioner",
+        "fteRequired": 2,
+        "criticality": "core",
+        "sortOrder": 2,
+        "requiredSkills": [{ "skillId": "programming-and-build", "requiredLevel": "practitioner", "weight": 1 }]
+      },
+      {
+        "ddatRoleId": "user-researcher",
+        "displayTitle": "User researcher",
+        "minLevel": "working",
+        "fteRequired": 0.5,
+        "criticality": "supporting",
+        "sortOrder": 3,
+        "requiredSkills": [{ "skillId": "user-research", "requiredLevel": "working", "weight": 1 }]
+      },
+      {
+        "ddatRoleId": "performance-analyst",
+        "displayTitle": "Performance analyst",
+        "minLevel": "working",
+        "fteRequired": 0.5,
+        "criticality": "supporting",
+        "sortOrder": 4,
+        "requiredSkills": [{ "skillId": "data-analysis-and-synthesis", "requiredLevel": "working", "weight": 1 }]
+      }
+    ]
+  },
+  {
+    "slug": "beta-live-squad",
+    "name": "Beta / Live squad",
+    "context": "gds_beta_live",
+    "description": "Adds SRE, content and accessibility for points 10–14.",
+    "standardRefs": ["gds-service-standard@2019.1"],
+    "roles": [
+      {
+        "ddatRoleId": "product-manager",
+        "displayTitle": "Product manager",
+        "minLevel": "practitioner",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 1,
+        "requiredSkills": [{ "skillId": "strategic-ownership", "requiredLevel": "practitioner", "weight": 1 }]
+      },
+      {
+        "ddatRoleId": "software-developer",
+        "displayTitle": "Developer",
+        "minLevel": "practitioner",
+        "fteRequired": 2,
+        "criticality": "core",
+        "sortOrder": 2,
+        "requiredSkills": [{ "skillId": "programming-and-build", "requiredLevel": "practitioner", "weight": 1 }]
+      },
+      {
+        "ddatRoleId": "site-reliability-engineer",
+        "displayTitle": "Site reliability engineer",
+        "minLevel": "working",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 3,
+        "requiredSkills": [{ "skillId": "infrastructure", "requiredLevel": "working", "weight": 1 }]
+      },
+      {
+        "ddatRoleId": "content-designer",
+        "displayTitle": "Content designer",
+        "minLevel": "working",
+        "fteRequired": 0.5,
+        "criticality": "supporting",
+        "sortOrder": 4,
+        "requiredSkills": [{ "skillId": "content-design", "requiredLevel": "working", "weight": 1 }]
+      },
+      {
+        "ddatRoleId": "accessibility-specialist",
+        "displayTitle": "Accessibility specialist",
+        "minLevel": "practitioner",
+        "fteRequired": 0.5,
+        "criticality": "core",
+        "sortOrder": 5,
+        "requiredSkills": [{ "skillId": "designing-for-everyone", "requiredLevel": "practitioner", "weight": 1 }]
+      }
+    ]
+  },
+  {
+    "slug": "capital-digital-workstream",
+    "name": "Capital programme digital workstream",
+    "context": "capital_integration",
+    "description": "Digital delivery roles mapped to NISTA gateway and ISO 19650 information management.",
+    "standardRefs": ["nista-gateway@2024", "iso-19650@2018", "gds-service-standard@2019.1"],
+    "roles": [
+      {
+        "ddatRoleId": "technical-architect",
+        "displayTitle": "Information manager",
+        "minLevel": "practitioner",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 1,
+        "requiredSkills": [{ "skillId": "architecture", "requiredLevel": "practitioner", "weight": 1 }]
+      },
+      {
+        "ddatRoleId": "delivery-manager",
+        "displayTitle": "Digital delivery lead",
+        "minLevel": "practitioner",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 2,
+        "requiredSkills": [{ "skillId": "agile-working", "requiredLevel": "practitioner", "weight": 1 }]
+      },
+      {
+        "ddatRoleId": "business-analyst",
+        "displayTitle": "Requirements lead",
+        "minLevel": "working",
+        "fteRequired": 1,
+        "criticality": "supporting",
+        "sortOrder": 3,
+        "requiredSkills": [{ "skillId": "business-analysis", "requiredLevel": "working", "weight": 1 }]
+      }
+    ]
+  },
+  {
+    "slug": "assurance-review-team",
+    "name": "Assurance review team",
+    "context": "assurance_review",
+    "description": "Short-duration senior squad for gateway and service assessments.",
+    "standardRefs": ["gds-service-standard@2019.1", "tcop@1.0"],
+    "roles": [
+      {
+        "ddatRoleId": "service-owner",
+        "displayTitle": "Lead assessor",
+        "minLevel": "expert",
+        "fteRequired": 0.5,
+        "criticality": "core",
+        "sortOrder": 1,
+        "requiredSkills": [{ "skillId": "strategic-ownership", "requiredLevel": "expert", "weight": 1 }]
+      },
+      {
+        "ddatRoleId": "user-researcher",
+        "displayTitle": "Research assessor",
+        "minLevel": "practitioner",
+        "fteRequired": 0.25,
+        "criticality": "supporting",
+        "sortOrder": 2,
+        "requiredSkills": [{ "skillId": "user-research", "requiredLevel": "practitioner", "weight": 1 }]
+      },
+      {
+        "ddatRoleId": "technical-architect",
+        "displayTitle": "Technical assessor",
+        "minLevel": "practitioner",
+        "fteRequired": 0.25,
+        "criticality": "supporting",
+        "sortOrder": 3,
+        "requiredSkills": [{ "skillId": "architecture", "requiredLevel": "practitioner", "weight": 1 }]
+      }
+    ]
+  },
+  {
+    "slug": "bilingual-service-team",
+    "name": "Bilingual service team",
+    "context": "bilingual_service",
+    "description": "Wales Digital Service Standard — Welsh language capability is core, not optional.",
+    "standardRefs": ["wales-dss@1.0"],
+    "roles": [
+      {
+        "ddatRoleId": "content-designer",
+        "displayTitle": "Welsh language content lead",
+        "minLevel": "practitioner",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 1,
+        "requiredSkills": [
+          { "skillId": "content-design", "requiredLevel": "practitioner", "weight": 1 },
+          { "skillId": "welsh-language-service-capability", "requiredLevel": "practitioner", "weight": 1 }
+        ]
+      },
+      {
+        "ddatRoleId": "user-researcher",
+        "displayTitle": "Bilingual user researcher",
+        "minLevel": "working",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 2,
+        "requiredSkills": [
+          { "skillId": "user-research", "requiredLevel": "working", "weight": 1 },
+          { "skillId": "welsh-language-service-capability", "requiredLevel": "working", "weight": 0.8 }
+        ]
+      },
+      {
+        "ddatRoleId": "product-manager",
+        "displayTitle": "Product manager",
+        "minLevel": "practitioner",
+        "fteRequired": 1,
+        "criticality": "core",
+        "sortOrder": 3,
+        "requiredSkills": [{ "skillId": "strategic-ownership", "requiredLevel": "practitioner", "weight": 1 }]
+      }
+    ]
+  },
+  {
+    "slug": "custom-blank",
+    "name": "Blank / custom",
+    "context": "custom",
+    "description": "Empty archetype for workspace-defined squads. Clone and edit.",
+    "standardRefs": [],
+    "roles": []
+  }
+]

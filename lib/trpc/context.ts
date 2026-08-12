@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/db/client';
 
 export async function createContext(_opts?: FetchCreateContextFnOptions) {
+  void _opts;
   const session = await getServerSession(authOptions);
   return {
     prisma,

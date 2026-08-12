@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { Prisma } from '@prisma/client';
+import { Prisma, type PrismaClient } from '@prisma/client';
 import { protectedProcedure, publicProcedure, router, assertEngagementInOrg } from '@/lib/trpc/trpc';
 import {
   designAssignmentInputSchema,
@@ -11,11 +11,11 @@ import {
   designPersonUpdateSchema,
   designRelationshipInputSchema,
 } from '@/lib/org-design/types';
-import { computeInsights } from '@/lib/org-design/insights';
 import { ORG_TEMPLATES } from '@/lib/org-design/templates';
 import {
   applyAiPatch,
   applyTemplateToLive,
+  getEntityDetail,
   getLiveGraph,
   logActivity,
   newShareToken,
@@ -40,12 +40,20 @@ import {
   refinePurpose,
   suggestAccountabilities,
 } from '@/lib/org-design/ai';
+import { getCachedInsights, refreshInsightsOnWrite } from '@/lib/org-design/insights-cache';
+import { computeInsights } from '@/lib/org-design/insights';
 
 const AI_MAX_PROMPT_CHARS = 32_000;
 
 function asStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value.filter((v): v is string => typeof v === 'string');
+}
+
+function afterGraphWrite(prisma: PrismaClient, orgId: string) {
+  void refreshInsightsOnWrite(prisma, orgId).catch(() => {
+    /* non-blocking */
+  });
 }
 
 export const orgDesignRouter = router({
@@ -79,12 +87,28 @@ export const orgDesignRouter = router({
         scenarioId: input?.scenarioId,
         snapshotId: input?.snapshotId,
       });
-      return computeInsights({
-        entities: graph.entities,
-        relationships: graph.relationships,
-        people: graph.people ?? [],
-        assignments: graph.assignments ?? [],
-      });
+      // Live org graph uses durable cache; scenario/snapshot views compute without polluting cache.
+      if (input?.scenarioId || input?.snapshotId) {
+        return {
+          insights: computeInsights({
+            entities: graph.entities,
+            relationships: graph.relationships,
+            people: graph.people ?? [],
+            assignments: graph.assignments ?? [],
+          }),
+          computedAt: new Date(),
+          cached: false,
+        };
+      }
+      return getCachedInsights(ctx.prisma, ctx.orgId, graph);
+    }),
+
+  entityDetail: protectedProcedure
+    .input(z.object({ entityId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const entity = await getEntityDetail(ctx.prisma, ctx.orgId, input.entityId);
+      if (!entity) throw new TRPCError({ code: 'NOT_FOUND' });
+      return entity;
     }),
 
   createEntity: protectedProcedure
@@ -106,6 +130,7 @@ export const orgDesignRouter = router({
         },
       });
       await logActivity(ctx.prisma, ctx.orgId, 'entity.create', entity.name);
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return toGraphEntity(entity);
     }),
 
@@ -138,6 +163,7 @@ export const orgDesignRouter = router({
         },
       });
       await logActivity(ctx.prisma, ctx.orgId, 'entity.update', entity.name);
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return toGraphEntity(entity);
     }),
 
@@ -162,6 +188,7 @@ export const orgDesignRouter = router({
       });
       await ctx.prisma.designEntity.delete({ where: { id: input.id } });
       await logActivity(ctx.prisma, ctx.orgId, 'entity.delete', existing.name);
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return { ok: true };
     }),
 
@@ -178,6 +205,7 @@ export const orgDesignRouter = router({
         },
       });
       await logActivity(ctx.prisma, ctx.orgId, 'relationship.create', input.type);
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return rel;
     }),
 
@@ -189,6 +217,7 @@ export const orgDesignRouter = router({
       });
       if (!existing) throw new TRPCError({ code: 'NOT_FOUND' });
       await ctx.prisma.designRelationship.delete({ where: { id: input.id } });
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return { ok: true };
     }),
 
@@ -206,6 +235,7 @@ export const orgDesignRouter = router({
         },
       });
       await logActivity(ctx.prisma, ctx.orgId, 'person.create', person.name);
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return {
         ...person,
         skills: asStringArray(person.skills),
@@ -229,6 +259,7 @@ export const orgDesignRouter = router({
           ...(input.data.notes !== undefined ? { notes: input.data.notes } : {}),
         },
       });
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return { ...person, skills: asStringArray(person.skills) };
     }),
 
@@ -243,6 +274,7 @@ export const orgDesignRouter = router({
         where: { orgId: ctx.orgId, personId: input.id },
       });
       await ctx.prisma.designPerson.delete({ where: { id: input.id } });
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return { ok: true };
     }),
 
@@ -257,6 +289,7 @@ export const orgDesignRouter = router({
           allocation: input.allocation ?? 100,
         },
       });
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return assignment;
     }),
 
@@ -267,10 +300,12 @@ export const orgDesignRouter = router({
         where: { id: input.id, orgId: ctx.orgId },
       });
       if (!existing) throw new TRPCError({ code: 'NOT_FOUND' });
-      return ctx.prisma.designAssignment.update({
+      const updated = await ctx.prisma.designAssignment.update({
         where: { id: input.id },
         data: { allocation: input.allocation },
       });
+      afterGraphWrite(ctx.prisma, ctx.orgId);
+      return updated;
     }),
 
   deleteAssignment: protectedProcedure
@@ -281,6 +316,7 @@ export const orgDesignRouter = router({
       });
       if (!existing) throw new TRPCError({ code: 'NOT_FOUND' });
       await ctx.prisma.designAssignment.delete({ where: { id: input.id } });
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return { ok: true };
     }),
 
@@ -364,6 +400,7 @@ export const orgDesignRouter = router({
         relationships: graph.relationships,
       });
       await logActivity(ctx.prisma, ctx.orgId, 'snapshot.restore', snap.name);
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return { ok: true };
     }),
 
@@ -508,13 +545,15 @@ export const orgDesignRouter = router({
     .mutation(async ({ ctx, input }) => {
       const template = ORG_TEMPLATES.find((t) => t.id === input.templateId);
       if (!template) throw new TRPCError({ code: 'NOT_FOUND', message: 'Template not found' });
-      return applyTemplateToLive(ctx.prisma, ctx.orgId, template, {
+      const result = await applyTemplateToLive(ctx.prisma, ctx.orgId, template, {
         replace: input.replace ?? false,
       });
+      afterGraphWrite(ctx.prisma, ctx.orgId);
+      return result;
     }),
 
   exportJson: protectedProcedure.query(async ({ ctx }) => {
-    return getLiveGraph(ctx.prisma, ctx.orgId);
+    return getLiveGraph(ctx.prisma, ctx.orgId, { mode: 'detail' });
   }),
 
   importJson: protectedProcedure
@@ -554,6 +593,7 @@ export const orgDesignRouter = router({
         }
       }
       await logActivity(ctx.prisma, ctx.orgId, 'import.json');
+      afterGraphWrite(ctx.prisma, ctx.orgId);
       return { ok: true };
     }),
 
@@ -720,6 +760,7 @@ export const orgDesignRouter = router({
       const patch = await generateOrgFromPrompt(input.prompt);
       if (input.apply) {
         const result = await applyAiPatch(ctx.prisma, ctx.orgId, patch);
+        afterGraphWrite(ctx.prisma, ctx.orgId);
         return { patch, result };
       }
       return { patch, result: null };
@@ -728,7 +769,9 @@ export const orgDesignRouter = router({
   aiApplyPatch: protectedProcedure
     .input(z.object({ patch: z.any() }))
     .mutation(async ({ ctx, input }) => {
-      return applyAiPatch(ctx.prisma, ctx.orgId, input.patch);
+      const result = await applyAiPatch(ctx.prisma, ctx.orgId, input.patch);
+      afterGraphWrite(ctx.prisma, ctx.orgId);
+      return result;
     }),
 
   aiSuggestAccountabilities: protectedProcedure

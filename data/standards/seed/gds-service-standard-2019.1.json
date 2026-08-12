@@ -1,0 +1,375 @@
+{
+  "code": "gds-service-standard",
+  "name": "GDS Service Standard",
+  "publisher": "GDS / DSIT",
+  "licence": "OGL-3.0",
+  "attribution": "Contains public sector information licensed under the Open Government Licence v3.0.",
+  "sourceUrl": "https://www.gov.uk/service-manual/service-standard",
+  "version": "2019.1",
+  "effectiveFrom": "2019-01-01",
+  "criteria": [
+    {
+      "ref": "1",
+      "title": "Understand users and their needs",
+      "statement": "Depth and continuity of user research and the synthesis of needs.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 1,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Understand users and their needs",
+          "statement": "Depth and continuity of user research and the synthesis of needs.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Understand users and their needs",
+          "statement": "Depth and continuity of user research and the synthesis of needs.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "2",
+      "title": "Solve a whole problem for users",
+      "statement": "Service framed end to end across organisational boundaries, not a single screen.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 2,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Solve a whole problem for users",
+          "statement": "Service framed end to end across organisational boundaries, not a single screen.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Solve a whole problem for users",
+          "statement": "Service framed end to end across organisational boundaries, not a single screen.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "3",
+      "title": "Provide a joined up experience across all channels",
+      "statement": "Consistent experience across online, phone, paper and face to face.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 3,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Provide a joined up experience across all channels",
+          "statement": "Consistent experience across online, phone, paper and face to face.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Provide a joined up experience across all channels",
+          "statement": "Consistent experience across online, phone, paper and face to face.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "4",
+      "title": "Make the service simple to use",
+      "statement": "Simplicity proven through iterative testing, not assertion.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 4,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Make the service simple to use",
+          "statement": "Simplicity proven through iterative testing, not assertion.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Make the service simple to use",
+          "statement": "Simplicity proven through iterative testing, not assertion.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "5",
+      "title": "Make sure everyone can use the service",
+      "statement": "Accessibility and inclusion built in and tested, including assisted digital.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 5,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Make sure everyone can use the service",
+          "statement": "Accessibility and inclusion built in and tested, including assisted digital.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Make sure everyone can use the service",
+          "statement": "Accessibility and inclusion built in and tested, including assisted digital.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "6",
+      "title": "Have a multidisciplinary team",
+      "statement": "Breadth of disciplines present and sustainably resourced. Mainly computed from composition coverage.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 6,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Have a multidisciplinary team",
+          "statement": "Breadth of disciplines present and sustainably resourced. Mainly computed from composition coverage.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Have a multidisciplinary team",
+          "statement": "Breadth of disciplines present and sustainably resourced. Mainly computed from composition coverage.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "7",
+      "title": "Use agile ways of working",
+      "statement": "Real agile practice with proportionate governance, not agile theatre.",
+      "phases": [
+        "discovery",
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 7,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Use agile ways of working",
+          "statement": "Real agile practice with proportionate governance, not agile theatre.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Use agile ways of working",
+          "statement": "Real agile practice with proportionate governance, not agile theatre.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "8",
+      "title": "Iterate and improve frequently",
+      "statement": "Frequent, evidenced change driven by learning.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 8,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Iterate and improve frequently",
+          "statement": "Frequent, evidenced change driven by learning.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Iterate and improve frequently",
+          "statement": "Frequent, evidenced change driven by learning.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "9",
+      "title": "Create a secure service which protects users' privacy",
+      "statement": "Security and privacy designed in and independently tested.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 9,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Create a secure service which protects users' privacy",
+          "statement": "Security and privacy designed in and independently tested.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Create a secure service which protects users' privacy",
+          "statement": "Security and privacy designed in and independently tested.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "10",
+      "title": "Define what success looks like and publish performance data",
+      "statement": "Success defined up front and performance published and acted on.",
+      "phases": [
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 10,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Define what success looks like and publish performance data",
+          "statement": "Success defined up front and performance published and acted on.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Define what success looks like and publish performance data",
+          "statement": "Success defined up front and performance published and acted on.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "11",
+      "title": "Choose the right tools and technology",
+      "statement": "Technology choices justified, proportionate and free of unnecessary lock in.",
+      "phases": [
+        "alpha",
+        "beta"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 11,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Choose the right tools and technology",
+          "statement": "Technology choices justified, proportionate and free of unnecessary lock in.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Choose the right tools and technology",
+          "statement": "Technology choices justified, proportionate and free of unnecessary lock in.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "12",
+      "title": "Make new source code open",
+      "statement": "New source code open by default, with documented exceptions.",
+      "phases": [
+        "alpha",
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 12,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Make new source code open",
+          "statement": "New source code open by default, with documented exceptions.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Make new source code open",
+          "statement": "New source code open by default, with documented exceptions.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "13",
+      "title": "Use and contribute to open standards, common components and patterns",
+      "statement": "Reuse of open standards and common components, and contribution back.",
+      "phases": [
+        "alpha",
+        "beta"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 13,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Use and contribute to open standards, common components and patterns",
+          "statement": "Reuse of open standards and common components, and contribution back.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Use and contribute to open standards, common components and patterns",
+          "statement": "Reuse of open standards and common components, and contribution back.",
+          "reviewStatus": "machine"
+        }
+      }
+    },
+    {
+      "ref": "14",
+      "title": "Operate a reliable service",
+      "statement": "Reliable operation with monitoring, support and continuity in place.",
+      "phases": [
+        "beta",
+        "live"
+      ],
+      "statutory": false,
+      "weight": 1,
+      "sortOrder": 14,
+      "guidanceUrl": null,
+      "translations": {
+        "en": {
+          "title": "Operate a reliable service",
+          "statement": "Reliable operation with monitoring, support and continuity in place.",
+          "reviewStatus": "human"
+        },
+        "cy": {
+          "title": "Operate a reliable service",
+          "statement": "Reliable operation with monitoring, support and continuity in place.",
+          "reviewStatus": "machine"
+        }
+      }
+    }
+  ]
+}

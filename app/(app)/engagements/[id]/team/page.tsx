@@ -1,212 +1,157 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import Link from 'next/link';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { AppNav } from '@/components/app/AppNav';
 import { EngagementSubNav } from '@/components/app/EngagementSubNav';
-import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
-import { useRequirementId } from '@/lib/hooks/use-requirement-id';
+import { FitStrip } from '@/components/team-fit/FitStrip';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
+import type { FitBand, FitBreakdown } from '@/lib/scoring/fit';
 
-const LEVELS = ['awareness', 'working', 'practitioner', 'expert'] as const;
-
-export default function TeamPage() {
+export default function TeamFitOverviewPage() {
   const { messages: m } = useI18n();
   const params = useParams();
+  const search = useSearchParams();
+  const router = useRouter();
   const id = params.id as string;
-  const { data, refetch } = trpc.engagement.byId.useQuery({ id });
-  const { requirementId, setRequirementId } = useRequirementId(id, data?.requirements);
-  const { data: skills } = trpc.engagement.skills.useQuery();
-  const { data: roleLevels } = trpc.engagement.roleLevels.useQuery();
-  const upsert = trpc.engagement.upsertPerson.useMutation({ onSuccess: () => refetch() });
-  const remove = trpc.engagement.deletePerson.useMutation({ onSuccess: () => refetch() });
-  const setAssignment = trpc.engagement.setAssignment.useMutation({ onSuccess: () => refetch() });
-  const [pseudonymise, setPseudonymise] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [skillPick, setSkillPick] = useState<{ skillId: string; level: string }[]>([]);
-
-  const req = data?.requirements.find((r) => r.id === requirementId) ?? data?.requirements[0];
-  const displayName = (name: string, roleLabel?: string) =>
-    pseudonymise && roleLabel ? roleLabel : name;
+  const { data: archetypes } = trpc.teamFit.listArchetypes.useQuery();
+  const archetypeId = search.get('archetype') ?? archetypes?.[0]?.id ?? '';
+  const { data, refetch, isFetching } = trpc.teamFit.overview.useQuery(
+    { engagementId: id, archetypeId },
+    { enabled: Boolean(archetypeId) },
+  );
+  const recompute = trpc.teamFit.recompute.useMutation({
+    onSuccess: () => refetch(),
+  });
+  const [busy, setBusy] = useState(false);
 
   return (
-    <AppShell title={m.engagement.teamTitle}>
+    <AppShell title={m.teamFit.title}>
       <AppNav />
       <EngagementSubNav engagementId={id} />
-      {data && data.requirements.length > 1 && (
-        <RequirementSelector
-          requirements={data.requirements}
-          value={requirementId}
-          onChange={setRequirementId}
-        />
+
+      <p className="mb-4 max-w-2xl text-sm text-text-muted">{m.teamFit.intro}</p>
+
+      <div className="mb-4 flex flex-wrap items-end gap-3">
+        <label className="block text-sm">
+          <span className="mb-1 block text-text-muted">{m.teamFit.archetype}</span>
+          <select
+            className="rounded-md border border-border bg-surface px-3 py-2 text-sm"
+            value={archetypeId}
+            onChange={(e) => {
+              const next = e.target.value;
+              router.replace(`/engagements/${id}/team?archetype=${encodeURIComponent(next)}`);
+            }}
+          >
+            {(archetypes ?? []).map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+                {a.isSystem ? ' (system)' : ''} · v{a.version}
+              </option>
+            ))}
+          </select>
+        </label>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={!archetypeId || recompute.isPending || busy}
+          onClick={async () => {
+            if (!archetypeId) return;
+            setBusy(true);
+            try {
+              await recompute.mutateAsync({ engagementId: id, archetypeId });
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          {m.teamFit.computeScores}
+        </Button>
+        <Link
+          href={`/engagements/${id}/team/people`}
+          className="text-sm text-brand underline-offset-2 hover:underline"
+        >
+          {m.teamFit.managePeople}
+        </Link>
+        <Link
+          href={`/engagements/${id}/team/proposal${archetypeId ? `?archetype=${archetypeId}` : ''}`}
+          className="text-sm text-brand underline-offset-2 hover:underline"
+        >
+          {m.teamFit.proposalLink}
+        </Link>
+        <Link
+          href={`/engagements/${id}/team/gaps${archetypeId ? `?archetype=${archetypeId}` : ''}`}
+          className="text-sm text-brand underline-offset-2 hover:underline"
+        >
+          {m.teamFit.gapsLink}
+        </Link>
+      </div>
+
+      {data?.computedAt ? (
+        <p className="mb-3 text-xs text-text-muted">
+          {m.teamFit.computedAt}: {new Date(data.computedAt).toLocaleString()}
+          {isFetching ? ' · …' : ''}
+        </p>
+      ) : (
+        <p className="mb-3 text-sm text-text-muted">{m.teamFit.noScoresYet}</p>
       )}
-      <label className="mb-4 flex items-center gap-2 text-sm">
-        <input type="checkbox" checked={pseudonymise} onChange={(e) => setPseudonymise(e.target.checked)} />
-        {m.engagement.pseudonymise}
-      </label>
-      <ul className="space-y-4">
-        {data?.people.map((p) => {
-          const assignment = req?.assignments.find((a) => a.personId === p.id);
-          const rl = roleLevels?.find((r) => r.id === assignment?.roleLevelId);
-          const roleLabel = rl ? `${rl.role.name}` : undefined;
+
+      <ul className="space-y-3">
+        {data?.rows.map(({ role, bestScore, gap }) => {
+          const breakdown = bestScore?.breakdown as unknown as FitBreakdown | undefined;
+          const unevidenced = breakdown?.notes.includes('no_rigour_signals');
+          const isGapRow = !bestScore || bestScore.band === 'gap' || Boolean(gap);
           return (
-            <li key={p.id} className="rounded-lg border border-border bg-surface p-4">
-              <p className="font-medium">{displayName(p.displayName, roleLabel)}</p>
-              {p.isVacancy && <span className="text-xs text-text-muted">{m.engagement.vacancy}</span>}
-              <div className="mt-2 flex flex-wrap gap-1">
-                {p.skills.map((s) => (
-                  <span key={s.id} className="rounded-full bg-surface-alt px-2 py-0.5 text-xs">
-                    {skills?.find((sk) => sk.id === s.skillId)?.name ?? s.skillId}: {s.level}
-                  </span>
-                ))}
-              </div>
-              {req && roleLevels && (
-                <select
-                  className="mt-2 rounded-md border border-border text-sm"
-                  value={assignment?.roleLevelId ?? ''}
-                  onChange={(e) => {
-                    if (e.target.value)
-                      setAssignment.mutate({
-                        requirementId: req.id,
-                        personId: p.id,
-                        roleLevelId: e.target.value,
-                      });
-                  }}
+            <li
+              key={role.id}
+              className="rounded-lg border border-border bg-surface p-4"
+              style={isGapRow && !bestScore ? { borderColor: 'var(--status-gap, #a32020)' } : undefined}
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="font-medium text-text">{role.displayTitle}</p>
+                  <p className="text-xs text-text-muted">
+                    {role.ddatRoleId} · {role.minLevel} · {role.fteRequired} FTE · {role.criticality}
+                  </p>
+                </div>
+                <Link
+                  href={`/engagements/${id}/team/roles/${role.id}`}
+                  className="text-sm text-brand underline-offset-2 hover:underline"
                 >
-                  <option value="">{m.engagement.assignRole}</option>
-                  {roleLevels.map((rlOption) => (
-                    <option key={rlOption.id} value={rlOption.id}>
-                      {rlOption.role.name} ({rlOption.name})
-                    </option>
-                  ))}
-                </select>
+                  {m.teamFit.viewCandidates}
+                </Link>
+              </div>
+              {bestScore ? (
+                <div className="mt-3">
+                  <p className="text-sm text-text">
+                    {m.teamFit.bestCandidate}: {bestScore.personName}
+                  </p>
+                  <div className="mt-1">
+                    <FitStrip
+                      band={bestScore.band as FitBand}
+                      compositeScore={bestScore.compositeScore}
+                      rigourMultiplier={bestScore.rigourMultiplier}
+                      breakdown={breakdown}
+                      unevidenced={unevidenced}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-3 text-sm font-medium text-status-gap">{m.teamFit.gapRow}</p>
               )}
-              <div className="mt-3 flex gap-2">
-                <Button
-                  variant="secondary"
-                  type="button"
-                  onClick={() => {
-                    setEditingId(p.id);
-                    setSkillPick(p.skills.map((s) => ({ skillId: s.skillId, level: s.level })));
-                  }}
-                >
-                  {m.engagement.editSkills}
-                </Button>
-                <Button
-                  variant="secondary"
-                  type="button"
-                  onClick={() => {
-                    if (confirm(m.engagement.removeConfirm)) {
-                      remove.mutate({ engagementId: id, personId: p.id });
-                    }
-                  }}
-                >
-                  {m.engagement.removePerson}
-                </Button>
-              </div>
+              {gap ? (
+                <p className="mt-2 text-xs text-text-muted">
+                  {gap.kind} → {gap.recommendation}
+                </p>
+              ) : null}
             </li>
           );
         })}
       </ul>
-
-      {editingId && (
-        <form
-          className="mt-6 rounded-lg border border-brand/40 bg-brand-tint p-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const person = data?.people.find((p) => p.id === editingId);
-            if (!person) return;
-            upsert.mutate({
-              engagementId: id,
-              personId: editingId,
-              displayName: person.displayName,
-              isVacancy: person.isVacancy,
-              skills: skillPick,
-            });
-            setEditingId(null);
-            setSkillPick([]);
-          }}
-        >
-          <p className="text-sm font-medium">Skills for {data?.people.find((p) => p.id === editingId)?.displayName}</p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {skillPick.map((s, i) => (
-              <span key={`${s.skillId}-${i}`} className="flex items-center gap-1 rounded border border-border bg-surface px-2 py-1 text-xs">
-                <select
-                  value={s.skillId}
-                  onChange={(e) => {
-                    const next = [...skillPick];
-                    next[i] = { ...next[i], skillId: e.target.value };
-                    setSkillPick(next);
-                  }}
-                  className="max-w-[140px] text-xs"
-                >
-                  {skills?.map((sk) => (
-                    <option key={sk.id} value={sk.id}>
-                      {sk.name}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={s.level}
-                  onChange={(e) => {
-                    const next = [...skillPick];
-                    next[i] = { ...next[i], level: e.target.value };
-                    setSkillPick(next);
-                  }}
-                  className="text-xs"
-                >
-                  {LEVELS.map((l) => (
-                    <option key={l} value={l}>
-                      {l}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  className="text-status-gap"
-                  onClick={() => setSkillPick(skillPick.filter((_, j) => j !== i))}
-                >
-                  ×
-                </button>
-              </span>
-            ))}
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() =>
-                setSkillPick([...skillPick, { skillId: skills?.[0]?.id ?? '', level: 'working' }])
-              }
-            >
-              {m.engagement.addSkillLabel}
-            </Button>
-          </div>
-          <div className="mt-3 flex gap-2">
-            <Button type="submit">{m.engagement.saveSkills}</Button>
-            <Button type="button" variant="secondary" onClick={() => setEditingId(null)}>
-              {m.common.cancel}
-            </Button>
-          </div>
-        </form>
-      )}
-
-      <Button
-        className="mt-4"
-        variant="secondary"
-        onClick={() => {
-          if (!data) return;
-          upsert.mutate({
-            engagementId: data.id,
-            displayName: 'New team member',
-            isVacancy: false,
-            skills: [],
-          });
-        }}
-      >
-        {m.engagement.addPerson}
-      </Button>
     </AppShell>
   );
 }

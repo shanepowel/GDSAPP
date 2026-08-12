@@ -4,21 +4,42 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
+import { useEngagementPlate } from '@/components/product/TitleBlock';
 
-type Suffix = '' | '/requirement' | '/team' | '/structure' | '/evidence' | '/rigour' | '/analysis' | '/tender' | '/judgements' | '/reviews' | '/history' | '/report';
+type Suffix =
+  | ''
+  | '/requirement'
+  | '/team'
+  | '/structure'
+  | '/evidence'
+  | '/assess'
+  | '/rigour'
+  | '/analysis'
+  | '/tender'
+  | '/judgements'
+  | '/reviews'
+  | '/history'
+  | '/report';
 
-const GROUPS: { groupKey: 'navGroupPrepare' | 'navGroupAssess' | 'navGroupDecide' | 'navGroupShare'; suffixes: Suffix[] }[] = [
+const GROUPS: {
+  groupKey: 'navGroupPrepare' | 'navGroupAssess' | 'navGroupDecide' | 'navGroupShare';
+  suffixes: Suffix[];
+}[] = [
   { groupKey: 'navGroupPrepare', suffixes: ['', '/requirement', '/team', '/structure', '/evidence'] },
-  { groupKey: 'navGroupAssess', suffixes: ['/rigour', '/analysis'] },
+  { groupKey: 'navGroupAssess', suffixes: ['/assess', '/rigour', '/analysis'] },
   { groupKey: 'navGroupDecide', suffixes: ['/tender', '/judgements', '/reviews'] },
   { groupKey: 'navGroupShare', suffixes: ['/history', '/report'] },
 ];
 
 export function EngagementSubNav({ engagementId }: { engagementId: string }) {
+  const plate = useEngagementPlate();
   const pathname = usePathname();
   const features = getClientDeploymentFeatures();
   const { messages: m } = useI18n();
   const base = `/engagements/${engagementId}`;
+
+  // Plate layout owns navigation via EngagementRail.
+  if (plate) return null;
 
   const labels: Record<Suffix, string> = {
     '': m.engagement.subOverview,
@@ -26,6 +47,7 @@ export function EngagementSubNav({ engagementId }: { engagementId: string }) {
     '/team': m.engagement.subTeam,
     '/structure': m.engagement.subStructure,
     '/evidence': m.engagement.subEvidence,
+    '/assess': m.engagement.subAssess,
     '/rigour': m.engagement.subRigour,
     '/analysis': m.engagement.subAnalysis,
     '/tender': features.clientAssuranceLabels
