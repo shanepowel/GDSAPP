@@ -33,6 +33,18 @@ dedicated migration PR is scheduled.
 | 4 Live index | Done — `lib/scoring`, IndexValue, GapCard, snapshots, auto-match |
 | 5 Crosswalk & gate packs | Done — frameworks seed, CrosswalkMatrix, gap list, evidence hints, pack export |
 | 6 Report & compliance | Done (compressed) — assurance PDF + judgement appendix, CY export gate, `/accessibility` `/ai-use` `/performance`, GitHub sync, backup/restore scripts |
+| 7 Team Fit | Done (adapted) — Prisma migration, `lib/scoring/fit.ts`, archetype seed, `/engagements/[id]/team` |
+
+### Team Fit adaptations (spec 07)
+
+| Spec says | This repo does |
+|---|---|
+| Drizzle `packages/db` + `packages/scoring` | Prisma models + `lib/scoring/fit.ts` + `lib/team-fit/*` |
+| `workspaceId` | `orgId` → Organisation |
+| Candidates = DesignPerson | Engagement `Person` (leveled skills); DesignPerson allocations feed derived capacity signals |
+| `/team` people roster | People roster at `/team/people`; Team Fit overview at `/team` |
+| `packages/standards` archetypes | `data/archetypes/seed/system-archetypes.json` + `npm run seed:archetypes` |
+| Weak-fit SQL subquery check | `BEFORE INSERT/UPDATE` trigger + tRPC validation |
 
 ### Deferred remnants
 

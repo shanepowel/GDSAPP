@@ -40,6 +40,12 @@ async function main() {
     update: { deploymentMode },
   });
 
+  try {
+    execSync('npm run seed:archetypes', { stdio: 'inherit' });
+  } catch (e) {
+    console.warn(e);
+  }
+
   const passwordHash = await bcrypt.hash('demo-password', 8);
   const admin = await prisma.user.upsert({
     where: { email: 'admin@demo.local' },

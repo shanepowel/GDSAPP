@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { AppShell } from '@/components/app/AppShell';
 import { AppNav } from '@/components/app/AppNav';
 import { Card } from '@/components/app/Card';
@@ -128,6 +129,19 @@ export default function SettingsPage() {
           )}
         </Card>
       </div>
+
+      <Card className="mt-6 p-6">
+        <h2 className="font-semibold text-text">Team Fit</h2>
+        <p className="mt-2 text-sm text-text-muted">
+          Role archetypes for squad proposals. System templates are read-only; clone to customise.
+        </p>
+        <Link
+          href="/settings/archetypes"
+          className="mt-4 inline-block text-sm font-medium text-brand underline-offset-2 hover:underline"
+        >
+          Open archetype library
+        </Link>
+      </Card>
     </AppShell>
   );
 }

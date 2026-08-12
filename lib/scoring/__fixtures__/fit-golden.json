@@ -1,0 +1,563 @@
+[
+  {
+    "id": "discovery-c1",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "discovery",
+        "minLevel": "practitioner",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "user-research",
+            "requiredLevel": "practitioner",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c1",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "user-research",
+            "level": "expert",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 1,
+      "rigourMultiplier": 1,
+      "compositeScore": 1,
+      "band": "strong"
+    }
+  },
+  {
+    "id": "discovery-c2",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "discovery",
+        "minLevel": "practitioner",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "user-research",
+            "requiredLevel": "practitioner",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c2",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "user-research",
+            "level": "practitioner",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 1,
+      "rigourMultiplier": 1,
+      "compositeScore": 1,
+      "band": "strong"
+    }
+  },
+  {
+    "id": "discovery-c3",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "discovery",
+        "minLevel": "practitioner",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "user-research",
+            "requiredLevel": "practitioner",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c3",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "user-research",
+            "level": "working",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 0.6666666666666666,
+      "rigourMultiplier": 1,
+      "compositeScore": 0.6666666666666666,
+      "band": "viable"
+    }
+  },
+  {
+    "id": "discovery-c4",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "discovery",
+        "minLevel": "practitioner",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "user-research",
+            "requiredLevel": "practitioner",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c4",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "user-research",
+            "level": "awareness",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 0.3333333333333333,
+      "rigourMultiplier": 1,
+      "compositeScore": 0.3333333333333333,
+      "band": "gap"
+    }
+  },
+  {
+    "id": "discovery-c5",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "discovery",
+        "minLevel": "practitioner",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "user-research",
+            "requiredLevel": "practitioner",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c5",
+        "availableFte": 0.2,
+        "skills": [
+          {
+            "skillId": "user-research",
+            "level": "practitioner",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": [
+        {
+          "type": "sustained_assignment",
+          "value": 1,
+          "provenance": "derived",
+          "observedAtDaysAgo": 30
+        }
+      ]
+    },
+    "expect": {
+      "skillScore": 1,
+      "rigourMultiplier": 1.15,
+      "compositeScore": 1,
+      "band": "strong"
+    }
+  },
+  {
+    "id": "alpha-c1",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "alpha",
+        "minLevel": "practitioner",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "programming-and-build",
+            "requiredLevel": "practitioner",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c1",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "programming-and-build",
+            "level": "expert",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 1,
+      "rigourMultiplier": 1,
+      "compositeScore": 1,
+      "band": "strong"
+    }
+  },
+  {
+    "id": "alpha-c2",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "alpha",
+        "minLevel": "practitioner",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "programming-and-build",
+            "requiredLevel": "practitioner",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c2",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "programming-and-build",
+            "level": "practitioner",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 1,
+      "rigourMultiplier": 1,
+      "compositeScore": 1,
+      "band": "strong"
+    }
+  },
+  {
+    "id": "alpha-c3",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "alpha",
+        "minLevel": "practitioner",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "programming-and-build",
+            "requiredLevel": "practitioner",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c3",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "programming-and-build",
+            "level": "working",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 0.6666666666666666,
+      "rigourMultiplier": 1,
+      "compositeScore": 0.6666666666666666,
+      "band": "viable"
+    }
+  },
+  {
+    "id": "alpha-c4",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "alpha",
+        "minLevel": "practitioner",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "programming-and-build",
+            "requiredLevel": "practitioner",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c4",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "programming-and-build",
+            "level": "awareness",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 0.3333333333333333,
+      "rigourMultiplier": 1,
+      "compositeScore": 0.3333333333333333,
+      "band": "gap"
+    }
+  },
+  {
+    "id": "alpha-c5",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "alpha",
+        "minLevel": "practitioner",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "programming-and-build",
+            "requiredLevel": "practitioner",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c5",
+        "availableFte": 0.2,
+        "skills": [
+          {
+            "skillId": "programming-and-build",
+            "level": "practitioner",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": [
+        {
+          "type": "sustained_assignment",
+          "value": 1,
+          "provenance": "derived",
+          "observedAtDaysAgo": 30
+        }
+      ]
+    },
+    "expect": {
+      "skillScore": 1,
+      "rigourMultiplier": 1.15,
+      "compositeScore": 1,
+      "band": "strong"
+    }
+  },
+  {
+    "id": "assurance-c1",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "assurance",
+        "minLevel": "expert",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "strategic-ownership",
+            "requiredLevel": "expert",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c1",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "strategic-ownership",
+            "level": "expert",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 1,
+      "rigourMultiplier": 1,
+      "compositeScore": 1,
+      "band": "strong"
+    }
+  },
+  {
+    "id": "assurance-c2",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "assurance",
+        "minLevel": "expert",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "strategic-ownership",
+            "requiredLevel": "expert",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c2",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "strategic-ownership",
+            "level": "practitioner",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 0.75,
+      "rigourMultiplier": 1,
+      "compositeScore": 0.75,
+      "band": "viable"
+    }
+  },
+  {
+    "id": "assurance-c3",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "assurance",
+        "minLevel": "expert",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "strategic-ownership",
+            "requiredLevel": "expert",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c3",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "strategic-ownership",
+            "level": "working",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 0.5,
+      "rigourMultiplier": 1,
+      "compositeScore": 0.5,
+      "band": "stretch"
+    }
+  },
+  {
+    "id": "assurance-c4",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "assurance",
+        "minLevel": "expert",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "strategic-ownership",
+            "requiredLevel": "expert",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c4",
+        "availableFte": 1,
+        "skills": [
+          {
+            "skillId": "strategic-ownership",
+            "level": "awareness",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": []
+    },
+    "expect": {
+      "skillScore": 0.25,
+      "rigourMultiplier": 1,
+      "compositeScore": 0.25,
+      "band": "gap"
+    }
+  },
+  {
+    "id": "assurance-c5",
+    "input": {
+      "requirement": {
+        "ddatRoleId": "assurance",
+        "minLevel": "expert",
+        "criticality": "core",
+        "fteRequired": 1,
+        "requiredSkills": [
+          {
+            "skillId": "strategic-ownership",
+            "requiredLevel": "expert",
+            "weight": 1
+          }
+        ]
+      },
+      "candidate": {
+        "personId": "c5",
+        "availableFte": 0.2,
+        "skills": [
+          {
+            "skillId": "strategic-ownership",
+            "level": "practitioner",
+            "evidenceId": "e"
+          }
+        ]
+      },
+      "rigourSignals": [
+        {
+          "type": "sustained_assignment",
+          "value": 1,
+          "provenance": "derived",
+          "observedAtDaysAgo": 30
+        }
+      ]
+    },
+    "expect": {
+      "skillScore": 0.75,
+      "rigourMultiplier": 1.15,
+      "compositeScore": 0.8624999999999999,
+      "band": "strong"
+    }
+  }
+]

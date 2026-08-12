@@ -124,6 +124,8 @@ model Organisation {
   designSnapshots   DesignSnapshot[]
   designScenarios   DesignScenario[]
   designShareLinks  DesignShareLink[]
+  roleArchetypes    RoleArchetype[]
+  rigourSignals     RigourSignal[]
 }
 
 model User {
@@ -187,6 +189,10 @@ model Engagement {
   capabilityLinks     CapabilityLink[]
   evidenceOwners      CriterionEvidenceOwner[]
   indexSnapshots      IndexSnapshot[]
+  fitScores           FitScore[]
+  squadProposals      SquadProposal[]
+  capabilityGapsFit   CapabilityGap[]
+  rigourSignals       RigourSignal[]
 
   @@index([orgId])
   @@index([reference])
@@ -835,4 +841,155 @@ model CrosswalkMapping {
   @@index([criterionId])
   @@index([frameworkItemId])
   @@map("crosswalk_mappings")
+}
+
+// --- Team Fit (spec 07 / migration 007) ---
+
+/// Named template of roles a delivery context requires.
+model RoleArchetype {
+  id           String          @id @default(cuid())
+  orgId        String
+  name         String
+  slug         String
+  /// gds_discovery | gds_alpha | gds_beta_live | capital_integration | assurance_review | bilingual_service | custom
+  context      String
+  description  String?         @db.Text
+  /// Standard catalogue refs this archetype supports, e.g. gds-service-standard@2019.1
+  standardRefs Json            @default("[]")
+  version      Int             @default(1)
+  isSystem     Boolean         @default(false)
+  createdAt    DateTime        @default(now())
+  archivedAt   DateTime?
+  org          Organisation    @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  roles        ArchetypeRole[]
+  proposals    SquadProposal[]
+
+  @@unique([orgId, slug, version])
+  @@index([orgId])
+  @@map("role_archetypes")
+}
+
+model ArchetypeRole {
+  id             String            @id @default(cuid())
+  archetypeId    String
+  ddatRoleId     String
+  displayTitle   String
+  /// awareness | working | practitioner | expert
+  minLevel       String
+  fteRequired    Float
+  /// core | supporting | optional
+  criticality    String            @default("core")
+  sortOrder      Int
+  /// Array<{ skillId, requiredLevel, weight }>
+  requiredSkills Json              @default("[]")
+  archetype      RoleArchetype     @relation(fields: [archetypeId], references: [id], onDelete: Cascade)
+  fitScores      FitScore[]
+  assignments    SquadAssignment[]
+  gaps           CapabilityGap[]
+
+  @@index([archetypeId])
+  @@map("archetype_roles")
+}
+
+model RigourSignal {
+  id                String       @id @default(cuid())
+  orgId             String
+  /// DesignPerson id (Organise people)
+  personId          String
+  engagementId      String?
+  /// sustained_assignment | capacity_discipline | nfr_planning | spike_discipline | assurance_participation | handover_quality
+  type              String
+  /// derived | asserted
+  provenance        String
+  /// -1.0 .. 1.0
+  value             Float
+  evidenceId        String?
+  note              String?      @db.Text
+  observedAt        DateTime
+  confirmedByUserId String?
+  createdAt         DateTime     @default(now())
+  org               Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  engagement        Engagement?  @relation(fields: [engagementId], references: [id], onDelete: SetNull)
+
+  @@index([personId])
+  @@index([orgId])
+  @@index([engagementId])
+  @@map("rigour_signals")
+}
+
+model FitScore {
+  id                String         @id @default(cuid())
+  engagementId      String
+  archetypeRoleId   String
+  personId          String
+  skillScore        Float
+  rigourMultiplier  Float
+  compositeScore    Float
+  /// strong | viable | stretch | gap
+  band              String
+  breakdown         Json
+  scoringVersion    String
+  inputsHash        String
+  computedAt        DateTime       @default(now())
+  engagement        Engagement     @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  archetypeRole     ArchetypeRole  @relation(fields: [archetypeRoleId], references: [id], onDelete: Cascade)
+  assignments       SquadAssignment[]
+
+  @@unique([engagementId, archetypeRoleId, personId])
+  @@index([engagementId, archetypeRoleId, compositeScore])
+  @@map("fit_scores")
+}
+
+model SquadProposal {
+  id                String            @id @default(cuid())
+  engagementId      String
+  archetypeId       String
+  /// draft | confirmed | superseded
+  status            String            @default("draft")
+  confirmedByUserId String?
+  confirmedAt       DateTime?
+  createdAt         DateTime          @default(now())
+  engagement        Engagement        @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  archetype         RoleArchetype     @relation(fields: [archetypeId], references: [id])
+  assignments       SquadAssignment[]
+
+  @@index([engagementId])
+  @@map("squad_proposals")
+}
+
+model SquadAssignment {
+  id              String        @id @default(cuid())
+  proposalId      String
+  archetypeRoleId String
+  personId        String
+  fteAllocated    Float
+  fitScoreId      String?
+  rationale       String?       @db.Text
+  overrideReason  String?       @db.Text
+  proposal        SquadProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  archetypeRole   ArchetypeRole @relation(fields: [archetypeRoleId], references: [id])
+  fitScore        FitScore?     @relation(fields: [fitScoreId], references: [id])
+
+  @@index([proposalId])
+  @@map("squad_assignments")
+}
+
+model CapabilityGap {
+  id                 String        @id @default(cuid())
+  engagementId       String
+  archetypeRoleId    String
+  /// skills_gap | rigour_gap | capacity_gap
+  kind               String
+  severity           Int
+  bestAvailableScore Float?
+  /// upskill | second | recruit | rescope
+  recommendation     String
+  narrative          String        @db.Text
+  standardRefs       Json          @default("[]")
+  computedAt         DateTime      @default(now())
+  engagement         Engagement    @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  archetypeRole      ArchetypeRole @relation(fields: [archetypeRoleId], references: [id])
+
+  @@index([engagementId])
+  @@map("capability_gaps")
 }
