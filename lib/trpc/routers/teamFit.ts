@@ -375,6 +375,26 @@ export const teamFitRouter = router({
         data: { status: 'superseded' },
       });
 
+      // Record confirmed FTE into Organise availability (Keel depth) for each assignment.
+      for (const a of proposal.assignments) {
+        const person = await ctx.prisma.person.findFirst({
+          where: { id: a.personId, engagementId: proposal.engagementId },
+          include: { availability: true },
+        });
+        if (!person) continue;
+        const daysPerWeek = Math.min(5, Math.max(0.5, a.fteAllocated * 5));
+        if (person.availability[0]) {
+          await ctx.prisma.personAvailability.update({
+            where: { id: person.availability[0].id },
+            data: { daysPerWeek },
+          });
+        } else {
+          await ctx.prisma.personAvailability.create({
+            data: { personId: person.id, daysPerWeek },
+          });
+        }
+      }
+
       return ctx.prisma.squadProposal.update({
         where: { id: proposal.id },
         data: {

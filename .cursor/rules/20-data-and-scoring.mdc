@@ -37,6 +37,8 @@ Full schema in `docs/spec/03-data-model.md`. Stack adaptations in `docs/spec/ADA
 ## Scoring — `lib/scoring`
 
 Pure, synchronous, no I/O. The only place an index or a verdict cap is computed.
+Team Fit lives in `lib/scoring/fit.ts` and follows the same purity rule. Rigour signal *derivation*
+thresholds come from `lib/playbook/keel.ts` (Delivery Playbook), not ad hoc constants in routers.
 
 Rules (see `docs/spec/03-data-model.md`):
 

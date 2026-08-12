@@ -317,6 +317,7 @@ export type Messages = {
     handover: string;
     benchmarking: string;
     framework: string;
+    playbook: string;
     profile: string;
     settings: string;
   };

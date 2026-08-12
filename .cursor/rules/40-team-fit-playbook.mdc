@@ -1,0 +1,51 @@
+---
+description: Team Fit and Delivery Playbook scoring / vocabulary rules
+globs:
+  - "lib/scoring/fit*.ts"
+  - "lib/team-fit/**/*.ts"
+  - "lib/playbook/**/*.ts"
+  - "data/archetypes/**"
+  - "data/playbook/**"
+  - "app/(app)/engagements/[id]/team/**"
+  - "components/team-fit/**"
+---
+
+# Team Fit + Delivery Playbook
+
+Full operating model: `docs/spec/09-delivery-playbook.md`. Team Fit: `docs/spec` doc 07 via
+ADAPTATIONS. **Where they disagree, the playbook wins.**
+
+## Scoring purity
+`lib/scoring/fit.ts` is pure. No DB, fetch, `Date.now()`, or `Math.random()`. Pass
+`observedAtDaysAgo` in. Do not change `FIT_SCORING_VERSION`, bands, or multiplier bounds without
+an explicit instruction.
+
+## Unevidenced rule
+Zero rigour signals → `rigourMultiplier = 1.0` exactly + `no_rigour_signals`. Never default downward
+for missing evidence. UI: unevidenced ≠ low-rigour.
+
+## Keel-derived signals
+`sustained_assignment` and `capacity_discipline` derive from allocation data via `lib/playbook/keel.ts`
+(≥0.8 FTE phase tenure; 70/20/10 capacity). Do not invent thresholds in call sites.
+
+## Maturity
+`Engagement.maturityLevel` contextualises readiness only. Never enter `computeFit`.
+
+## Never render a bare score
+Composite score must have breakdown one interaction away. Fit strip is CSS only.
+
+## AI boundary
+AI may draft archetypes, gap narratives, rationales, summaries.
+AI may not write fit scores, squad assignments, confirmedByUserId, or asserted rigour signals.
+
+## Capacity is not fitness
+Availability never enters `compositeScore`.
+
+## Vocabulary
+Use: archetype, candidate, fit score, skill score, rigour multiplier/signal, squad proposal,
+capability gap. Never: resource (for a person), headcount, slot, seat, req, match, rating.
+Product UI: say “unallocated capacity”, not “bench”.
+
+## Recompute
+On writes to skills, rigour signals, archetype roles, allocations, or scoring version bump — never
+on page load.

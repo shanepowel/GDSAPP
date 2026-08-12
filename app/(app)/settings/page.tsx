@@ -131,6 +131,20 @@ export default function SettingsPage() {
       </div>
 
       <Card className="mt-6 p-6">
+        <h2 className="font-semibold text-text">Delivery Playbook</h2>
+        <p className="mt-2 text-sm text-text-muted">
+          Public sector operating model — Keel rules, phase crosswalk, Compass targets. Team Fit
+          scores against this playbook.
+        </p>
+        <Link
+          href="/playbook"
+          className="mt-4 inline-block text-sm font-medium text-brand underline-offset-2 hover:underline"
+        >
+          Open playbook
+        </Link>
+      </Card>
+
+      <Card className="mt-6 p-6">
         <h2 className="font-semibold text-text">Team Fit</h2>
         <p className="mt-2 text-sm text-text-muted">
           Role archetypes for squad proposals. System templates are read-only; clone to customise.

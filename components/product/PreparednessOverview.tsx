@@ -1,9 +1,33 @@
 'use client';
 
+import Link from 'next/link';
 import { GapCard } from '@/components/product/GapCard';
 import { IndexValue } from '@/components/product/IndexValue';
 import { Button } from '@/components/ui/Button';
 import { trpc } from '@/lib/trpc/client';
+import { MATURITY_LABELS, type MaturityLevel } from '@/lib/playbook/keel';
+
+function MaturityContext({ engagementId }: { engagementId: string }) {
+  const { data } = trpc.engagement.byId.useQuery({ id: engagementId }, { staleTime: 30_000 });
+  const level = (data?.maturityLevel ?? 'practising') as MaturityLevel;
+  return (
+    <p className="mt-2 text-[13px] text-ink-1">
+      Playbook maturity:{' '}
+      <span className="font-medium text-ink-0">{MATURITY_LABELS[level] ?? level}</span>
+      {' · '}
+      <Link
+        href={`/engagements/${engagementId}/settings`}
+        className="text-signal-ink underline-offset-2 hover:underline"
+      >
+        Change
+      </Link>
+      {' · '}
+      <Link href="/playbook" className="text-signal-ink underline-offset-2 hover:underline">
+        Playbook
+      </Link>
+    </p>
+  );
+}
 
 export function PreparednessOverview({ engagementId }: { engagementId: string }) {
   const utils = trpc.useUtils();
@@ -41,6 +65,7 @@ export function PreparednessOverview({ engagementId }: { engagementId: string })
           <p className="mt-2 font-data text-[11px] uppercase tracking-[0.04em] text-ink-2">
             Confidence: {result.confidence}
           </p>
+          <MaturityContext engagementId={engagementId} />
         </div>
         <Button
           type="button"

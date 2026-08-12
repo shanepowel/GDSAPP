@@ -355,6 +355,7 @@ export const en: Messages = {
     handover: 'Handover pack',
     benchmarking: 'Benchmarking',
     framework: 'Framework',
+    playbook: 'Playbook',
     profile: 'Profile',
     settings: 'Settings',
   },

@@ -166,6 +166,7 @@ export const engagementRouter = router({
         phase: z.enum(ENGAGEMENT_PHASES).optional(),
         mode: z.enum(ENGAGEMENT_MODES).optional(),
         revision: z.string().min(1).max(8).optional(),
+        maturityLevel: z.enum(['practising', 'evidenced', 'assured', 'compounding']).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {

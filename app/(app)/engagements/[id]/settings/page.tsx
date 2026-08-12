@@ -115,6 +115,11 @@ export default function EngagementSettingsPage() {
             clientOrg: String(fd.get('clientOrg') || '') || null,
             serviceName: String(fd.get('serviceName') || '') || null,
             revision: String(fd.get('revision') || 'A'),
+            maturityLevel: fd.get('maturityLevel') as
+              | 'practising'
+              | 'evidenced'
+              | 'assured'
+              | 'compounding',
           });
         }}
       >
@@ -131,6 +136,22 @@ export default function EngagementSettingsPage() {
               </option>
             ))}
           </select>
+        </label>
+        <label className="block text-[13px] font-medium text-ink-1">
+          Playbook maturity
+          <select
+            name="maturityLevel"
+            defaultValue={data?.maturityLevel ?? 'practising'}
+            className="mt-1 block w-full rounded-[2px] border border-rule bg-stock-0 px-3 py-2 text-sm"
+          >
+            <option value="practising">Practising</option>
+            <option value="evidenced">Evidenced</option>
+            <option value="assured">Assured</option>
+            <option value="compounding">Compounding</option>
+          </select>
+          <span className="mt-1 block text-[12px] font-normal text-ink-1">
+            Engagement attribute only — contextualises readiness; never enters Team Fit scores.
+          </span>
         </label>
         <label className="block text-[13px] font-medium text-ink-1">
           Mode

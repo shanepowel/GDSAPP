@@ -156,6 +156,9 @@ model Engagement {
   serviceDescription String?      @db.Text
   /// discovery | alpha | beta | live | gate — filters applicable criteria
   phase             String        @default("discovery")
+  /// Playbook maturity (doc 09 §10): practising | evidenced | assured | compounding
+  /// Engagement attribute only — never enters fit score.
+  maturityLevel     String        @default("practising")
   /// bid | mobilise | assure
   mode              String        @default("bid")
   /// Default report / UI content locale

@@ -356,6 +356,7 @@ export const cy: Messages = {
     handover: 'Pecyn trosglwyddo',
     benchmarking: 'Meincnodi',
     framework: 'Fframwaith',
+    playbook: 'Llyfr chwarae',
     profile: 'Proffil',
     settings: 'Gosodiadau',
   },

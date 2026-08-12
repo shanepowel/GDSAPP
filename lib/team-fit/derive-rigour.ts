@@ -1,5 +1,10 @@
 import type { PrismaClient } from '@prisma/client';
 import type { RigourSignalType, SignalProvenance } from '@/lib/scoring/fit';
+import {
+  CORE_ROLE_MIN_FTE,
+  scoreCapacityDiscipline,
+  scoreSustainedAssignment,
+} from '@/lib/playbook/keel';
 
 export type DerivedRigourSignal = {
   personId: string;
@@ -14,7 +19,8 @@ export type DerivedRigourSignal = {
 
 /**
  * Derive sustained_assignment and capacity_discipline from existing allocation /
- * assignment data. No user input. Derived signals never carry confirmedByUserId.
+ * assignment data per Delivery Playbook §5 (The Keel). No user input.
+ * Derived signals never carry confirmedByUserId.
  * A person with no history produces zero signals.
  */
 export async function deriveRigourSignals(
@@ -35,87 +41,131 @@ export async function deriveRigourSignals(
   });
   if (!engagement) return [];
 
+  const weeksOnEngagement = Math.max(
+    0,
+    Math.floor((args.asOf.getTime() - engagement.createdAt.getTime()) / (7 * 24 * 60 * 60 * 1000)),
+  );
+
   const designPeople = await prisma.designPerson.findMany({
     where: { orgId: args.orgId },
   });
   const designAssignments = await prisma.designAssignment.findMany({
     where: { orgId: args.orgId },
   });
+
   const allocationByPerson = new Map<string, number>();
+  const engagementCountByPerson = new Map<string, number>();
   for (const a of designAssignments) {
     allocationByPerson.set(a.personId, (allocationByPerson.get(a.personId) ?? 0) + a.allocation);
+  }
+  // Engagement Person rows are scoped to one engagement; design people may appear on multiple
+  // entities. Count distinct entity assignments as a proxy for concurrent load breadth.
+  for (const a of designAssignments) {
+    engagementCountByPerson.set(a.personId, (engagementCountByPerson.get(a.personId) ?? 0) + 1);
   }
 
   const out: DerivedRigourSignal[] = [];
 
   for (const person of engagement.people) {
-    if (person.assignments.length > 0) {
-      const weeksProxy = Math.max(
-        1,
-        Math.floor((args.asOf.getTime() - engagement.createdAt.getTime()) / (7 * 24 * 60 * 60 * 1000)),
-      );
-      const value = weeksProxy >= 8 ? 0.7 : weeksProxy >= 4 ? 0.4 : 0.2;
-      out.push({
-        personId: person.id,
-        engagementId: args.engagementId,
-        type: 'sustained_assignment',
-        provenance: 'derived',
-        value,
-        note: `Assigned on engagement for ~${weeksProxy} weeks`,
-        observedAt: args.asOf,
-        confirmedByUserId: null,
+    const days = person.availability[0]?.daysPerWeek;
+    const fteOnEngagement =
+      days != null ? days / 5 : person.assignments.length > 0 ? CORE_ROLE_MIN_FTE : 0;
+
+    if (person.assignments.length > 0 || fteOnEngagement > 0) {
+      const sustained = scoreSustainedAssignment({
+        weeksOnEngagement: person.assignments.length > 0 ? Math.max(weeksOnEngagement, 1) : 0,
+        fteOnEngagement,
+        phase: engagement.phase,
       });
+      if (sustained) {
+        out.push({
+          personId: person.id,
+          engagementId: args.engagementId,
+          type: 'sustained_assignment',
+          provenance: 'derived',
+          value: sustained.value,
+          note: sustained.note,
+          observedAt: args.asOf,
+          confirmedByUserId: null,
+        });
+      }
     }
 
-    const days = person.availability[0]?.daysPerWeek;
-    if (days != null) {
-      const fte = days / 5;
-      let value = 0.3;
-      if (fte > 1.05) value = -0.6;
-      else if (fte >= 0.8 && fte <= 1.0) value = 0.5;
-      else if (fte < 0.4) value = -0.2;
-      out.push({
-        personId: person.id,
-        engagementId: args.engagementId,
-        type: 'capacity_discipline',
-        provenance: 'derived',
-        value,
-        note: `Availability ${days} days/week`,
-        observedAt: args.asOf,
-        confirmedByUserId: null,
+    if (days != null || person.assignments.length > 0) {
+      const committedFraction = fteOnEngagement; // engagement-scoped: days/week as committed share of a 1.0 FTE week
+      const capacity = scoreCapacityDiscipline({
+        committedFraction: Math.min(1.2, committedFraction),
+        engagementCount: 1,
       });
+      if (capacity) {
+        out.push({
+          personId: person.id,
+          engagementId: args.engagementId,
+          type: 'capacity_discipline',
+          provenance: 'derived',
+          value: capacity.value,
+          note: capacity.note,
+          observedAt: args.asOf,
+          confirmedByUserId: null,
+        });
+      }
     }
   }
 
   for (const dp of designPeople) {
-    const allocated = allocationByPerson.get(dp.id);
-    if (allocated == null) continue;
-    const ratio = allocated / Math.max(1, dp.fte);
-    let value = 0.4;
-    if (ratio > 1.1) value = -0.7;
-    else if (ratio >= 0.7 && ratio <= 1.0) value = 0.6;
-    out.push({
-      personId: dp.id,
-      engagementId: args.engagementId,
-      type: 'capacity_discipline',
-      provenance: 'derived',
-      value,
-      note: `Design allocation ${allocated}% of ${dp.fte}% FTE`,
-      observedAt: args.asOf,
-      confirmedByUserId: null,
+    const allocatedPct = allocationByPerson.get(dp.id);
+    if (allocatedPct == null) continue;
+    const personalFte = Math.max(1, dp.fte) / 100;
+    const committedFraction = allocatedPct / 100 / Math.max(personalFte, 0.01);
+    // entity assignment count as concurrent-load proxy (capped interpretation in scorer)
+    const entityLoad = engagementCountByPerson.get(dp.id) ?? 1;
+    const engagementCountApprox = entityLoad > 4 ? 3 : entityLoad > 2 ? 2 : 1;
+
+    const capacity = scoreCapacityDiscipline({
+      committedFraction,
+      engagementCount: engagementCountApprox,
     });
+    if (capacity) {
+      out.push({
+        personId: dp.id,
+        engagementId: args.engagementId,
+        type: 'capacity_discipline',
+        provenance: 'derived',
+        value: capacity.value,
+        note: `${capacity.note} (design allocation ${allocatedPct}% of ${dp.fte}% FTE)`,
+        observedAt: args.asOf,
+        confirmedByUserId: null,
+      });
+    }
+
+    const sustained = scoreSustainedAssignment({
+      weeksOnEngagement,
+      fteOnEngagement: Math.min(1, committedFraction),
+      phase: engagement.phase,
+    });
+    if (sustained && weeksOnEngagement > 0) {
+      out.push({
+        personId: dp.id,
+        engagementId: args.engagementId,
+        type: 'sustained_assignment',
+        provenance: 'derived',
+        value: sustained.value,
+        note: sustained.note,
+        observedAt: args.asOf,
+        confirmedByUserId: null,
+      });
+    }
   }
 
   return out;
 }
 
-/** Persist derived signals (replace prior derived of same types for engagement people). */
+/** Persist derived signals (replace prior derived of same types for engagement). */
 export async function refreshDerivedRigourSignals(
   prisma: PrismaClient,
   args: { orgId: string; engagementId: string; asOf: Date },
 ): Promise<number> {
   const derived = await deriveRigourSignals(prisma, args);
-  const personIds = [...new Set(derived.map((d) => d.personId))];
 
   await prisma.rigourSignal.deleteMany({
     where: {
@@ -123,7 +173,6 @@ export async function refreshDerivedRigourSignals(
       engagementId: args.engagementId,
       provenance: 'derived',
       type: { in: ['sustained_assignment', 'capacity_discipline'] },
-      personId: { in: personIds.length ? personIds : ['__none__'] },
     },
   });
 

@@ -34,7 +34,8 @@ dedicated migration PR is scheduled.
 | 5 Crosswalk & gate packs | Done — frameworks seed, CrosswalkMatrix, gap list, evidence hints, pack export |
 | 6 Report & compliance | Done (compressed) — assurance PDF + judgement appendix, CY export gate, `/accessibility` `/ai-use` `/performance`, GitHub sync, backup/restore scripts |
 | 7 Team Fit | Done (adapted) — Prisma migration, `lib/scoring/fit.ts`, archetype seed, `/engagements/[id]/team` |
-| 8 Performance & redesign | In progress — baseline doc, insights cache, table-first Organise, lazy graph, fit strip, Speed Insights |
+| 8 Performance & redesign | Done — baseline doc, insights cache, table-first Organise, lazy graph, fit strip, Speed Insights |
+| 9 Delivery Playbook | Done — doc 09 SoT, Keel derivation, engagement maturity, `/playbook` |
 
 ### Team Fit adaptations (spec 07)
 
@@ -57,6 +58,16 @@ dedicated migration PR is scheduled.
 | Graph as primary | Table-first default; `/organise/graph` lazy-loads D3 |
 | Fit strip | CSS segmented band + rigour bracket in `FitStrip` |
 | Speed Insights | `@vercel/speed-insights` in root layout — fill RUM table after deploy |
+
+### Delivery Playbook adaptations (spec 09)
+
+| Spec says | This repo does |
+|---|---|
+| Playbook is SoT over Team Fit | `docs/spec/09-delivery-playbook.md`; Keel constants in `lib/playbook/keel.ts` |
+| Archetypes in `packages/standards` | `data/archetypes/seed/` (Squad Blueprint JSON) |
+| Phase crosswalk in packages | `data/playbook/phase-crosswalk.json` |
+| Maturity on engagement | `Engagement.maturityLevel`; settings + preparedness context |
+| Confirm squad → Organise allocations | Writes `PersonAvailability.daysPerWeek` from confirmed FTE |
 
 ### Deferred remnants
 
