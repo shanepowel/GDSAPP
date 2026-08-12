@@ -34,6 +34,7 @@ dedicated migration PR is scheduled.
 | 5 Crosswalk & gate packs | Done — frameworks seed, CrosswalkMatrix, gap list, evidence hints, pack export |
 | 6 Report & compliance | Done (compressed) — assurance PDF + judgement appendix, CY export gate, `/accessibility` `/ai-use` `/performance`, GitHub sync, backup/restore scripts |
 | 7 Team Fit | Done (adapted) — Prisma migration, `lib/scoring/fit.ts`, archetype seed, `/engagements/[id]/team` |
+| 8 Performance & redesign | In progress — baseline doc, insights cache, table-first Organise, lazy graph, fit strip, Speed Insights |
 
 ### Team Fit adaptations (spec 07)
 
@@ -45,6 +46,17 @@ dedicated migration PR is scheduled.
 | `/team` people roster | People roster at `/team/people`; Team Fit overview at `/team` |
 | `packages/standards` archetypes | `data/archetypes/seed/system-archetypes.json` + `npm run seed:archetypes` |
 | Weak-fit SQL subquery check | `BEFORE INSERT/UPDATE` trigger + tRPC validation |
+
+### Performance adaptations (spec 08)
+
+| Spec says | This repo does |
+|---|---|
+| Vite SPA waterfall → Next migration | Already Next.js App Router; promote streaming/RSC further as needed |
+| N+1 graph queries | Already 4 parallel finds; slimmed list select + `entityDetail` |
+| Insights on every read | `OrgInsightsCache` by inputs hash; refresh on graph write |
+| Graph as primary | Table-first default; `/organise/graph` lazy-loads D3 |
+| Fit strip | CSS segmented band + rigour bracket in `FitStrip` |
+| Speed Insights | `@vercel/speed-insights` in root layout — fill RUM table after deploy |
 
 ### Deferred remnants
 

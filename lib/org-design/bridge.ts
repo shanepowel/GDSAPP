@@ -32,7 +32,7 @@ export async function resolveEngagementGraph(
     });
     if (snapshot) return parseScenarioData(snapshot.data);
   }
-  return getLiveGraph(db, orgId);
+  return getLiveGraph(db, orgId, { mode: 'list' });
 }
 
 export async function forkScenarioForEngagement(
@@ -290,7 +290,7 @@ export async function getGraphForContext(
     });
     if (snapshot) return parseScenarioData(snapshot.data);
   }
-  return getLiveGraph(db, orgId);
+  return getLiveGraph(db, orgId, { mode: 'list' });
 }
 
 export { toGraphEntity };

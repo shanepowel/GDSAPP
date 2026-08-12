@@ -80,6 +80,8 @@ export default function TeamFitProposalPage() {
                   <FitStrip
                     band={band}
                     compositeScore={bestScore.compositeScore}
+                    rigourMultiplier={bestScore.rigourMultiplier}
+                    breakdown={breakdown}
                     unevidenced={unevidenced}
                   />
                 </div>

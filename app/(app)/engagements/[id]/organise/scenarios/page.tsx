@@ -36,7 +36,10 @@ export default function OrganiseScenariosPage() {
     <AppShell title={m.engagement.organiseScenariosTitle} hideTitle>
       <div className="mb-4 flex flex-wrap gap-3 text-sm">
         <Link href={`/engagements/${id}/organise`} className="text-ink-1 hover:text-ink-0">
-          Graph
+          Table
+        </Link>
+        <Link href={`/engagements/${id}/organise/graph`} className="text-ink-1 hover:text-ink-0">
+          View as graph
         </Link>
         <Link href={`/engagements/${id}/organise/people`} className="text-ink-1 hover:text-ink-0">
           People

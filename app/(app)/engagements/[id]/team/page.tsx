@@ -134,6 +134,8 @@ export default function TeamFitOverviewPage() {
                     <FitStrip
                       band={bestScore.band as FitBand}
                       compositeScore={bestScore.compositeScore}
+                      rigourMultiplier={bestScore.rigourMultiplier}
+                      breakdown={breakdown}
                       unevidenced={unevidenced}
                     />
                   </div>

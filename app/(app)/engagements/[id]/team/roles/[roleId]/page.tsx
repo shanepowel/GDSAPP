@@ -54,6 +54,8 @@ export default function TeamFitRoleCandidatesPage() {
                     <FitStrip
                       band={c.band as FitBand}
                       compositeScore={c.compositeScore}
+                      rigourMultiplier={c.rigourMultiplier}
+                      breakdown={breakdown}
                       unevidenced={unevidenced}
                     />
                   </button>

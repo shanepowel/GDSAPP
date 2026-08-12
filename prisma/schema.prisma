@@ -126,6 +126,7 @@ model Organisation {
   designShareLinks  DesignShareLink[]
   roleArchetypes    RoleArchetype[]
   rigourSignals     RigourSignal[]
+  orgInsightsCache  OrgInsightsCache?
 }
 
 model User {
@@ -725,6 +726,18 @@ model DesignAssignment {
   createdAt  DateTime     @default(now())
 
   @@index([orgId])
+}
+
+/// Cached org-design insights (doc 08 §2.4). Recomputed on write; served on read by inputsHash.
+model OrgInsightsCache {
+  id          String       @id @default(cuid())
+  orgId       String       @unique
+  org         Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  inputsHash  String
+  insights    Json
+  computedAt  DateTime     @default(now())
+
+  @@map("org_insights_cache")
 }
 
 model DesignComment {

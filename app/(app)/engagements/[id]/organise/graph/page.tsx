@@ -6,7 +6,8 @@ import { AppShell } from '@/components/app/AppShell';
 import { DesignWorkspace } from '@/components/org-design/DesignWorkspace';
 import { useI18n } from '@/components/app/LocaleProvider';
 
-export default function OrganisePage() {
+/** Opt-in graph view — D3 loads only on this route (doc 08 §3.1). */
+export default function OrganiseGraphPage() {
   const params = useParams();
   const id = params.id as string;
   const { messages: m } = useI18n();
@@ -14,10 +15,10 @@ export default function OrganisePage() {
   return (
     <AppShell title={m.engagement.organiseTitle} hideTitle>
       <div className="mb-4 flex flex-wrap gap-3 text-sm">
-        <Link href={`/engagements/${id}/organise`} className="font-medium text-signal-ink">
+        <Link href={`/engagements/${id}/organise`} className="text-ink-1 hover:text-ink-0">
           Table
         </Link>
-        <Link href={`/engagements/${id}/organise/graph`} className="text-ink-1 hover:text-ink-0">
+        <Link href={`/engagements/${id}/organise/graph`} className="font-medium text-signal-ink">
           View as graph
         </Link>
         <Link href={`/engagements/${id}/organise/people`} className="text-ink-1 hover:text-ink-0">
@@ -32,7 +33,7 @@ export default function OrganisePage() {
         title={m.engagement.organiseTitle}
         hideMainTabs
         initialMainView="design"
-        initialViewMode="table"
+        initialViewMode="chart"
       />
     </AppShell>
   );

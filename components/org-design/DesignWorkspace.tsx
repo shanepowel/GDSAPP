@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useMemo, useRef, useState } from 'react';
 import {
   Network,
@@ -18,10 +19,24 @@ import {
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/app/Card';
 import { trpc } from '@/lib/trpc/client';
-import OrgChart, { type LayoutMode, type OrgChartHandle } from '@/components/org-design/OrgChart';
+import type { LayoutMode, OrgChartHandle } from '@/components/org-design/OrgChart';
 import { OrgTable } from '@/components/org/OrgTable';
 import type { DesignGraphEntity } from '@/lib/org-design/types';
 import { TEMPLATE_CATEGORIES } from '@/lib/org-design/templates';
+import { computeInsights } from '@/lib/org-design/insights';
+
+const OrgChart = dynamic(() => import('@/components/org-design/OrgChart'), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="flex h-[520px] items-center justify-center border border-rule bg-stock-0 text-sm text-ink-1"
+      style={{ borderRadius: 'var(--radius)' }}
+      aria-busy="true"
+    >
+      Loading graph…
+    </div>
+  ),
+});
 
 type MainView = 'design' | 'people' | 'insights' | 'history';
 type ViewMode = 'chart' | 'table';
@@ -35,6 +50,8 @@ type Props = {
   initialMainView?: MainView;
   /** Hide the Design/People/Insights/History tab strip when the plate rail owns IA. */
   hideMainTabs?: boolean;
+  /** Default presentation — table-first per doc 08. */
+  initialViewMode?: ViewMode;
 };
 
 export function DesignWorkspace({
@@ -43,11 +60,12 @@ export function DesignWorkspace({
   title,
   initialMainView = 'design',
   hideMainTabs,
+  initialViewMode = 'table',
 }: Props) {
   const utils = trpc.useUtils();
   const chartRef = useRef<OrgChartHandle>(null);
   const [mainView, setMainView] = useState<MainView>(initialMainView);
-  const [view, setView] = useState<ViewMode>('chart');
+  const [view, setView] = useState<ViewMode>(initialViewMode);
   const [layout, setLayout] = useState<LayoutMode>('tree');
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | 'circle' | 'role' | 'product'>('all');
@@ -82,15 +100,32 @@ export function DesignWorkspace({
   );
   const liveQ = trpc.orgDesign.graph.useQuery(undefined, { enabled: !engagementId });
   const graph = engagementId ? engagementQ.data?.graph : liveQ.data;
-  const insightsQ = trpc.orgDesign.insights.useQuery(undefined, { enabled: !engagementId });
-  const activityQ = trpc.orgDesign.listActivity.useQuery({ limit: 40 });
-  const templatesQ = trpc.orgDesign.listTemplates.useQuery();
-  const scenariosQ = trpc.orgDesign.listScenarios.useQuery();
-  const snapshotsQ = trpc.orgDesign.listSnapshots.useQuery();
-  const aiStatusQ = trpc.orgDesign.aiStatus.useQuery();
-  const shareLinksQ = trpc.orgDesign.listShareLinks.useQuery(undefined, {
-    enabled: !engagementId,
+  const insightsQ = trpc.orgDesign.insights.useQuery(undefined, {
+    enabled: !engagementId && mainView === 'insights',
   });
+  const activityQ = trpc.orgDesign.listActivity.useQuery(
+    { limit: 40 },
+    { enabled: mainView === 'history' },
+  );
+  const templatesQ = trpc.orgDesign.listTemplates.useQuery(undefined, {
+    enabled: showTemplates,
+  });
+  const scenariosQ = trpc.orgDesign.listScenarios.useQuery(undefined, {
+    enabled: showScenarios || mainView === 'history',
+  });
+  const snapshotsQ = trpc.orgDesign.listSnapshots.useQuery(undefined, {
+    enabled: showScenarios || mainView === 'history',
+  });
+  const aiStatusQ = trpc.orgDesign.aiStatus.useQuery(undefined, {
+    enabled: mainView === 'design' && !engagementId,
+  });
+  const shareLinksQ = trpc.orgDesign.listShareLinks.useQuery(undefined, {
+    enabled: !engagementId && mainView === 'history',
+  });
+  const entityDetailQ = trpc.orgDesign.entityDetail.useQuery(
+    { entityId: selected?.id ?? '' },
+    { enabled: Boolean(selected?.id) },
+  );
 
   const invalidate = async () => {
     await utils.orgDesign.graph.invalidate();
@@ -228,13 +263,31 @@ export function DesignWorkspace({
     });
   }, [entities, search, typeFilter]);
 
-  const insights = insightsQ.data;
+  const insights = useMemo(() => {
+    if (engagementId && graph) {
+      return {
+        insights: computeInsights({
+          entities: graph.entities,
+          relationships: graph.relationships,
+          people: graph.people ?? [],
+          assignments: graph.assignments ?? [],
+        }),
+        computedAt: null as Date | null,
+        cached: false,
+      };
+    }
+    return insightsQ.data ?? null;
+  }, [engagementId, graph, insightsQ.data]);
+
+  const insightsBody = insights?.insights;
   const canWrite = !readOnly && (!engagementId || engagementQ.data?.binding === 'scenario');
   const liveLockedOnEngagement =
     Boolean(engagementId) && engagementQ.data?.binding === 'live';
 
+  const inspector = entityDetailQ.data ?? selected;
+
   const tabs: Array<{ id: MainView; label: string; icon: typeof Network }> = [
-    { id: 'design', label: 'Design', icon: Network },
+    { id: 'design', label: 'Design', icon: List },
     { id: 'people', label: 'People', icon: Users },
     { id: 'insights', label: 'Insights', icon: BarChart3 },
     { id: 'history', label: 'History', icon: History },
@@ -349,31 +402,33 @@ export function DesignWorkspace({
               <div className="flex gap-1 rounded-md border border-border p-0.5">
                 <button
                   type="button"
-                  className={`rounded px-2 py-1 text-xs ${view === 'chart' ? 'bg-brand text-text-inverse' : ''}`}
-                  onClick={() => setView('chart')}
-                >
-                  <Network className="mr-1 inline h-3 w-3" />
-                  Graph
-                </button>
-                <button
-                  type="button"
                   className={`rounded px-2 py-1 text-xs ${view === 'table' ? 'bg-brand text-text-inverse' : ''}`}
                   onClick={() => setView('table')}
                 >
                   <List className="mr-1 inline h-3 w-3" />
                   Table
                 </button>
+                <button
+                  type="button"
+                  className={`rounded px-2 py-1 text-xs ${view === 'chart' ? 'bg-brand text-text-inverse' : ''}`}
+                  onClick={() => setView('chart')}
+                >
+                  <Network className="mr-1 inline h-3 w-3" />
+                  View as graph
+                </button>
               </div>
+              {view === 'chart' ? (
               <select
                 className="rounded-md border border-border bg-surface px-2 py-1 text-sm"
                 value={layout}
                 onChange={(e) => setLayout(e.target.value as LayoutMode)}
                 aria-label="Layout"
               >
-                <option value="force">Force</option>
                 <option value="tree">Tree</option>
+                <option value="force">Force</option>
                 <option value="radial">Radial</option>
               </select>
+              ) : null}
               <input
                 className="min-w-[160px] flex-1 rounded-md border border-border bg-surface px-2 py-1 text-sm"
                 placeholder="Search…"
@@ -402,8 +457,15 @@ export function DesignWorkspace({
               )}
             </div>
 
-            {view === 'chart' ? (
-              entities.length === 0 ? (
+            {view === 'table' ? (
+              <OrgTable
+                entities={filtered}
+                people={people}
+                assignments={assignments}
+                selectedId={selected?.id}
+                onSelect={setSelected}
+              />
+            ) : entities.length === 0 ? (
                 <EmptyState onTemplates={() => setShowTemplates(true)} canWrite={canWrite && !engagementId} />
               ) : (
                 <OrgChart
@@ -416,38 +478,29 @@ export function DesignWorkspace({
                   readOnly={!canWrite}
                   height={520}
                 />
-              )
-            ) : (
-              <OrgTable
-                entities={filtered}
-                people={people}
-                assignments={assignments}
-                selectedId={selected?.id}
-                onSelect={setSelected}
-              />
-            )}
+              )}
           </Card>
 
           <aside className="space-y-3">
-            {selected ? (
+            {inspector ? (
               <Card>
-                <h3 className="font-semibold text-text">{selected.name}</h3>
-                <p className="mt-1 text-xs uppercase tracking-wide text-text-muted">{selected.type}</p>
+                <h3 className="font-semibold text-text">{inspector.name}</h3>
+                <p className="mt-1 text-xs uppercase tracking-wide text-text-muted">{inspector.type}</p>
                 <dl className="mt-3 space-y-2 text-sm">
                   <div>
                     <dt className="text-text-muted">Purpose</dt>
-                    <dd>{selected.purpose || '—'}</dd>
+                    <dd>{inspector.purpose || '—'}</dd>
                   </div>
                   <div>
                     <dt className="text-text-muted">Domain</dt>
-                    <dd>{selected.domain || '—'}</dd>
+                    <dd>{inspector.domain || '—'}</dd>
                   </div>
                   <div>
                     <dt className="text-text-muted">Accountabilities</dt>
                     <dd>
-                      {(selected.accountabilities ?? []).length ? (
+                      {(inspector.accountabilities ?? []).length ? (
                         <ul className="list-disc pl-4">
-                          {selected.accountabilities.map((a) => (
+                          {inspector.accountabilities.map((a) => (
                             <li key={a}>{a}</li>
                           ))}
                         </ul>
@@ -458,10 +511,10 @@ export function DesignWorkspace({
                   </div>
                   <div>
                     <dt className="text-text-muted">DDaT role</dt>
-                    <dd>{selected.ddatRoleId || 'Not mapped'}</dd>
+                    <dd>{inspector.ddatRoleId || 'Not mapped'}</dd>
                   </div>
                 </dl>
-                {canWrite && (
+                {canWrite && selected && (
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Button
                       variant="destructive"
@@ -493,28 +546,30 @@ export function DesignWorkspace({
                 <div className="mt-4">
                   <h4 className="text-xs font-semibold uppercase text-text-muted">Relationships</h4>
                   <ul className="mt-2 space-y-1 text-sm">
-                    {relationships
-                      .filter((r) => r.sourceId === selected.id || r.targetId === selected.id)
-                      .map((r) => {
-                        const otherId = r.sourceId === selected.id ? r.targetId : r.sourceId;
-                        const other = entities.find((e) => e.id === otherId);
-                        return (
-                          <li key={r.id} className="flex items-center justify-between gap-2">
-                            <span>
-                              {r.type} → {other?.name ?? otherId}
-                            </span>
-                            {canWrite && (
-                              <button
-                                type="button"
-                                className="text-xs text-status-gap"
-                                onClick={() => deleteRel.mutate({ id: r.id })}
-                              >
-                                Remove
-                              </button>
-                            )}
-                          </li>
-                        );
-                      })}
+                    {selected
+                      ? relationships
+                          .filter((r) => r.sourceId === selected.id || r.targetId === selected.id)
+                          .map((r) => {
+                            const otherId = r.sourceId === selected.id ? r.targetId : r.sourceId;
+                            const other = entities.find((e) => e.id === otherId);
+                            return (
+                              <li key={r.id} className="flex items-center justify-between gap-2">
+                                <span>
+                                  {r.type} → {other?.name ?? otherId}
+                                </span>
+                                {canWrite && (
+                                  <button
+                                    type="button"
+                                    className="text-xs text-status-gap"
+                                    onClick={() => deleteRel.mutate({ id: r.id })}
+                                  >
+                                    Remove
+                                  </button>
+                                )}
+                              </li>
+                            );
+                          })
+                      : null}
                   </ul>
                 </div>
               </Card>
@@ -651,31 +706,37 @@ export function DesignWorkspace({
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <h3 className="font-semibold text-text">Health</h3>
+            {insights?.computedAt ? (
+              <p className="mt-1 text-xs text-text-muted">
+                As at {new Date(insights.computedAt).toLocaleString()}
+                {insights.cached ? ' · cached' : ''}
+              </p>
+            ) : null}
             <p className="mt-2 text-4xl font-semibold text-brand">
-              {insights?.healthScore ?? '—'}
+              {insightsBody?.healthScore ?? '—'}
               <span className="text-base text-text-muted"> / 100</span>
             </p>
             <dl className="mt-4 grid grid-cols-2 gap-2 text-sm">
               <div>
                 <dt className="text-text-muted">Entities</dt>
-                <dd>{insights?.totals.entities ?? 0}</dd>
+                <dd>{insightsBody?.totals.entities ?? 0}</dd>
               </div>
               <div>
                 <dt className="text-text-muted">Vacancies</dt>
-                <dd>{insights?.totals.vacancies ?? 0}</dd>
+                <dd>{insightsBody?.totals.vacancies ?? 0}</dd>
               </div>
               <div>
                 <dt className="text-text-muted">Depth</dt>
-                <dd>{insights?.hierarchyDepth ?? 0}</dd>
+                <dd>{insightsBody?.hierarchyDepth ?? 0}</dd>
               </div>
               <div>
                 <dt className="text-text-muted">Avg span</dt>
-                <dd>{insights?.spanOfControl.average ?? 0}</dd>
+                <dd>{insightsBody?.spanOfControl.average ?? 0}</dd>
               </div>
               <div>
                 <dt className="text-text-muted">Roles staffed</dt>
                 <dd>
-                  {insights?.coverage.rolesStaffed ?? 0}/{insights?.coverage.rolesTotal ?? 0}
+                  {insightsBody?.coverage.rolesStaffed ?? 0}/{insightsBody?.coverage.rolesTotal ?? 0}
                 </dd>
               </div>
             </dl>
@@ -683,7 +744,7 @@ export function DesignWorkspace({
           <Card>
             <h3 className="font-semibold text-text">Issues</h3>
             <ul className="mt-3 space-y-2">
-              {(insights?.issues ?? []).slice(0, 12).map((issue) => (
+              {(insightsBody?.issues ?? []).slice(0, 12).map((issue) => (
                 <li key={issue.id} className="rounded-md border border-border p-2 text-sm">
                   <span
                     className={`mr-2 text-[10px] font-semibold uppercase ${
@@ -700,7 +761,7 @@ export function DesignWorkspace({
                   <p className="mt-1 text-text-muted">{issue.description}</p>
                 </li>
               ))}
-              {!insights?.issues.length && (
+              {!insightsBody?.issues.length && (
                 <li className="text-sm text-text-muted">No issues detected yet.</li>
               )}
             </ul>
