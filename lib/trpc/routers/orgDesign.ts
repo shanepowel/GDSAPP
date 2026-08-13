@@ -50,6 +50,32 @@ function asStringArray(value: unknown): string[] {
   return value.filter((v): v is string => typeof v === 'string');
 }
 
+async function replaceDesignPersonRole(
+  prisma: PrismaClient,
+  orgId: string,
+  personId: string,
+  entityId: string | null,
+  allocation = 100,
+) {
+  const person = await prisma.designPerson.findFirst({
+    where: { id: personId, orgId },
+  });
+  if (!person) throw new TRPCError({ code: 'NOT_FOUND' });
+
+  if (entityId) {
+    const entity = await prisma.designEntity.findFirst({
+      where: { id: entityId, orgId, type: 'role' },
+    });
+    if (!entity) throw new TRPCError({ code: 'BAD_REQUEST' });
+  }
+
+  await prisma.designAssignment.deleteMany({ where: { orgId, personId } });
+  if (!entityId) return null;
+  return prisma.designAssignment.create({
+    data: { orgId, personId, entityId, allocation },
+  });
+}
+
 function afterGraphWrite(prisma: PrismaClient, orgId: string) {
   void refreshInsightsOnWrite(prisma, orgId).catch(() => {
     /* non-blocking */
@@ -222,7 +248,11 @@ export const orgDesignRouter = router({
     }),
 
   createPerson: protectedProcedure
-    .input(designPersonInputSchema)
+    .input(
+      designPersonInputSchema.extend({
+        assignEntityId: z.string().min(1).optional(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const person = await ctx.prisma.designPerson.create({
         data: {
@@ -234,6 +264,9 @@ export const orgDesignRouter = router({
           notes: input.notes ?? null,
         },
       });
+      if (input.assignEntityId) {
+        await replaceDesignPersonRole(ctx.prisma, ctx.orgId, person.id, input.assignEntityId);
+      }
       await logActivity(ctx.prisma, ctx.orgId, 'person.create', person.name);
       afterGraphWrite(ctx.prisma, ctx.orgId);
       return {
@@ -306,6 +339,26 @@ export const orgDesignRouter = router({
       });
       afterGraphWrite(ctx.prisma, ctx.orgId);
       return updated;
+    }),
+
+  setPersonRole: protectedProcedure
+    .input(
+      z.object({
+        personId: z.string(),
+        entityId: z.string().min(1).nullable(),
+        allocation: z.number().int().min(0).max(100).optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const assignment = await replaceDesignPersonRole(
+        ctx.prisma,
+        ctx.orgId,
+        input.personId,
+        input.entityId,
+        input.allocation ?? 100,
+      );
+      afterGraphWrite(ctx.prisma, ctx.orgId);
+      return { ok: true, assignment };
     }),
 
   deleteAssignment: protectedProcedure

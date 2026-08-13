@@ -59,6 +59,12 @@ export type Messages = {
     pseudonymise: string;
     assignRole: string;
     addPerson: string;
+    personName: string;
+    personRole: string;
+    addPersonVacancy: string;
+    assignError: string;
+    noRolesYet: string;
+    noRequirementYet: string;
     removePerson: string;
     editSkills: string;
     judgementsTitle: string;

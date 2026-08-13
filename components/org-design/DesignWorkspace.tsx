@@ -86,7 +86,7 @@ export function DesignWorkspace({
     targetId: '',
     type: 'includes' as 'includes' | 'reports-to' | 'collaborates-with',
   });
-  const [personDraft, setPersonDraft] = useState({ name: '', email: '' });
+  const [personDraft, setPersonDraft] = useState({ name: '', email: '', entityId: '' });
   const [scenarioName, setScenarioName] = useState('');
   const [snapshotName, setSnapshotName] = useState('');
   const [aiMessage, setAiMessage] = useState('');
@@ -165,12 +165,16 @@ export function DesignWorkspace({
   });
   const createPerson = trpc.orgDesign.createPerson.useMutation({
     onSuccess: async () => {
-      setPersonDraft({ name: '', email: '' });
+      setPersonDraft({ name: '', email: '', entityId: '' });
       await invalidate();
     },
+    onError: () => setMessage('Could not add that person. Try again.'),
   });
   const deletePerson = trpc.orgDesign.deletePerson.useMutation({ onSuccess: invalidate });
-  const createAssignment = trpc.orgDesign.createAssignment.useMutation({ onSuccess: invalidate });
+  const setPersonRole = trpc.orgDesign.setPersonRole.useMutation({
+    onSuccess: invalidate,
+    onError: () => setMessage('Could not assign that role. Try again.'),
+  });
   const applyTemplate = trpc.orgDesign.applyTemplate.useMutation({
     onSuccess: async (r) => {
       setShowTemplates(false);
@@ -281,8 +285,11 @@ export function DesignWorkspace({
 
   const insightsBody = insights?.insights;
   const canWrite = !readOnly && (!engagementId || engagementQ.data?.binding === 'scenario');
+  const peopleWritable =
+    !readOnly && (!engagementId || engagementQ.data?.binding === 'live');
   const liveLockedOnEngagement =
     Boolean(engagementId) && engagementQ.data?.binding === 'live';
+  const roleEntities = entities.filter((e) => e.type === 'role');
 
   const inspector = entityDetailQ.data ?? selected;
 
@@ -621,69 +628,108 @@ export function DesignWorkspace({
 
       {mainView === 'people' && (
         <Card>
-          {canWrite && !engagementId && (
+          {peopleWritable ? (
             <form
-              className="mb-4 flex flex-wrap gap-2"
+              className="mb-4 flex flex-wrap items-end gap-2"
               onSubmit={(e) => {
                 e.preventDefault();
                 if (!personDraft.name.trim()) return;
                 createPerson.mutate({
                   name: personDraft.name.trim(),
                   email: personDraft.email || null,
+                  ...(personDraft.entityId ? { assignEntityId: personDraft.entityId } : {}),
                 });
               }}
             >
-              <input
-                className="rounded-md border border-border px-2 py-1 text-sm"
-                placeholder="Name"
-                value={personDraft.name}
-                onChange={(e) => setPersonDraft((d) => ({ ...d, name: e.target.value }))}
-              />
-              <input
-                className="rounded-md border border-border px-2 py-1 text-sm"
-                placeholder="Email"
-                value={personDraft.email}
-                onChange={(e) => setPersonDraft((d) => ({ ...d, email: e.target.value }))}
-              />
-              <Button type="submit" size="sm">
+              <label className="text-sm">
+                <span className="mb-1 block text-text-muted">Name</span>
+                <input
+                  className="rounded-md border border-border bg-surface px-2 py-1.5 text-sm"
+                  value={personDraft.name}
+                  onChange={(e) => setPersonDraft((d) => ({ ...d, name: e.target.value }))}
+                  required
+                />
+              </label>
+              <label className="text-sm">
+                <span className="mb-1 block text-text-muted">Email</span>
+                <input
+                  className="rounded-md border border-border bg-surface px-2 py-1.5 text-sm"
+                  type="email"
+                  value={personDraft.email}
+                  onChange={(e) => setPersonDraft((d) => ({ ...d, email: e.target.value }))}
+                />
+              </label>
+              <label className="text-sm">
+                <span className="mb-1 block text-text-muted">Role</span>
+                <select
+                  className="min-w-[12rem] rounded-md border border-border bg-surface px-2 py-1.5 text-sm"
+                  value={personDraft.entityId}
+                  disabled={roleEntities.length === 0 || createPerson.isPending}
+                  aria-label="Role"
+                  onChange={(e) => setPersonDraft((d) => ({ ...d, entityId: e.target.value }))}
+                >
+                  <option value="">Assign role…</option>
+                  {roleEntities.map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <Button type="submit" size="sm" disabled={createPerson.isPending || !personDraft.name.trim()}>
                 Add person
               </Button>
             </form>
-          )}
+          ) : null}
+          {peopleWritable && roleEntities.length === 0 ? (
+            <p className="mb-3 text-sm text-text-muted">
+              No roles in this design yet, so a role cannot be assigned.
+            </p>
+          ) : null}
           <ul className="divide-y divide-border">
             {people.map((p) => {
               const assigned = assignments.filter((a) => a.personId === p.id);
+              const currentRoleId = assigned[0]?.entityId ?? '';
               return (
                 <li key={p.id} className="flex flex-wrap items-start justify-between gap-2 py-3">
-                  <div>
+                  <div className="min-w-[16rem] flex-1">
                     <p className="font-medium text-text">{p.name}</p>
                     <p className="text-sm text-text-muted">{p.email || 'No email'} · {p.fte}% FTE</p>
-                    <p className="mt-1 text-sm text-text-muted">
-                      Assigned:{' '}
-                      {assigned.length
-                        ? assigned
-                            .map((a) => entities.find((e) => e.id === a.entityId)?.name ?? a.entityId)
-                            .join(', ')
-                        : 'none'}
-                    </p>
-                    {canWrite && !engagementId && selected?.type === 'role' && (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="mt-2"
-                        onClick={() =>
-                          createAssignment.mutate({
-                            personId: p.id,
-                            entityId: selected.id,
-                            allocation: 100,
-                          })
-                        }
-                      >
-                        Assign to {selected.name}
-                      </Button>
+                    {peopleWritable ? (
+                      <label className="mt-2 block text-sm">
+                        <span className="text-text-muted">Role</span>
+                        <select
+                          className="mt-1 w-full max-w-sm rounded-md border border-border bg-surface px-2 py-1.5 text-sm"
+                          value={currentRoleId}
+                          disabled={roleEntities.length === 0 || setPersonRole.isPending}
+                          aria-label="Role"
+                          onChange={(e) =>
+                            setPersonRole.mutate({
+                              personId: p.id,
+                              entityId: e.target.value || null,
+                            })
+                          }
+                        >
+                          <option value="">Assign role…</option>
+                          {roleEntities.map((role) => (
+                            <option key={role.id} value={role.id}>
+                              {role.name}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    ) : (
+                      <p className="mt-1 text-sm text-text-muted">
+                        Assigned:{' '}
+                        {assigned.length
+                          ? assigned
+                              .map((a) => entities.find((e) => e.id === a.entityId)?.name ?? a.entityId)
+                              .join(', ')
+                          : 'none'}
+                      </p>
                     )}
                   </div>
-                  {canWrite && !engagementId && (
+                  {peopleWritable && (
                     <Button
                       size="sm"
                       variant="destructive"

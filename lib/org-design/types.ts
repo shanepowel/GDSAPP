@@ -28,7 +28,10 @@ export const designRelationshipInputSchema = z.object({
 
 export const designPersonInputSchema = z.object({
   name: z.string().min(1),
-  email: z.string().email().nullable().optional(),
+  email: z.preprocess(
+    (value) => (typeof value === 'string' && value.trim() === '' ? null : value),
+    z.string().email().nullable().optional(),
+  ),
   fte: z.number().int().min(0).max(100).optional(),
   skills: z.array(z.string()).optional(),
   notes: z.string().nullable().optional(),

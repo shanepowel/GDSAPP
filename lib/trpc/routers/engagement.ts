@@ -16,6 +16,43 @@ import {
   legacyStandardToCatalogCode,
   nextEngagementReference,
 } from '@/lib/standards/catalog';
+import type { Context } from '@/lib/trpc/context';
+
+async function replacePersonRoleAssignment(
+  ctx: Context & { orgId: string },
+  input: {
+    engagementId: string;
+    requirementId: string;
+    personId: string;
+    roleLevelId: string;
+  },
+) {
+  const person = await ctx.prisma.person.findFirst({
+    where: { id: input.personId, engagementId: input.engagementId },
+  });
+  if (!person) throw new TRPCError({ code: 'NOT_FOUND' });
+
+  const roleLevel = await ctx.prisma.roleLevel.findUnique({
+    where: { id: input.roleLevelId },
+  });
+  if (!roleLevel) throw new TRPCError({ code: 'BAD_REQUEST' });
+
+  const requirement = await ctx.prisma.requirement.findFirst({
+    where: { id: input.requirementId, engagementId: input.engagementId },
+  });
+  if (!requirement) throw new TRPCError({ code: 'NOT_FOUND' });
+
+  await ctx.prisma.assignment.deleteMany({
+    where: { personId: input.personId, requirementId: input.requirementId },
+  });
+  return ctx.prisma.assignment.create({
+    data: {
+      requirementId: input.requirementId,
+      personId: input.personId,
+      roleLevelId: input.roleLevelId,
+    },
+  });
+}
 
 export const engagementRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -257,31 +294,54 @@ export const engagementRouter = router({
       z.object({
         engagementId: z.string(),
         personId: z.string().optional(),
-        displayName: z.string(),
+        displayName: z.string().min(1),
         isVacancy: z.boolean(),
         skills: z.array(z.object({ skillId: z.string(), level: z.string() })),
+        requirementId: z.string().min(1).optional(),
+        roleLevelId: z.string().min(1).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       await assertEngagementInOrg(ctx, input.engagementId);
-      if (input.personId) {
-        await ctx.prisma.personSkill.deleteMany({ where: { personId: input.personId } });
-        return ctx.prisma.person.update({
-          where: { id: input.personId },
+      let personId = input.personId;
+      if (personId) {
+        const existing = await ctx.prisma.person.findFirst({
+          where: { id: personId, engagementId: input.engagementId },
+        });
+        if (!existing) throw new TRPCError({ code: 'NOT_FOUND' });
+        await ctx.prisma.personSkill.deleteMany({ where: { personId } });
+        await ctx.prisma.person.update({
+          where: { id: personId },
           data: {
             displayName: input.displayName,
             isVacancy: input.isVacancy,
             skills: { create: input.skills },
           },
         });
+      } else {
+        const created = await ctx.prisma.person.create({
+          data: {
+            engagementId: input.engagementId,
+            displayName: input.displayName,
+            isVacancy: input.isVacancy,
+            skills: { create: input.skills },
+          },
+        });
+        personId = created.id;
       }
-      return ctx.prisma.person.create({
-        data: {
+
+      if (input.requirementId && input.roleLevelId) {
+        await replacePersonRoleAssignment(ctx, {
           engagementId: input.engagementId,
-          displayName: input.displayName,
-          isVacancy: input.isVacancy,
-          skills: { create: input.skills },
-        },
+          requirementId: input.requirementId,
+          personId,
+          roleLevelId: input.roleLevelId,
+        });
+      }
+
+      return ctx.prisma.person.findFirstOrThrow({
+        where: { id: personId },
+        include: { skills: true, assignments: true },
       });
     }),
 
@@ -302,7 +362,7 @@ export const engagementRouter = router({
       z.object({
         requirementId: z.string(),
         personId: z.string(),
-        roleLevelId: z.string(),
+        roleLevelId: z.string().min(1),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -311,17 +371,12 @@ export const engagementRouter = router({
         include: { engagement: true },
       });
       if (!req || req.engagement.orgId !== ctx.orgId) throw new TRPCError({ code: 'NOT_FOUND' });
-
-      const existing = await ctx.prisma.assignment.findFirst({
-        where: { requirementId: input.requirementId, personId: input.personId },
+      return replacePersonRoleAssignment(ctx, {
+        engagementId: req.engagementId,
+        requirementId: input.requirementId,
+        personId: input.personId,
+        roleLevelId: input.roleLevelId,
       });
-      if (existing) {
-        return ctx.prisma.assignment.update({
-          where: { id: existing.id },
-          data: { roleLevelId: input.roleLevelId },
-        });
-      }
-      return ctx.prisma.assignment.create({ data: input });
     }),
 
   runAnalysis: protectedProcedure
