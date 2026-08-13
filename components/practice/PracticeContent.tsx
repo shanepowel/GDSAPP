@@ -5,6 +5,8 @@ import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 import { CEREMONIES, MATURITY, PILLARS } from '@/lib/practice';
 
+const CLAIM_HREFS = ['/practice/pillars', '/squads', '/assurance'] as const;
+
 export function PracticeOverview() {
   const { locale } = useI18n();
   const copy = getCopy(locale);
@@ -54,14 +56,19 @@ export function PracticeOverview() {
       </section>
 
       <section className="grid gap-px border-y border-[color:var(--rule)] bg-[var(--rule)] md:grid-cols-3">
-        {c.claims.map((claim) => (
+        {c.claims.map((claim, i) => (
           <div key={claim.title} className="bg-[var(--raised)] p-7">
             <h3 className="mb-2 font-[family-name:var(--font-cond)] text-[15px] font-semibold">
               {claim.title}
             </h3>
             <p className="text-[color:var(--graphite)]">{claim.body}</p>
-            <p className="mt-3 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em]">
-              See it in {claim.proof}
+            <p className="mt-3">
+              <Link
+                href={CLAIM_HREFS[i] ?? '/practice/pillars'}
+                className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em] underline-offset-2 hover:underline"
+              >
+                {claim.seeIn}
+              </Link>
             </p>
           </div>
         ))}
@@ -88,19 +95,25 @@ export function PracticeOverview() {
         </h2>
         <MaturityLadder />
       </section>
+
+      <footer className="mt-8 border-t border-[color:var(--rule)] py-8 font-[family-name:var(--font-mono)] text-[10px] leading-relaxed text-[color:var(--graphite)]">
+        {copy.footer.disclaimer}
+      </footer>
     </>
   );
 }
 
 export function PillarsTable() {
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
   return (
     <div className="sheet overflow-hidden">
       <table>
         <thead>
           <tr>
-            <th>Pillar</th>
-            <th>Owns</th>
-            <th>What it produces for assurance</th>
+            <th>{copy.practice.pillar}</th>
+            <th>{copy.practice.owns}</th>
+            <th>{copy.practice.produces}</th>
           </tr>
         </thead>
         <tbody>
@@ -118,15 +131,17 @@ export function PillarsTable() {
 }
 
 export function CeremoniesTable() {
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
   return (
     <div className="sheet overflow-hidden">
       <table>
         <thead>
           <tr>
-            <th>Ceremony</th>
-            <th>Cadence</th>
-            <th>Emits</th>
-            <th>Signal</th>
+            <th>{copy.practice.ceremony}</th>
+            <th>{copy.practice.cadence}</th>
+            <th>{copy.practice.emits}</th>
+            <th>{copy.practice.signal}</th>
           </tr>
         </thead>
         <tbody>
@@ -145,6 +160,8 @@ export function CeremoniesTable() {
 }
 
 export function MaturityLadder({ current }: { current?: number }) {
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
   return (
     <div className="sheet">
       {MATURITY.map((m) => (
@@ -164,7 +181,7 @@ export function MaturityLadder({ current }: { current?: number }) {
               {m.name}
               {m.level === current ? (
                 <span className="ml-2.5 font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-[0.1em] text-[color:var(--survey)]">
-                  you are here
+                  {copy.practice.youAreHere}
                 </span>
               ) : null}
             </h3>

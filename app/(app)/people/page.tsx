@@ -1,12 +1,19 @@
 'use client';
 
+import { Fragment, useState } from 'react';
 import Link from 'next/link';
-import { copy } from '@/lib/copy';
+import { EmptyState, PageHeader, StatStrip, TextLink } from '@/components/datum/PageChrome';
+import { useI18n } from '@/components/app/LocaleProvider';
+import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
 
 export default function PeoplePage() {
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
   const { data } = trpc.orgDesign.graph.useQuery();
   const { data: signals } = trpc.teamFit.orgRigour.useQuery();
+  const { data: engagements } = trpc.engagement.list.useQuery();
+  const [openId, setOpenId] = useState<string | null>(null);
   const people = data?.people ?? [];
   const assignments = data?.assignments ?? [];
   const signalCount = new Map<string, number>();
@@ -20,53 +27,44 @@ export default function PeoplePage() {
       const used = assignments.filter((a) => a.personId === p.id).reduce((s, a) => s + a.allocation, 0);
       return sum + Math.max(0, (p.fte - used) / 100);
     }, 0) || 0;
+  const manageHref = engagements?.[0]
+    ? `/engagements/${engagements[0].id}/team/people`
+    : '/engagements/new';
 
   return (
     <>
-      <p className="eyebrow mb-2 text-[color:var(--graphite)]">{copy.people.eyebrow}</p>
-      <h1 className="font-[family-name:var(--font-cond)] text-[30px] font-bold">{copy.people.title}</h1>
-      <p className="mt-2 mb-6 max-w-[62ch] text-[color:var(--graphite)]">{copy.people.lede}</p>
+      <PageHeader
+        eyebrow={copy.people.eyebrow}
+        title={copy.people.title}
+        lede={copy.people.lede}
+        actions={<TextLink href="/people/graph">{copy.people.viewAsGraph}</TextLink>}
+      />
 
-      <p className="mb-4">
-        <Link href="/people/graph" className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.1em]">
-          {copy.people.viewAsGraph}
-        </Link>
-      </p>
-
-      <div className="mb-6 grid grid-cols-1 gap-px bg-[var(--rule)] sm:grid-cols-3">
-        <div className="bg-[var(--raised)] p-4">
-          <div className="font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
-            {copy.people.peopleInPool}
-          </div>
-          <div className="mt-1 font-data text-[26px] tabular-nums">{people.length}</div>
-        </div>
-        <div className="bg-[var(--raised)] p-4">
-          <div className="font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
-            {copy.people.unallocated}
-          </div>
-          <div className="mt-1 font-data text-[26px] tabular-nums">{unallocated.toFixed(1)}</div>
-        </div>
-        <div className="bg-[var(--raised)] p-4">
-          <div className="font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
-            {copy.people.unevidencedCount}
-          </div>
-          <div className="mt-1 font-data text-[26px] tabular-nums">{unev}</div>
-          <div className="text-[12px] text-[color:var(--graphite)]">a data gap, not a judgement</div>
-        </div>
-      </div>
+      <StatStrip
+        items={[
+          { label: copy.people.peopleInPool, value: String(people.length) },
+          { label: copy.people.unallocated, value: unallocated.toFixed(1) },
+          { label: copy.people.unevidencedCount, value: String(unev), note: copy.people.dataGap },
+        ]}
+      />
 
       <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">{copy.people.pool}</h2>
       {people.length === 0 ? (
-        <p className="text-[color:var(--graphite)]">{copy.empty.noPeople}</p>
+        <EmptyState
+          title={copy.empty.noPeople}
+          why={copy.empty.noPeopleWhy}
+          actionHref={manageHref}
+          actionLabel={copy.ui.managePeople}
+        />
       ) : (
         <div className="sheet overflow-x-auto">
           <table>
             <thead>
               <tr>
-                <th>Person</th>
+                <th>{copy.people.person}</th>
                 <th>{copy.people.free}</th>
                 <th>{copy.people.rigour}</th>
-                <th>Skills</th>
+                <th>{copy.people.skills}</th>
               </tr>
             </thead>
             <tbody>
@@ -76,26 +74,64 @@ export default function PeoplePage() {
                   .reduce((s, a) => s + a.allocation, 0);
                 const free = Math.max(0, (p.fte - used) / 100);
                 const rigour = signalCount.get(p.id) ?? 0;
+                const open = openId === p.id;
                 return (
-                  <tr key={p.id} className="clickable">
-                    <td>
-                      <Link href={`/people/${p.id}`} className="font-semibold">
-                        {p.name}
-                      </Link>
-                    </td>
-                    <td className="num">
-                      {free.toFixed(1)}
-                      <div className="text-[10px] uppercase tracking-wide text-[color:var(--graphite)]">available</div>
-                    </td>
-                    <td>
-                      {rigour > 0 ? (
-                        `${rigour} signals`
-                      ) : (
-                        <span className="flag">{copy.people.unevidenced}</span>
-                      )}
-                    </td>
-                    <td className="text-[color:var(--graphite)]">{p.skills.length || '—'}</td>
-                  </tr>
+                  <Fragment key={p.id}>
+                    <tr className={open ? 'is-open' : undefined}>
+                      <td>
+                        <button
+                          type="button"
+                          className="row-toggle"
+                          aria-expanded={open}
+                          aria-label={open ? copy.ui.hideWorking : copy.ui.showWorking}
+                          onClick={() => setOpenId(open ? null : p.id)}
+                        >
+                          <span className="font-semibold">{p.name}</span>
+                        </button>
+                      </td>
+                      <td className="num">
+                        {free.toFixed(1)}
+                        <div className="text-[10px] uppercase tracking-wide text-[color:var(--graphite)]">
+                          {copy.people.available}
+                        </div>
+                      </td>
+                      <td>
+                        {rigour > 0 ? (
+                          <span className="font-data tabular-nums">{rigour}</span>
+                        ) : (
+                          <span className="flag">{copy.people.unevidenced}</span>
+                        )}
+                      </td>
+                      <td className="num">{p.skills.length || '—'}</td>
+                    </tr>
+                    {open ? (
+                      <tr className="sheet-detail">
+                        <td colSpan={4}>
+                          {rigour === 0 ? (
+                            <p className="mb-3 max-w-[62ch] border-l-2 border-[color:var(--graphite)] pl-3 text-sm">
+                              {copy.empty.noSignals}
+                            </p>
+                          ) : null}
+                          {p.skills.length ? (
+                            <ul className="flex flex-wrap gap-2">
+                              {p.skills.map((s) => (
+                                <li key={s} className="flag">
+                                  {s}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="text-sm text-[color:var(--graphite)]">{copy.people.noSkills}</p>
+                          )}
+                          <p className="mt-3">
+                            <Link href={`/people/${p.id}`} className="text-sm underline-offset-2 hover:underline">
+                              {copy.people.openPerson}
+                            </Link>
+                          </p>
+                        </td>
+                      </tr>
+                    ) : null}
+                  </Fragment>
                 );
               })}
             </tbody>

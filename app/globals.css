@@ -185,6 +185,55 @@ th,
   white-space: nowrap;
 }
 
+.legend-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  vertical-align: middle;
+}
+
+.legend-swatch.is-held {
+  background: var(--ink);
+}
+
+.legend-swatch.is-partial {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--hatch-0) 0 3px,
+    var(--hatch-1) 3px 6px
+  );
+}
+
+.legend-swatch.is-absent {
+  background: var(--sunk);
+}
+
+.legend-swatch.is-datum {
+  position: relative;
+  background: var(--sunk);
+}
+
+.legend-swatch.is-datum::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: var(--datum);
+}
+
+.legend-swatch.is-bracket {
+  height: 6px;
+  border: none;
+  border-left: 1px dashed var(--graphite);
+  border-right: 1px dashed var(--graphite);
+  border-bottom: 1px dashed var(--graphite);
+  background: transparent;
+}
+
 /* ---------- sheet ---------- */
 
 .sheet {
@@ -225,6 +274,46 @@ th,
 
 .sheet tbody tr.clickable:hover {
   background: var(--sunk);
+}
+
+.sheet tbody tr.is-open td {
+  background: var(--sunk);
+  border-bottom-color: transparent;
+}
+
+.sheet tbody tr.sheet-detail td {
+  padding-top: 0;
+  padding-bottom: 16px;
+  background: var(--sunk);
+}
+
+.sheet .row-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+.sheet .row-toggle::before {
+  content: '';
+  flex-shrink: 0;
+  width: 0;
+  height: 0;
+  margin-top: 7px;
+  border-style: solid;
+  border-width: 5px 0 5px 7px;
+  border-color: transparent transparent transparent var(--graphite);
+}
+
+.sheet .row-toggle[aria-expanded='true']::before {
+  transform: rotate(90deg);
 }
 
 .flag {

@@ -1,26 +1,68 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { copy } from '@/lib/copy';
+import Link from 'next/link';
+import { EmptyState, InkButton, PageHeader } from '@/components/datum/PageChrome';
+import { useI18n } from '@/components/app/LocaleProvider';
+import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
 
 export default function AssuranceIndexPage() {
-  const router = useRouter();
-  const { data } = trpc.engagement.list.useQuery();
+  const { data, isLoading } = trpc.engagement.list.useQuery();
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
 
-  useEffect(() => {
-    if (data?.[0]?.id) router.replace(`/assurance/${data[0].id}`);
-  }, [data, router]);
-
-  if (!data) return <p>Loading…</p>;
-  if (data.length === 0) {
-    return (
-      <>
-        <h1 className="font-[family-name:var(--font-cond)] text-[30px] font-bold">{copy.assurance.title}</h1>
-        <p className="mt-2 text-[color:var(--graphite)]">{copy.empty.noEngagements}</p>
-      </>
-    );
+  function standardLabel(id: string | null) {
+    if (id === 'wales') return copy.squads.standardWales;
+    if (id === 'gds') return copy.squads.standardGds;
+    return id ?? '—';
   }
-  return <p>Loading…</p>;
+
+  return (
+    <>
+      <PageHeader
+        eyebrow={copy.assurance.eyebrow}
+        title={copy.assurance.title}
+        lede={copy.assurance.indexLede}
+        actions={<InkButton href="/engagements/new">{copy.ui.createEngagement}</InkButton>}
+      />
+      {isLoading ? <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p> : null}
+      {!isLoading && (data?.length ?? 0) === 0 ? (
+        <EmptyState
+          title={copy.empty.noEngagements}
+          why={copy.empty.noEngagementsWhy}
+          actionHref="/engagements/new"
+          actionLabel={copy.ui.createEngagement}
+        />
+      ) : null}
+      {!isLoading && (data?.length ?? 0) > 0 ? (
+        <div className="sheet overflow-x-auto">
+          <table>
+            <thead>
+              <tr>
+                <th>{copy.context.engagement}</th>
+                <th>{copy.squads.phase}</th>
+                <th>{copy.squads.standard}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(data ?? []).map((e) => (
+                <tr key={e.id}>
+                  <td>
+                    <Link
+                      href={`/assurance/${e.id}`}
+                      className="font-semibold underline-offset-2 hover:underline"
+                    >
+                      {e.name}
+                    </Link>
+                  </td>
+                  <td className="num">{e.phase ?? '—'}</td>
+                  <td>{standardLabel(e.standardId)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
+    </>
+  );
 }

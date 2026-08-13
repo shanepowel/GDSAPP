@@ -5,16 +5,16 @@ import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { Button } from '@/components/ui/Button';
 import { useI18n } from '@/components/app/LocaleProvider';
+import { getCopy } from '@/lib/copy-i18n';
 import {
   ENGAGEMENT_MODES,
   ENGAGEMENT_PHASES,
 } from '@/lib/standards/catalog';
 import { trpc } from '@/lib/trpc/client';
 
-const STEPS = ['Client and service', 'Standard and phase', 'Team', 'Mode'] as const;
-
 export default function NewEngagementWizardPage() {
-  const { messages: m } = useI18n();
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [clientOrg, setClientOrg] = useState('');
@@ -32,10 +32,11 @@ export default function NewEngagementWizardPage() {
   const create = trpc.engagement.create.useMutation();
   const applyTemplate = trpc.orgDesign.applyTemplate.useMutation();
   const bind = trpc.orgDesign.bindEngagementStructure.useMutation();
+  const steps = copy.wizard.steps;
 
   async function finish() {
     const engagement = await create.mutateAsync({
-      name: serviceName.trim() || 'Untitled engagement',
+      name: serviceName.trim() || copy.wizard.untitled,
       standardId,
       clientOrg: clientOrg.trim() || undefined,
       sector,
@@ -58,15 +59,15 @@ export default function NewEngagementWizardPage() {
       mode === 'mobilise'
         ? `/engagements/${engagement.id}/organise/people`
         : mode === 'assure'
-          ? `/squads/${engagement.id}`
+          ? `/assurance/${engagement.id}`
           : `/engagements/${engagement.id}/organise`;
     router.push(landing);
   }
 
   return (
-    <AppShell title={m.engagements.new}>
-      <ol className="mb-8 flex flex-wrap gap-4" aria-label="Creation steps">
-        {STEPS.map((label, i) => (
+    <AppShell title={copy.wizard.title}>
+      <ol className="mb-8 flex flex-wrap gap-4" aria-label={copy.wizard.stepsLabel}>
+        {steps.map((label, i) => (
           <li
             key={label}
             className="font-data text-[12px] uppercase tracking-[0.04em]"
@@ -80,9 +81,9 @@ export default function NewEngagementWizardPage() {
 
       {step === 0 && (
         <fieldset className="max-w-lg space-y-4">
-          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{STEPS[0]}</legend>
+          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{steps[0]}</legend>
           <label className="block text-[13px] font-medium text-ink-1">
-            Client organisation
+            {copy.wizard.clientOrg}
             <input
               className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
               value={clientOrg}
@@ -91,7 +92,7 @@ export default function NewEngagementWizardPage() {
             />
           </label>
           <label className="block text-[13px] font-medium text-ink-1">
-            Service name
+            {copy.wizard.serviceName}
             <input
               className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
               value={serviceName}
@@ -100,19 +101,19 @@ export default function NewEngagementWizardPage() {
             />
           </label>
           <label className="block text-[13px] font-medium text-ink-1">
-            Sector
+            {copy.wizard.sector}
             <select
               className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
               value={sector}
               onChange={(e) => setSector(e.target.value as typeof sector)}
             >
-              <option value="digital-service">Digital service</option>
-              <option value="capital-programme">Capital programme</option>
-              <option value="hybrid">Hybrid</option>
+              <option value="digital-service">{copy.wizard.sectorDigital}</option>
+              <option value="capital-programme">{copy.wizard.sectorCapital}</option>
+              <option value="hybrid">{copy.wizard.sectorHybrid}</option>
             </select>
           </label>
           <label className="block text-[13px] font-medium text-ink-1">
-            Service description
+            {copy.wizard.serviceDescription}
             <textarea
               className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
               rows={3}
@@ -125,20 +126,20 @@ export default function NewEngagementWizardPage() {
 
       {step === 1 && (
         <fieldset className="max-w-lg space-y-4">
-          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{STEPS[1]}</legend>
+          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{steps[1]}</legend>
           <label className="block text-[13px] font-medium text-ink-1">
-            Standard
+            {copy.wizard.standard}
             <select
               className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
               value={standardId}
               onChange={(e) => setStandardId(e.target.value as 'gds' | 'wales')}
             >
-              <option value="gds">GDS Service Standard</option>
-              <option value="wales">Digital Service Standard for Wales</option>
+              <option value="gds">{copy.squads.standardGds}</option>
+              <option value="wales">{copy.squads.standardWales}</option>
             </select>
           </label>
           <label className="block text-[13px] font-medium text-ink-1">
-            Phase
+            {copy.wizard.phase}
             <select
               className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
               value={phase}
@@ -156,18 +157,16 @@ export default function NewEngagementWizardPage() {
 
       {step === 2 && (
         <fieldset className="max-w-lg space-y-4">
-          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{STEPS[2]}</legend>
-          <p className="text-[15px] text-ink-1">
-            Start from a template. CSV import and Entra directory pull land in a later iteration.
-          </p>
+          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{steps[2]}</legend>
+          <p className="text-[15px] text-ink-1">{copy.wizard.teamHint}</p>
           <label className="block text-[13px] font-medium text-ink-1">
-            Template
+            {copy.wizard.template}
             <select
               className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
               value={templateId}
               onChange={(e) => setTemplateId(e.target.value)}
             >
-              <option value="">Skip — add team later</option>
+              <option value="">{copy.wizard.skipTemplate}</option>
               {(templates.data ?? []).map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.name} ({t.size})
@@ -180,9 +179,9 @@ export default function NewEngagementWizardPage() {
 
       {step === 3 && (
         <fieldset className="max-w-lg space-y-4">
-          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{STEPS[3]}</legend>
+          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{steps[3]}</legend>
           <label className="block text-[13px] font-medium text-ink-1">
-            Mode
+            {copy.wizard.mode}
             <select
               className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
               value={mode}
@@ -195,10 +194,7 @@ export default function NewEngagementWizardPage() {
               ))}
             </select>
           </label>
-          <p className="text-[15px] text-ink-1">
-            Mode changes defaults, never capability. Bid lands on Organise; Mobilise on People;
-            Assure on Overview.
-          </p>
+          <p className="text-[15px] text-ink-1">{copy.wizard.modeHint}</p>
         </fieldset>
       )}
 
@@ -209,9 +205,9 @@ export default function NewEngagementWizardPage() {
           disabled={step === 0}
           onClick={() => setStep((s) => Math.max(0, s - 1))}
         >
-          Back
+          {copy.ui.back}
         </Button>
-        {step < STEPS.length - 1 ? (
+        {step < steps.length - 1 ? (
           <Button
             type="button"
             onClick={() => {
@@ -219,11 +215,11 @@ export default function NewEngagementWizardPage() {
               setStep((s) => s + 1);
             }}
           >
-            Continue
+            {copy.ui.continue}
           </Button>
         ) : (
           <Button type="button" disabled={create.isPending} onClick={() => void finish()}>
-            Create engagement
+            {copy.ui.createEngagement}
           </Button>
         )}
       </div>

@@ -22,17 +22,17 @@ export const copyCy: Copy = {
       {
         title: 'Diffinio da, yn gyhoeddus',
         body: 'Mae’r llyfr chwarae yn agored ac yn ddarllenadwy cyn i chi fewngofnodi. Pum piler, y seremonïau sy’n eu bwydo, a’r hyn y mae’n rhaid i bob un ei gynhyrchu. Dim byd yn cael ei sgorio nad yw’r ymarfer yn ei ofyn.',
-        proof: 'Ymarfer',
+        seeIn: 'Gweld yn Ymarfer',
       },
       {
         title: 'Cydosod y sgwad',
         body: 'Pob ymgeisydd wedi’i sgorio yn erbyn y rôl: sgiliau’r fframwaith gallu yn gyntaf, yna wedi’i addasu gan ddisgyblaeth cyflawni a dystiwyd. Un llinell datum ar 0.60 yn rhedeg trwy’r tabl cyfan fel y gellir darllen sgwad mewn un pas.',
-        proof: 'Sgwadiau',
+        seeIn: 'Gweld yn Sgwadiau',
       },
       {
         title: 'Ei ddarllen trwy unrhyw safon',
         body: 'Yr un sgwad, wedi’i asesu yn erbyn y safon sy’n llywodraethu’r cleient. GDS, Safon Gwasanaeth Digidol Cymru, adolygiad porth, neu ddyletswyddau rheoli gwybodaeth ar raglen gyfalaf.',
-        proof: 'Sicrwydd',
+        seeIn: 'Gweld yn Sicrwydd',
       },
     ],
 
@@ -61,6 +61,14 @@ export const copyCy: Copy = {
     standards: 'Safonau a gymhwyswyd',
     maturity: 'Aeddfedrwydd',
     changeEngagement: 'Newid ymgysylltiad',
+    maturityValue: 'Lefel {level} · {name}',
+  },
+
+  verdicts: {
+    met: 'Wedi’i gyrraedd',
+    atRisk: 'Mewn perygl',
+    notMet: 'Heb ei gyrraedd',
+    notAssessed: 'Heb ei asesu',
   },
 
   bands: {
@@ -77,12 +85,23 @@ export const copyCy: Copy = {
   },
 
   empty: {
-    noSquad: 'Dim sgwad wedi’i gydosod eto. Dewiswch archetype i sgorio’r pwll yn ei erbyn.',
-    noPeople: 'Dim pobl yn y pwll. Mewnforiwch o CSV y fframwaith gallu neu ychwanegwch rywun.',
+    noSquad: 'Dim sgwad wedi’i gydosod eto.',
+    noSquadWhy:
+      'Dewiswch archetype a chyfrifwch ffit i sgorio’r pwll yn erbyn y rolau y mae’r swydd hon eu hangen.',
+    noPeople: 'Dim pobl yn y pwll.',
+    noPeopleWhy:
+      'Y pwll yw’r hyn y gall y sefydliad ei faesu. Ychwanegwch bobl ar ymgysylltiad, neu fewnforiwch o’r fframwaith gallu.',
     noSignals:
       'Dim tystiolaeth cyflawni wedi’i chofnodi ar gyfer y person hwn. Mae eu lluosydd yn aros ar 1.00. Cysylltwch ffynhonnell neilltuo i ddeillio signalau daliadaeth a chapasiti yn awtomatig.',
     noGaps: 'Mae pob rôl wedi’i llenwi uwchben y datum. Dim byd yn aros ar gyfer yr archetype hwn.',
-    noEngagements: 'Dim ymgysylltiadau eto. Crëwch un i gydosod sgwad.',
+    noEngagements: 'Dim ymgysylltiadau eto.',
+    noEngagementsWhy:
+      'Ymgysylltiad yw’r swydd. Crëwch un i gydosod sgwad a’i ddarllen trwy’r safon sy’n llywodraethu’r gwaith.',
+    noScores: 'Dim sgoriau ffit eto.',
+    noScoresWhy: 'Dewiswch archetype a chyfrifwch ffit i weld pob rôl yn erbyn y datum.',
+    noAnalysis: 'Heb ei asesu eto.',
+    noAnalysisWhy:
+      'Rhedegwch yr asesiad i ddarllen y sgwad hwn trwy’r safon sy’n llywodraethu’r ymgysylltiad.',
   },
 
   errors: {
@@ -106,30 +125,57 @@ export const copyCy: Copy = {
     keelTitle: 'The Keel',
     keelLede:
       'Mae parhad yn reolaeth sicrwydd. Mae rolau craidd yn aros am gyfnod cyflawn ar 0.8 FTE neu uwch. Mae capasiti yn rhannu 70 / 20 / 10: ymrwymedig, dewisol, llac.',
+    pillar: 'Piler',
+    owns: 'Yn berchen',
+    produces: 'Beth mae’n ei gynhyrchu i sicrwydd',
+    ceremony: 'Seremoni',
+    cadence: 'Cadens',
+    emits: 'Yn allyrru',
+    signal: 'Signal',
+    youAreHere: 'dyma chi',
+    readyTitle: 'Diffiniad o barod',
+    doneTitle: 'Diffiniad o wneud',
+    keelNumbers: 'Isafswm rôl graidd {fte} FTE · capasiti {split}',
   },
 
   people: {
     eyebrow: 'Pobl',
     title: 'Y gallu a ddelir mewn gwirionedd',
-    lede: 'Sgiliau, argaeledd a thrymder a dystiwyd i bawb yn y pwll. Dyma olwg dylunio’r sefydliad: yr hyn y gall y sefydliad ei faesu, cyn i unrhyw ymgysylltiad ofyn amdano.',
+    lede: 'Sgiliau, argaeledd a thrymder a dystiwyd i bawb yn y pwll. Dyma’r hyn y gall y sefydliad ei faesu, cyn i unrhyw ymgysylltiad ofyn amdano.',
     viewAsGraph: 'Gweld fel graff',
     viewAsTable: 'Gweld fel tabl',
     pool: 'Y pwll',
+    person: 'Person',
     free: 'Rhydd',
+    available: 'ar gael',
     tenure: 'Daliadaeth',
     rigour: 'Tystiolaeth trymder',
+    skills: 'Sgiliau',
     strongestFit: 'Ffit gryfaf',
     unevidenced: 'Heb dystiolaeth',
     peopleInPool: 'Pobl yn y pwll',
     unallocated: 'FTE heb ei neilltuo',
     unevidencedCount: 'Heb dystiolaeth',
+    dataGap: 'Bwlch data, nid barn',
     graphHint:
       'Mae’r graff yn olwg benodol ar siâp y sefydliad. Y llwybr diofyn yw’r tabl.',
+    openPerson: 'Agor y person',
+    noSkills: 'Dim sgiliau wedi’u cofnodi.',
+    skillsHeld: 'Sgiliau a ddelir',
+    assignments: 'Neilltuadau',
+    rigourSignals: 'Tystiolaeth trymder',
+    noAssignments: 'Dim neilltuadau.',
+    fteHeld: '{fte} FTE',
+    assignmentCount: '{count} neilltuad',
+    personLede: '{fte} FTE · {count} neilltuad',
   },
 
   squads: {
     eyebrow: 'Sgwadiau',
     title: 'Rolau a’r ffit orau sydd ar gael',
+    indexTitle: 'Sgwadiau',
+    indexLede:
+      'Cydosodwch y tîm ar gyfer swydd benodol. Mae pob rôl yn cael ei sgorio yn erbyn y datum ar 0.60.',
     lede:
       'Mae pob ymgeisydd yn cael ei sgorio ar sgiliau’r fframwaith gallu, yna ei addasu gan drymder cyflawni a dystiwyd. Y llinell fertigol yw’r datum: 0.60, y pwynt isod nad yw rôl wedi’i llenwi’n ddiogel.',
     role: 'Rôl',
@@ -138,13 +184,31 @@ export const copyCy: Copy = {
     fitAgainstDatum: 'Ffit yn erbyn y datum',
     composite: 'Cyfansawdd',
     capacityFlag: 'capasiti',
-    selectHint: 'Dewiswch unrhyw rôl i weld pob ymgeisydd a’r rhesymeg y tu ôl i bob ffigur.',
+    selectHint: 'Agorwch rôl i weld y gwaith. Mae pob ymgeisydd un clic ymhellach.',
     gapsTitle: 'Yr hyn na all y sgwad hwn ei orchuddio eto',
     finding: 'Canfyddiad',
-    recommendation: 'Cam',
+    move: 'Cam',
     standardAtRisk: 'Safon mewn perygl',
+    moves: {
+      upskill: 'Datblygu',
+      second: 'Secondio',
+      recruit: 'Recriwtio',
+      rescope: 'Ail-gwmpasu',
+    },
+    roleEyebrow: 'Rôl yr archetype',
+    rankedCandidates: 'Pob ymgeisydd, wedi’i raddio',
+    candidateMeta: 'sgil {skill} · trymder ×{rigour}',
     compute: 'Ailgyfrifo ffit',
     archetype: 'Archetype',
+    phase: 'Cyfnod',
+    standard: 'Safon',
+    standardWales: 'Safon Gwasanaeth Digidol Cymru',
+    standardGds: 'Safon Gwasanaeth GDS',
+    confirmProposal: 'Cadarnhau cynnig',
+    allCandidates: 'Pob ymgeisydd',
+    unfilled: 'Heb lenwi',
+    recruit: 'Recriwtio',
+    bestAvailable: 'gorau sydd ar gael {score}',
   },
 
   assurance: {
@@ -152,12 +216,16 @@ export const copyCy: Copy = {
     title: 'Parodrwydd yn erbyn y safonau sy’n gymwys',
     lede:
       'Yr un sgwad, wedi’i ddarllen trwy ba bynnag safon sy’n llywodraethu’r cleient. Mae pwyntiau mewn perygl sy’n olrhain i rôl islaw’r datum yn cau trwy neilltuo yn hytrach nag trwy ddadl.',
+    indexLede:
+      'Dewiswch ymgysylltiad i ddarllen ei sgwad trwy’r safon sy’n llywodraethu’r gwaith.',
     point: 'Pwynt',
     requirement: 'Gofyniad',
     status: 'Statws',
     why: 'Pam',
     preparedness: 'Mynegai Parodrwydd',
     pointsAtRisk: 'Pwyntiau mewn perygl',
+    inThisPhase: 'Yn y cyfnod hwn',
+    openAssess: 'Agor asesu',
   },
 
   portfolio: {
@@ -169,9 +237,17 @@ export const copyCy: Copy = {
     nextGate: 'Porth nesaf',
     rolesBelowDatum: 'Rolau islaw’r datum',
     maturity: 'Aeddfedrwydd',
+    meanPreparedness: 'Parodrwydd cymedrig',
+    meanRigour: 'Trymder cymedrig',
+    openGaps: 'Bylchau agored',
+    withAnalysis: '{count} gydag asesiad',
+    acrossAnalysed: 'ar draws ymgysylltiadau a aseswyd',
+    deliveryDiscipline: 'disgyblaeth cyflawni',
+    statutoryCount: '{count} statudol',
   },
 
   tour: {
+    region: 'Taith dywys',
     step: 'Cam {current} o {total}',
     back: 'Yn ôl',
     next: 'Nesaf',
@@ -195,7 +271,7 @@ export const copyCy: Copy = {
       {
         view: 'squads-reason',
         href: '/squads?tour=4',
-        text: 'Dewiswch unrhyw rôl i agor y rhesymeg. Daw sgiliau o Fframwaith Gallu Proffesiwn Digidol a Data y Llywodraeth. Daw’r braced trymder o ddisgyblaeth cyflawni a dystiwyd. Mae llinell doredig yn golygu heb dystiolaeth, nad yw byth yr un peth â gwael.',
+        text: 'Agorwch unrhyw rôl i weld y gwaith. Daw sgiliau o Fframwaith Gallu Proffesiwn Digidol a Data y Llywodraeth. Daw’r braced trymder o ddisgyblaeth cyflawni a dystiwyd. Mae llinell doredig yn golygu heb dystiolaeth, nad yw byth yr un peth â gwael.',
       },
       {
         view: 'assurance',
@@ -220,7 +296,40 @@ export const copyCy: Copy = {
   legend: {
     held: 'sgil wedi’i ddal ar y lefel ofynnol',
     partial: 'wedi’i ddal islaw’r lefel ofynnol',
+    absent: 'sgil heb ei ddal',
     datum: 'datum, hyfywedd ar 0.60',
     bracket: 'braced trymder, llinell doredig pan nad oes tystiolaeth',
+  },
+
+  ui: {
+    loading: 'Yn llwytho…',
+    createEngagement: 'Creu ymgysylltiad',
+    showWorking: 'Dangos y gwaith',
+    hideWorking: 'Cuddio’r gwaith',
+    managePeople: 'Rheoli pobl',
+    back: 'Yn ôl',
+    continue: 'Parhau',
+  },
+
+  wizard: {
+    title: 'Creu ymgysylltiad',
+    stepsLabel: 'Camau creu',
+    steps: ['Cleient a gwasanaeth', 'Safon a chyfnod', 'Tîm', 'Modd'],
+    clientOrg: 'Sefydliad y cleient',
+    serviceName: 'Enw’r gwasanaeth',
+    sector: 'Sector',
+    sectorDigital: 'Gwasanaeth digidol',
+    sectorCapital: 'Rhaglen gyfalaf',
+    sectorHybrid: 'Hybrid',
+    serviceDescription: 'Disgrifiad o’r gwasanaeth',
+    standard: 'Safon',
+    phase: 'Cyfnod',
+    teamHint: 'Dechreuwch o dempled. Mewnforio CSV a thynnu o gyfeiriadur Entra yn cyrraedd yn nes ymlaen.',
+    template: 'Templed',
+    skipTemplate: 'Hepgor — ychwanegu tîm yn ddiweddarach',
+    mode: 'Modd',
+    modeHint:
+      'Mae modd yn newid rhagosodiadau, byth gallu. Mae Bid yn glanio ar Drefnu; Mobilise ar Bobl; Assure ar Sicrwydd.',
+    untitled: 'Ymgysylltiad heb deitl',
   },
 };

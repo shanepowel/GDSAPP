@@ -36,17 +36,17 @@ export const copy = {
       {
         title: 'Define good, in public',
         body: 'The playbook is open and readable before you sign in. Five pillars, the ceremonies that feed them, and what each one has to produce. Nothing is scored that the practice does not require.',
-        proof: 'Practice',
+        seeIn: 'See it in Practice',
       },
       {
         title: 'Assemble the squad',
         body: 'Every candidate scored against the role: capability framework skills first, then adjusted by evidenced delivery discipline. One datum line at 0.60 runs through the whole table so a squad reads in a single pass.',
-        proof: 'Squads',
+        seeIn: 'See it in Squads',
       },
       {
         title: 'Read it through any standard',
         body: 'The same squad, assessed against the standard that governs the client. GDS, the Wales Digital Service Standard, gateway review, or the information management duties on a capital programme.',
-        proof: 'Assurance',
+        seeIn: 'See it in Assurance',
       },
     ],
 
@@ -75,6 +75,14 @@ export const copy = {
     standards: 'Standards applied',
     maturity: 'Maturity',
     changeEngagement: 'Change engagement',
+    maturityValue: 'Level {level} · {name}',
+  },
+
+  verdicts: {
+    met: 'Met',
+    atRisk: 'At risk',
+    notMet: 'Not met',
+    notAssessed: 'Not assessed',
   },
 
   bands: {
@@ -91,12 +99,22 @@ export const copy = {
   },
 
   empty: {
-    noSquad: 'No squad assembled yet. Choose an archetype to score the pool against it.',
-    noPeople: 'No people in the pool. Import from the capability framework CSV or add someone.',
+    noSquad: 'No squad assembled yet.',
+    noSquadWhy: 'Choose an archetype and compute fit to score the pool against the roles this job needs.',
+    noPeople: 'No people in the pool.',
+    noPeopleWhy:
+      'The pool is what the organisation can field. Add people on an engagement, or import from the capability framework.',
     noSignals:
       'No delivery evidence recorded for this person. Their multiplier stays at 1.00. Connect an allocation source to derive tenure and capacity signals automatically.',
     noGaps: 'Every role is filled above the datum. Nothing outstanding for this archetype.',
-    noEngagements: 'No engagements yet. Create one to assemble a squad.',
+    noEngagements: 'No engagements yet.',
+    noEngagementsWhy:
+      'An engagement is the job. Create one to assemble a squad and read it through the standard that governs the work.',
+    noScores: 'No fit scores yet.',
+    noScoresWhy: 'Choose an archetype and compute fit to see every role against the datum.',
+    noAnalysis: 'Not assessed yet.',
+    noAnalysisWhy:
+      'Run the assessment to read this squad through the standard that governs the engagement.',
   },
 
   errors: {
@@ -120,30 +138,57 @@ export const copy = {
     keelTitle: 'The Keel',
     keelLede:
       'Continuity is an assurance control. Core roles stay for a complete phase at 0.8 FTE or above. Capacity splits 70 / 20 / 10: committed, discretionary, slack.',
+    pillar: 'Pillar',
+    owns: 'Owns',
+    produces: 'What it produces for assurance',
+    ceremony: 'Ceremony',
+    cadence: 'Cadence',
+    emits: 'Emits',
+    signal: 'Signal',
+    youAreHere: 'you are here',
+    readyTitle: 'Definition of ready',
+    doneTitle: 'Definition of done',
+    keelNumbers: 'Core role minimum {fte} FTE · capacity {split}',
   },
 
   people: {
     eyebrow: 'People',
     title: 'Capability we actually hold',
-    lede: 'Skills, availability and evidenced rigour for everyone in the pool. This is the org design view: what the organisation can field, before any one engagement asks for it.',
+    lede: 'Skills, availability and evidenced rigour for everyone in the pool. This is what the organisation can field, before any one engagement asks for it.',
     viewAsGraph: 'View as graph',
     viewAsTable: 'View as table',
     pool: 'The pool',
+    person: 'Person',
     free: 'Free',
+    available: 'available',
     tenure: 'Tenure',
     rigour: 'Rigour evidence',
+    skills: 'Skills',
     strongestFit: 'Strongest fit',
     unevidenced: 'Unevidenced',
     peopleInPool: 'People in pool',
     unallocated: 'Unallocated FTE',
     unevidencedCount: 'Unevidenced',
+    dataGap: 'A data gap, not a judgement',
     graphHint:
       'The graph is an explicit view of organisational shape. The default path is the table.',
+    openPerson: 'Open person',
+    noSkills: 'No skills recorded.',
+    skillsHeld: 'Skills held',
+    assignments: 'Assignments',
+    rigourSignals: 'Rigour evidence',
+    noAssignments: 'No assignments.',
+    fteHeld: '{fte} FTE',
+    assignmentCount: '{count} assignments',
+    personLede: '{fte} FTE · {count} assignments',
   },
 
   squads: {
     eyebrow: 'Squads',
     title: 'Roles and best available fit',
+    indexTitle: 'Squads',
+    indexLede:
+      'Assemble the team for a specific job. Every role is scored against the datum at 0.60.',
     lede:
       'Each candidate is scored on capability framework skills, then adjusted by evidenced delivery rigour. The vertical line is the datum: 0.60, the point below which a role is not safely filled.',
     role: 'Role',
@@ -152,13 +197,31 @@ export const copy = {
     fitAgainstDatum: 'Fit against datum',
     composite: 'Composite',
     capacityFlag: 'capacity',
-    selectHint: 'Select any role to see every candidate and the reasoning behind each figure.',
+    selectHint: 'Open a role to see the working. Every candidate sits one click further on.',
     gapsTitle: 'What this squad cannot yet cover',
     finding: 'Finding',
-    recommendation: 'Recommendation',
+    move: 'Move',
     standardAtRisk: 'Standard at risk',
+    moves: {
+      upskill: 'Upskill',
+      second: 'Second',
+      recruit: 'Recruit',
+      rescope: 'Rescope',
+    },
+    roleEyebrow: 'Archetype role',
+    rankedCandidates: 'Every candidate, ranked',
+    candidateMeta: 'skill {skill} · rigour ×{rigour}',
     compute: 'Recompute fit',
     archetype: 'Archetype',
+    phase: 'Phase',
+    standard: 'Standard',
+    standardWales: 'Wales Digital Service Standard',
+    standardGds: 'GDS Service Standard',
+    confirmProposal: 'Confirm proposal',
+    allCandidates: 'Every candidate',
+    unfilled: 'Unfilled',
+    recruit: 'Recruit',
+    bestAvailable: 'best available {score}',
   },
 
   assurance: {
@@ -166,12 +229,16 @@ export const copy = {
     title: 'Readiness against the standards that apply',
     lede:
       'The same squad, read through whichever standard the client is governed by. Points at risk that trace to a role below the datum close by assignment rather than by argument.',
+    indexLede:
+      'Choose an engagement to read its squad through the standard that governs the work.',
     point: 'Point',
     requirement: 'Requirement',
     status: 'Status',
     why: 'Why',
     preparedness: 'Preparedness Index',
     pointsAtRisk: 'Points at risk',
+    inThisPhase: 'In this phase',
+    openAssess: 'Open assess',
   },
 
   portfolio: {
@@ -183,9 +250,17 @@ export const copy = {
     nextGate: 'Next gate',
     rolesBelowDatum: 'Roles below datum',
     maturity: 'Maturity',
+    meanPreparedness: 'Mean preparedness',
+    meanRigour: 'Mean rigour',
+    openGaps: 'Open gaps',
+    withAnalysis: '{count} with analysis',
+    acrossAnalysed: 'across analysed engagements',
+    deliveryDiscipline: 'delivery discipline',
+    statutoryCount: '{count} statutory',
   },
 
   tour: {
+    region: 'Guided walk',
     step: 'Step {current} of {total}',
     back: 'Back',
     next: 'Next',
@@ -209,7 +284,7 @@ export const copy = {
       {
         view: 'squads-reason',
         href: '/squads?tour=4',
-        text: 'Select any role to open the reasoning. Skills come from the Government Digital and Data Profession Capability Framework. The rigour bracket comes from evidenced delivery discipline. Dashed means unevidenced, which is never the same as poor.',
+        text: 'Open any role to see the working. Skills come from the Government Digital and Data Profession Capability Framework. The rigour bracket comes from evidenced delivery discipline. Dashed means unevidenced, which is never the same as poor.',
       },
       {
         view: 'assurance',
@@ -234,8 +309,41 @@ export const copy = {
   legend: {
     held: 'skill held at required level',
     partial: 'held below required level',
+    absent: 'skill not held',
     datum: 'datum, viability at 0.60',
     bracket: 'rigour bracket, dashed when unevidenced',
+  },
+
+  ui: {
+    loading: 'Loading…',
+    createEngagement: 'Create engagement',
+    showWorking: 'Show working',
+    hideWorking: 'Hide working',
+    managePeople: 'Manage people',
+    back: 'Back',
+    continue: 'Continue',
+  },
+
+  wizard: {
+    title: 'Create engagement',
+    stepsLabel: 'Creation steps',
+    steps: ['Client and service', 'Standard and phase', 'Team', 'Mode'],
+    clientOrg: 'Client organisation',
+    serviceName: 'Service name',
+    sector: 'Sector',
+    sectorDigital: 'Digital service',
+    sectorCapital: 'Capital programme',
+    sectorHybrid: 'Hybrid',
+    serviceDescription: 'Service description',
+    standard: 'Standard',
+    phase: 'Phase',
+    teamHint: 'Start from a template. CSV import and Entra directory pull land in a later iteration.',
+    template: 'Template',
+    skipTemplate: 'Skip — add team later',
+    mode: 'Mode',
+    modeHint:
+      'Mode changes defaults, never capability. Bid lands on Organise; Mobilise on People; Assure on Assurance.',
+    untitled: 'Untitled engagement',
   },
 } as const;
 
@@ -249,6 +357,20 @@ type DeepLoose<T> = T extends string
 
 /** Shape of copy, with string values, so Welsh can differ from English literals. */
 export type Copy = DeepLoose<typeof copy>;
+
+/** Fill `{name}` slots in a complete sentence. Never concatenate fragments. */
+export function fillCopy(template: string, vars: Record<string, string | number>): string {
+  return Object.entries(vars).reduce(
+    (out, [key, value]) => out.replaceAll(`{${key}}`, String(value)),
+    template,
+  );
+}
+
+export function gapMoveLabel(copy: Copy, code: string | null | undefined): string {
+  const moves = copy.squads.moves;
+  if (code && code in moves) return moves[code as keyof typeof moves];
+  return copy.squads.recruit;
+}
 
 /**
  * Retired. Kept here only so a CI grep can fail the build if any of them

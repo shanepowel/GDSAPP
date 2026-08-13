@@ -13,6 +13,7 @@ import { DatumShellProvider } from '@/components/shell/datum-shell-context';
 import { TourBar } from '@/components/shell/TourBar';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
+import { fillCopy } from '@/lib/copy';
 import { MATURITY_LABELS, type MaturityLevel } from '@/lib/playbook/keel';
 
 const SECTIONS = [
@@ -90,7 +91,7 @@ export function DatumAppShell({
                   href={href}
                   aria-current={active ? 'page' : undefined}
                   className={[
-                    'block border-l-[3px] px-5 py-2.5 text-sm md:w-full',
+                    'flex min-h-11 flex-col justify-center border-l-[3px] px-5 py-2 text-sm md:w-full',
                     active
                       ? 'border-l-[color:var(--survey)] bg-[var(--raised)] font-semibold'
                       : 'border-l-transparent hover:bg-[var(--raised)]',
@@ -156,9 +157,9 @@ function ContextBar({
       <Field label={c.context.engagement}>
         {engagements.length > 1 ? (
           <select
-            defaultValue={engagement.id}
+            value={engagement.id}
             aria-label={c.context.changeEngagement}
-            className="bg-transparent font-[family-name:var(--font-mono)] text-[11px]"
+            className="border border-[color:var(--rule)] bg-[var(--stock)] px-1 py-0.5 font-[family-name:var(--font-mono)] text-[11px]"
             onChange={(e) => {
               const next = e.target.value;
               document.cookie = `${ENGAGEMENT_COOKIE}=${next};path=/;max-age=31536000;SameSite=Lax`;
@@ -185,7 +186,7 @@ function ContextBar({
       <Field label={c.context.standards}>{engagement.standards.join(' · ') || '—'}</Field>
       <div className="flex-1" />
       <Field label={c.context.maturity}>
-        Level {level} {maturityName}
+        {fillCopy(c.context.maturityValue, { level, name: maturityName })}
       </Field>
     </div>
   );

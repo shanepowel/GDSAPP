@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
+import { fillCopy } from '@/lib/copy';
 
 const TOUR_DISMISS_KEY = 'datum-tour-dismissed';
 
@@ -64,12 +65,10 @@ function TourBarInner({ engagementId }: { engagementId?: string }) {
 
   if (!visible) return null;
 
-  const stepLabel = c.tour.step
-    .replace('{current}', String(index + 1))
-    .replace('{total}', String(steps.length));
+  const stepLabel = fillCopy(c.tour.step, { current: index + 1, total: steps.length });
 
   return (
-    <div className="tour-bar no-print" role="region" aria-label="Guided walk">
+    <div className="tour-bar no-print" role="region" aria-label={c.tour.region}>
       <div className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.12em] opacity-65">
         {stepLabel}
       </div>

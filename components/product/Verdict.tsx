@@ -1,21 +1,24 @@
 'use client';
 
+import { useI18n } from '@/components/app/LocaleProvider';
+import { getCopy } from '@/lib/copy-i18n';
+
 const VERDICTS = {
-  met: { label: 'Met', glyph: '●', wash: 'var(--verdict-met-wash)', ink: 'var(--verdict-met)' },
+  met: { key: 'met', glyph: '●', wash: 'var(--verdict-met-wash)', ink: 'var(--verdict-met)' },
   'at-risk': {
-    label: 'At risk',
+    key: 'atRisk',
     glyph: '▲',
     wash: 'var(--verdict-at-risk-wash)',
     ink: 'var(--verdict-at-risk)',
   },
   'not-met': {
-    label: 'Not met',
+    key: 'notMet',
     glyph: '■',
     wash: 'var(--verdict-not-met-wash)',
     ink: 'var(--verdict-not-met)',
   },
   'not-assessed': {
-    label: 'Not assessed',
+    key: 'notAssessed',
     glyph: '○',
     wash: 'var(--verdict-unassessed-wash)',
     ink: 'var(--verdict-unassessed)',
@@ -31,14 +34,17 @@ export function Verdict({
   value: VerdictValue | string;
   onOpenChain?: () => void;
 }) {
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
   const v = VERDICTS[value as VerdictValue] ?? VERDICTS['not-assessed'];
+  const label = copy.verdicts[v.key];
   const content = (
     <span
       className="inline-flex items-center gap-1.5 rounded-[2px] px-2 py-1 text-[13px] font-medium"
       style={{ background: v.wash, color: v.ink }}
     >
       <span aria-hidden>{v.glyph}</span>
-      <span>{v.label}</span>
+      <span>{label}</span>
     </span>
   );
 
