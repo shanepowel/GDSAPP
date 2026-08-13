@@ -4,8 +4,6 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
 import { Button } from '@/components/ui/Button';
@@ -61,8 +59,6 @@ export default function TenderPage() {
           : m.engagement.tenderTitle
       }
     >
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
       {engagement && engagement.requirements.length > 1 && (
         <RequirementSelector
           requirements={engagement.requirements}
@@ -286,7 +282,7 @@ export default function TenderPage() {
           </a>
         </>
       )}
-      <Link href={`/engagements/${id}`} className="mt-6 inline-block text-sm text-brand hover:underline">
+      <Link href={`/squads/${id}`} className="mt-6 inline-block text-sm text-brand hover:underline">
         Back to engagement
       </Link>
     </AppShell>

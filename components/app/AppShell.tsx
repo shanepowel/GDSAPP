@@ -10,9 +10,6 @@ export function AppShell({
 }: {
   title: string;
   children: React.ReactNode;
-  actions?: React.ReactNode;
-  standardId?: 'wales' | 'gds' | string;
-  orgLabel?: string;
   hideTitle?: boolean;
 }) {
   const plate = useEngagementPlate();

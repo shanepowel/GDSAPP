@@ -4,8 +4,6 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
@@ -168,7 +166,7 @@ function RequirementForm({
           <Button type="submit" disabled={isPending}>
             {labels.save}
           </Button>
-          <Link href={`/engagements/${engagementId}`}>
+          <Link href={`/squads/${engagementId}`}>
             <Button variant="secondary">{labels.cancel}</Button>
           </Link>
         </div>
@@ -184,7 +182,7 @@ export default function RequirementPage() {
   const { data: roleLevels } = trpc.engagement.roleLevels.useQuery();
   const update = trpc.engagement.updateRequirement.useMutation({
     onSuccess: () => {
-      window.location.href = `/engagements/${id}`;
+      window.location.href = `/squads/${id}`;
     },
   });
 
@@ -201,8 +199,6 @@ export default function RequirementPage() {
 
   return (
     <AppShell title={m.engagement.requirementTitle}>
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
       {data && data.requirements.length > 1 && (
         <RequirementSelector
           requirements={data.requirements}

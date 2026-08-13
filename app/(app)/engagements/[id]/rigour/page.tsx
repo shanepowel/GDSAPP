@@ -13,8 +13,6 @@ import {
   Cell,
 } from 'recharts';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
@@ -143,7 +141,7 @@ function RigourEditor({
         Save assessment
       </Button>
       <Link
-        href={`/engagements/${engagementId}`}
+        href={`/squads/${engagementId}`}
         className="mt-4 inline-block text-sm text-brand hover:underline"
       >
         Back to engagement
@@ -176,8 +174,6 @@ export default function RigourPage() {
 
   return (
     <AppShell title={m.engagement.rigourTitle}>
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
       {engagement && engagement.requirements.length > 1 && (
         <RequirementSelector
           requirements={engagement.requirements}

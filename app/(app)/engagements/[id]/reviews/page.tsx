@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
@@ -47,10 +45,8 @@ export default function ReviewsPage() {
   );
 
   return (
-    <AppShell title={m.reviews.title} standardId={engagement?.standardId}>
+    <AppShell title={m.reviews.title}>
       <DeploymentBanner />
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
       <p className="mb-4 text-sm text-text-muted">{m.reviews.intro}</p>
       {engagement?.requirements && (
         <RequirementSelector
@@ -202,7 +198,7 @@ export default function ReviewsPage() {
         </ul>
       </section>
 
-      <Link href={`/engagements/${id}`} className="mt-6 inline-block text-sm text-brand hover:underline">
+      <Link href={`/squads/${id}`} className="mt-6 inline-block text-sm text-brand hover:underline">
         ← {m.engagement.subOverview}
       </Link>
     </AppShell>

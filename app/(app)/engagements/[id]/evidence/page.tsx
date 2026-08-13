@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { Button } from '@/components/ui/Button';
 import { ProvenanceChip } from '@/components/product/ProvenanceChip';
 import { useI18n } from '@/components/app/LocaleProvider';
@@ -55,8 +53,6 @@ export default function EvidenceLedgerPage() {
 
   return (
     <AppShell title={m.engagement.evidenceTitle}>
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
       <p className="mb-4 text-sm text-ink-1">{m.engagement.evidenceIntro}</p>
 
       <form

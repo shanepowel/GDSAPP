@@ -6,11 +6,6 @@ export const BRAND = {
   tagline: 'The team is the delivery plan',
   legalLine: 'Turner & Townsend',
   site: 'https://www.turnerandtownsend.com',
-  logos: {
-    lockupOnDark: '/brand/assemble-lockup-on-dark.svg',
-    lockupOnLight: '/brand/assemble-lockup-on-light.svg',
-    icon: '/brand/assemble-icon.svg',
-  },
   colors: {
     blue: '#003cb4',
     blueDark: '#002e8a',

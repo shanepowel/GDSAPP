@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { FileText, ShieldAlert } from 'lucide-react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { AnalysisTabs, type AnalysisTabId } from '@/components/app/AnalysisTabs';
 import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { Card } from '@/components/app/Card';
@@ -69,9 +67,9 @@ export default function AnalysisPage() {
 
   if (!result) {
     return (
-      <AppShell title={m.engagement.analysisTitle} standardId={data?.standardId}>
+      <AppShell title={m.engagement.analysisTitle}>
         <p className="mt-4 text-text-muted">{m.engagement.noAnalysis}</p>
-        <Link href={`/engagements/${id}`}>
+        <Link href={`/squads/${id}`}>
           <Button className="mt-4">{m.engagement.backToRunAnalysis}</Button>
         </Link>
       </AppShell>
@@ -91,15 +89,8 @@ export default function AnalysisPage() {
     data?.standardId === 'wales' ? m.engagement.standardWales : m.engagement.standardGds;
 
   return (
-    <AppShell
-      title={data?.name ?? 'Engagement'}
-      standardId={data?.standardId}
-      orgLabel="Engagement"
-      hideTitle
-    >
+    <AppShell title={data?.name ?? 'Engagement'} hideTitle>
       <DeploymentBanner />
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
       {data?.requirements && data.requirements.length > 1 && (
         <RequirementSelector
           requirements={data.requirements}
@@ -404,7 +395,7 @@ export default function AnalysisPage() {
       </div>
 
       <div className="no-print mt-8 flex flex-wrap gap-3">
-        <Link href={`/engagements/${id}`}>
+        <Link href={`/squads/${id}`}>
           <Button variant="secondary">Back to engagement</Button>
         </Link>
       </div>

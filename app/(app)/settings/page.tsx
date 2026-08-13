@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
 import { Card } from '@/components/app/Card';
 import { Button } from '@/components/ui/Button';
 import { useTheme } from '@/components/app/ThemeProvider';
@@ -20,7 +19,6 @@ export default function SettingsPage() {
 
   return (
     <AppShell title={m.settings.title}>
-      <AppNav />
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6">
           <h2 className="font-semibold text-text">Appearance</h2>
@@ -137,10 +135,10 @@ export default function SettingsPage() {
           scores against this playbook.
         </p>
         <Link
-          href="/playbook"
+          href="/practice/pillars"
           className="mt-4 inline-block text-sm font-medium text-brand underline-offset-2 hover:underline"
         >
-          Open playbook
+          Open practice
         </Link>
       </Card>
 

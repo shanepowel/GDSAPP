@@ -4,7 +4,6 @@ import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
 import { Card } from '@/components/app/Card';
 import { Button } from '@/components/ui/Button';
 import { useI18n } from '@/components/app/LocaleProvider';
@@ -136,7 +135,6 @@ export default function ProfilePage() {
 
   return (
     <AppShell title={m.profile.title} hideTitle>
-      <AppNav />
       <p className="mb-8 text-sm text-text-muted">{m.profile.subtitle}</p>
 
       {isLoading && <p className="text-text-muted">{m.common.loading}</p>}
@@ -161,8 +159,8 @@ export default function ProfilePage() {
             <Link href="/settings" className="text-sm text-brand hover:underline">
               Organisation settings
             </Link>
-            <Link href="/engagements" className="text-sm text-brand hover:underline">
-              ← {m.nav.engagements}
+            <Link href="/squads" className="text-sm text-brand hover:underline">
+              ← Squads
             </Link>
           </Card>
         </div>

@@ -12,8 +12,6 @@ import {
   CartesianGrid,
 } from 'recharts';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
 import { useI18n } from '@/components/app/LocaleProvider';
@@ -44,8 +42,6 @@ export default function HistoryPage() {
 
   return (
     <AppShell title={m.engagement.historyTitle}>
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
       {engagement?.requirements && (
         <RequirementSelector
           requirements={engagement.requirements}
@@ -137,7 +133,7 @@ export default function HistoryPage() {
           ))}
         </tbody>
       </table>
-      <Link href={`/engagements/${id}`} className="mt-6 inline-block text-sm text-brand hover:underline">
+      <Link href={`/squads/${id}`} className="mt-6 inline-block text-sm text-brand hover:underline">
         Back to overview
       </Link>
     </AppShell>

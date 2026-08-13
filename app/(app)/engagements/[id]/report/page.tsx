@@ -3,8 +3,6 @@
 import { useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { Button } from '@/components/ui/Button';
 import { TitleBlock } from '@/components/product/TitleBlock';
 import { IndexValue } from '@/components/product/IndexValue';
@@ -73,8 +71,6 @@ export default function ReportPage() {
 
   return (
     <AppShell title={m.engagement.reportTitle}>
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
 
       <header className="mb-6 no-print">
         <h1 className="text-[24px] font-semibold tracking-[-0.02em] text-ink-0">

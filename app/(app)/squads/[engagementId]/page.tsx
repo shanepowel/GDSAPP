@@ -77,6 +77,15 @@ export default function SquadFitPage() {
         <Link href={`/squads/${id}/gaps`} className="text-sm underline-offset-2 hover:underline">
           {copy.squads.gapsTitle}
         </Link>
+        <Link href={`/engagements/${id}/team/people`} className="text-sm underline-offset-2 hover:underline">
+          {copy.people.pool}
+        </Link>
+        <Link
+          href={`/engagements/${id}/team/proposal${archetypeId ? `?archetype=${encodeURIComponent(archetypeId)}` : ''}`}
+          className="text-sm underline-offset-2 hover:underline"
+        >
+          Confirm proposal
+        </Link>
       </div>
 
       <div className="legend mb-4 flex flex-wrap gap-5 font-data text-[10px] text-[color:var(--graphite)]">

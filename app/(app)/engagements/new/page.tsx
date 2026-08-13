@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
 import { Button } from '@/components/ui/Button';
 import { useI18n } from '@/components/app/LocaleProvider';
 import {
@@ -59,14 +58,13 @@ export default function NewEngagementWizardPage() {
       mode === 'mobilise'
         ? `/engagements/${engagement.id}/organise/people`
         : mode === 'assure'
-          ? `/engagements/${engagement.id}`
+          ? `/squads/${engagement.id}`
           : `/engagements/${engagement.id}/organise`;
     router.push(landing);
   }
 
   return (
     <AppShell title={m.engagements.new}>
-      <AppNav />
       <ol className="mb-8 flex flex-wrap gap-4" aria-label="Creation steps">
         {STEPS.map((label, i) => (
           <li

@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { Button } from '@/components/ui/Button';
 import { FitStrip } from '@/components/team-fit/FitStrip';
 import { useI18n } from '@/components/app/LocaleProvider';
@@ -48,10 +46,8 @@ export default function TeamFitProposalPage() {
 
   return (
     <AppShell title={m.teamFit.proposalTitle}>
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
       <p className="mb-4">
-        <Link href={`/engagements/${id}/team`} className="text-sm text-brand hover:underline">
+        <Link href={`/squads/${id}`} className="text-sm text-brand hover:underline">
           ← {m.teamFit.title}
         </Link>
       </p>

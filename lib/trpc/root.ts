@@ -12,7 +12,6 @@ import { assuranceRouter } from '@/lib/trpc/routers/assurance';
 import { crosswalkRouter } from '@/lib/trpc/routers/crosswalk';
 import { integrationsRouter } from '@/lib/trpc/routers/integrations';
 import { teamFitRouter } from '@/lib/trpc/routers/teamFit';
-import { playbookRouter } from '@/lib/trpc/routers/playbook';
 
 export const appRouter = router({
   engagement: engagementRouter,
@@ -28,7 +27,6 @@ export const appRouter = router({
   crosswalk: crosswalkRouter,
   integrations: integrationsRouter,
   teamFit: teamFitRouter,
-  playbook: playbookRouter,
 });
 
 export type AppRouter = typeof appRouter;

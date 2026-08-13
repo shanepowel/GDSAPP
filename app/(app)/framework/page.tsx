@@ -1,7 +1,6 @@
 'use client';
 
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
 import { Card } from '@/components/app/Card';
 import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { Eyebrow } from '@/components/app/Eyebrow';
@@ -15,9 +14,8 @@ export default function FrameworkPage() {
   const recordBaseline = trpc.framework.recordBaseline.useMutation({ onSuccess: () => refetch() });
 
   return (
-    <AppShell title={m.framework.title} orgLabel="Standards IP">
+    <AppShell title={m.framework.title}>
       <DeploymentBanner />
-      <AppNav />
       <p className="mb-6 text-sm text-text-muted">
         Compares the live dependency map in the database with the last recorded baseline snapshot.
         Run after updating standards or DDaT ingest.

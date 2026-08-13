@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { ProvenanceChip } from '@/components/product/ProvenanceChip';
 import { Verdict } from '@/components/product/Verdict';
@@ -63,8 +61,6 @@ export default function CriterionDetailPage() {
 
   return (
     <AppShell title={m.engagement.assessTitle}>
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
 
       <nav className="mb-4 text-sm text-ink-2" aria-label="Breadcrumb">
         <Link

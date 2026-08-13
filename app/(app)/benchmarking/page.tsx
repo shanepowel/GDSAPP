@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
 import { Card } from '@/components/app/Card';
 import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { Eyebrow } from '@/components/app/Eyebrow';
@@ -34,9 +33,8 @@ export default function BenchmarkingPage() {
   const firstEngagement = engagements?.[0];
 
   return (
-    <AppShell title={m.benchmarking.title} orgLabel="Organisation-wide">
+    <AppShell title={m.benchmarking.title}>
       <DeploymentBanner />
-      <AppNav />
       <p className="mb-6 text-sm text-text-muted">
         Record delivery and assessment outcomes over time. Use for benchmarking across call-offs and
         phases (schema section 22).

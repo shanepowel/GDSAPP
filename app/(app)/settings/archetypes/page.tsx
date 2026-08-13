@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
 import { Button } from '@/components/ui/Button';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
@@ -16,7 +15,6 @@ export default function ArchetypeLibraryPage() {
 
   return (
     <AppShell title={m.teamFit.archetypeLibrary}>
-      <AppNav />
       <p className="mb-4 max-w-2xl text-sm text-text-muted">{m.teamFit.archetypeLibraryIntro}</p>
       <p className="mb-4">
         <Link href="/settings" className="text-sm text-brand hover:underline">

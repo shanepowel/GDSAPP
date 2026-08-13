@@ -1,6 +1,6 @@
 import { BRAND } from '@/lib/brand';
 
-/** Hex mark + ASSEMBLE wordmark (placeholder lockup; replace SVG assets when final art lands). */
+/** Hex mark + Datum wordmark. */
 export function AssembleHexIcon({
   className,
   color = 'currentColor',

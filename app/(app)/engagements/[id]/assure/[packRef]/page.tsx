@@ -3,8 +3,6 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { Button } from '@/components/ui/Button';
 import { CrosswalkMatrix } from '@/components/product/CrosswalkMatrix';
 import { GatePackGapList } from '@/components/product/GatePackGapList';
@@ -39,8 +37,6 @@ export default function AssurePackPage() {
 
   return (
     <AppShell title={detail.data?.title ?? m.engagement.assureTitle}>
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
 
       <p className="mb-4">
         <Link

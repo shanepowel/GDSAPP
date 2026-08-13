@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
@@ -35,10 +33,8 @@ export default function TeamPage() {
 
   return (
     <AppShell title={m.teamFit.peopleTitle}>
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
       <p className="mb-4 text-sm">
-        <Link href={`/engagements/${id}/team`} className="text-brand underline-offset-2 hover:underline">
+        <Link href={`/squads/${id}`} className="text-brand underline-offset-2 hover:underline">
           ← {m.teamFit.title}
         </Link>
       </p>

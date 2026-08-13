@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
 import { Card } from '@/components/app/Card';
 import { DeploymentBanner } from '@/components/app/DeploymentBanner';
 import { HANDOVER_SECTIONS } from '@/lib/handover/sections';
@@ -14,9 +13,8 @@ export default function HandoverPage() {
   const features = getClientDeploymentFeatures();
 
   return (
-    <AppShell title="Handover and training pack" orgLabel="Play B · client-owned instance">
+    <AppShell title="Handover and training pack">
       <DeploymentBanner />
-      <AppNav />
 
       {!features.clientAssuranceLabels && (
         <p className="mb-6 rounded-lg border border-border bg-surface-alt p-4 text-sm text-text-muted">

@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 
@@ -15,7 +14,6 @@ export default function ArchetypeDetailPage() {
 
   return (
     <AppShell title={data?.name ?? m.teamFit.archetypeLibrary}>
-      <AppNav />
       <p className="mb-4">
         <Link href="/settings/archetypes" className="text-sm text-brand hover:underline">
           ← {m.teamFit.archetypeLibrary}

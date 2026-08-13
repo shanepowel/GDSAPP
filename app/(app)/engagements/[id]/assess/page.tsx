@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { useEvidenceChain } from '@/components/chain/EvidenceChainRail';
 import { ENGAGEMENT_PHASES } from '@/lib/standards/catalog';
@@ -45,9 +43,7 @@ export default function AssessPage() {
   const applicable = data?.criteria.length ?? 0;
 
   return (
-    <AppShell title={m.engagement.assessTitle} standardId={engagement?.standardId}>
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
+    <AppShell title={m.engagement.assessTitle}>
 
       <header className="mb-6 border-b-2 border-ink-0 pb-4">
         <p className="font-data text-[11px] uppercase tracking-[0.04em] text-ink-2">

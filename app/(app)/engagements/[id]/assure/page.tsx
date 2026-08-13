@@ -3,8 +3,6 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 
@@ -16,8 +14,6 @@ export default function AssurePage() {
 
   return (
     <AppShell title={m.engagement.assureTitle}>
-      <AppNav />
-      <EngagementSubNav engagementId={id} />
       <header className="mb-6">
         <h1 className="text-[24px] font-semibold tracking-[-0.02em] text-ink-0">
           {m.engagement.assureTitle}
