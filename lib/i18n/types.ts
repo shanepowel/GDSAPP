@@ -65,6 +65,7 @@ export type Messages = {
     assignError: string;
     noRolesYet: string;
     noRequirementYet: string;
+    roleForPerson: string;
     removePerson: string;
     editSkills: string;
     judgementsTitle: string;

@@ -18,6 +18,10 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/app/Card';
+import { AddPersonForm, PersonRoleSelect } from '@/components/org-design/PersonRoleControls';
+import { useI18n } from '@/components/app/LocaleProvider';
+import { fillCopy } from '@/lib/copy';
+import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
 import type { LayoutMode, OrgChartHandle } from '@/components/org-design/OrgChart';
 import { OrgTable } from '@/components/org/OrgTable';
@@ -65,6 +69,8 @@ export function DesignWorkspace({
   hideHeading,
   initialViewMode = 'table',
 }: Props) {
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
   const utils = trpc.useUtils();
   const chartRef = useRef<OrgChartHandle>(null);
   const [mainView, setMainView] = useState<MainView>(initialMainView);
@@ -89,8 +95,6 @@ export function DesignWorkspace({
     targetId: '',
     type: 'includes' as 'includes' | 'reports-to' | 'collaborates-with',
   });
-  const [personDraft, setPersonDraft] = useState({ name: '', email: '', entityId: '' });
-  const [pendingPersonRoles, setPendingPersonRoles] = useState<Record<string, string>>({});
   const [scenarioName, setScenarioName] = useState('');
   const [snapshotName, setSnapshotName] = useState('');
   const [aiMessage, setAiMessage] = useState('');
@@ -167,18 +171,7 @@ export function DesignWorkspace({
   const deleteRel = trpc.orgDesign.deleteRelationship.useMutation({
     onSuccess: invalidate,
   });
-  const createPerson = trpc.orgDesign.createPerson.useMutation({
-    onSuccess: async () => {
-      setPersonDraft({ name: '', email: '', entityId: '' });
-      await invalidate();
-    },
-    onError: () => setMessage('Could not add that person. Try again.'),
-  });
   const deletePerson = trpc.orgDesign.deletePerson.useMutation({ onSuccess: invalidate });
-  const setPersonRole = trpc.orgDesign.setPersonRole.useMutation({
-    onSuccess: invalidate,
-    onError: () => setMessage('Could not assign that role. Try again.'),
-  });
   const applyTemplate = trpc.orgDesign.applyTemplate.useMutation({
     onSuccess: async (r) => {
       setShowTemplates(false);
@@ -291,6 +284,13 @@ export function DesignWorkspace({
   const canWrite = !readOnly && (!engagementId || engagementQ.data?.binding === 'scenario');
   const peopleWritable =
     !readOnly && (!engagementId || engagementQ.data?.binding === 'live');
+  const peopleLockReason = readOnly
+    ? undefined
+    : engagementId && engagementQ.isLoading
+      ? copy.ui.loading
+      : engagementId && engagementQ.data && engagementQ.data.binding !== 'live'
+        ? copy.people.lockedToLive
+        : undefined;
   const liveLockedOnEngagement =
     Boolean(engagementId) && engagementQ.data?.binding === 'live';
   const roleEntities = entities.filter((e) => e.type === 'role');
@@ -635,119 +635,44 @@ export function DesignWorkspace({
       {mainView === 'people' && (
         <Card>
           {peopleWritable ? (
-            <form
-              className="mb-4 flex flex-wrap items-end gap-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!personDraft.name.trim()) return;
-                createPerson.mutate({
-                  name: personDraft.name.trim(),
-                  email: personDraft.email || null,
-                  ...(personDraft.entityId ? { assignEntityId: personDraft.entityId } : {}),
-                });
-              }}
-            >
-              <label className="text-sm">
-                <span className="mb-1 block text-text-muted">Name</span>
-                <input
-                  className="rounded-md border border-border bg-surface px-2 py-1.5 text-sm"
-                  value={personDraft.name}
-                  onChange={(e) => setPersonDraft((d) => ({ ...d, name: e.target.value }))}
-                  required
-                />
-              </label>
-              <label className="text-sm">
-                <span className="mb-1 block text-text-muted">Email</span>
-                <input
-                  className="rounded-md border border-border bg-surface px-2 py-1.5 text-sm"
-                  type="email"
-                  value={personDraft.email}
-                  onChange={(e) => setPersonDraft((d) => ({ ...d, email: e.target.value }))}
-                />
-              </label>
-              <label className="text-sm">
-                <span className="mb-1 block text-text-muted">Role</span>
-                <select
-                  className="min-w-[12rem] rounded-md border border-border bg-surface px-2 py-1.5 text-sm"
-                  name="new-person-role"
-                  value={personDraft.entityId}
-                  disabled={roleEntities.length === 0}
-                  aria-label="Role"
-                  onChange={(e) => setPersonDraft((d) => ({ ...d, entityId: e.target.value }))}
-                >
-                  <option value="">Assign role…</option>
-                  {roleEntities.map((role) => (
-                    <option key={role.id} value={role.id}>
-                      {role.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <Button type="submit" size="sm" disabled={createPerson.isPending || !personDraft.name.trim()}>
-                Add person
-              </Button>
-            </form>
+            <AddPersonForm roleEntities={roleEntities} formId="org-add-person" />
+          ) : peopleLockReason ? (
+            <p className="mb-3 text-sm text-text-muted">{peopleLockReason}</p>
           ) : null}
           {peopleWritable && roleEntities.length === 0 ? (
-            <p className="mb-3 text-sm text-text-muted">
-              No roles in this design yet, so a role cannot be assigned.
-            </p>
+            <p className="mb-3 text-sm text-text-muted">{copy.people.noRolesYet}</p>
           ) : null}
           <ul className="divide-y divide-border">
             {people.map((p) => {
               const assigned = assignments.filter((a) => a.personId === p.id);
-              const currentRoleId =
-                pendingPersonRoles[p.id] ?? assigned[0]?.entityId ?? '';
+              const currentRoleId = assigned[0]?.entityId ?? '';
+              const assignedNames = assigned
+                .map((a) => entities.find((e) => e.id === a.entityId)?.name ?? a.entityId)
+                .filter(Boolean);
               return (
                 <li key={p.id} className="flex flex-wrap items-start justify-between gap-2 py-3">
                   <div className="min-w-[16rem] flex-1">
                     <p className="font-medium text-text">{p.name}</p>
-                    <p className="text-sm text-text-muted">{p.email || 'No email'} · {p.fte}% FTE</p>
+                    <p className="text-sm text-text-muted">
+                      {fillCopy(copy.people.emailAndFte, {
+                        email: p.email || copy.people.noEmail,
+                        fte: p.fte,
+                      })}
+                    </p>
                     {peopleWritable ? (
-                      <label className="mt-2 block text-sm">
-                        <span className="text-text-muted">Role</span>
-                        <select
-                          className="mt-1 w-full max-w-sm rounded-md border border-border bg-surface px-2 py-1.5 text-sm"
-                          name={`person-role-${p.id}`}
+                      <div className="mt-2 max-w-sm">
+                        <PersonRoleSelect
+                          personId={p.id}
+                          personName={p.name}
                           value={currentRoleId}
-                          disabled={roleEntities.length === 0}
-                          aria-label={`${p.name} Role`}
-                          onChange={(e) => {
-                            const entityId = e.target.value || null;
-                            setPendingPersonRoles((current) => ({
-                              ...current,
-                              [p.id]: entityId ?? '',
-                            }));
-                            setPersonRole.mutate(
-                              { personId: p.id, entityId },
-                              {
-                                onError: () => {
-                                  setPendingPersonRoles((current) => {
-                                    const next = { ...current };
-                                    delete next[p.id];
-                                    return next;
-                                  });
-                                },
-                              },
-                            );
-                          }}
-                        >
-                          <option value="">Assign role…</option>
-                          {roleEntities.map((role) => (
-                            <option key={role.id} value={role.id}>
-                              {role.name}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+                          roleEntities={roleEntities}
+                        />
+                      </div>
                     ) : (
                       <p className="mt-1 text-sm text-text-muted">
-                        Assigned:{' '}
-                        {assigned.length
-                          ? assigned
-                              .map((a) => entities.find((e) => e.id === a.entityId)?.name ?? a.entityId)
-                              .join(', ')
-                          : 'none'}
+                        {assignedNames.length
+                          ? fillCopy(copy.people.assignedTo, { roles: assignedNames.join(', ') })
+                          : copy.people.unassigned}
                       </p>
                     )}
                   </div>
@@ -757,14 +682,14 @@ export function DesignWorkspace({
                       variant="destructive"
                       onClick={() => deletePerson.mutate({ id: p.id })}
                     >
-                      Remove
+                      {copy.people.remove}
                     </Button>
                   )}
                 </li>
               );
             })}
             {people.length === 0 && (
-              <li className="py-6 text-sm text-text-muted">No people in the org roster yet.</li>
+              <li className="py-6 text-sm text-text-muted">{copy.empty.noPeople}</li>
             )}
           </ul>
         </Card>

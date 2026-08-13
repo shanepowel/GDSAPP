@@ -4,6 +4,7 @@ import { Fragment, useState } from 'react';
 import Link from 'next/link';
 import { EmptyState, PageHeader, StatStrip, TextLink } from '@/components/datum/PageChrome';
 import { DesignWorkspace } from '@/components/org-design/DesignWorkspace';
+import { AddPersonForm, PersonRoleSelect } from '@/components/org-design/PersonRoleControls';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { ContinuityFigure, FigureFrame } from '@/components/teach/figures';
 import { useI18n } from '@/components/app/LocaleProvider';
@@ -20,6 +21,9 @@ export default function PeoplePage() {
   const [openId, setOpenId] = useState<string | null>(null);
   const people = data?.people ?? [];
   const assignments = data?.assignments ?? [];
+  const roleEntities = (data?.entities ?? [])
+    .filter((e) => e.type === 'role')
+    .map((e) => ({ id: e.id, name: e.name }));
   const signalCount = new Map<string, number>();
   for (const s of signals ?? []) {
     signalCount.set(s.personId, (signalCount.get(s.personId) ?? 0) + 1);
@@ -43,6 +47,7 @@ export default function PeoplePage() {
         lede={copy.people.lede}
         actions={
           <>
+            <TextLink href="#add-person">{copy.people.addPersonAction}</TextLink>
             <TextLink href="#pool">{copy.people.pool}</TextLink>
             <TextLink href="/people/graph">{copy.people.viewAsGraph}</TextLink>
             <TextLink href={manageHref}>{copy.ui.managePeople}</TextLink>
@@ -83,19 +88,19 @@ export default function PeoplePage() {
       >
         {copy.people.pool}
       </h2>
+      <AddPersonForm roleEntities={roleEntities} />
+      {roleEntities.length === 0 ? (
+        <p className="mb-3 text-sm text-[color:var(--graphite)]">{copy.people.noRolesYet}</p>
+      ) : null}
       {people.length === 0 ? (
-        <EmptyState
-          title={copy.empty.noPeople}
-          why={copy.empty.noPeopleWhy}
-          actionHref={manageHref}
-          actionLabel={copy.ui.managePeople}
-        />
+        <EmptyState title={copy.empty.noPeople} why={copy.empty.noPeopleWhy} />
       ) : (
         <div className="sheet overflow-x-auto">
           <table>
             <thead>
               <tr>
                 <th>{copy.people.person}</th>
+                <th>{copy.people.role}</th>
                 <th>{copy.people.free}</th>
                 <th>{copy.people.rigour}</th>
                 <th>{copy.people.skills}</th>
@@ -109,6 +114,8 @@ export default function PeoplePage() {
                 const free = Math.max(0, (p.fte - used) / 100);
                 const rigour = signalCount.get(p.id) ?? 0;
                 const open = openId === p.id;
+                const currentRoleId =
+                  assignments.find((a) => a.personId === p.id)?.entityId ?? '';
                 return (
                   <Fragment key={p.id}>
                     <tr className={open ? 'is-open' : undefined}>
@@ -122,6 +129,15 @@ export default function PeoplePage() {
                         >
                           <span className="font-semibold">{p.name}</span>
                         </button>
+                      </td>
+                      <td>
+                        <PersonRoleSelect
+                          personId={p.id}
+                          personName={p.name}
+                          value={currentRoleId}
+                          roleEntities={roleEntities}
+                          hideLabel
+                        />
                       </td>
                       <td className="num">
                         {free.toFixed(1)}
@@ -140,7 +156,7 @@ export default function PeoplePage() {
                     </tr>
                     {open ? (
                       <tr className="sheet-detail">
-                        <td colSpan={4}>
+                        <td colSpan={5}>
                           {rigour === 0 ? (
                             <p className="mb-3 max-w-[62ch] border-l-2 border-[color:var(--graphite)] pl-3 text-sm">
                               {copy.empty.noSignals}

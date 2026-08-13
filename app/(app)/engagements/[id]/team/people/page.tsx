@@ -6,14 +6,13 @@ import { useMemo, useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { RequirementSelector } from '@/components/app/RequirementSelector';
 import { Button } from '@/components/ui/Button';
+import { DatumSelect } from '@/components/ui/DatumSelect';
 import { useRequirementId } from '@/lib/hooks/use-requirement-id';
 import { useI18n } from '@/components/app/LocaleProvider';
+import { fillCopy } from '@/lib/copy';
 import { trpc } from '@/lib/trpc/client';
 
 const LEVELS = ['awareness', 'working', 'practitioner', 'expert'] as const;
-
-const selectClass =
-  'mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm';
 
 export default function TeamPage() {
   const { messages: m } = useI18n();
@@ -101,36 +100,35 @@ export default function TeamPage() {
       >
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block text-sm">
-            <span className="text-text-muted">{m.engagement.personName}</span>
+            <span className="mb-1 block font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
+              {m.engagement.personName}
+            </span>
             <input
               required
-              className={selectClass}
+              className="min-h-11 w-full rounded-[var(--radius)] border border-[color:var(--rule)] bg-[color:var(--raised)] px-3 py-2 text-sm"
               value={draftName}
               onChange={(e) => setDraftName(e.target.value)}
+              aria-label={m.engagement.personName}
             />
           </label>
-          <label className="block text-sm">
-            <span className="text-text-muted">{m.engagement.personRole}</span>
-            <select
-              className={selectClass}
-              name="new-person-role"
-              value={draftRoleLevelId}
-              disabled={roleSelectDisabled}
-              aria-label={m.engagement.personRole}
-              onChange={(e) => setDraftRoleLevelId(e.target.value)}
-            >
-              <option value="">{m.engagement.assignRole}</option>
-              {roleGroups.map(([roleName, levels]) => (
-                <optgroup key={roleName} label={roleName}>
-                  {levels.map((level) => (
-                    <option key={level.id} value={level.id}>
-                      {roleName} ({level.name})
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
-          </label>
+          <DatumSelect
+            name="new-person-role"
+            label={m.engagement.personRole}
+            value={draftRoleLevelId}
+            disabled={roleSelectDisabled}
+            onChange={setDraftRoleLevelId}
+          >
+            <option value="">{m.engagement.assignRole}</option>
+            {roleGroups.map(([roleName, levels]) => (
+              <optgroup key={roleName} label={roleName}>
+                {levels.map((level) => (
+                  <option key={level.id} value={level.id}>
+                    {roleName} ({level.name})
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </DatumSelect>
         </div>
         <label className="mt-3 flex items-center gap-2 text-sm">
           <input
@@ -172,48 +170,44 @@ export default function TeamPage() {
                   </span>
                 ))}
               </div>
-              <label className="mt-2 block text-sm">
-                <span className="text-text-muted">{m.engagement.personRole}</span>
-                <select
-                  className={selectClass}
-                  name={`person-role-${p.id}`}
-                  value={selectedRoleId}
-                  disabled={roleSelectDisabled}
-                  aria-label={`${p.displayName} ${m.engagement.personRole}`}
-                  onChange={(e) => {
-                    const roleLevelId = e.target.value;
-                    if (!req || !roleLevelId) return;
-                    setPendingRoles((current) => ({ ...current, [p.id]: roleLevelId }));
-                    setAssignment.mutate(
-                      {
-                        requirementId: req.id,
-                        personId: p.id,
-                        roleLevelId,
+              <DatumSelect
+                name={`person-role-${p.id}`}
+                label={m.engagement.personRole}
+                ariaLabel={fillCopy(m.engagement.roleForPerson, { name: p.displayName })}
+                value={selectedRoleId}
+                disabled={roleSelectDisabled}
+                onChange={(roleLevelId) => {
+                  if (!req || !roleLevelId) return;
+                  setPendingRoles((current) => ({ ...current, [p.id]: roleLevelId }));
+                  setAssignment.mutate(
+                    {
+                      requirementId: req.id,
+                      personId: p.id,
+                      roleLevelId,
+                    },
+                    {
+                      onError: () => {
+                        setPendingRoles((current) => {
+                          const next = { ...current };
+                          delete next[p.id];
+                          return next;
+                        });
                       },
-                      {
-                        onError: () => {
-                          setPendingRoles((current) => {
-                            const next = { ...current };
-                            delete next[p.id];
-                            return next;
-                          });
-                        },
-                      },
-                    );
-                  }}
-                >
-                  <option value="">{m.engagement.assignRole}</option>
-                  {roleGroups.map(([roleName, levels]) => (
-                    <optgroup key={roleName} label={roleName}>
-                      {levels.map((level) => (
-                        <option key={level.id} value={level.id}>
-                          {roleName} ({level.name})
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
-              </label>
+                    },
+                  );
+                }}
+              >
+                <option value="">{m.engagement.assignRole}</option>
+                {roleGroups.map(([roleName, levels]) => (
+                  <optgroup key={roleName} label={roleName}>
+                    {levels.map((level) => (
+                      <option key={level.id} value={level.id}>
+                        {roleName} ({level.name})
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </DatumSelect>
               <div className="mt-3 flex gap-2">
                 <Button
                   variant="secondary"

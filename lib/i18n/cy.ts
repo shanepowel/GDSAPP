@@ -74,6 +74,7 @@ export const cy: Messages = {
     assignError: 'Methu neilltuo’r rôl honno. Ceisiwch eto.',
     noRolesYet: 'Dim rolau yn y catalog eto, felly ni ellir neilltuo rôl.',
     noRequirementYet: 'Nid oes gofyniad ar yr alwad hon eto, felly ni ellir neilltuo rôl.',
+    roleForPerson: '{name}: rôl',
     removePerson: 'Tynnu',
     editSkills: 'Golygu sgiliau',
     judgementsTitle: 'Barnau dynol',

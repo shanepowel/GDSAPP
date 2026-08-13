@@ -73,6 +73,7 @@ export const en: Messages = {
     assignError: 'Could not assign that role. Try again.',
     noRolesYet: 'No roles are in the catalogue yet, so a role cannot be assigned.',
     noRequirementYet: 'This engagement has no requirement yet, so a role cannot be assigned.',
+    roleForPerson: '{name}: role',
     removePerson: 'Remove',
     editSkills: 'Edit skills',
     judgementsTitle: 'Human judgements',
