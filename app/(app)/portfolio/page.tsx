@@ -1,9 +1,10 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { EmptyState, PageHeader, StatStrip } from '@/components/datum/PageChrome';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { DemandFigure, FigureFrame } from '@/components/teach/figures';
+import { PortfolioTeaching } from '@/components/teach/PortfolioTeaching';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
@@ -13,6 +14,7 @@ export default function PortfolioPage() {
   const { data, isLoading } = trpc.portfolio.summary.useQuery();
   const { locale } = useI18n();
   const copy = getCopy(locale);
+  const router = useRouter();
 
   return (
     <>
@@ -34,6 +36,8 @@ export default function PortfolioPage() {
       >
         <DemandFigure label={copy.figures.demandAria} />
       </FigureFrame>
+
+      <PortfolioTeaching engagementIds={(data?.engagements ?? []).map((row) => row.id)} />
 
       {isLoading ? <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p> : null}
 
@@ -64,8 +68,8 @@ export default function PortfolioPage() {
             ]}
           />
 
-          <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
-            {copy.portfolio.engagements}
+          <h2 className="mb-3 mt-10 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+            {copy.portfolio.liveHeading}
           </h2>
           {data.engagements.length === 0 ? (
             <EmptyState
@@ -87,13 +91,23 @@ export default function PortfolioPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.engagements.map((row) => (
-                    <tr key={row.id}>
-                      <td>
-                        <Link href={`/squads/${row.id}`} className="font-semibold underline-offset-2 hover:underline">
-                          {row.name}
-                        </Link>
-                      </td>
+                  {data.engagements.map((row) => {
+                    const href = `/squads/${row.id}`;
+                    return (
+                    <tr
+                      key={row.id}
+                      className="clickable"
+                      tabIndex={0}
+                      role="link"
+                      onClick={() => router.push(href)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          router.push(href);
+                        }
+                      }}
+                    >
+                      <td className="font-semibold">{row.name}</td>
                       <td className="num">{row.phase ?? '—'}</td>
                       <td className="num">
                         {row.readinessPercent != null ? (row.readinessPercent / 100).toFixed(2) : '—'}
@@ -108,7 +122,8 @@ export default function PortfolioPage() {
                         ) : null}
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

@@ -30,4 +30,8 @@ test('people rows and squad assign controls open drawers', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Bethan Morris' })).toBeVisible();
   await page.getByRole('button', { name: 'Close' }).click();
   await expect(page.getByRole('heading', { name: 'Bethan Morris' })).toHaveCount(0);
+
+  await page.goto('/assurance');
+  await expect(page.getByRole('heading', { name: 'Whether this team will pass' })).toBeVisible();
+  await expect(page.getByText('Understand users and their needs')).toBeVisible();
 });

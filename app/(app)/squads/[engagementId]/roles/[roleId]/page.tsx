@@ -29,7 +29,10 @@ function SquadRolePageInner() {
     engagementId: id,
     archetypeRoleId: roleId,
   });
+  const assign = trpc.teamFit.saveDraftAssignment.useMutation();
   const [openId, setOpenId] = useState<string | null>(search.get('tour') === '4' ? 'first' : null);
+  const [overrides, setOverrides] = useState<Record<string, string>>({});
+  const [assignedPersonId, setAssignedPersonId] = useState<string | null>(null);
 
   const firstId = data?.candidates[0]?.id;
   const expandedId = openId === 'first' ? firstId : openId;
@@ -37,14 +40,23 @@ function SquadRolePageInner() {
   return (
     <>
       <p className="mb-4">
-        <TextLink href={`/squads/${id}`}>← {copy.squads.title}</TextLink>
+        <TextLink href={`/squads/${id}`}>← {copy.walkthrough.eyebrow}</TextLink>
       </p>
       <PageHeader
-        eyebrow={copy.squads.roleEyebrow}
+        eyebrow={copy.walkthrough.roleEyebrow}
         title={data?.role.displayTitle ?? copy.squads.role}
         lede={
           data
-            ? `${data.role.minLevel} · ${data.role.fteRequired.toFixed(1)} FTE · ${data.role.criticality}`
+            ? fillCopy(copy.walkthrough.roleMeta, {
+                fte: data.role.fteRequired.toFixed(1),
+                level: data.role.minLevel,
+                crit:
+                  data.role.criticality === 'core' ||
+                  data.role.criticality === 'supporting' ||
+                  data.role.criticality === 'optional'
+                    ? copy.squads.criticalityLabels[data.role.criticality]
+                    : data.role.criticality,
+              })
             : undefined
         }
       />
@@ -52,7 +64,7 @@ function SquadRolePageInner() {
       <FitLegend copy={copy.legend} />
 
       <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
-        {copy.squads.rankedCandidates}
+        {copy.walkthrough.rankedHeading}
       </h2>
       {(data?.candidates ?? []).length === 0 ? (
         <EmptyState title={copy.empty.noSquad} why={copy.empty.noSquadWhy} />
@@ -67,6 +79,9 @@ function SquadRolePageInner() {
               breakdown: c.breakdown as unknown as FitBreakdown,
             });
             const open = expandedId === c.id;
+            const needsOverride = c.band === 'stretch' || c.band === 'gap';
+            const override = overrides[c.id] ?? '';
+            const canAssign = !needsOverride || override.trim().length > 0;
             return (
               <li
                 key={c.id}
@@ -96,6 +111,42 @@ function SquadRolePageInner() {
                 ) : null}
                 <FitStrip fit={fit} candidateName={c.personName} />
                 {open ? <FitBreakdownPanel fit={fit} /> : null}
+                {needsOverride ? (
+                  <label className="mt-3 block text-sm">
+                    <span className="mb-1 block font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
+                      {c.band === 'gap' ? copy.bands.gap : copy.bands.stretch}
+                    </span>
+                    <textarea
+                      className="w-full border border-[color:var(--rule)] bg-[var(--raised)] px-3 py-2 text-sm"
+                      style={{ borderRadius: 'var(--radius)' }}
+                      rows={2}
+                      value={override}
+                      onChange={(e) => setOverrides((current) => ({ ...current, [c.id]: e.target.value }))}
+                    />
+                  </label>
+                ) : null}
+                <button
+                  type="button"
+                  className="btn-teach pri mt-3"
+                  disabled={assign.isPending || !canAssign || !data}
+                  onClick={async () => {
+                    if (!data) return;
+                    await assign.mutateAsync({
+                      engagementId: id,
+                      archetypeId: data.role.archetypeId,
+                      archetypeRoleId: roleId,
+                      personId: c.personId,
+                      fteAllocated: data.role.fteRequired,
+                      fitScoreId: c.id,
+                      overrideReason: needsOverride ? override : undefined,
+                    });
+                    setAssignedPersonId(c.personId);
+                  }}
+                >
+                  {assignedPersonId === c.personId
+                    ? copy.walkthrough.confirmedHeading
+                    : copy.walkthrough.assignToRole}
+                </button>
               </li>
             );
           })}

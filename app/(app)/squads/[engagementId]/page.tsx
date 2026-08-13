@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useState, Fragment } from 'react';
-import { FitBandCell, FitBreakdownPanel, FitStrip } from '@/components/team-fit/FitStrip';
+import { Suspense, useState } from 'react';
+import { FitBandCell, FitStrip } from '@/components/team-fit/FitStrip';
 import { EmptyState, FitLegend, PageHeader, TextLink } from '@/components/datum/PageChrome';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { WalkthroughSlot } from '@/components/teach/WalkthroughSlot';
@@ -37,16 +37,11 @@ function SquadFitPageInner() {
   );
   const recompute = trpc.teamFit.recompute.useMutation({ onSuccess: () => refetch() });
   const [busy, setBusy] = useState(false);
-  const [openRoleId, setOpenRoleId] = useState<string | null>(null);
 
   const gaps = (data?.rows ?? []).filter(
     (row) => row.gap || !row.bestScore || row.bestScore.band === 'gap' || row.bestScore.band === 'stretch',
   );
   const hasRows = (data?.rows ?? []).length > 0;
-
-  function toggle(roleId: string) {
-    setOpenRoleId((current) => (current === roleId ? null : roleId));
-  }
 
   return (
     <>
@@ -126,7 +121,7 @@ function SquadFitPageInner() {
                 <th>{copy.squads.criticality}</th>
                 <th>{copy.squads.bestCandidate}</th>
                 <th>{copy.squads.fitAgainstDatum}</th>
-                <th>{copy.squads.composite}</th>
+                <th className="text-right">{copy.walkthrough.score}</th>
               </tr>
             </thead>
             <tbody>
@@ -142,27 +137,22 @@ function SquadFitPageInner() {
                     })
                   : null;
                 const capacityRisk = fit?.breakdown.capacityShortfall != null;
-                const open = openRoleId === role.id;
                 const finding =
                   gap?.kind && gap.kind in copy.gaps
                     ? copy.gaps[gap.kind as keyof typeof copy.gaps]
                     : null;
+                const href = `/squads/${id}/roles/${role.id}`;
                 return (
-                  <Fragment key={role.id}>
-                    <tr className={open ? 'is-open' : undefined}>
+                    <tr
+                      key={role.id}
+                      className="clickable"
+                      onClick={() => router.push(href)}
+                    >
                       <td>
-                        <button
-                          type="button"
-                          className="row-toggle"
-                          aria-expanded={open}
-                          aria-label={open ? copy.ui.hideWorking : copy.ui.showWorking}
-                          onClick={() => toggle(role.id)}
-                        >
-                          <span className="font-semibold">{role.displayTitle}</span>
-                          <span className="mt-0.5 block font-data text-[10.5px] text-[color:var(--graphite)]">
-                            {role.minLevel} · {role.fteRequired.toFixed(1)} FTE
-                          </span>
-                        </button>
+                        <div className="font-semibold">{role.displayTitle}</div>
+                        <div className="font-data text-[10.5px] text-[color:var(--graphite)]">
+                          {role.minLevel} · {role.fteRequired.toFixed(1)} FTE
+                        </div>
                       </td>
                       <td>
                         <span className={`flag ${role.criticality === 'core' ? 'flag-risk' : ''}`}>
@@ -185,24 +175,21 @@ function SquadFitPageInner() {
                         ) : null}
                       </td>
                       <td>{fit ? <FitStrip fit={fit} candidateName={bestScore?.personName} /> : '—'}</td>
-                      <td>{fit ? <FitBandCell fit={fit} /> : '—'}</td>
+                      <td className="text-right" onClick={(e) => e.stopPropagation()}>
+                        {fit ? (
+                          <div className="inline-block text-right">
+                            <FitBandCell fit={fit} />
+                          </div>
+                        ) : (
+                          '—'
+                        )}
+                        <div>
+                          <Link href={href} className="btn-teach mt-2 inline-block">
+                            {copy.walkthrough.seeAll}
+                          </Link>
+                        </div>
+                      </td>
                     </tr>
-                    {open ? (
-                      <tr className="sheet-detail">
-                        <td colSpan={5}>
-                          {fit ? <FitBreakdownPanel fit={fit} /> : null}
-                          <p className="mt-3">
-                            <Link
-                              href={`/squads/${id}/roles/${role.id}`}
-                              className="text-sm underline-offset-2 hover:underline"
-                            >
-                              {copy.squads.allCandidates}
-                            </Link>
-                          </p>
-                        </td>
-                      </tr>
-                    ) : null}
-                  </Fragment>
                 );
               })}
             </tbody>
@@ -236,7 +223,11 @@ function SquadFitPageInner() {
                   ? fillCopy(copy.squads.bestAvailable, { score: bestScore.compositeScore.toFixed(2) })
                   : null;
                 return (
-                  <tr key={role.id}>
+                  <tr
+                    key={role.id}
+                    className="clickable"
+                    onClick={() => router.push(`/squads/${id}/roles/${role.id}`)}
+                  >
                     <td className="font-semibold">{role.displayTitle}</td>
                     <td>
                       <div>{finding}</div>

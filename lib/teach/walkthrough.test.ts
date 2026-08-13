@@ -38,4 +38,10 @@ describe('spec 12 walkthrough', () => {
     expect(stayBand([1, 1, 1, 1])).toBe('stable');
     expect(stayBand([0, 1, 0, 1])).toBe('fragmented');
   });
+
+  it('exposes teaching assurance points without hardcoding a count', () => {
+    expect(copy.assurance.teachingPoints.length).toBeGreaterThan(0);
+    expect(copyCy.assurance.teachingPoints).toHaveLength(copy.assurance.teachingPoints.length);
+    expect(copy.assurance.teachingPoints.some((p) => p.status === 'at-risk')).toBe(true);
+  });
 });

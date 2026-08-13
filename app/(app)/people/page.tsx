@@ -222,14 +222,16 @@ export default function PeoplePage() {
                   assignments.find((a) => a.personId === p.id)?.entityId ?? '';
                 return (
                   <Fragment key={p.id}>
-                    <tr className={open ? 'is-open' : undefined}>
+                    <tr
+                      className={`clickable${open ? ' is-open' : ''}`}
+                      onClick={() => setOpenId(open ? null : p.id)}
+                    >
                       <td>
                         <button
                           type="button"
                           className="row-toggle"
                           aria-expanded={open}
                           aria-label={open ? copy.ui.hideWorking : copy.ui.showWorking}
-                          onClick={() => setOpenId(open ? null : p.id)}
                         >
                           <span className="font-semibold">{p.name}</span>
                         </button>

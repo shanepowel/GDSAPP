@@ -1,9 +1,8 @@
 'use client';
 
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { EmptyState, PageHeader, StatStrip, TextLink } from '@/components/datum/PageChrome';
-import { TeachPanel } from '@/components/teach/TeachPanel';
+import { useParams, useRouter } from 'next/navigation';
+import { EmptyState, StatStrip, TextLink } from '@/components/datum/PageChrome';
+import { AssuranceTeaching } from '@/components/teach/AssuranceTeaching';
 import { Verdict, type VerdictValue } from '@/components/product/Verdict';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
@@ -19,6 +18,7 @@ function pointVerdict(status: string | undefined): VerdictValue {
 
 export default function AssurancePage() {
   const params = useParams();
+  const router = useRouter();
   const id = params.engagementId as string;
   const { locale } = useI18n();
   const copy = getCopy(locale);
@@ -39,18 +39,14 @@ export default function AssurancePage() {
 
   return (
     <>
-      <PageHeader
-        eyebrow={copy.assurance.eyebrow}
-        title={copy.assurance.title}
-        lede={copy.assurance.lede}
-        actions={<TextLink href={`/engagements/${id}/assess`}>{copy.assurance.openAssess}</TextLink>}
-      />
+      <AssuranceTeaching />
 
-      <TeachPanel tag={copy.teach.assessment.tag} title={copy.teach.assessment.title}>
-        {copy.teach.assessment.body.map((p) => (
-          <p key={p}>{p}</p>
-        ))}
-      </TeachPanel>
+      <h2 className="mb-3 mt-10 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+        {copy.walkthrough.thisEngagement}
+      </h2>
+      <p className="mb-4">
+        <TextLink href={`/engagements/${id}/assess`}>{copy.assurance.openAssess}</TextLink>
+      </p>
 
       <StatStrip
         items={[
@@ -86,16 +82,22 @@ export default function AssurancePage() {
             <tbody>
               {(data?.criteria ?? []).map((c) => {
                 const point = points.find((p) => p.title === c.title || String(p.number) === c.ref);
+                const href = `/engagements/${id}/assess/${encodeURIComponent(c.ref)}`;
                 return (
-                  <tr key={c.id}>
-                    <td className="num">
-                      <Link
-                        href={`/engagements/${id}/assess/${encodeURIComponent(c.ref)}`}
-                        className="underline-offset-2 hover:underline"
-                      >
-                        {c.ref}
-                      </Link>
-                    </td>
+                  <tr
+                    key={c.id}
+                    className="clickable"
+                    tabIndex={0}
+                    role="link"
+                    onClick={() => router.push(href)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        router.push(href);
+                      }
+                    }}
+                  >
+                    <td className="num">{c.ref}</td>
                     <td>{c.title}</td>
                     <td>
                       <Verdict value={pointVerdict(point?.status)} />
