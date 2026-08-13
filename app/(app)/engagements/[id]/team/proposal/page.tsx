@@ -1,12 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useMemo, useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { Button } from '@/components/ui/Button';
 import { FitStrip } from '@/components/team-fit/FitStrip';
+import { ArchetypeSelect } from '@/components/team-fit/ArchetypeSelect';
 import { useI18n } from '@/components/app/LocaleProvider';
+import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
 import { fitFromStored, type FitBand, type FitBreakdown } from '@/lib/scoring/fit';
 
@@ -19,13 +21,17 @@ export default function TeamFitProposalPage() {
 }
 
 function TeamFitProposalPageInner() {
-  const { messages: m } = useI18n();
-  const params = useParams();
+  const { messages: m, locale } = useI18n();
+  const copy = getCopy(locale);
+  const routeParams = useParams();
   const search = useSearchParams();
-  const id = params.id as string;
+  const router = useRouter();
+  const id = routeParams.id as string;
   const { data: engagement } = trpc.engagement.byId.useQuery({ id });
-  const { data: archetypes } = trpc.teamFit.listArchetypes.useQuery();
-  const archetypeId = search.get('archetype') ?? archetypes?.[0]?.id ?? '';
+  const { data: archetypes, isLoading: archetypesLoading } = trpc.teamFit.listArchetypes.useQuery();
+  const [pickedArchetype, setPickedArchetype] = useState<string | null>(null);
+  const archetypeId =
+    pickedArchetype ?? search.get('archetype') ?? archetypes?.[0]?.id ?? '';
   const { data: overview, refetch: refetchOverview } = trpc.teamFit.overview.useQuery(
     { engagementId: id, archetypeId },
     { enabled: Boolean(archetypeId) },
@@ -60,6 +66,22 @@ function TeamFitProposalPageInner() {
         </Link>
       </p>
       <p className="mb-4 text-sm text-text-muted">{m.teamFit.proposalIntro}</p>
+
+      <div className="mb-6">
+        <ArchetypeSelect
+          label={copy.squads.chooseArchetype}
+          value={archetypeId}
+          options={archetypes ?? []}
+          loading={archetypesLoading}
+          loadingLabel={copy.squads.loadingArchetypes}
+          onChange={(next) => {
+            setPickedArchetype(next);
+            const query = new URLSearchParams(search.toString());
+            query.set('archetype', next);
+            router.replace(`/engagements/${id}/team/proposal?${query.toString()}`);
+          }}
+        />
+      </div>
 
       {proposal?.status === 'confirmed' ? (
         <p className="mb-4 rounded border border-border bg-brand-tint px-3 py-2 text-sm">
