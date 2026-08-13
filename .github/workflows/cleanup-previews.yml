@@ -1,14 +1,12 @@
-# On-demand cleanup of stale Preview deployment records.
-# Triggered when this file or vercel.json lands on main; also workflow_dispatch.
+# Wipe leftover Preview deployment records after each production ship.
+# vercel.json ignoreCommand already skips non-main Vercel builds; GitHub still
+# records Preview deployments for those skipped builds.
 name: Cleanup preview deployments
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths:
-      - ".github/workflows/cleanup-previews.yml"
-      - "vercel.json"
 
 permissions:
   deployments: write
@@ -24,7 +22,8 @@ jobs:
         run: |
           set -euo pipefail
           DELETED=0
-          for PAGE in $(seq 1 20); do
+          # Always fetch page 1: deletions shrink the list, so page 2 would skip remaining rows.
+          for _ in $(seq 1 20); do
             IDS=$(gh api "repos/${{ github.repository }}/deployments?environment=Preview&per_page=100&page=1" --jq '.[].id')
             if [ -z "${IDS}" ]; then
               break
@@ -50,7 +49,6 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           TEAM_ID: team_IHWxUj2cbcDUdNNfcXE8BroH
           PROJECT_ID: prj_PAsdq79dpKOTfv3kjNpgO2BNaNOe
-          KEEP_ID: dpl_3Nc8BGKCzhor1QmQtRhWxwkuZeLK
         run: |
           set -euo pipefail
           if [ -z "${VERCEL_TOKEN:-}" ]; then
@@ -77,13 +75,9 @@ jobs:
               TARGET=$(echo "${row}" | jq -r '.target // empty')
               CREATED=$(echo "${row}" | jq -r '.created')
               UNTIL="${CREATED}"
-              if [ "${ID}" = "${KEEP_ID}" ]; then
-                echo "Keep current production ${ID}"
-                continue
-              fi
               if [ "${TARGET}" = "production" ]; then
                 SKIPPED_PROD=$((SKIPPED_PROD + 1))
-                echo "Skip older production ${ID}"
+                echo "Skip production ${ID}"
                 continue
               fi
               CODE=$(curl -sS -o /tmp/vdel.json -w "%{http_code}" -X DELETE \
@@ -98,4 +92,4 @@ jobs:
               break
             fi
           done
-          echo "Deleted ${DELETED} non-production Vercel deployments (skipped ${SKIPPED_PROD} older production)"
+          echo "Deleted ${DELETED} non-production Vercel deployments (skipped ${SKIPPED_PROD} production)"
