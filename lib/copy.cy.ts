@@ -105,6 +105,9 @@ export const copyCy: Copy = {
       'Ymgysylltiad yw’r swydd. Crëwch un i gydosod sgwad a’i ddarllen trwy’r safon sy’n llywodraethu’r gwaith.',
     noScores: 'Dim sgoriau ffit eto.',
     noScoresWhy: 'Dewiswch archetype a chyfrifwch ffit i weld pob rôl yn erbyn y datum.',
+    noArchetypes: 'Dim siapiau sgwad yn y llyfrgell eto.',
+    noArchetypesWhy:
+      'Mae siapiau tîm sy’n gweithio yn byw yn y llyfrgell archetype. Hadwch nhw, neu cloniwch un yn y gosodiadau, yna dewch yn ôl i gydosod sgwad.',
     noAnalysis: 'Heb ei asesu eto.',
     noAnalysisWhy:
       'Rhedegwch yr asesiad i ddarllen y sgwad hwn trwy’r safon sy’n llywodraethu’r ymgysylltiad.',
@@ -218,7 +221,9 @@ export const copyCy: Copy = {
     rankedCandidates: 'Pob ymgeisydd, wedi’i raddio',
     candidateMeta: 'sgil {skill} · trymder ×{rigour}',
     compute: 'Ailgyfrifo ffit',
-    archetype: 'Archetype',
+    archetype: 'Siâp sgwad',
+    chooseArchetype: 'Dewiswch siâp sgwad',
+    loadingArchetypes: 'Yn llwytho siapiau sgwad…',
     phase: 'Cyfnod',
     standard: 'Safon',
     standardWales: 'Safon Gwasanaeth Digidol Cymru',

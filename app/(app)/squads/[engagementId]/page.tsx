@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useState, Fragment } from 'react';
 import { FitBandCell, FitBreakdownPanel, FitStrip } from '@/components/team-fit/FitStrip';
+import { ArchetypeSelect } from '@/components/team-fit/ArchetypeSelect';
 import { EmptyState, FitLegend, PageHeader, TextLink } from '@/components/datum/PageChrome';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { WalkthroughSlot } from '@/components/teach/WalkthroughSlot';
@@ -29,8 +30,10 @@ function SquadFitPageInner() {
   const { locale } = useI18n();
   const copy = getCopy(locale);
   const id = params.engagementId as string;
-  const { data: archetypes } = trpc.teamFit.listArchetypes.useQuery();
-  const archetypeId = search.get('archetype') ?? archetypes?.[0]?.id ?? '';
+  const { data: archetypes, isLoading: archetypesLoading } = trpc.teamFit.listArchetypes.useQuery();
+  const [pickedArchetype, setPickedArchetype] = useState<string | null>(null);
+  const archetypeId =
+    pickedArchetype ?? search.get('archetype') ?? archetypes?.[0]?.id ?? '';
   const { data, refetch } = trpc.teamFit.overview.useQuery(
     { engagementId: id, archetypeId },
     { enabled: Boolean(archetypeId) },
@@ -54,46 +57,48 @@ function SquadFitPageInner() {
         eyebrow={copy.squads.eyebrow}
         title={data?.archetype.name ?? copy.squads.title}
         lede={copy.squads.lede}
-        actions={
-          <>
-            <label className="text-sm">
-              <span className="mb-1 block font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
-                {copy.squads.archetype}
-              </span>
-              <select
-                className="border border-[color:var(--rule)] bg-[var(--raised)] px-3 py-2 text-sm"
-                style={{ borderRadius: 'var(--radius)' }}
-                value={archetypeId}
-                onChange={(e) =>
-                  router.replace(`/squads/${id}?archetype=${encodeURIComponent(e.target.value)}`)
-                }
-              >
-                {(archetypes ?? []).map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name} · v{a.version}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <Button
-              type="button"
-              variant="secondary"
-              disabled={!archetypeId || recompute.isPending || busy}
-              onClick={async () => {
-                if (!archetypeId) return;
-                setBusy(true);
-                try {
-                  await recompute.mutateAsync({ engagementId: id, archetypeId });
-                } finally {
-                  setBusy(false);
-                }
-              }}
-            >
-              {copy.squads.compute}
-            </Button>
-          </>
-        }
       />
+
+      <div className="mb-6 flex flex-wrap items-end gap-3">
+        <ArchetypeSelect
+          label={copy.squads.chooseArchetype}
+          value={archetypeId}
+          options={archetypes ?? []}
+          loading={archetypesLoading}
+          loadingLabel={copy.squads.loadingArchetypes}
+          onChange={(next) => {
+            setPickedArchetype(next);
+            const query = new URLSearchParams(search.toString());
+            query.set('archetype', next);
+            router.replace(`/squads/${id}?${query.toString()}`);
+          }}
+        />
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={!archetypeId || recompute.isPending || busy}
+          onClick={async () => {
+            if (!archetypeId) return;
+            setBusy(true);
+            try {
+              await recompute.mutateAsync({ engagementId: id, archetypeId });
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          {copy.squads.compute}
+        </Button>
+      </div>
+
+      {!archetypesLoading && (archetypes?.length ?? 0) === 0 ? (
+        <EmptyState
+          title={copy.empty.noArchetypes}
+          why={copy.empty.noArchetypesWhy}
+          actionHref="/settings/archetypes"
+          actionLabel={copy.squads.archetype}
+        />
+      ) : null}
 
       <TeachPanel tag={copy.teach.whatYouAreDoing.tag} title={copy.teach.whatYouAreDoing.title}>
         {copy.teach.whatYouAreDoing.body.map((p) => (

@@ -118,6 +118,9 @@ export const copy = {
       'An engagement is the job. Create one to assemble a squad and read it through the standard that governs the work.',
     noScores: 'No fit scores yet.',
     noScoresWhy: 'Choose an archetype and compute fit to see every role against the datum.',
+    noArchetypes: 'No squad shapes in the library yet.',
+    noArchetypesWhy:
+      'The shapes of team that work live in the archetype library. Seed them, or clone one in settings, then come back to assemble a squad.',
     noAnalysis: 'Not assessed yet.',
     noAnalysisWhy:
       'Run the assessment to read this squad through the standard that governs the engagement.',
@@ -231,7 +234,9 @@ export const copy = {
     rankedCandidates: 'Every candidate, ranked',
     candidateMeta: 'skill {skill} · rigour ×{rigour}',
     compute: 'Recompute fit',
-    archetype: 'Archetype',
+    archetype: 'Squad shape',
+    chooseArchetype: 'Choose a squad shape',
+    loadingArchetypes: 'Loading squad shapes…',
     phase: 'Phase',
     standard: 'Standard',
     standardWales: 'Wales Digital Service Standard',

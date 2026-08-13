@@ -32,7 +32,7 @@ export default function SquadsIndexPage() {
           <p key={p}>{p}</p>
         ))}
       </TeachPanel>
-      <WalkthroughSlot force />
+      <WalkthroughSlot />
       {isLoading ? <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p> : null}
       {!isLoading && (data?.length ?? 0) === 0 ? (
         <EmptyState

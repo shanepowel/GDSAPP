@@ -343,6 +343,45 @@ th,
   color: var(--datum);
 }
 
+/* Native select: Tailwind preflight sets a transparent background, which
+   drops the browser chevron. Draw our own so the control is visibly a dropdown. */
+.datum-select-wrap {
+  position: relative;
+  display: block;
+}
+
+.datum-select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--ink);
+  transform: translateY(-25%);
+  pointer-events: none;
+}
+
+.datum-select {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 36px 8px 12px;
+  appearance: none;
+  background: var(--raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.datum-select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .tour-bar {
   position: fixed;
   left: 216px;
