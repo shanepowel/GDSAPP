@@ -1,11 +1,20 @@
 'use client';
 
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
 import { copy } from '@/lib/copy';
 import { trpc } from '@/lib/trpc/client';
 
 export default function SquadGapsPage() {
+  return (
+    <Suspense fallback={null}>
+      <SquadGapsPageInner />
+    </Suspense>
+  );
+}
+
+function SquadGapsPageInner() {
   const params = useParams();
   const search = useSearchParams();
   const id = params.engagementId as string;

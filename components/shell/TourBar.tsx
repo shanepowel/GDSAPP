@@ -1,13 +1,21 @@
 'use client';
 
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 
 const TOUR_DISMISS_KEY = 'datum-tour-dismissed';
 
 export function TourBar({ engagementId }: { engagementId?: string }) {
+  return (
+    <Suspense fallback={null}>
+      <TourBarInner engagementId={engagementId} />
+    </Suspense>
+  );
+}
+
+function TourBarInner({ engagementId }: { engagementId?: string }) {
   const search = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();

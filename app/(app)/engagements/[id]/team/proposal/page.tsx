@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { AppShell } from '@/components/app/AppShell';
 import { Button } from '@/components/ui/Button';
 import { FitStrip } from '@/components/team-fit/FitStrip';
@@ -11,6 +11,14 @@ import { trpc } from '@/lib/trpc/client';
 import { fitFromStored, type FitBand, type FitBreakdown } from '@/lib/scoring/fit';
 
 export default function TeamFitProposalPage() {
+  return (
+    <Suspense fallback={null}>
+      <TeamFitProposalPageInner />
+    </Suspense>
+  );
+}
+
+function TeamFitProposalPageInner() {
   const { messages: m } = useI18n();
   const params = useParams();
   const search = useSearchParams();

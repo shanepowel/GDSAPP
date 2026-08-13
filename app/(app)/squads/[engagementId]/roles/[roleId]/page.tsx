@@ -2,13 +2,21 @@
 
 import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { FitBandCell, FitBreakdownPanel, FitStrip } from '@/components/team-fit/FitStrip';
 import { copy } from '@/lib/copy';
 import { fitFromStored, type FitBreakdown } from '@/lib/scoring/fit';
 import { trpc } from '@/lib/trpc/client';
 
 export default function SquadRolePage() {
+  return (
+    <Suspense fallback={null}>
+      <SquadRolePageInner />
+    </Suspense>
+  );
+}
+
+function SquadRolePageInner() {
   const params = useParams();
   const search = useSearchParams();
   const id = params.engagementId as string;

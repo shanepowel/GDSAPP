@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { FitBandCell, FitStrip } from '@/components/team-fit/FitStrip';
 import { copy } from '@/lib/copy';
 import { fitFromStored, type FitBreakdown } from '@/lib/scoring/fit';
@@ -10,6 +10,14 @@ import { trpc } from '@/lib/trpc/client';
 import { Button } from '@/components/ui/Button';
 
 export default function SquadFitPage() {
+  return (
+    <Suspense fallback={null}>
+      <SquadFitPageInner />
+    </Suspense>
+  );
+}
+
+function SquadFitPageInner() {
   const params = useParams();
   const search = useSearchParams();
   const router = useRouter();
