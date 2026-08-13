@@ -5,7 +5,7 @@ import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 import { CEREMONIES, MATURITY, PILLARS } from '@/lib/practice';
 
-const CLAIM_HREFS = ['/practice/pillars', '/squads', '/assurance'] as const;
+const CLAIM_HREFS = ['/practice/pillars', '/people', '/squads', '/assurance'] as const;
 
 export function PracticeOverview() {
   const { locale } = useI18n();
@@ -55,7 +55,7 @@ export function PracticeOverview() {
         <CeremoniesTable />
       </section>
 
-      <section className="grid gap-px border-y border-[color:var(--rule)] bg-[var(--rule)] md:grid-cols-3">
+      <section className="grid gap-px border-y border-[color:var(--rule)] bg-[var(--rule)] md:grid-cols-2">
         {c.claims.map((claim, i) => (
           <div key={claim.title} className="bg-[var(--raised)] p-7">
             <h3 className="mb-2 font-[family-name:var(--font-cond)] text-[15px] font-semibold">

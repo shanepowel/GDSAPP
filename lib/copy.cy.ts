@@ -25,6 +25,11 @@ export const copyCy: Copy = {
         seeIn: 'Gweld yn Ymarfer',
       },
       {
+        title: 'Gweld y sefydliad, yna ei newid',
+        body: 'Cylchoedd, rolau a’r bobl sy’n eu dal, wedi’u tynnu o’r dyluniad byw. Mae templedi, senarios a swyddi gwag ar yr un olwg, fel bod ailgynllunio yn symudiad gweledol yn hytrach nag sleid.',
+        seeIn: 'Gweld yn Pobl',
+      },
+      {
         title: 'Cydosod y sgwad',
         body: 'Pob ymgeisydd wedi’i sgorio yn erbyn y rôl: sgiliau’r fframwaith gallu yn gyntaf, yna wedi’i addasu gan ddisgyblaeth cyflawni a dystiwyd. Un llinell datum ar 0.60 yn rhedeg trwy’r tabl cyfan fel y gellir darllen sgwad mewn un pas.',
         seeIn: 'Gweld yn Sgwadiau',
@@ -141,7 +146,7 @@ export const copyCy: Copy = {
   people: {
     eyebrow: 'Pobl',
     title: 'Y gallu a ddelir mewn gwirionedd',
-    lede: 'Sgiliau, argaeledd a thrymder a dystiwyd i bawb yn y pwll. Dyma’r hyn y gall y sefydliad ei faesu, cyn i unrhyw ymgysylltiad ofyn amdano.',
+    lede: 'Y strwythur byw yn gyntaf: cylchoedd, rolau a phwy sy’n eu dal. Newidiwch y dyluniad yma. Y pwll isod yw’r hyn y gall y sefydliad ei faesu cyn i unrhyw ymgysylltiad ofyn amdano.',
     viewAsGraph: 'Gweld fel graff',
     viewAsTable: 'Gweld fel tabl',
     pool: 'Y pwll',
@@ -158,7 +163,7 @@ export const copyCy: Copy = {
     unevidencedCount: 'Heb dystiolaeth',
     dataGap: 'Bwlch data, nid barn',
     graphHint:
-      'Mae’r graff yn olwg benodol ar siâp y sefydliad. Y llwybr diofyn yw’r tabl.',
+      'Y sefydliad ar waith. Mae tabl, templedi a senarios ar yr un olwg Pobl.',
     openPerson: 'Agor y person',
     noSkills: 'Dim sgiliau wedi’u cofnodi.',
     skillsHeld: 'Sgiliau a ddelir',
@@ -261,7 +266,7 @@ export const copyCy: Copy = {
       {
         view: 'people',
         href: '/people',
-        text: 'Dyma allu gwirioneddol y sefydliad: pwy a ddelir, faint ohonynt sy’n rhydd, a’r hyn y gallwn ei dystio am sut maent yn cyflawni.',
+        text: 'Dyma’r sefydliad ar waith: cylchoedd, rolau, a phwy sy’n eu dal. Ailgynlluniwch yma. Y pwll isod yw’r gallu y gallwch ei faesu, a’r hyn y gallwn ei dystio am sut maent yn cyflawni.',
       },
       {
         view: 'squads',

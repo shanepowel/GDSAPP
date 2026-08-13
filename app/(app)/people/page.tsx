@@ -3,6 +3,7 @@
 import { Fragment, useState } from 'react';
 import Link from 'next/link';
 import { EmptyState, PageHeader, StatStrip, TextLink } from '@/components/datum/PageChrome';
+import { DesignWorkspace } from '@/components/org-design/DesignWorkspace';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
@@ -37,8 +38,16 @@ export default function PeoplePage() {
         eyebrow={copy.people.eyebrow}
         title={copy.people.title}
         lede={copy.people.lede}
-        actions={<TextLink href="/people/graph">{copy.people.viewAsGraph}</TextLink>}
+        actions={
+          <>
+            <TextLink href="#pool">{copy.people.pool}</TextLink>
+            <TextLink href="/people/graph">{copy.people.viewAsGraph}</TextLink>
+            <TextLink href={manageHref}>{copy.ui.managePeople}</TextLink>
+          </>
+        }
       />
+
+      <DesignWorkspace hideHeading initialViewMode="chart" title={copy.people.title} />
 
       <StatStrip
         items={[
@@ -48,7 +57,12 @@ export default function PeoplePage() {
         ]}
       />
 
-      <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">{copy.people.pool}</h2>
+      <h2
+        id="pool"
+        className="mb-3 mt-10 scroll-mt-6 font-[family-name:var(--font-cond)] text-[17px] font-semibold"
+      >
+        {copy.people.pool}
+      </h2>
       {people.length === 0 ? (
         <EmptyState
           title={copy.empty.noPeople}

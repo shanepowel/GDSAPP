@@ -50,7 +50,9 @@ type Props = {
   initialMainView?: MainView;
   /** Hide the Design/People/Insights/History tab strip when the plate rail owns IA. */
   hideMainTabs?: boolean;
-  /** Default presentation — table-first per doc 08. */
+  /** Hide the inner heading when a page header already names the tool. */
+  hideHeading?: boolean;
+  /** Default presentation — table-first per doc 08. Organise stays table; People can lead with the chart. */
   initialViewMode?: ViewMode;
 };
 
@@ -60,6 +62,7 @@ export function DesignWorkspace({
   title,
   initialMainView = 'design',
   hideMainTabs,
+  hideHeading,
   initialViewMode = 'table',
 }: Props) {
   const utils = trpc.useUtils();
@@ -304,13 +307,15 @@ export function DesignWorkspace({
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="text-xl font-semibold text-text">{title ?? 'Org design'}</h2>
-          <p className="mt-1 max-w-2xl text-sm text-text-muted">
-            Redesign digital service structures with GDS multidisciplinary roles, then bind them to
-            call-offs for readiness scoring.
-          </p>
-        </div>
+        {hideHeading ? null : (
+          <div>
+            <h2 className="text-xl font-semibold text-text">{title ?? 'Org design'}</h2>
+            <p className="mt-1 max-w-2xl text-sm text-text-muted">
+              Redesign digital service structures with GDS multidisciplinary roles, then bind them to
+              call-offs for readiness scoring.
+            </p>
+          </div>
+        )}
         <div className="flex flex-wrap gap-2">
           {!engagementId && canWrite && (
             <>

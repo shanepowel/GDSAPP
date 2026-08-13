@@ -39,6 +39,11 @@ export const copy = {
         seeIn: 'See it in Practice',
       },
       {
+        title: 'See the organisation, then change it',
+        body: 'Circles, roles and the people who hold them, drawn from the live design. Templates, scenarios and vacancies sit on the same view, so a redesign is a visible move rather than a slide.',
+        seeIn: 'See it in People',
+      },
+      {
         title: 'Assemble the squad',
         body: 'Every candidate scored against the role: capability framework skills first, then adjusted by evidenced delivery discipline. One datum line at 0.60 runs through the whole table so a squad reads in a single pass.',
         seeIn: 'See it in Squads',
@@ -154,7 +159,7 @@ export const copy = {
   people: {
     eyebrow: 'People',
     title: 'Capability we actually hold',
-    lede: 'Skills, availability and evidenced rigour for everyone in the pool. This is what the organisation can field, before any one engagement asks for it.',
+    lede: 'The live structure first: circles, roles and who holds them. Change the design here. The pool below is what the organisation can field before any one engagement asks for it.',
     viewAsGraph: 'View as graph',
     viewAsTable: 'View as table',
     pool: 'The pool',
@@ -171,7 +176,7 @@ export const copy = {
     unevidencedCount: 'Unevidenced',
     dataGap: 'A data gap, not a judgement',
     graphHint:
-      'The graph is an explicit view of organisational shape. The default path is the table.',
+      'The organisation in action. Table, templates and scenarios sit on the same People view.',
     openPerson: 'Open person',
     noSkills: 'No skills recorded.',
     skillsHeld: 'Skills held',
@@ -274,7 +279,7 @@ export const copy = {
       {
         view: 'people',
         href: '/people',
-        text: "This is the organisation's real capability: who we hold, how much of them is free, and what we can actually evidence about how they deliver.",
+        text: 'This is the organisation in action: circles, roles, and who holds them. Redesign here. The pool below is the capability you can field, and what we can evidence about how they deliver.',
       },
       {
         view: 'squads',
