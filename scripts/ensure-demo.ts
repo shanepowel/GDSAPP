@@ -5,11 +5,20 @@
 import { PrismaClient } from '@prisma/client';
 import { runAndPersistAnalysis } from '../lib/db/analysis';
 import { DEMO_ACCOUNT, ensureDemoAccount } from '../lib/demo/demo-account';
+import { seedDemoPool } from '../lib/demo/seed-pool';
 
 const prisma = new PrismaClient();
 
 async function main() {
   await ensureDemoAccount(prisma);
+
+  const admin = await prisma.user.findUnique({ where: { email: DEMO_ACCOUNT.email } });
+  if (admin) {
+    const pool = await seedDemoPool(prisma, { orgId: DEMO_ACCOUNT.orgId, adminUserId: admin.id });
+    console.log(
+      `Demo pool: ${pool.people} people, ${pool.engagements} engagements.`,
+    );
+  }
 
   const req = await prisma.requirement.findUnique({ where: { id: 'nrw-req-1' } });
   if (req) {

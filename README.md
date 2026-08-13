@@ -32,6 +32,8 @@ npm run dev
 
 Sign in: `admin@demo.local` / `demo-password`
 
+The demo pool is 18 people with mixed Government Digital and Data skillsets (strong, stretch, unevidenced, bilingual, part-time) across four engagements, so People, Squads and Portfolio have something to score.
+
 Place official capability-framework CSVs in `data/source/` as `roles.csv`, `skills.csv` (gitignored). Without them, fixture CSVs are generated on seed. Pin the ingest to a dated version (`data/source/VERSION` or the CSV mtime).
 
 ## Scripts
@@ -40,7 +42,7 @@ Place official capability-framework CSVs in `data/source/` as `roles.csv`, `skil
 |--------|---------|
 | `npm run ingest` | Ingest capability-framework CSVs and record a version pin |
 | `npm run seed:standards` | Seed standards and dependency map |
-| `npm run seed:demo` | Demo org, admin, NRW engagement |
+| `npm run seed:demo` | Demo org, admin, four engagements, mixed-skill pool |
 | `npm test` | Scoring engine unit tests |
 | `npm run test:e2e` | Playwright + axe |
 

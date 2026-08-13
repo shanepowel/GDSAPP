@@ -3,12 +3,11 @@ import { PrismaClient } from '@prisma/client';
 import { runAndPersistAnalysis } from '../lib/db/analysis';
 import { ensureFixtureCsvs } from './seed-fixtures';
 import { execSync } from 'child_process';
-import { ORG_TEMPLATES } from '../lib/org-design/templates';
-import { applyTemplateToLive } from '../lib/org-design/storage';
 import {
   autoMatchCapabilityLinks,
   computeAndSnapshotIndex,
 } from '../lib/assurance/scoring-load';
+import { seedDemoPool } from '../lib/demo/seed-pool';
 
 const prisma = new PrismaClient();
 
@@ -174,69 +173,23 @@ async function main() {
     });
   }
 
-  await prisma.personSkill.deleteMany({
-    where: { person: { engagementId: engagement.id } },
+  const pool = await seedDemoPool(prisma, { orgId: org.id, adminUserId: admin.id });
+  console.log(
+    `Demo pool: ${pool.people} people, ${pool.engagements} engagements (${pool.extraEngagements} extra).`,
+  );
+
+  const owner = await prisma.person.findFirst({
+    where: { engagementId: engagement.id, displayName: { contains: 'Service owner' } },
   });
+  const researcher = await prisma.person.findFirst({
+    where: { engagementId: engagement.id, displayName: { contains: 'User researcher' } },
+  });
+
   await prisma.assignment.deleteMany({
     where: { requirementId: requirement.id },
   });
-  await prisma.person.deleteMany({ where: { engagementId: engagement.id } });
 
-  const owner = await prisma.person.create({
-    data: {
-      engagementId: engagement.id,
-      displayName: 'Alex Morgan (Service owner)',
-      isVacancy: false,
-      skills: {
-        create: [
-          { skillId: 'strategic-ownership', level: 'practitioner' },
-          { skillId: 'stakeholder-relationship-management', level: 'working' },
-          { skillId: 'life-cycle-management', level: 'working' },
-        ],
-      },
-    },
-  });
-
-  const researcher = await prisma.person.create({
-    data: {
-      engagementId: engagement.id,
-      displayName: 'Sam Jones (User researcher)',
-      isVacancy: false,
-      skills: {
-        create: [
-          { skillId: 'user-research', level: 'practitioner' },
-          { skillId: 'user-centred-practice-and-advocacy', level: 'working' },
-        ],
-      },
-    },
-  });
-
-  const designer = await prisma.person.create({
-    data: {
-      engagementId: engagement.id,
-      displayName: 'Priya Shah (Interaction designer)',
-      isVacancy: false,
-      skills: {
-        create: [
-          { skillId: 'iterative-design', level: 'working' },
-          { skillId: 'designing-for-everyone', level: 'awareness' },
-          { skillId: 'user-centred-practice-and-advocacy', level: 'awareness' },
-        ],
-      },
-    },
-  });
-
-  await prisma.person.create({
-    data: {
-      engagementId: engagement.id,
-      displayName: 'Vacancy — Developer',
-      isVacancy: true,
-      skills: { create: [] },
-    },
-  });
-  void designer;
-
-  if (serviceOwnerLevel) {
+  if (serviceOwnerLevel && owner) {
     await prisma.assignment.create({
       data: {
         requirementId: requirement.id,
@@ -245,7 +198,7 @@ async function main() {
       },
     });
   }
-  if (userResearcherLevel) {
+  if (userResearcherLevel && researcher) {
     await prisma.assignment.create({
       data: {
         requirementId: requirement.id,
@@ -343,23 +296,8 @@ async function main() {
     );
   }
 
-  // Seed GDS service-team org design on the demo org
-  const existingEntities = await prisma.designEntity.count({ where: { orgId: org.id } });
-  if (existingEntities === 0) {
-    const gdsTemplate = ORG_TEMPLATES.find((t) => t.id === 'gds-service-team');
-    if (gdsTemplate) {
-      const result = await applyTemplateToLive(prisma, org.id, gdsTemplate);
-      console.log(
-        `Seeded org design template "${gdsTemplate.name}" (${result.entitiesCreated} entities).`,
-      );
-    }
-  }
-
-  // Bind NRW demo engagement to live design
-  await prisma.engagement.update({
-    where: { id: engagement.id },
-    data: { designBinding: 'live' },
-  });
+  // Seed GDS service-team org design and the mixed-skill demo pool
+  // (template apply is a no-op when entities already exist).
 
   await seedAssuranceDemo(prisma, {
     engagementId: engagement.id,
@@ -368,7 +306,7 @@ async function main() {
   });
 
   console.log(
-    `Seeded demo org, admin@demo.local / demo-password, NRW engagements, tender ${tender.id}.`,
+    `Seeded demo org, admin@demo.local / demo-password, ${pool.engagements} engagements, tender ${tender.id}.`,
   );
 }
 
