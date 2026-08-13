@@ -1,20 +1,40 @@
 :root {
-  /* ---- Assemble design system (docs/spec/01-design-system.md) ---- */
+  /* ---- Datum design tokens (docs/spec/10 + 11). Hex lives only in this file. ---- */
 
-  /* Surface: cool drafting stock */
-  --stock-0: #ffffff;
-  --stock-1: #f4f6f7;
-  --stock-2: #e8ecee;
-  --rule: #c6cdd2;
-  --rule-soft: #dde2e5;
+  /* Surfaces. Cool drafting stock. */
+  --stock: #edefea;
+  --raised: #f7f8f5;
+  --sunk: #e4e7e0;
 
-  /* Ink: near-black with a cold cast */
-  --ink-0: #14181c;
-  --ink-1: #3b444c;
-  --ink-2: #6b7480;
+  /* Ink */
+  --ink: #16191a;
+  --graphite: #5c6360;
 
-  /* Signal: setting-out mark. Decisions only. */
-  --signal: #d6006e;
+  /* Rules */
+  --rule: #c9cec8;
+  --rule-soft: #dde1da;
+
+  /* Signal. Survey pink. The only alarm colour. */
+  --survey: #e5006d;
+
+  /* Benchmark. Datum rule and passing states only. */
+  --datum: #1f4b4a;
+
+  /* Hatch for below-level skill segments (not a UI colour elsewhere). */
+  --hatch-0: #4a5150;
+  --hatch-1: #5e6564;
+
+  /* Viability threshold. Overridden from scoring in layout so it cannot drift. */
+  --viability: 60%;
+
+  /* Spec aliases used by existing screens */
+  --stock-0: var(--raised);
+  --stock-1: var(--stock);
+  --stock-2: var(--sunk);
+  --ink-0: var(--ink);
+  --ink-1: var(--graphite);
+  --ink-2: var(--graphite);
+  --signal: var(--survey);
   --signal-ink: #a30054;
   --signal-wash: #fde8f1;
 
@@ -36,11 +56,14 @@
   --brand-navy: #0a1633;
 
   /* Type (faces applied via next/font on <body>) */
-  --font-ui: var(--font-instrument-sans), system-ui, sans-serif;
+  --font-ui: var(--font-ibm-plex-sans), system-ui, sans-serif;
+  --font-cond: var(--font-ibm-plex-sans-condensed), var(--font-ibm-plex-sans), system-ui, sans-serif;
   --font-data: var(--font-ibm-plex-mono), ui-monospace, monospace;
   --font-doc: 'Source Serif 4', Georgia, serif;
+  --font-sans: var(--font-ui);
+  --font-mono: var(--font-data);
 
-  /* Geometry — new work uses these; legacy radii kept below for Phase 0 stability */
+  /* Geometry */
   --radius: 2px;
   --radius-lg: 3px;
   --rule-w: 1px;
@@ -101,12 +124,12 @@
   --status-partial-hero: #f5b97f;
   --status-gap-hero: #f58a8a;
 
-  --color-bg: var(--grey-050);
-  --color-surface: var(--tt-white);
-  --color-surface-alt: var(--grey-100);
-  --color-border: var(--grey-200);
-  --color-text: var(--tt-ink);
-  --color-text-muted: var(--tt-muted);
+  --color-bg: var(--stock);
+  --color-surface: var(--raised);
+  --color-surface-alt: var(--sunk);
+  --color-border: var(--rule);
+  --color-text: var(--ink);
+  --color-text-muted: var(--graphite);
   --color-text-inverse: var(--tt-white);
   --color-brand: var(--tt-blue);
   --color-brand-hover: var(--tt-blue-700);
@@ -130,16 +153,18 @@
 }
 
 html.dark {
-  /* Spec Phase 2 dark: invert stock/ink; lift verdict lightness ~12%; signal #FF4D9D */
-  --stock-0: #1a1e22;
-  --stock-1: #16191c;
-  --stock-2: #22262b;
+  --stock: #16191c;
+  --raised: #1a1e22;
+  --sunk: #22262b;
+  --ink: #eaedef;
+  --graphite: #8a929c;
   --rule: #3a424a;
   --rule-soft: #2c3238;
-  --ink-0: #eaedef;
-  --ink-1: #b4bcc4;
-  --ink-2: #8a929c;
-  --signal: #ff4d9d;
+  --survey: #ff4d9d;
+  --datum: #7eb8b4;
+  --hatch-0: #9aa3a1;
+  --hatch-1: #b4bcb9;
+  --signal: var(--survey);
   --signal-ink: #ff7eb5;
   --signal-wash: #3a1528;
   --verdict-met: #3d9a6e;
@@ -152,6 +177,13 @@ html.dark {
   --verdict-unassessed-wash: #2a2e32;
   --focus: #ffd400;
   --focus-shadow: #eaedef;
+
+  --stock-0: var(--raised);
+  --stock-1: var(--stock);
+  --stock-2: var(--sunk);
+  --ink-0: var(--ink);
+  --ink-1: var(--graphite);
+  --ink-2: var(--graphite);
 
   --color-bg: var(--stock-1);
   --color-surface: var(--stock-0);

@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { FitStrip } from '@/components/team-fit/FitStrip';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
-import type { FitBand, FitBreakdown } from '@/lib/scoring/fit';
+import { fitFromStored, type FitBand, type FitBreakdown } from '@/lib/scoring/fit';
 
 export default function TeamFitProposalPage() {
   const { messages: m } = useI18n();
@@ -71,23 +71,23 @@ export default function TeamFitProposalPage() {
           const needsOverride = band === 'stretch' || band === 'gap';
           const override = overrides[role.id] ?? assigned?.overrideReason ?? '';
           const breakdown = bestScore?.breakdown as unknown as FitBreakdown | undefined;
-          const unevidenced = breakdown?.notes?.includes('no_rigour_signals');
+          const fit = bestScore
+            ? fitFromStored({
+                skillScore: bestScore.skillScore,
+                rigourMultiplier: bestScore.rigourMultiplier,
+                compositeScore: bestScore.compositeScore,
+                band: bestScore.band,
+                breakdown,
+              })
+            : null;
           return (
             <li key={role.id} className="rounded-lg border border-border bg-surface p-4">
               <p className="font-medium">{role.displayTitle}</p>
-              {bestScore ? (
-                <div className="mt-1">
-                  <FitStrip
-                    band={band}
-                    compositeScore={bestScore.compositeScore}
-                    rigourMultiplier={bestScore.rigourMultiplier}
-                    breakdown={breakdown}
-                    unevidenced={unevidenced}
-                  />
-                </div>
-              ) : (
-                <p className="mt-1 text-sm text-status-gap">{m.teamFit.gapRow}</p>
-              )}
+                  {fit ? (
+                    <FitStrip fit={fit} candidateName={bestScore?.personName} />
+                  ) : (
+                    <p className="mt-1 text-sm text-status-gap">{m.teamFit.gapRow}</p>
+                  )}
               <label className="mt-3 block text-sm">
                 <span className="text-text-muted">{m.teamFit.assignCandidate}</span>
                 <select

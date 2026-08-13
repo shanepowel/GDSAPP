@@ -16,7 +16,7 @@ const inputClass =
 
 export function AuthTabs({
   initialTab = 'sign-in',
-  callbackUrl = '/engagements',
+  callbackUrl = '/squads',
 }: {
   initialTab?: Tab;
   callbackUrl?: string;
@@ -151,7 +151,7 @@ export function AuthTabs({
                 setEmail(m.signIn.demoEmail);
                 setPassword(m.signIn.demoPassword);
                 setShowEmailLogin(true);
-                setRedirectOverride('/engagements/nrw-demo');
+                setRedirectOverride('/squads/nrw-demo');
               }}
             >
               {m.signIn.demoFillButton}
@@ -164,7 +164,7 @@ export function AuthTabs({
                 <Button
                   type="button"
                   className="w-full"
-                  onClick={() => signIn('azure-ad', { callbackUrl: '/engagements' })}
+                  onClick={() => signIn('azure-ad', { callbackUrl: '/squads' })}
                 >
                   {m.signIn.entraSignIn}
                 </Button>

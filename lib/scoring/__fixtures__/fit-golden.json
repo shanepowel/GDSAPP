@@ -101,9 +101,9 @@
       "rigourSignals": []
     },
     "expect": {
-      "skillScore": 0.6666666666666666,
+      "skillScore": 0.667,
       "rigourMultiplier": 1,
-      "compositeScore": 0.6666666666666666,
+      "compositeScore": 0.667,
       "band": "viable"
     }
   },
@@ -137,9 +137,9 @@
       "rigourSignals": []
     },
     "expect": {
-      "skillScore": 0.3333333333333333,
+      "skillScore": 0.333,
       "rigourMultiplier": 1,
-      "compositeScore": 0.3333333333333333,
+      "compositeScore": 0.333,
       "band": "gap"
     }
   },
@@ -288,9 +288,9 @@
       "rigourSignals": []
     },
     "expect": {
-      "skillScore": 0.6666666666666666,
+      "skillScore": 0.667,
       "rigourMultiplier": 1,
-      "compositeScore": 0.6666666666666666,
+      "compositeScore": 0.667,
       "band": "viable"
     }
   },
@@ -324,9 +324,9 @@
       "rigourSignals": []
     },
     "expect": {
-      "skillScore": 0.3333333333333333,
+      "skillScore": 0.333,
       "rigourMultiplier": 1,
-      "compositeScore": 0.3333333333333333,
+      "compositeScore": 0.333,
       "band": "gap"
     }
   },
@@ -556,7 +556,7 @@
     "expect": {
       "skillScore": 0.75,
       "rigourMultiplier": 1.15,
-      "compositeScore": 0.8624999999999999,
+      "compositeScore": 0.862,
       "band": "strong"
     }
   }

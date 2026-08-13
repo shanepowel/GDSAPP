@@ -11,7 +11,7 @@ function SignInContent() {
   const callbackUrl =
     rawCallback && rawCallback.startsWith('/') && !rawCallback.startsWith('//')
       ? rawCallback
-      : '/engagements';
+      : '/squads';
   return (
     <AuthTabs key={`${initialTab}-${callbackUrl}`} initialTab={initialTab} callbackUrl={callbackUrl} />
   );

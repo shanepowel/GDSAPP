@@ -14,7 +14,10 @@ This spec is written to be executed by an agent (Cursor) in PR-sized increments.
 | `04-content-and-bilingual.md` | Voice, vocabulary lock, microcopy, Welsh/English content model |
 | `05-ai-governance.md` | What AI may and may not touch, provenance surfaces |
 | `06-build-plan.md` | Phases 0–6 as PR-sized tasks with acceptance criteria |
-| `cursor-rules/*.mdc` | Copy to `.cursor/rules/` in the repo root |
+| `08-performance-and-redesign.md` | Table-first org design, performance budget, graph as explicit action |
+| `09-delivery-playbook.md` | Five pillars, ceremonies, maturity; source of truth for Team Fit |
+| `10-repositioning-and-ia.md` | Datum naming, five-section IA, Practice public, GDS as a module |
+| `11-buildsheet.md` | Ordered implementation tasks T11.1–T11.8 with acceptance criteria |
 
 ---
 

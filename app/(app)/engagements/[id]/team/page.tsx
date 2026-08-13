@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { FitStrip } from '@/components/team-fit/FitStrip';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
-import type { FitBand, FitBreakdown } from '@/lib/scoring/fit';
+import { fitFromStored, type FitBreakdown } from '@/lib/scoring/fit';
 
 export default function TeamFitOverviewPage() {
   const { messages: m } = useI18n();
@@ -103,7 +103,6 @@ export default function TeamFitOverviewPage() {
       <ul className="space-y-3">
         {data?.rows.map(({ role, bestScore, gap }) => {
           const breakdown = bestScore?.breakdown as unknown as FitBreakdown | undefined;
-          const unevidenced = breakdown?.notes.includes('no_rigour_signals');
           const isGapRow = !bestScore || bestScore.band === 'gap' || Boolean(gap);
           return (
             <li
@@ -132,11 +131,14 @@ export default function TeamFitOverviewPage() {
                   </p>
                   <div className="mt-1">
                     <FitStrip
-                      band={bestScore.band as FitBand}
-                      compositeScore={bestScore.compositeScore}
-                      rigourMultiplier={bestScore.rigourMultiplier}
-                      breakdown={breakdown}
-                      unevidenced={unevidenced}
+                      fit={fitFromStored({
+                        skillScore: bestScore.skillScore,
+                        rigourMultiplier: bestScore.rigourMultiplier,
+                        compositeScore: bestScore.compositeScore,
+                        band: bestScore.band,
+                        breakdown,
+                      })}
+                      candidateName={bestScore.personName}
                     />
                   </div>
                 </div>

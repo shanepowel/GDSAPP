@@ -2,10 +2,14 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import {
   FIT_SCORING_VERSION,
+  RIGOUR_BOUNDS,
+  VIABILITY_THRESHOLD,
+  bandFor,
   bandForScore,
   classifyGap,
   computeFit,
   type FitInput,
+  type FitResult,
 } from './fit';
 
 function baseInput(overrides: Partial<FitInput> = {}): FitInput {
@@ -103,8 +107,8 @@ describe('computeFit', () => {
     ];
     for (const rigourSignals of [[], signals]) {
       const result = computeFit(baseInput({ rigourSignals }));
-      expect(result.compositeScore).toBeLessThanOrEqual(result.skillScore * 1.15 + 1e-9);
-      expect(result.compositeScore).toBeGreaterThanOrEqual(result.skillScore * 0.75 - 1e-9);
+      expect(result.compositeScore).toBeLessThanOrEqual(result.skillScore * RIGOUR_BOUNDS.max + 1e-9);
+      expect(result.compositeScore).toBeGreaterThanOrEqual(result.skillScore * RIGOUR_BOUNDS.min - 1e-9);
     }
   });
 
@@ -143,26 +147,57 @@ describe('computeFit', () => {
   });
 });
 
-describe('bandForScore / classifyGap', () => {
+describe('bandFor / classifyGap', () => {
   it('maps bands', () => {
-    expect(bandForScore(0.8)).toBe('strong');
+    expect(bandFor(0.8)).toBe('strong');
     expect(bandForScore(0.6)).toBe('viable');
-    expect(bandForScore(0.4)).toBe('stretch');
-    expect(bandForScore(0.39)).toBe('gap');
+    expect(bandFor(0.4)).toBe('stretch');
+    expect(bandFor(0.39)).toBe('gap');
+    expect(VIABILITY_THRESHOLD).toBe(0.6);
   });
 
   it('classifies skills vs rigour vs capacity gaps', () => {
-    expect(classifyGap({ criticality: 'core', bestComposite: 0.2, bestSkill: 0.2, capacityOnly: false }).kind).toBe(
-      'skills_gap',
+    const skillsGap = classifyGap(resultWith({ compositeScore: 0.2, skillScore: 0.2 }), 'core');
+    expect(skillsGap?.kind).toBe('skills_gap');
+
+    const rigourGap = classifyGap(resultWith({ compositeScore: 0.2, skillScore: 0.7 }), 'core');
+    expect(rigourGap?.recommendation).toBe('second');
+
+    const capacityGap = classifyGap(
+      resultWith({
+        compositeScore: 0.9,
+        skillScore: 0.9,
+        capacityShortfall: 0.8,
+      }),
+      'core',
     );
-    expect(
-      classifyGap({ criticality: 'core', bestComposite: 0.2, bestSkill: 0.7, capacityOnly: false }).recommendation,
-    ).toBe('second');
-    expect(classifyGap({ criticality: 'core', bestComposite: 0.9, bestSkill: 0.9, capacityOnly: true }).kind).toBe(
-      'capacity_gap',
-    );
+    expect(capacityGap?.kind).toBe('capacity_gap');
+
+    expect(classifyGap(resultWith({ compositeScore: 0.9, skillScore: 0.9 }), 'core')).toBeNull();
   });
 });
+
+function resultWith(partial: {
+  compositeScore: number;
+  skillScore: number;
+  capacityShortfall?: number | null;
+}): FitResult {
+  return {
+    skillScore: partial.skillScore,
+    rigourMultiplier: 1,
+    compositeScore: partial.compositeScore,
+    band: bandFor(partial.compositeScore),
+    scoringVersion: FIT_SCORING_VERSION,
+    breakdown: {
+      skillContributions: [],
+      rigourContributions: [],
+      unevidencedSkillCount: 0,
+      rigourSignalCount: 0,
+      capacityShortfall: partial.capacityShortfall ?? null,
+      notes: [],
+    },
+  };
+}
 
 describe('FIT_SCORING_VERSION', () => {
   it('is stable for cache hashing', () => {

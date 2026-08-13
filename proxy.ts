@@ -10,6 +10,12 @@ export default withAuth({
 export const config = {
   matcher: [
     '/engagements/:path*',
+    '/people',
+    '/people/:path*',
+    '/squads',
+    '/squads/:path*',
+    '/assurance',
+    '/assurance/:path*',
     '/org-design',
     '/org-design/:path*',
     '/portfolio',
@@ -18,5 +24,6 @@ export const config = {
     '/framework',
     '/profile',
     '/settings',
+    '/settings/:path*',
   ],
 };

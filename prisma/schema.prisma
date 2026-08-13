@@ -35,15 +35,17 @@ model RoleLevel {
 }
 
 model Skill {
-  id           String           @id
-  name         String
-  description  String           @db.Text
-  awareness    String?          @db.Text
-  working      String?          @db.Text
-  practitioner String?          @db.Text
-  expert       String?          @db.Text
-  isCustom     Boolean          @default(false)
-  roleLevels   RoleLevelSkill[]
+  id             String           @id
+  name           String
+  description    String           @db.Text
+  awareness      String?          @db.Text
+  working        String?          @db.Text
+  practitioner   String?          @db.Text
+  expert         String?          @db.Text
+  isCustom       Boolean          @default(false)
+  /// Previous slugs that still resolve to this skill after a framework rename.
+  aliases        SkillAlias[]
+  roleLevels     RoleLevelSkill[]
 }
 
 model RoleLevelSkill {
@@ -945,6 +947,8 @@ model FitScore {
   band              String
   breakdown         Json
   scoringVersion    String
+  /// Government Digital and Data Profession Capability Framework pin at compute time.
+  frameworkVersion  String          @default("unversioned")
   inputsHash        String
   computedAt        DateTime       @default(now())
   engagement        Engagement     @relation(fields: [engagementId], references: [id], onDelete: Cascade)
@@ -1008,4 +1012,32 @@ model CapabilityGap {
 
   @@index([engagementId])
   @@map("capability_gaps")
+}
+
+/// Old capability-framework slugs that must still resolve after a rename or merge.
+model SkillAlias {
+  id        String    @id @default(cuid())
+  alias     String    @unique
+  skillId   String
+  note      String?
+  retiredAt DateTime?
+  skill     Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@index([skillId])
+  @@map("skill_aliases")
+}
+
+/// Pin for the Government Digital and Data Profession Capability Framework ingest.
+model CapabilityFrameworkPin {
+  id           String   @id @default(cuid())
+  versionLabel String
+  sourceDate   DateTime
+  rolesCsvHash String?
+  skillsCsvHash String?
+  sourceFiles  Json     @default("[]")
+  notes        String?  @db.Text
+  importedAt   DateTime @default(now())
+
+  @@index([importedAt])
+  @@map("capability_framework_pins")
 }

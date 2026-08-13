@@ -9,7 +9,7 @@ import { EngagementSubNav } from '@/components/app/EngagementSubNav';
 import { FitBreakdownPanel, FitStrip } from '@/components/team-fit/FitStrip';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
-import type { FitBand, FitBreakdown } from '@/lib/scoring/fit';
+import { fitFromStored, type FitBreakdown } from '@/lib/scoring/fit';
 
 export default function TeamFitRoleCandidatesPage() {
   const { messages: m } = useI18n();
@@ -40,7 +40,13 @@ export default function TeamFitRoleCandidatesPage() {
           <ul className="space-y-2">
             {data.candidates.map((c) => {
               const breakdown = c.breakdown as unknown as FitBreakdown;
-              const unevidenced = breakdown.notes?.includes('no_rigour_signals');
+              const fit = fitFromStored({
+                skillScore: c.skillScore,
+                rigourMultiplier: c.rigourMultiplier,
+                compositeScore: c.compositeScore,
+                band: c.band,
+                breakdown,
+              });
               const open = openId === c.id;
               return (
                 <li key={c.id} className="rounded-lg border border-border bg-surface p-4">
@@ -51,15 +57,9 @@ export default function TeamFitRoleCandidatesPage() {
                     onClick={() => setOpenId(open ? null : c.id)}
                   >
                     <span className="font-medium">{c.personName}</span>
-                    <FitStrip
-                      band={c.band as FitBand}
-                      compositeScore={c.compositeScore}
-                      rigourMultiplier={c.rigourMultiplier}
-                      breakdown={breakdown}
-                      unevidenced={unevidenced}
-                    />
+                    <FitStrip fit={fit} candidateName={c.personName} />
                   </button>
-                  {open ? <FitBreakdownPanel breakdown={breakdown} /> : null}
+                  {open ? <FitBreakdownPanel fit={fit} /> : null}
                   <p className="mt-2 text-xs text-text-muted">
                     Skill {Math.round(c.skillScore * 100)} · Rigour ×{c.rigourMultiplier.toFixed(2)} ·{' '}
                     {m.teamFit.computedAt} {new Date(c.computedAt).toLocaleString()}

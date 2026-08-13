@@ -2,9 +2,9 @@ import type { Messages } from '@/lib/i18n/types';
 
 export const cy: Messages = {
   signIn: {
-    title: 'Mewngofnodi i Assemble',
+    title: 'Mewngofnodi i Datum',
     subtitle:
-      'Cyflymydd Turner & Townsend sy’n troi sicrwydd safon GDS a Chymru yn stori fyw, barod i’r panel, cyn i chi lofnodi’r tendr neu gerdded drwy’r porth.',
+      'Offeryn Turner & Townsend ar gyfer cydosod timau cyflawni a phrofi mai nhw yw’r rhai cywir, yn erbyn yr ymarfer a’r safon sy’n llywodraethu’r gwaith.',
     tabSignIn: 'Mewngofnodi',
     tabRegister: 'Creu cyfrif',
     email: 'E-bost',
@@ -267,20 +267,20 @@ export const cy: Messages = {
     systemLocked: 'Archetype system — ni ellir ei olygu. Cloniwch i addasu.',
   },
   home: {
-    heroEyebrow: 'Assemble gan Turner & Townsend',
-    heroTitle: 'Ennill yr ystafell',
-    heroTitleAccent: 'cyn i chi ennill y gwaith.',
+    heroEyebrow: 'Datum gan Turner & Townsend',
+    heroTitle: 'Y tîm yw’r cynllun cyflawni.',
+    heroTitleAccent: 'Gallu, wedi’i dystio.',
     heroSubtitle:
-      'Peidiwch amddiffyn sleid. Modelwch eich tîm yn erbyn pob pwynt o’r safon GDS neu Gymru, gwylio’r sgôr yn symud yn fyw, a dangos y cam union sy’n cau pob bwlch, o flaen y panel.',
+      'Nid y dull, nid y calendr. Y bobl sy’n troi i fyny bob dydd. Mae Datum yn gosod beth yw ystyr cyflawni da yma, yn sgorio’r gallu a ddelir yn ei erbyn, ac yn cydosod y sgwad ar gyfer swydd benodol.',
     proof1: 'Mynegai Parodrwydd byw: yn diweddaru wrth i chi newid y tîm',
     proof2: 'Pob bwlch wedi’i enwi gyda rhesymeg y gall y panel herio',
     proof3: 'Symudiadau what-if sy’n profi y gallwch gau risg statudol',
     ctaSignIn: 'Mewngofnodi',
     ctaRegister: 'Creu cyfrif',
     ctaDashboard: 'Agor dangosfwrdd',
-    whatTitle: 'Pam mae timau’n dewis Assemble',
+    whatTitle: 'Pam mae timau’n dewis Datum',
     whatBody:
-      'Un Mynegai Parodrwydd y gall eich cleient ymddiried ynddo. Bylchau fesul pwynt gyda fflagau statudol. Trwmder ystwyth a rhagolygon galwad i dendro yn yr un sesiwn. Mae pob rhif yn agor i’w resymeg, fel y gwerthwch rigour, nid addewidion.',
+      'Un Mynegai Parodrwydd y gall eich cleient ymddiried ynddo. Bylchau fesul pwynt gyda fflagau statudol. Trwmder ystwyth a rhagolygon galwad i dendro yn yr un sesiwn. Mae pob rhif yn agor i’w resymeg.',
     howTitle: 'O dudalen wag i barod i’r panel',
     step1Title: 'Gosod yr ymgysylltiad',
     step1Body: 'Cofnodwch y gwasanaeth, y safon, a’r cyfnod y mae eich tendr yn dibynnu arnynt.',
@@ -388,10 +388,10 @@ export const cy: Messages = {
   },
   app: {
     brandName: 'Turner & Townsend',
-    productName: 'Assemble',
+    productName: 'Datum',
     tagline: 'gan Turner & Townsend',
     advisoryFooter:
-      'Demo cynrychioladol gyda rolau a sgiliau DDaT. Safonau GDS a Chymru o dan Drwydded Llywodraeth Agored. Offeryn cyngorol; nid penderfyniad swyddi. © Turner & Townsend.',
+      'Adeilad arddangos gan ddefnyddio Fframwaith Gallu Proffesiwn Digidol a Data y Llywodraeth, wedi’i gyhoeddi o dan Drwydded Llywodraeth Agored. Offeryn cynghorol. Nid penderfyniad swyddi. © Turner & Townsend.',
     language: 'Iaith',
     english: 'Saesneg',
     welsh: 'Cymraeg',

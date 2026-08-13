@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { BrandMark } from '@/components/brand/BrandMark';
 
 export const metadata: Metadata = {
-  title: 'AI use — Assemble',
-  description: 'How Assemble uses AI in digital service assurance.',
+  title: 'AI use — Datum',
+  description: 'How Datum uses AI in digital service assurance.',
 };
 
 export default function AiUsePage() {
@@ -14,7 +14,7 @@ export default function AiUsePage() {
         <BrandMark href="/" variant="light" />
       </header>
       <main className="mx-auto max-w-2xl px-4 py-10 md:px-8">
-        <h1 className="text-[28px] font-semibold tracking-[-0.02em]">How Assemble uses AI</h1>
+        <h1 className="text-[28px] font-semibold tracking-[-0.02em]">How Datum uses AI</h1>
         <p className="mt-3 text-[15px] leading-[1.55] text-ink-1">
           AI may propose. Only a named human may judge. This page summarises the governance boundary
           published in the product specification.

@@ -37,7 +37,7 @@ describe('computeFit golden fixtures', () => {
 describe('computeFit purity contract', () => {
   it('fit.ts has no forbidden imports', () => {
     const src = readFileSync(join(__dirname, '..', 'fit.ts'), 'utf8');
-    expect(src).not.toMatch(/@assemble\/db|@prisma|from ['"]next|node:fetch|from ['"]fs/);
+    expect(src).not.toMatch(/@assemble\/db|@datum\/db|@prisma|from ['"]next|node:fetch|from ['"]fs/);
     expect(src).not.toMatch(/Date\.now\(|Math\.random\(/);
   });
 
@@ -74,6 +74,7 @@ describe('computeFit purity contract', () => {
       });
       expect(result.compositeScore).toBeLessThanOrEqual(result.skillScore * 1.15 + 1e-9);
       expect(result.compositeScore).toBeGreaterThanOrEqual(result.skillScore * 0.75 - 1e-9);
+      expect(result.scoringVersion).toBe('fit-1.0.0');
       expect(createHash('sha256').update(JSON.stringify(result)).digest('hex')).toHaveLength(64);
     }
   });

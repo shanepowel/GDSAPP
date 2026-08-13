@@ -20,7 +20,7 @@ test('accessibility statement has no critical axe violations', async ({ page }) 
 
 test('ai-use and performance pages render', async ({ page }) => {
   await page.goto('/ai-use');
-  await expect(page.getByRole('heading', { name: 'How Assemble uses AI' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'How Datum uses AI' })).toBeVisible();
   await page.goto('/performance');
   await expect(page.getByRole('heading', { name: 'Performance' })).toBeVisible();
 });

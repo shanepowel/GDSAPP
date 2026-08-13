@@ -5,6 +5,7 @@ import {
   computeFit,
   type FitBand,
   type FitBreakdown,
+  type FitResult,
   type RoleCriticality,
   type SkillLevel,
 } from '@/lib/scoring/fit';
@@ -86,11 +87,17 @@ export async function recomputeTeamFit(
     : [];
 
   let scoresUpserted = 0;
+  const pin = await prisma.capabilityFrameworkPin.findFirst({
+    orderBy: { importedAt: 'desc' },
+  });
+  const frameworkVersion = pin?.versionLabel ?? 'unversioned';
+
   const roleBest: Array<{
     roleId: string;
     criticality: RoleCriticality;
     bestComposite: number | null;
     bestSkill: number | null;
+    bestResult: FitResult | null;
     viableWithCapacity: boolean;
     capacityOnly: boolean;
   }> = [];
@@ -98,6 +105,7 @@ export async function recomputeTeamFit(
   for (const role of archetype.roles) {
     let bestComposite: number | null = null;
     let bestSkill: number | null = null;
+    let bestResult: FitResult | null = null;
     let viableWithCapacity = false;
     let bestWithoutCapacity: number | null = null;
 
@@ -142,7 +150,12 @@ export async function recomputeTeamFit(
         },
       });
 
-      if (existing && existing.inputsHash === hash && existing.scoringVersion === FIT_SCORING_VERSION) {
+      if (
+        existing &&
+        existing.inputsHash === hash &&
+        existing.scoringVersion === FIT_SCORING_VERSION &&
+        existing.frameworkVersion === frameworkVersion
+      ) {
         // cache hit
       } else {
         const data = {
@@ -152,6 +165,7 @@ export async function recomputeTeamFit(
           band: result.band,
           breakdown: result.breakdown as unknown as Prisma.InputJsonValue,
           scoringVersion: FIT_SCORING_VERSION,
+          frameworkVersion,
           inputsHash: hash,
           computedAt: asOf,
         };
@@ -177,6 +191,7 @@ export async function recomputeTeamFit(
       if (bestComposite == null || result.compositeScore > bestComposite) {
         bestComposite = result.compositeScore;
         bestSkill = result.skillScore;
+        bestResult = result;
       }
       if (result.breakdown.capacityShortfall == null && result.compositeScore >= 0.6) {
         viableWithCapacity = true;
@@ -200,6 +215,7 @@ export async function recomputeTeamFit(
       criticality: role.criticality as RoleCriticality,
       bestComposite,
       bestSkill,
+      bestResult,
       viableWithCapacity,
       capacityOnly: Boolean(capacityOnly && !viableWithCapacity),
     });
@@ -215,20 +231,20 @@ export async function recomputeTeamFit(
   let gapsWritten = 0;
   for (const row of roleBest) {
     const role = archetype.roles.find((r) => r.id === row.roleId)!;
-    const needsGap =
-      row.capacityOnly ||
-      row.bestComposite == null ||
-      row.bestComposite < 0.6;
+    if (row.viableWithCapacity) continue;
 
-    if (!needsGap) continue;
-    if (row.bestComposite != null && row.bestComposite >= 0.6 && !row.capacityOnly) continue;
-
-    const classified = classifyGap({
-      criticality: row.criticality,
-      bestComposite: row.bestComposite,
-      bestSkill: row.bestSkill,
-      capacityOnly: row.capacityOnly,
-    });
+    const forClassify =
+      row.capacityOnly && row.bestResult
+        ? {
+            ...row.bestResult,
+            breakdown: {
+              ...row.bestResult.breakdown,
+              capacityShortfall: row.bestResult.breakdown.capacityShortfall ?? 0.01,
+            },
+          }
+        : row.bestResult;
+    const classified = classifyGap(forClassify, row.criticality);
+    if (!classified) continue;
 
     const bandLabel: FitBand =
       row.bestComposite == null

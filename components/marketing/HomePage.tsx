@@ -31,7 +31,7 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
             {isSignedIn ? (
-              <Link href="/engagements">
+              <Link href="/squads">
                 <Button>{m.home.ctaDashboard}</Button>
               </Link>
             ) : (
@@ -71,7 +71,7 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
           </ul>
           <div className="mt-8 flex flex-wrap gap-4">
             {isSignedIn ? (
-              <Link href="/engagements">
+              <Link href="/squads">
                 <Button className="gap-2">
                   {m.home.ctaDashboard}
                   <ArrowRight className="h-4 w-4" aria-hidden />
@@ -79,7 +79,7 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
               </Link>
             ) : (
               <>
-                <Link href="/sign-in?callbackUrl=%2Fengagements%2Fnrw-demo">
+                <Link href="/sign-in?callbackUrl=%2Fsquads%2Fnrw-demo">
                   <Button className="gap-2">
                     {m.home.ctaTryDemo}
                     <ArrowRight className="h-4 w-4" aria-hidden />
@@ -143,7 +143,7 @@ export function HomePage({ isSignedIn }: { isSignedIn: boolean }) {
             <h2 className="font-display text-lg font-semibold text-text">{m.home.demoTitle}</h2>
             <p className="mt-2 text-sm leading-relaxed text-text-muted">{m.home.demoBody}</p>
             <div className="mt-4 flex flex-wrap gap-3">
-              <Link href="/sign-in?callbackUrl=%2Fengagements%2Fnrw-demo">
+              <Link href="/sign-in?callbackUrl=%2Fsquads%2Fnrw-demo">
                 <Button className="gap-2">
                   {m.home.ctaTryDemo}
                   <ArrowRight className="h-4 w-4" aria-hidden />

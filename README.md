@@ -1,16 +1,16 @@
-# Standard Readiness (GDSAPP)
+# Datum (GDSAPP)
 
-**Turner & Townsend** product for assessing digital service team readiness against the **GDS Service Standard** and the **Digital Service Standard for Wales**, using the **DDaT Capability Framework** for roles and skills.
+**Turner & Townsend** instrument for assembling delivery teams and proving they are the right ones. Government Digital and Data Profession Capability Framework scoring and service standard readiness (GDS, Wales) are lenses, not the product.
 
-Brand palette: electric cyan `#00B0B3`, charcoal `#111827`, navy `#1E3A5F` — see `styles/tokens.css`.
+Brand palette: drafting stock, survey pink `#E5006D`, datum teal `#1F4B4A` — see `styles/tokens.css`.
 
 ## Advisory and legal
 
 - **Advisory only.** Person-to-role matching is explainable guidance, not hiring or sift decisions. No protected characteristics are collected or scored.
-- **Public frameworks.** DDaT content (Open Government Licence v3.0), GDS Service Standard (OGL via GOV.UK), Wales standard (Centre for Digital Public Services). Dependency mapping is Amplified's work and should be reviewed by a qualified service assessor before client use.
+- **Public frameworks.** Government Digital and Data Profession Capability Framework (Open Government Licence v3.0; DDaT remains a spoken alias), GDS Service Standard (OGL via GOV.UK), Wales standard (Centre for Digital Public Services). Dependency mapping is Amplified's work and should be reviewed by a qualified service assessor before client use.
 - **Data protection.** Pseudonymisation is available. Tenant-scoped engagement data. A DPIA is recommended when storing named individuals.
 
-See `BUILD.md` for the full build specification.
+See `BUILD.md` for the full build specification and `docs/spec/` for product decisions. Framework ingest and quarterly reconciliation: [docs/FRAMEWORK-RECONCILIATION.md](docs/FRAMEWORK-RECONCILIATION.md).
 
 Commercial positioning for NRW and framework bids: [docs/NRW-FRAMEWORK-STRATEGY.md](docs/NRW-FRAMEWORK-STRATEGY.md), WPSQ templates: [docs/WPSQ-DRAFTS.md](docs/WPSQ-DRAFTS.md).
 
@@ -32,13 +32,13 @@ npm run dev
 
 Sign in: `admin@demo.local` / `demo-password`
 
-Place official DDaT CSVs in `data/source/` as `roles.csv`, `skills.csv` (gitignored). Without them, fixture CSVs are generated on seed.
+Place official capability-framework CSVs in `data/source/` as `roles.csv`, `skills.csv` (gitignored). Without them, fixture CSVs are generated on seed. Pin the ingest to a dated version (`data/source/VERSION` or the CSV mtime).
 
 ## Scripts
 
 | Script | Purpose |
 |--------|---------|
-| `npm run ingest` | Ingest DDaT CSVs |
+| `npm run ingest` | Ingest capability-framework CSVs and record a version pin |
 | `npm run seed:standards` | Seed standards and dependency map |
 | `npm run seed:demo` | Demo org, admin, NRW engagement |
 | `npm test` | Scoring engine unit tests |

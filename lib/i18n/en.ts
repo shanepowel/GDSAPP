@@ -2,9 +2,9 @@ import type { Messages } from '@/lib/i18n/types';
 
 export const en: Messages = {
   signIn: {
-    title: 'Sign in to Assemble',
+    title: 'Sign in to Datum',
     subtitle:
-      'The Turner & Townsend accelerator that turns GDS and Wales standard assurance into a live, panel-ready story, before you sign the bid or walk into the gate.',
+      'The Turner & Townsend instrument for assembling delivery teams and proving they are the right ones, against the practice and the standard that governs the work.',
     tabSignIn: 'Sign in',
     tabRegister: 'Create account',
     email: 'Email',
@@ -267,20 +267,20 @@ export const en: Messages = {
     systemLocked: 'System archetype — not editable. Clone to customise.',
   },
   home: {
-    heroEyebrow: 'Assemble by Turner & Townsend',
-    heroTitle: 'Win the room',
-    heroTitleAccent: 'before you win the work.',
+    heroEyebrow: 'Datum by Turner & Townsend',
+    heroTitle: 'The team is the delivery plan.',
+    heroTitleAccent: 'Capability, evidenced.',
     heroSubtitle:
-      'Stop defending a slide deck. Model your team against every point of the GDS or Wales standard, watch the score move live, and show the exact move that closes each gap, in front of the panel.',
+      'Not the method, not the schedule. The people who turn up every day. Datum sets out what good delivery means here, scores the capability we actually hold against it, and assembles the squad for a specific job.',
     proof1: 'Live Preparedness Index: updates as you change the team',
     proof2: 'Every gap named with reasoning the panel can challenge',
     proof3: 'What-if moves that prove you can close statutory risk',
     ctaSignIn: 'Sign in',
     ctaRegister: 'Create account',
     ctaDashboard: 'Open dashboard',
-    whatTitle: 'Why teams choose Assemble',
+    whatTitle: 'Why teams choose Datum',
     whatBody:
-      'One Preparedness Index your client can trust. Point-level gaps with statutory flags. Agile rigour and call-off quality outlook in the same session. Every number opens to its reasoning, so you sell rigour, not promises.',
+      'One Preparedness Index your client can trust. Point-level gaps with statutory flags. Agile rigour and call-off quality outlook in the same session. Every number opens to its reasoning.',
     howTitle: 'From blank page to panel-ready',
     step1Title: 'Set the engagement',
     step1Body: 'Capture the service, standard, and phase your bid depends on.',
@@ -387,10 +387,10 @@ export const en: Messages = {
   },
   app: {
     brandName: 'Turner & Townsend',
-    productName: 'Assemble',
+    productName: 'Datum',
     tagline: 'by Turner & Townsend',
     advisoryFooter:
-      'Demonstration build with representative DDaT roles and skills. GDS and Wales standards under the Open Government Licence. Advisory tool; not a hiring decision. © Turner & Townsend.',
+      'Demonstration build using the Government Digital and Data Profession Capability Framework, published under the Open Government Licence. Advisory instrument. Not a hiring decision. © Turner & Townsend.',
     language: 'Language',
     english: 'English',
     welsh: 'Welsh',

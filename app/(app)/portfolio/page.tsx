@@ -1,185 +1,99 @@
 'use client';
 
 import Link from 'next/link';
-import { AppShell } from '@/components/app/AppShell';
-import { AppNav } from '@/components/app/AppNav';
-import { Card } from '@/components/app/Card';
-import { DeploymentBanner } from '@/components/app/DeploymentBanner';
-import { Eyebrow } from '@/components/app/Eyebrow';
-import { ScoreBar } from '@/components/app/ScoreBar';
-import { StatusPill, type StatusKind } from '@/components/app/StatusPill';
 import { useI18n } from '@/components/app/LocaleProvider';
-import { getClientDeploymentFeatures } from '@/lib/deployment-mode-client';
+import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
-
-function bandToKind(band: string | null | undefined): StatusKind {
-  if (!band) return 'info';
-  if (band === 'Strong') return 'strong';
-  if (band === 'On track') return 'met';
-  if (band === 'At risk') return 'partial';
-  return 'gap';
-}
 
 export default function PortfolioPage() {
   const { data, isLoading } = trpc.portfolio.summary.useQuery();
-  const features = getClientDeploymentFeatures();
-  const { messages } = useI18n();
-  const title = features.clientAssuranceLabels
-    ? messages.portfolio.titleAssurance
-    : messages.portfolio.title;
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
 
   return (
-    <AppShell title={title} orgLabel="Organisation-wide">
-      <DeploymentBanner />
-      <AppNav />
-      <p className="mb-6 text-sm text-text-muted">
-        {features.clientAssuranceLabels
-          ? 'Cross-service view for framework governance: readiness, rigour, evidence and call-off assurance criteria in one place.'
-          : 'Roll-up across engagements for delivery directors and account leads.'}
-      </p>
+    <>
+      <p className="eyebrow mb-2 text-[color:var(--graphite)]">{copy.portfolio.eyebrow}</p>
+      <h1 className="font-[family-name:var(--font-cond)] text-[30px] font-bold">{copy.portfolio.title}</h1>
+      <p className="mt-2 mb-6 max-w-[62ch] text-[color:var(--graphite)]">{copy.portfolio.lede}</p>
 
-      {isLoading && <p className="text-text-muted">Loading…</p>}
+      {isLoading ? <p className="text-[color:var(--graphite)]">Loading…</p> : null}
 
-      {data && (
+      {data ? (
         <>
-          <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Card className="p-5">
-              <Eyebrow>Services</Eyebrow>
-              <p className="text-2xl font-bold tabular-nums">{data.engagementCount}</p>
-              <p className="text-[13px] text-text-muted">{data.analysedCount} with analysis</p>
-            </Card>
-            <Card className="p-5">
-              <Eyebrow>Mean readiness</Eyebrow>
-              {data.averageReadiness != null ? (
-                <div className="mt-2">
-                  <ScoreBar value={data.averageReadiness} />
-                </div>
-              ) : (
-                <p className="mt-2 text-sm text-text-muted">No runs yet</p>
-              )}
-            </Card>
-            <Card className="p-5">
-              <Eyebrow>Mean agile rigour</Eyebrow>
-              <p className="mt-2 text-2xl font-bold tabular-nums">
-                {data.averageRigour != null ? `${data.averageRigour}%` : '-'}
-              </p>
-            </Card>
-            <Card className="p-5">
-              <Eyebrow>Open gaps</Eyebrow>
-              <p className="mt-2 text-2xl font-bold tabular-nums">{data.totalGapPoints}</p>
-              <p className="text-[13px] text-text-muted">
-                {data.totalStatutoryGaps} statutory · {data.totalPassFailRisks} pass/fail risks
-              </p>
-            </Card>
+          <div className="mb-6 grid grid-cols-1 gap-px bg-[var(--rule)] sm:grid-cols-2 lg:grid-cols-4">
+            <Stat k={copy.portfolio.engagements} v={String(data.engagementCount)} n={`${data.analysedCount} with analysis`} />
+            <Stat
+              k="Mean preparedness"
+              v={data.averageReadiness != null ? (data.averageReadiness / 100).toFixed(2) : '—'}
+              n="across analysed engagements"
+            />
+            <Stat
+              k="Mean rigour"
+              v={data.averageRigour != null ? `${data.averageRigour}%` : '—'}
+              n="delivery discipline"
+            />
+            <Stat
+              k="Open gaps"
+              v={String(data.totalGapPoints)}
+              n={`${data.totalStatutoryGaps} statutory`}
+            />
           </div>
 
-          {data.topRisks.length > 0 && (
-            <Card className="mb-8 p-5">
-              <Eyebrow>Headline risks</Eyebrow>
-              <ul className="mt-2 list-disc pl-5 text-sm">
-                {data.topRisks.map((r) => (
-                  <li key={r}>{r}</li>
-                ))}
-              </ul>
-            </Card>
-          )}
-
-          {data.supplierGroups.length > 0 && (
-            <Card className="mb-8 overflow-hidden p-0">
-              <div className="border-b border-border px-5 py-3">
-                <Eyebrow>{messages.portfolio.bySupplier}</Eyebrow>
-              </div>
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-surface-alt text-left text-text-muted">
-                    <th className="px-5 py-3 font-medium">Supplier</th>
-                    <th className="px-5 py-3 font-medium">Services</th>
-                    <th className="px-5 py-3 font-medium">Mean readiness</th>
-                    <th className="px-5 py-3 font-medium">Open gaps</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.supplierGroups.map((g) => (
-                    <tr key={g.supplierTag} className="border-t border-border">
-                      <td className="px-5 py-3 font-medium">{g.supplierTag}</td>
-                      <td className="px-5 py-3 tabular-nums">{g.engagementCount}</td>
-                      <td className="px-5 py-3 tabular-nums">
-                        {g.averageReadiness != null ? `${g.averageReadiness}%` : '-'}
-                      </td>
-                      <td className="px-5 py-3 tabular-nums">{g.totalGapPoints}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Card>
-          )}
-
-          <Card className="overflow-hidden p-0">
-            <table className="w-full text-sm">
+          <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+            {copy.portfolio.engagements}
+          </h2>
+          <div className="sheet overflow-x-auto">
+            <table>
               <thead>
-                <tr className="bg-surface-alt text-left text-text-muted">
-                  <th className="px-5 py-3 font-medium">Service / engagement</th>
-                  <th className="px-5 py-3 font-medium">Standard</th>
-                  <th className="px-5 py-3 font-medium">Readiness</th>
-                  <th className="px-5 py-3 font-medium">Rigour</th>
-                  <th className="px-5 py-3 font-medium">
-                    {features.clientAssuranceLabels ? 'Criteria outlook' : 'Call-off outlook'}
-                  </th>
-                  <th className="px-5 py-3 font-medium">Gaps</th>
-                  <th className="px-5 py-3 font-medium">Evidence</th>
+                <tr>
+                  <th>Engagement</th>
+                  <th>Phase</th>
+                  <th>Preparedness</th>
+                  <th>Rigour</th>
+                  <th>Gaps</th>
                 </tr>
               </thead>
               <tbody>
                 {data.engagements.map((row) => (
-                  <tr key={row.id} className="border-t border-border">
-                    <td className="px-5 py-3">
-                      <Link href={`/engagements/${row.id}`} className="font-medium text-brand-hover hover:underline">
+                  <tr key={row.id} className="clickable">
+                    <td>
+                      <Link href={`/squads/${row.id}`} className="font-semibold">
                         {row.name}
                       </Link>
-                      <p className="text-xs text-text-muted">
-                        {row.phase ?? '-'}
-                        {row.supplierTag ? ` · ${row.supplierTag}` : ''}
-                        {row.lotTag ? ` · ${row.lotTag}` : ''}
-                      </p>
                     </td>
-                    <td className="px-5 py-3 capitalize">{row.standardId}</td>
-                    <td className="px-5 py-3">
-                      {row.readinessPercent != null ? (
-                        <StatusPill kind={bandToKind(row.readinessBand)}>
-                          {row.readinessBand} · {Math.round(row.readinessPercent)}%
-                        </StatusPill>
-                      ) : (
-                        <span className="text-text-muted">—</span>
-                      )}
+                    <td className="num">{row.phase ?? '—'}</td>
+                    <td className="num">
+                      {row.readinessPercent != null ? (row.readinessPercent / 100).toFixed(2) : '—'}
                     </td>
-                    <td className="px-5 py-3 tabular-nums">
-                      {row.rigourPercent != null ? `${row.rigourPercent}%` : '-'}
-                    </td>
-                    <td className="px-5 py-3 tabular-nums">
-                      {row.callOffOutlook != null ? `${row.callOffOutlook}%` : '-'}
-                      {row.passFailRiskCount > 0 && (
-                        <span className="ml-1 text-status-gap">({row.passFailRiskCount} risk)</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-3 tabular-nums">
+                    <td className="num">{row.rigourPercent != null ? `${row.rigourPercent}%` : '—'}</td>
+                    <td className="num">
                       {row.gapPointCount}
-                      {row.statutoryGapCount > 0 && (
-                        <span className="block text-xs text-text-muted">
+                      {row.statutoryGapCount > 0 ? (
+                        <span className="ml-2 font-data text-[10px] uppercase tracking-wide text-[color:var(--survey)]">
                           {row.statutoryGapCount} statutory
                         </span>
-                      )}
+                      ) : null}
                     </td>
-                    <td className="px-5 py-3 tabular-nums">{row.evidenceCount}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            {data.engagements.length === 0 && (
-              <p className="p-6 text-text-muted">No engagements yet. Create one under Engagements.</p>
-            )}
-          </Card>
+            {data.engagements.length === 0 ? (
+              <p className="px-4 py-6 text-[color:var(--graphite)]">{copy.empty.noEngagements}</p>
+            ) : null}
+          </div>
         </>
-      )}
-    </AppShell>
+      ) : null}
+    </>
+  );
+}
+
+function Stat({ k, v, n }: { k: string; v: string; n: string }) {
+  return (
+    <div className="bg-[var(--raised)] p-4">
+      <div className="font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">{k}</div>
+      <div className="mt-1 font-data text-[26px] tabular-nums">{v}</div>
+      <div className="text-[12px] text-[color:var(--graphite)]">{n}</div>
+    </div>
   );
 }

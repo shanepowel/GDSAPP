@@ -39,6 +39,7 @@ export const engagementRouter = router({
       lotTag: e.lotTag,
       phase: e.phase || e.requirements[0]?.phase || null,
       mode: e.mode,
+      maturityLevel: e.maturityLevel,
       lastRun: e.requirements[0]?.runs[0] ?? null,
     }));
   }),

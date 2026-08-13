@@ -1,9 +1,9 @@
-/** Assemble by Turner & Townsend: product identity (UI + exports). */
+/** Datum by Turner & Townsend: product identity (UI + exports). */
 export const BRAND = {
   company: 'Turner & Townsend',
-  product: 'Assemble',
-  productLine: 'Assemble by Turner & Townsend',
-  tagline: 'Live standard assurance for bids that must win',
+  product: 'Datum',
+  productLine: 'Datum by Turner & Townsend',
+  tagline: 'The team is the delivery plan',
   legalLine: 'Turner & Townsend',
   site: 'https://www.turnerandtownsend.com',
   logos: {

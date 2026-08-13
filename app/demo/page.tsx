@@ -256,7 +256,7 @@ export default function Assemble(){
         <div className="mx-auto flex max-w-[1100px] items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2.5">
             <span className="display text-[17px] font-extrabold tracking-tight">Turner &amp; Townsend</span>
-            <span className="rounded px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-wider" style={{background:TT.blue}}>Assemble</span>
+            <span className="rounded px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-wider" style={{background:TT.blue}}>Datum</span>
           </div>
           <span className="text-[12px]" style={{color:"#9AA6C4"}}>Service standard assurance accelerator</span>
         </div>
@@ -459,8 +459,8 @@ export default function Assemble(){
         </section>
 
         <footer className="mt-8 border-t pt-5 text-[12px]" style={{borderColor:"#E5E9EF",color:"#9AA6C4"}}>
-          Demonstration build with a representative subset of the DDaT roles and skills. DDaT Capability Framework and GDS Service Standard
-          under the Open Government Licence v3.0; Wales standard credited to the Centre for Digital Public Services. Advisory tool, supports
+          Demonstration build using the Government Digital and Data Profession Capability Framework and GDS Service Standard
+          under the Open Government Licence v3.0; Wales standard credited to the Centre for Digital Public Services. Advisory instrument, supports
           human judgement, makes no hiring decision, uses no protected characteristics. &copy; 2026 Turner &amp; Townsend.
         </footer>
       </main>
