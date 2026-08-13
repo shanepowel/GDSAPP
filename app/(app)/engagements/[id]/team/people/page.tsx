@@ -29,6 +29,7 @@ export default function TeamPage() {
   const [draftName, setDraftName] = useState('');
   const [draftRoleLevelId, setDraftRoleLevelId] = useState('');
   const [draftVacancy, setDraftVacancy] = useState(false);
+  const [pendingRoles, setPendingRoles] = useState<Record<string, string>>({});
 
   const upsert = trpc.engagement.upsertPerson.useMutation({
     onSuccess: (_person, variables) => {
@@ -112,8 +113,9 @@ export default function TeamPage() {
             <span className="text-text-muted">{m.engagement.personRole}</span>
             <select
               className={selectClass}
+              name="new-person-role"
               value={draftRoleLevelId}
-              disabled={roleSelectDisabled || upsert.isPending}
+              disabled={roleSelectDisabled}
               aria-label={m.engagement.personRole}
               onChange={(e) => setDraftRoleLevelId(e.target.value)}
             >
@@ -156,8 +158,9 @@ export default function TeamPage() {
       <ul className="space-y-4">
         {data?.people.map((p) => {
           const assignment = req?.assignments.find((a) => a.personId === p.id);
-          const rl = roleLevels?.find((r) => r.id === assignment?.roleLevelId);
-          const roleLabel = rl ? `${rl.role.name}` : undefined;
+          const selectedRoleId = pendingRoles[p.id] ?? assignment?.roleLevelId ?? '';
+          const rl = roleLevels?.find((r) => r.id === selectedRoleId);
+          const roleLabel = rl ? rl.role.name : undefined;
           return (
             <li key={p.id} className="rounded-lg border border-border bg-surface p-4">
               <p className="font-medium">{displayName(p.displayName, roleLabel)}</p>
@@ -173,16 +176,30 @@ export default function TeamPage() {
                 <span className="text-text-muted">{m.engagement.personRole}</span>
                 <select
                   className={selectClass}
-                  value={assignment?.roleLevelId ?? ''}
-                  disabled={roleSelectDisabled || setAssignment.isPending}
-                  aria-label={m.engagement.personRole}
+                  name={`person-role-${p.id}`}
+                  value={selectedRoleId}
+                  disabled={roleSelectDisabled}
+                  aria-label={`${p.displayName} ${m.engagement.personRole}`}
                   onChange={(e) => {
-                    if (!req || !e.target.value) return;
-                    setAssignment.mutate({
-                      requirementId: req.id,
-                      personId: p.id,
-                      roleLevelId: e.target.value,
-                    });
+                    const roleLevelId = e.target.value;
+                    if (!req || !roleLevelId) return;
+                    setPendingRoles((current) => ({ ...current, [p.id]: roleLevelId }));
+                    setAssignment.mutate(
+                      {
+                        requirementId: req.id,
+                        personId: p.id,
+                        roleLevelId,
+                      },
+                      {
+                        onError: () => {
+                          setPendingRoles((current) => {
+                            const next = { ...current };
+                            delete next[p.id];
+                            return next;
+                          });
+                        },
+                      },
+                    );
                   }}
                 >
                   <option value="">{m.engagement.assignRole}</option>

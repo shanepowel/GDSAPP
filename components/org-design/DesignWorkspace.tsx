@@ -87,6 +87,7 @@ export function DesignWorkspace({
     type: 'includes' as 'includes' | 'reports-to' | 'collaborates-with',
   });
   const [personDraft, setPersonDraft] = useState({ name: '', email: '', entityId: '' });
+  const [pendingPersonRoles, setPendingPersonRoles] = useState<Record<string, string>>({});
   const [scenarioName, setScenarioName] = useState('');
   const [snapshotName, setSnapshotName] = useState('');
   const [aiMessage, setAiMessage] = useState('');
@@ -663,8 +664,9 @@ export function DesignWorkspace({
                 <span className="mb-1 block text-text-muted">Role</span>
                 <select
                   className="min-w-[12rem] rounded-md border border-border bg-surface px-2 py-1.5 text-sm"
+                  name="new-person-role"
                   value={personDraft.entityId}
-                  disabled={roleEntities.length === 0 || createPerson.isPending}
+                  disabled={roleEntities.length === 0}
                   aria-label="Role"
                   onChange={(e) => setPersonDraft((d) => ({ ...d, entityId: e.target.value }))}
                 >
@@ -689,7 +691,8 @@ export function DesignWorkspace({
           <ul className="divide-y divide-border">
             {people.map((p) => {
               const assigned = assignments.filter((a) => a.personId === p.id);
-              const currentRoleId = assigned[0]?.entityId ?? '';
+              const currentRoleId =
+                pendingPersonRoles[p.id] ?? assigned[0]?.entityId ?? '';
               return (
                 <li key={p.id} className="flex flex-wrap items-start justify-between gap-2 py-3">
                   <div className="min-w-[16rem] flex-1">
@@ -700,15 +703,29 @@ export function DesignWorkspace({
                         <span className="text-text-muted">Role</span>
                         <select
                           className="mt-1 w-full max-w-sm rounded-md border border-border bg-surface px-2 py-1.5 text-sm"
+                          name={`person-role-${p.id}`}
                           value={currentRoleId}
-                          disabled={roleEntities.length === 0 || setPersonRole.isPending}
-                          aria-label="Role"
-                          onChange={(e) =>
-                            setPersonRole.mutate({
-                              personId: p.id,
-                              entityId: e.target.value || null,
-                            })
-                          }
+                          disabled={roleEntities.length === 0}
+                          aria-label={`${p.name} Role`}
+                          onChange={(e) => {
+                            const entityId = e.target.value || null;
+                            setPendingPersonRoles((current) => ({
+                              ...current,
+                              [p.id]: entityId ?? '',
+                            }));
+                            setPersonRole.mutate(
+                              { personId: p.id, entityId },
+                              {
+                                onError: () => {
+                                  setPendingPersonRoles((current) => {
+                                    const next = { ...current };
+                                    delete next[p.id];
+                                    return next;
+                                  });
+                                },
+                              },
+                            );
+                          }}
                         >
                           <option value="">Assign role…</option>
                           {roleEntities.map((role) => (
