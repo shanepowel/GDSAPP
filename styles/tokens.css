@@ -20,6 +20,9 @@
   /* Benchmark. Datum rule and passing states only. */
   --datum: #1f4b4a;
 
+  /* Caution. Filled-but-below-the-datum, never the only carrier of meaning. */
+  --amber: #b26b00;
+
   /* Hatch for below-level skill segments (not a UI colour elsewhere). */
   --hatch-0: #4a5150;
   --hatch-1: #5e6564;

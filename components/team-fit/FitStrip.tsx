@@ -1,6 +1,8 @@
+'use client';
+
 /**
  * Signature element. A candidate's fit as a segmented band against a fixed
- * datum rule, with the rigour multiplier drawn beneath as a tolerance bracket.
+ * datum rule, with delivery evidence drawn beneath as a tolerance bracket.
  *
  * CSS only. Server renderable. No chart library, canvas, or layout JS.
  */
@@ -10,6 +12,8 @@ import {
   type FitResult,
   type SkillContribution,
 } from '@/lib/scoring/fit';
+import { useI18n } from '@/components/app/LocaleProvider';
+import { getCopy } from '@/lib/copy-i18n';
 
 interface FitStripProps {
   fit: FitResult;
@@ -88,12 +92,14 @@ export function FitBandCell({ fit }: { fit: FitResult }) {
 }
 
 export function FitBreakdownPanel({ fit }: { fit: FitResult }) {
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
   const { breakdown } = fit;
   return (
     <div className="mt-3 space-y-3 border-t border-[color:var(--rule)] pt-3 text-sm">
       <div>
         <h4 className="text-xs font-semibold uppercase tracking-wide text-[color:var(--graphite)]">
-          Skill contributions
+          {copy.people.skills}
         </h4>
         <ul className="mt-1 space-y-1">
           {breakdown.skillContributions.map((s) => (
@@ -111,20 +117,19 @@ export function FitBreakdownPanel({ fit }: { fit: FitResult }) {
       </div>
       <div>
         <h4 className="text-xs font-semibold uppercase tracking-wide text-[color:var(--graphite)]">
-          Rigour signals
+          {copy.people.rigourSignals}
         </h4>
         {breakdown.notes.includes('no_rigour_signals') ? (
-          <p className="mt-1 text-[color:var(--graphite)]">
-            Unevidenced. No rigour signals recorded, so the multiplier stays at exactly 1.00.
-            Absence of evidence never lowers a figure. This is a finding about the organisation&apos;s
-            instrumentation, not about this person.
-          </p>
+          <p className="mt-1 text-[color:var(--graphite)]">{copy.teach.nothingRecorded}</p>
         ) : (
           <ul className="mt-1 space-y-1">
             {breakdown.rigourContributions.map((r, i) => (
               <li key={`${r.type}-${i}`} className="flex flex-wrap justify-between gap-2">
                 <span>
-                  {r.type} <span className="text-[color:var(--graphite)]">({r.provenance})</span>
+                  {r.type}{' '}
+                  <span className="text-[color:var(--graphite)]">
+                    ({r.provenance === 'derived' ? copy.teach.derived : copy.teach.asserted})
+                  </span>
                 </span>
                 <span className="font-data">{r.rawValue.toFixed(2)}</span>
               </li>
@@ -133,9 +138,7 @@ export function FitBreakdownPanel({ fit }: { fit: FitResult }) {
         )}
       </div>
       {breakdown.capacityShortfall != null ? (
-        <p className="text-[color:var(--graphite)]">
-          Capacity shortfall: {breakdown.capacityShortfall.toFixed(2)} FTE (not folded into fit).
-        </p>
+        <p className="text-[color:var(--graphite)]">{copy.squads.capacityFlag}</p>
       ) : null}
     </div>
   );

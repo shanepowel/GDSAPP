@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { EmptyState, InkButton, PageHeader } from '@/components/datum/PageChrome';
+import { TeachPanel } from '@/components/teach/TeachPanel';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
@@ -25,6 +26,11 @@ export default function AssuranceIndexPage() {
         lede={copy.assurance.indexLede}
         actions={<InkButton href="/engagements/new">{copy.ui.createEngagement}</InkButton>}
       />
+      <TeachPanel tag={copy.teach.assessment.tag} title={copy.teach.assessment.title}>
+        {copy.teach.assessment.body.map((p) => (
+          <p key={p}>{p}</p>
+        ))}
+      </TeachPanel>
       {isLoading ? <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p> : null}
       {!isLoading && (data?.length ?? 0) === 0 ? (
         <EmptyState

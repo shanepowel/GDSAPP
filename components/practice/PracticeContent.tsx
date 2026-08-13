@@ -1,9 +1,19 @@
 'use client';
 
+import { Suspense, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
+import { fillCopy } from '@/lib/copy';
 import { CEREMONIES, MATURITY, PILLARS } from '@/lib/practice';
+import { TeachPanel } from '@/components/teach/TeachPanel';
+import {
+  CapacityFigure,
+  EmpoweredFigure,
+  FigureFrame,
+  LifecycleFigure,
+} from '@/components/teach/figures';
 
 const CLAIM_HREFS = ['/practice/pillars', '/people', '/squads', '/assurance'] as const;
 
@@ -14,14 +24,18 @@ export function PracticeOverview() {
 
   return (
     <>
+      <Suspense fallback={null}>
+        <PracticeTourScroll />
+      </Suspense>
+
       <section className="border-b border-[color:var(--rule)] pb-12">
         <p className="mb-3 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-[color:var(--graphite)]">
           {c.eyebrow}
         </p>
-        <h1 className="max-w-[16ch] font-[family-name:var(--font-cond)] text-[clamp(38px,7vw,68px)] font-bold leading-[1.02] tracking-[-0.01em]">
-          {c.headline}
+        <h1 className="max-w-[18ch] font-[family-name:var(--font-cond)] text-[clamp(32px,6vw,48px)] font-bold leading-[1.08] tracking-[-0.01em]">
+          {copy.practice.looksLikeTitle}
         </h1>
-        <p className="mt-6 max-w-[62ch] text-[16px] text-[color:var(--graphite)]">{c.sub}</p>
+        <p className="mt-4 max-w-[62ch] text-[16px] text-[color:var(--graphite)]">{copy.practice.looksLikeLede}</p>
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
@@ -39,12 +53,69 @@ export function PracticeOverview() {
         </div>
       </section>
 
-      <section className="py-12">
+      <section className="py-10">
+        <TeachPanel tag={copy.teach.practiceIdea.tag} title={copy.teach.practiceIdea.title}>
+          {copy.teach.practiceIdea.body.map((p) => (
+            <p key={p}>{p}</p>
+          ))}
+        </TeachPanel>
+
+        <FigureFrame
+          id="figure-empowered"
+          caption={
+            <>
+              <b>{fillCopy(copy.figures.label, { n: 1 })}</b> {copy.figures.empowered}
+            </>
+          }
+        >
+          <EmpoweredFigure label={copy.figures.empoweredAria} />
+        </FigureFrame>
+
+        <FigureFrame
+          id="figure-clocks"
+          caption={
+            <>
+              <b>{fillCopy(copy.figures.label, { n: 2 })}</b> {copy.figures.clocks}
+            </>
+          }
+        >
+          <LifecycleFigure label={copy.figures.clocksAria} />
+        </FigureFrame>
+
+        <TeachPanel tag={copy.teach.twoClocks.tag} title={copy.teach.twoClocks.title}>
+          {copy.teach.twoClocks.body.map((p) => (
+            <p key={p}>{p}</p>
+          ))}
+        </TeachPanel>
+      </section>
+
+      <section className="pb-10">
         <h2 className="mb-1 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
           {copy.practice.pillarsTitle}
         </h2>
         <p className="mb-4 max-w-[62ch] text-[color:var(--graphite)]">{copy.practice.pillarsLede}</p>
         <PillarsTable />
+      </section>
+
+      <section className="pb-10">
+        <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+          {copy.practice.capacityTitle}
+        </h2>
+        <FigureFrame
+          id="figure-capacity"
+          caption={
+            <>
+              <b>{fillCopy(copy.figures.label, { n: 3 })}</b> {copy.figures.capacity}
+            </>
+          }
+        >
+          <CapacityFigure label={copy.figures.capacityAria} />
+        </FigureFrame>
+        <TeachPanel tag={copy.teach.capacityCaution.tag} title={copy.teach.capacityCaution.title}>
+          {copy.teach.capacityCaution.body.map((p) => (
+            <p key={p}>{p}</p>
+          ))}
+        </TeachPanel>
       </section>
 
       <section className="pb-12">
@@ -101,6 +172,19 @@ export function PracticeOverview() {
       </footer>
     </>
   );
+}
+
+function PracticeTourScroll() {
+  const search = useSearchParams();
+  const tour = search.get('tour');
+
+  useEffect(() => {
+    const id = tour === '2' ? 'figure-clocks' : tour === '1' ? 'figure-empowered' : null;
+    if (!id) return;
+    document.getElementById(id)?.scrollIntoView({ block: 'start' });
+  }, [tour]);
+
+  return null;
 }
 
 export function PillarsTable() {

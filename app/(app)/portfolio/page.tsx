@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { EmptyState, PageHeader, StatStrip } from '@/components/datum/PageChrome';
+import { TeachPanel } from '@/components/teach/TeachPanel';
+import { DemandFigure, FigureFrame } from '@/components/teach/figures';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
@@ -15,6 +17,23 @@ export default function PortfolioPage() {
   return (
     <>
       <PageHeader eyebrow={copy.portfolio.eyebrow} title={copy.portfolio.title} lede={copy.portfolio.lede} />
+
+      <TeachPanel tag={copy.teach.portfolioUse.tag} title={copy.teach.portfolioUse.title}>
+        {copy.teach.portfolioUse.body.map((p) => (
+          <p key={p}>{p}</p>
+        ))}
+      </TeachPanel>
+
+      <FigureFrame
+        id="figure-demand"
+        caption={
+          <>
+            <b>{fillCopy(copy.figures.label, { n: 6 })}</b> {copy.figures.demand}
+          </>
+        }
+      >
+        <DemandFigure label={copy.figures.demandAria} />
+      </FigureFrame>
 
       {isLoading ? <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p> : null}
 

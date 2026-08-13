@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useState, Fragment } from 'react';
+import { Suspense, useState, Fragment } from 'react';
 import { FitBandCell, FitBreakdownPanel, FitStrip } from '@/components/team-fit/FitStrip';
 import { EmptyState, FitLegend, PageHeader, TextLink } from '@/components/datum/PageChrome';
+import { TeachPanel } from '@/components/teach/TeachPanel';
+import { WalkthroughSlot } from '@/components/teach/WalkthroughSlot';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy, gapMoveLabel } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
@@ -27,7 +29,6 @@ function SquadFitPageInner() {
   const { locale } = useI18n();
   const copy = getCopy(locale);
   const id = params.engagementId as string;
-  const tourStep = search.get('tour');
   const { data: archetypes } = trpc.teamFit.listArchetypes.useQuery();
   const archetypeId = search.get('archetype') ?? archetypes?.[0]?.id ?? '';
   const { data, refetch } = trpc.teamFit.overview.useQuery(
@@ -37,12 +38,6 @@ function SquadFitPageInner() {
   const recompute = trpc.teamFit.recompute.useMutation({ onSuccess: () => refetch() });
   const [busy, setBusy] = useState(false);
   const [openRoleId, setOpenRoleId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (tourStep === '4' && data?.rows[0]) {
-      setOpenRoleId(data.rows[0].role.id);
-    }
-  }, [tourStep, data]);
 
   const gaps = (data?.rows ?? []).filter(
     (row) => row.gap || !row.bestScore || row.bestScore.band === 'gap' || row.bestScore.band === 'stretch',
@@ -99,6 +94,13 @@ function SquadFitPageInner() {
           </>
         }
       />
+
+      <TeachPanel tag={copy.teach.whatYouAreDoing.tag} title={copy.teach.whatYouAreDoing.title}>
+        {copy.teach.whatYouAreDoing.body.map((p) => (
+          <p key={p}>{p}</p>
+        ))}
+      </TeachPanel>
+      <WalkthroughSlot />
 
       <p className="mb-4 flex flex-wrap gap-4">
         <TextLink href={`/engagements/${id}/team/people`}>{copy.ui.managePeople}</TextLink>
@@ -161,8 +163,12 @@ function SquadFitPageInner() {
                         </button>
                       </td>
                       <td>
-                        <span className={`flag ${role.criticality === 'core' ? 'flag-core' : ''}`}>
-                          {role.criticality}
+                        <span className={`flag ${role.criticality === 'core' ? 'flag-risk' : ''}`}>
+                          {role.criticality === 'core' ||
+                          role.criticality === 'supporting' ||
+                          role.criticality === 'optional'
+                            ? copy.squads.criticalityLabels[role.criticality]
+                            : role.criticality}
                         </span>
                       </td>
                       <td>

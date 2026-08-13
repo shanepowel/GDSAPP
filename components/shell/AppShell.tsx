@@ -11,6 +11,7 @@ import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { ThemeToggle } from '@/components/product/ThemeToggle';
 import { DatumShellProvider } from '@/components/shell/datum-shell-context';
 import { TourBar } from '@/components/shell/TourBar';
+import { TeachToggle } from '@/components/teach/TeachToggle';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 import { fillCopy } from '@/lib/copy';
@@ -18,6 +19,7 @@ import { MATURITY_LABELS, type MaturityLevel } from '@/lib/playbook/keel';
 
 const SECTIONS = [
   { key: 'practice', href: '/', match: /^\/$|^\/practice(\/|$)/ },
+  { key: 'roles', href: '/roles', match: /^\/roles/ },
   { key: 'people', href: '/people', match: /^\/people/ },
   { key: 'squads', href: '/squads', match: /^\/squads/ },
   { key: 'assurance', href: '/assurance', match: /^\/assurance/ },
@@ -106,6 +108,9 @@ export function DatumAppShell({
             })}
           </nav>
 
+          <div className="border-t border-[color:var(--rule)] px-5 py-3">
+            <TeachToggle />
+          </div>
           <div className="flex items-center gap-2 border-t border-[color:var(--rule)] px-5 py-3">
             <LanguageSwitcher />
             <ThemeToggle />

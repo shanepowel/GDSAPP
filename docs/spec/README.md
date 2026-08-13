@@ -18,6 +18,7 @@ This spec is written to be executed by an agent (Cursor) in PR-sized increments.
 | `09-delivery-playbook.md` | Five pillars, ceremonies, maturity; source of truth for Team Fit |
 | `10-repositioning-and-ia.md` | Datum naming, five-section IA, Practice public, GDS as a module |
 | `11-buildsheet.md` | Ordered implementation tasks T11.1–T11.8 with acceptance criteria |
+| `12-designing-for-non-delivery-readers.md` | Teaching layer, Roles section, six figures, eight-step walkthrough. Supersedes content assumptions in 10 and 11. |
 
 ---
 

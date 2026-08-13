@@ -43,17 +43,19 @@ function TourBarInner({ engagementId }: { engagementId?: string }) {
   const hrefFor = useCallback(
     (stepIndex: number) => {
       const step = steps[stepIndex];
-      if (step.view === 'practice') return `/?tour=${stepIndex + 1}`;
-      if (step.view === 'people') return `/people?tour=${stepIndex + 1}`;
-      if (step.view === 'squads' || step.view === 'squads-reason') {
+      const n = stepIndex + 1;
+      if (step.view === 'practice' || step.view === 'practice-clocks') return `/?tour=${n}`;
+      if (step.view === 'roles') return `/roles?tour=${n}`;
+      if (step.view === 'people') return `/people?tour=${n}`;
+      if (step.view === 'squads' || step.view === 'squads-weak' || step.view === 'squads-unevidenced') {
         const base = engagementId ? `/squads/${engagementId}` : '/squads';
-        return `${base}?tour=${stepIndex + 1}`;
+        return `${base}?tour=${n}`;
       }
       if (step.view === 'assurance') {
         const base = engagementId ? `/assurance/${engagementId}` : '/assurance';
-        return `${base}?tour=${stepIndex + 1}`;
+        return `${base}?tour=${n}`;
       }
-      return `/portfolio?tour=${stepIndex + 1}`;
+      return `/portfolio?tour=${n}`;
     },
     [engagementId, steps],
   );

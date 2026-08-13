@@ -4,7 +4,10 @@ import { Fragment, useState } from 'react';
 import Link from 'next/link';
 import { EmptyState, PageHeader, StatStrip, TextLink } from '@/components/datum/PageChrome';
 import { DesignWorkspace } from '@/components/org-design/DesignWorkspace';
+import { TeachPanel } from '@/components/teach/TeachPanel';
+import { ContinuityFigure, FigureFrame } from '@/components/teach/figures';
 import { useI18n } from '@/components/app/LocaleProvider';
+import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
 
@@ -46,6 +49,23 @@ export default function PeoplePage() {
           </>
         }
       />
+
+      <TeachPanel tag={copy.teach.peopleLookingAt.tag} title={copy.teach.peopleLookingAt.title}>
+        {copy.teach.peopleLookingAt.body.map((p) => (
+          <p key={p}>{p}</p>
+        ))}
+      </TeachPanel>
+
+      <FigureFrame
+        id="figure-keel"
+        caption={
+          <>
+            <b>{fillCopy(copy.figures.label, { n: 4 })}</b> {copy.figures.continuity}
+          </>
+        }
+      >
+        <ContinuityFigure label={copy.figures.continuityAria} />
+      </FigureFrame>
 
       <DesignWorkspace hideHeading initialViewMode="chart" title={copy.people.title} />
 

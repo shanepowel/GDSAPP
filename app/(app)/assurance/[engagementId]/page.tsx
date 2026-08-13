@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { EmptyState, PageHeader, StatStrip, TextLink } from '@/components/datum/PageChrome';
+import { TeachPanel } from '@/components/teach/TeachPanel';
 import { Verdict, type VerdictValue } from '@/components/product/Verdict';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
@@ -44,6 +45,12 @@ export default function AssurancePage() {
         lede={copy.assurance.lede}
         actions={<TextLink href={`/engagements/${id}/assess`}>{copy.assurance.openAssess}</TextLink>}
       />
+
+      <TeachPanel tag={copy.teach.assessment.tag} title={copy.teach.assessment.title}>
+        {copy.teach.assessment.body.map((p) => (
+          <p key={p}>{p}</p>
+        ))}
+      </TeachPanel>
 
       <StatStrip
         items={[

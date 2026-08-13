@@ -68,8 +68,9 @@ export const copy = {
 
   nav: {
     practice: { label: 'Practice', hint: 'what good delivery is' },
+    roles: { label: 'Roles', hint: 'who does what, plainly' },
     people: { label: 'People', hint: 'capability we hold' },
-    squads: { label: 'Squads', hint: 'the team for this job' },
+    squads: { label: 'Build a squad', hint: 'the team for this job' },
     assurance: { label: 'Assurance', hint: 'readiness against standards' },
     portfolio: { label: 'Portfolio', hint: 'across engagements' },
   },
@@ -110,7 +111,7 @@ export const copy = {
     noPeopleWhy:
       'The pool is what the organisation can field. Add people on an engagement, or import from the capability framework.',
     noSignals:
-      'No delivery evidence recorded for this person. Their multiplier stays at 1.00. Connect an allocation source to derive tenure and capacity signals automatically.',
+      'Nothing recorded for this person. Their multiplier stays at 1.00. Connect an allocation source to derive tenure and capacity signals automatically.',
     noGaps: 'Every role is filled above the datum. Nothing outstanding for this archetype.',
     noEngagements: 'No engagements yet.',
     noEngagementsWhy:
@@ -130,9 +131,13 @@ export const copy = {
   },
 
   practice: {
-    pillarsTitle: 'What good delivery means here',
+    looksLikeTitle: 'What good delivery looks like here',
+    looksLikeLede:
+      'Read this first. Everything Datum measures is measured against what is on this page, so a figure only means something once you have seen what it is a figure of.',
+    pillarsTitle: 'The five pillars',
     pillarsLede:
       'Five pillars, one operating model. Every figure in Datum traces to something on this list. Nothing is measured that the practice does not require.',
+    capacityTitle: 'How much of a person\'s week is actually free',
     ceremoniesTitle: 'Ceremonies, and what each one has to emit',
     ceremoniesLede:
       'No ceremony survives unless it produces something the squad uses next week or assurance requires later. Everything below feeds a figure.',
@@ -167,21 +172,25 @@ export const copy = {
     free: 'Free',
     available: 'available',
     tenure: 'Tenure',
-    rigour: 'Rigour evidence',
+    rigour: 'Delivery evidence',
     skills: 'Skills',
     strongestFit: 'Strongest fit',
-    unevidenced: 'Unevidenced',
+    unevidenced: 'Nothing recorded',
     peopleInPool: 'People in pool',
     unallocated: 'Unallocated FTE',
-    unevidencedCount: 'Unevidenced',
-    dataGap: 'A data gap, not a judgement',
+    unevidencedCount: 'Nothing recorded',
+    dataGap: 'Our data gap, not their failing',
+    stayingPower: 'Staying power',
+    stable: 'stable',
+    settling: 'settling',
+    fragmented: 'fragmented',
     graphHint:
       'The organisation in action. Table, templates and scenarios sit on the same People view.',
     openPerson: 'Open person',
     noSkills: 'No skills recorded.',
     skillsHeld: 'Skills held',
     assignments: 'Assignments',
-    rigourSignals: 'Rigour evidence',
+    rigourSignals: 'What we have seen them do',
     noAssignments: 'No assignments.',
     fteHeld: '{fte} FTE',
     assignmentCount: '{count} assignments',
@@ -201,7 +210,12 @@ export const copy = {
     bestCandidate: 'Best candidate',
     fitAgainstDatum: 'Fit against datum',
     composite: 'Composite',
-    capacityFlag: 'capacity',
+    capacityFlag: 'not enough free time',
+    criticalityLabels: {
+      core: 'cannot run without',
+      supporting: 'weakens delivery',
+      optional: 'nice to have',
+    },
     selectHint: 'Open a role to see the working. Every candidate sits one click further on.',
     gapsTitle: 'What this squad cannot yet cover',
     finding: 'Finding',
@@ -231,16 +245,16 @@ export const copy = {
 
   assurance: {
     eyebrow: 'Assurance',
-    title: 'Readiness against the standards that apply',
+    title: 'Whether this team will pass',
     lede:
-      'The same squad, read through whichever standard the client is governed by. Points at risk that trace to a role below the datum close by assignment rather than by argument.',
+      'The same squad, read against the standard the client is governed by. Most of what is at risk here is a team problem wearing a standards costume.',
     indexLede:
       'Choose an engagement to read its squad through the standard that governs the work.',
     point: 'Point',
     requirement: 'Requirement',
     status: 'Status',
     why: 'Why',
-    preparedness: 'Preparedness Index',
+    preparedness: 'Preparedness',
     pointsAtRisk: 'Points at risk',
     inThisPhase: 'In this phase',
     openAssess: 'Open assess',
@@ -249,8 +263,7 @@ export const copy = {
   portfolio: {
     eyebrow: 'Portfolio',
     title: 'Across every engagement',
-    lede:
-      'Where capability is thin, where evidence is missing, and which gates are exposed. The roll-up a delivery director takes into a monthly review.',
+    lede: 'Where we are thin, which gates are exposed, and what to recruit for next.',
     engagements: 'Engagements',
     nextGate: 'Next gate',
     rolesBelowDatum: 'Roles below datum',
@@ -274,34 +287,265 @@ export const copy = {
       {
         view: 'practice',
         href: '/',
-        text: 'Start with the practice, not the product. Datum measures against one published definition of good delivery, so every figure later has something to be a figure of.',
+        text: 'Start with what good delivery means, because a score is meaningless until you know what it is scoring. The first picture is the whole argument: a team that holds every skill it needs and can decide for itself, against five people on loan who cannot.',
+      },
+      {
+        view: 'practice-clocks',
+        href: '/?tour=2',
+        text: 'Two clocks. The team works fortnightly. Governance works in gates. They meet at the end of a phase and stay out of each other’s way in between. Getting this wrong is the most expensive mistake on the page.',
+      },
+      {
+        view: 'roles',
+        href: '/roles',
+        text: 'Now the roles, in plain English. Read the third line on each card. Nearly every briefing failure we see comes from confusing a service designer with a visual designer, or a delivery manager with a project manager.',
       },
       {
         view: 'people',
         href: '/people',
-        text: 'This is the organisation in action: circles, roles, and who holds them. Redesign here. The pool below is the capability you can field, and what we can evidence about how they deliver.',
+        text: 'Who we hold. Two different things matter: how much of someone is free, and whether they tend to stay. Somebody who has never lasted a full phase arrives without context and leaves before they can explain anything.',
       },
       {
         view: 'squads',
         href: '/squads',
-        text: 'Now the job. Roles from the archetype, every candidate scored, and the datum line at 0.60 running through the whole column so you can read it in one pass.',
+        text: 'Now build one. Seven roles, empty. Fill them from the role rather than from whoever is free. That distinction is the difference between a team and a group of available people.',
       },
       {
-        view: 'squads-reason',
-        href: '/squads?tour=4',
-        text: 'Open any role to see the working. Skills come from the Government Digital and Data Profession Capability Framework. The rigour bracket comes from evidenced delivery discipline. Dashed means unevidenced, which is never the same as poor.',
+        view: 'squads-weak',
+        href: '/squads?tour=6',
+        text: 'Three roles filled. Watch the shape change: circle size is how much of a person the role needs, dashed is empty, amber is filled but below the datum. Filled-but-weak looks solved, which makes it more dangerous than an empty seat.',
+      },
+      {
+        view: 'squads-unevidenced',
+        href: '/squads?tour=7',
+        text: 'Carys has no delivery evidence recorded at all, so her bracket is dashed and her multiplier stays at exactly 1.00. That is a gap in our records, never a mark against her. Say this out loud in a client room; it is the thing sceptics test first.',
       },
       {
         view: 'assurance',
         href: '/assurance',
-        text: 'The same squad, read through the client’s standard. Points at risk that trace to a role below the datum close by assignment rather than by argument.',
-      },
-      {
-        view: 'portfolio',
-        href: '/portfolio',
-        text: 'And across the book of work: where capability is thin, which gates are exposed, and what to recruit for.',
+        text: 'Finally, what it means for the assessment. Points at risk that close by changing who is on the team rather than by changing any process. Accessibility is the one that needs a hire.',
       },
     ],
+  },
+
+  teach: {
+    toggle: 'Explain as I go',
+    practiceIdea: {
+      tag: 'Start here',
+      title: 'The one idea underneath all of it',
+      body: [
+        'A delivery team is not a group of specialists borrowed from departments and pointed at a job. It is a small, fixed group that holds every skill the problem needs, and that is allowed to decide how to solve it.',
+        'There is a simple test. Can this team put something in front of real users this week without asking anyone outside it for permission? If the answer is no, the team is not empowered, and no amount of stand-ups, sprints or burndown charts will change that.',
+      ],
+    },
+    twoClocks: {
+      tag: 'Why it matters',
+      title: 'What goes wrong when the two clocks get confused',
+      body: [
+        'Squeeze them together and you get one of two failures. Either the team builds what the gate wants rather than what users need, and fails its service assessment. Or the team stops moving while it waits for governance, and burns a third of the budget on nothing.',
+      ],
+    },
+    capacityCaution: {
+      tag: 'A caution',
+      title: 'Where this goes wrong in practice',
+      body: [
+        'The 20% band is always the first thing cut when a date is under pressure. It is also the band that produces almost everything an assurance review asks for. Cutting it feels free in month one and is expensive at the gate.',
+      ],
+    },
+    rolesHowToRead: {
+      tag: 'How to read these',
+      title: 'The third line is the useful one',
+      body: [
+        'Most people can guess roughly what a role does. The mistakes come from the “commonly mistaken for” line. If you brief a service designer expecting a visual designer, or a delivery manager expecting a project manager, you will get the wrong work and it will take a month to notice.',
+      ],
+    },
+    peopleLookingAt: {
+      tag: 'What you are looking at',
+      title: 'Free time and staying power are different things',
+      body: [
+        'Somebody being available does not make them a good addition. A person who has never stayed with one engagement for a full phase will be quick to assign and slow to help, because they arrive without the context and leave before they can explain anything to a reviewer.',
+        'That is what staying power is for. Fragmented is not a criticism of the person. It is usually a description of how we have been allocating them.',
+      ],
+    },
+    whatYouAreDoing: {
+      tag: 'What you are doing',
+      title: 'Filling roles, not booking people',
+      body: [
+        'Start from the role and ask who fits it, rather than starting from who is free. Those two approaches produce very different teams, and the second one is how organisations end up with a squad made entirely of whoever finished something last week.',
+        'The number beside each person is a fit between 0 and 1. The vertical line at 0.60 is the datum: below it, the role is not safely filled, whatever the person’s job title says.',
+      ],
+    },
+    assessment: {
+      tag: 'What an assessment actually is',
+      title: 'A panel asking a team to explain itself',
+      body: [
+        'A service assessment is not a document review. It is three or four experienced people spending half a day with the team, asking how decisions were made and who made them. Teams fail not because the service is bad but because nobody in the room can explain why it is the way it is.',
+        'That is why the person who was there for the whole phase matters more than the person with the best CV.',
+      ],
+    },
+    portfolioUse: {
+      tag: 'How to use this page',
+      title: 'Recruit against the pattern, not the emergency',
+      body: [
+        'A single engagement short of a researcher is a staffing problem. Four engagements short of the same role is a capability problem, and hiring one contractor for the loudest engagement will not touch it. This page exists to tell those two situations apart.',
+      ],
+    },
+    nothingRecorded:
+      'Nothing recorded. We hold no delivery evidence about this person, so their multiplier stays at exactly 1.00 and their figure is skills alone. This is a gap in our own records. It is never treated as a mark against them.',
+    derived: 'from our records',
+    asserted: 'recorded by a person',
+  },
+
+  roles: {
+    eyebrow: 'Roles',
+    title: 'Who does what, in plain English',
+    lede: 'Nine roles you will see across our squads. Each card says what the role is for, what goes wrong without it, and what it is commonly mistaken for. No jargon and no acronyms.',
+    withoutLabel: 'Without one',
+    mistakenLabel: 'Commonly mistaken for',
+    discoveryTitle: 'Which roles a discovery needs',
+    colRole: 'Role',
+    colHowMuch: 'How much',
+    colEssential: 'How essential',
+    colIfLeftOut: 'If you leave it out',
+    cards: [
+      {
+        id: 'dm',
+        title: 'Delivery manager',
+        group: 'Product and delivery',
+        what: 'Clears the path so the team can work. Removes blockers, unpicks approvals, chases the decision that is holding everyone up.',
+        without: 'The team spends its week waiting: for access, for a decision, for someone to reply. Progress looks slow and nobody can say why.',
+        not: 'Not a taskmaster and not a project manager. The team decides how the work gets done. The delivery manager removes whatever is stopping them.',
+      },
+      {
+        id: 'pm',
+        title: 'Product manager',
+        group: 'Product and delivery',
+        what: 'Decides what gets built and why, and says no to the rest. Owns whether the thing was worth doing.',
+        without: 'Everything is a priority, so nothing is. The team builds whoever shouted loudest, and the service does several jobs badly.',
+        not: 'Not the person who writes the requirements and hands them over. They set the problem and the team works out the answer.',
+      },
+      {
+        id: 'ur',
+        title: 'User researcher',
+        group: 'User-centred design',
+        what: 'Finds out what people actually need by watching them try to do the thing, rather than asking what they want.',
+        without: 'You build what the organisation assumes. Assessment panels spot this in minutes, and so do users, more expensively.',
+        not: 'Not a survey writer and not market research. This is observation of real people attempting real tasks.',
+      },
+      {
+        id: 'sd',
+        title: 'Service designer',
+        group: 'User-centred design',
+        what: 'Designs the whole journey end to end, including the parts that are not a screen: the letter, the phone call, the office visit.',
+        without: 'You get a good website bolted onto a broken process. The digital bit works and the service still fails.',
+        not: 'Not a visual designer. Very little of this job is what something looks like.',
+      },
+      {
+        id: 'cd',
+        title: 'Content designer',
+        group: 'User-centred design',
+        what: 'Writes what people read, and decides the order they read it in. In a public service, the words largely are the service.',
+        without: 'Users cannot complete the task even when the technology works. In Wales this also breaches statutory language duties.',
+        not: 'Not a copywriter and not marketing. Closer to a translator between government and everybody else.',
+      },
+      {
+        id: 'ta',
+        title: 'Technical architect',
+        group: 'Architecture',
+        what: 'Makes the big technical decisions and writes down why, so the next team is not guessing in two years’ time.',
+        without: 'Decisions get made accidentally, by whoever was on the ticket. Nobody can explain the shape of the system to a gateway review.',
+        not: 'Not the person who draws a diagram and leaves. They stay with the team and the decisions are testable.',
+      },
+      {
+        id: 'ba',
+        title: 'Business analyst',
+        group: 'Product and delivery',
+        what: 'Maps how the work is done today, including the spreadsheets and the workarounds nobody admits to.',
+        without: 'The new service is designed for the process on paper rather than the one people actually run.',
+        not: 'Not a requirements gatherer. The job is understanding, not transcription.',
+      },
+      {
+        id: 'pa',
+        title: 'Performance analyst',
+        group: 'Data',
+        what: 'Decides what success looks like in numbers, before anything is built, and then measures whether it happened.',
+        without: 'You cannot tell whether the service worked. Benefits claimed in the business case stay unproven.',
+        not: 'Not a reporting function. If they arrive after launch, they arrived too late to define the baseline.',
+      },
+      {
+        id: 'as',
+        title: 'Accessibility specialist',
+        group: 'User-centred design',
+        what: 'Makes sure the service works for people using screen readers, magnification, voice control, or no mouse.',
+        without: 'A legal obligation is missed and roughly one in five users is excluded. This is the single most common assessment failure.',
+        not: 'Not a checklist run at the end. Retrofitting accessibility costs several times what building it in costs.',
+      },
+    ],
+  },
+
+  figures: {
+    label: 'Figure {n}.',
+    empowered:
+      'The same five people, arranged two ways. On the left they are one team with one problem and the authority to decide. On the right they are five individuals on loan, each answering to a different manager, so every decision has to travel upwards before it can travel forward. The second shape is more common and it is the single biggest cause of slow delivery.',
+    empoweredAria:
+      'Two team shapes compared: an empowered team that decides for itself, and a matrixed group reporting to five separate managers.',
+    clocks:
+      'Work runs on two clocks. The delivery clock is the team’s fortnightly rhythm. The governance clock is the gates and business cases underneath. They meet at the end of each phase and are independent in between. Gates never set the sprint, and sprints never wait for a gate.',
+    clocksAria:
+      'Delivery lifecycle: discovery, alpha, beta, live, with a governance gate at the end of each.',
+    capacity:
+      'A full-time person is not five days of new work. Seventy per cent goes to committed delivery, twenty to the things that keep delivery possible at all, and ten stays genuinely uncommitted. Plan at 100% and the discretionary work still happens, just unpaid and after hours, and the evidence quality is the first thing to suffer.',
+    capacityAria:
+      'Capacity split: 70 per cent committed delivery, 20 per cent discretionary, 10 per cent slack.',
+    continuity:
+      'Four phases of history, one row per person. A filled block means they stayed with one engagement for that whole phase. Read across: unbroken runs are what let somebody explain a decision to a gateway review a year later. Gaps are where the story breaks.',
+    continuityAria:
+      'Continuity chart. Filled blocks show phases each person stayed with one engagement.',
+    squadShape:
+      'The shape of the squad as it stands. Circle size is how much of a person the role needs. Dashed outlines are unfilled. Amber outlines are filled but sitting below the datum, which is a different problem from an empty seat and usually a more dangerous one, because it looks solved.',
+    squadShapeAria:
+      'Squad shape: circle size shows how much of a person the role needs. Dashed circles are unfilled.',
+    demand:
+      'What the book of work needs against what we hold, in full-time equivalents. Survey pink is demand, ink is capability. Accessibility is the one to act on: demand across four engagements and nobody at all, which is also the most common reason services fail assessment.',
+    demandAria: 'Demand against capability held, by role.',
+  },
+
+  walkthrough: {
+    openSeat: 'open',
+    rolesFilled: 'Roles filled',
+    aboveDatum: '{count} above the datum',
+    essentialAtRisk: 'Essential roles at risk',
+    essentialAtRiskNote: 'empty or below the line',
+    stayingPower: 'Team staying power',
+    stayingPowerNote: 'average across those assigned',
+    readyToConfirm: 'Ready to confirm',
+    yes: 'Yes',
+    no: 'No',
+    readyYes: 'every essential role is covered',
+    readyNo: 'essential roles outstanding',
+    rolesHeading: 'The seven roles',
+    action: 'Action',
+    bestAvailableNamed: 'best available: {name}, {score}',
+    bestAvailableNamedShort: 'best available: {name}, {score} (not enough free time)',
+    assignName: 'Assign {name}',
+    seeAll: 'See all',
+    change: 'Change',
+    confirm: 'Confirm this squad',
+    startAgain: 'Start again',
+    coverEssential: 'Cover every essential role before confirming.',
+    confirmHint: 'Confirming records who decided, and why, against each role.',
+    confirmedTitle: '{filled} of {total} roles filled, {above} above the datum.',
+    confirmedBody:
+      'What happens next. The people are allocated at the stated FTE, the figures are snapshotted as they stand today, and the reasoning is stored against each role. If somebody asks in nine months why this team was chosen, the answer is already written down.',
+    confirmedOutstanding:
+      'Still outstanding. No accessibility specialist exists anywhere in the pool. That is a recruitment decision, not an assignment one, and it will surface at the assessment.',
+    personMeta: '{role} · {free} FTE free',
+    candidateMeta: 'skills {skill} · what we have seen them do ×{evidence}',
+    candidateMetaShort: 'skills {skill} · what we have seen them do ×{evidence} · not enough free time',
+    candidateMetaUnev: 'skills {skill} · nothing recorded',
+    candidateMetaUnevShort: 'skills {skill} · nothing recorded · not enough free time',
+    assignToRole: 'Assign to this role',
+    remove: 'Remove',
+    liveHint: 'The walkthrough below is a teaching squad. It is not saved against an engagement.',
   },
 
   footer: {
@@ -312,11 +556,11 @@ export const copy = {
   },
 
   legend: {
-    held: 'skill held at required level',
-    partial: 'held below required level',
+    held: 'skill held at the level needed',
+    partial: 'held, but below the level needed',
     absent: 'skill not held',
-    datum: 'datum, viability at 0.60',
-    bracket: 'rigour bracket, dashed when unevidenced',
+    datum: 'the datum, 0.60',
+    bracket: 'delivery evidence, dashed when we hold none',
   },
 
   ui: {
