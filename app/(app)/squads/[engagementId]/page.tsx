@@ -51,48 +51,9 @@ function SquadFitPageInner() {
   return (
     <>
       <PageHeader
-        eyebrow={copy.squads.eyebrow}
-        title={data?.archetype.name ?? copy.squads.title}
-        lede={copy.squads.lede}
-        actions={
-          <>
-            <label className="text-sm">
-              <span className="mb-1 block font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
-                {copy.squads.archetype}
-              </span>
-              <select
-                className="border border-[color:var(--rule)] bg-[var(--raised)] px-3 py-2 text-sm"
-                style={{ borderRadius: 'var(--radius)' }}
-                value={archetypeId}
-                onChange={(e) =>
-                  router.replace(`/squads/${id}?archetype=${encodeURIComponent(e.target.value)}`)
-                }
-              >
-                {(archetypes ?? []).map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name} · v{a.version}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <Button
-              type="button"
-              variant="secondary"
-              disabled={!archetypeId || recompute.isPending || busy}
-              onClick={async () => {
-                if (!archetypeId) return;
-                setBusy(true);
-                try {
-                  await recompute.mutateAsync({ engagementId: id, archetypeId });
-                } finally {
-                  setBusy(false);
-                }
-              }}
-            >
-              {copy.squads.compute}
-            </Button>
-          </>
-        }
+        eyebrow={copy.walkthrough.eyebrow}
+        title={copy.walkthrough.archetypeName}
+        lede={copy.walkthrough.lede}
       />
 
       <TeachPanel tag={copy.teach.whatYouAreDoing.tag} title={copy.teach.whatYouAreDoing.title}>
@@ -100,7 +61,48 @@ function SquadFitPageInner() {
           <p key={p}>{p}</p>
         ))}
       </TeachPanel>
-      <WalkthroughSlot />
+      <WalkthroughSlot force />
+
+      <h2 className="mb-3 mt-10 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+        {copy.walkthrough.thisEngagement}
+      </h2>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <label className="text-sm">
+          <span className="mb-1 block font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
+            {copy.squads.archetype}
+          </span>
+          <select
+            className="border border-[color:var(--rule)] bg-[var(--raised)] px-3 py-2 text-sm"
+            style={{ borderRadius: 'var(--radius)' }}
+            value={archetypeId}
+            onChange={(e) =>
+              router.replace(`/squads/${id}?archetype=${encodeURIComponent(e.target.value)}`)
+            }
+          >
+            {(archetypes ?? []).map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name} · v{a.version}
+              </option>
+            ))}
+          </select>
+        </label>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={!archetypeId || recompute.isPending || busy}
+          onClick={async () => {
+            if (!archetypeId) return;
+            setBusy(true);
+            try {
+              await recompute.mutateAsync({ engagementId: id, archetypeId });
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          {copy.squads.compute}
+        </Button>
+      </div>
 
       <p className="mb-4 flex flex-wrap gap-4">
         <TextLink href={`/engagements/${id}/team/people`}>{copy.ui.managePeople}</TextLink>

@@ -3,14 +3,21 @@
 import { Fragment, useState } from 'react';
 import Link from 'next/link';
 import { EmptyState, PageHeader, StatStrip, TextLink } from '@/components/datum/PageChrome';
-import { DesignWorkspace } from '@/components/org-design/DesignWorkspace';
+import { Drawer } from '@/components/datum/Drawer';
 import { AddPersonForm, PersonRoleSelect } from '@/components/org-design/PersonRoleControls';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { ContinuityFigure, FigureFrame } from '@/components/teach/figures';
+import { WalkthroughPersonPanel } from '@/components/teach/WalkthroughDrawers';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
+import {
+  WALKTHROUGH_PEOPLE,
+  fitsForPerson,
+  fullPhaseShare,
+  stayBand,
+} from '@/lib/teach/walkthrough';
 
 export default function PeoplePage() {
   const { locale } = useI18n();
@@ -19,6 +26,7 @@ export default function PeoplePage() {
   const { data: signals } = trpc.teamFit.orgRigour.useQuery();
   const { data: engagements } = trpc.engagement.list.useQuery();
   const [openId, setOpenId] = useState<string | null>(null);
+  const [drawerIndex, setDrawerIndex] = useState<number | null>(null);
   const people = data?.people ?? [];
   const assignments = data?.assignments ?? [];
   const roleEntities = (data?.entities ?? [])
@@ -29,15 +37,13 @@ export default function PeoplePage() {
     signalCount.set(s.personId, (signalCount.get(s.personId) ?? 0) + 1);
   }
 
-  const unev = people.filter((p) => (signalCount.get(p.id) ?? 0) === 0).length;
-  const unallocated =
-    people.reduce((sum, p) => {
-      const used = assignments.filter((a) => a.personId === p.id).reduce((s, a) => s + a.allocation, 0);
-      return sum + Math.max(0, (p.fte - used) / 100);
-    }, 0) || 0;
+  const unev = WALKTHROUGH_PEOPLE.filter((p) => p.signals.length === 0).length;
+  const unallocated = WALKTHROUGH_PEOPLE.reduce((a, p) => a + p.free, 0);
+  const stayShare = fullPhaseShare(WALKTHROUGH_PEOPLE);
   const manageHref = engagements?.[0]
     ? `/engagements/${engagements[0].id}/team/people`
     : '/engagements/new';
+  const drawerPerson = drawerIndex === null ? null : WALKTHROUGH_PEOPLE[drawerIndex];
 
   return (
     <>
@@ -72,15 +78,113 @@ export default function PeoplePage() {
         <ContinuityFigure label={copy.figures.continuityAria} />
       </FigureFrame>
 
-      <DesignWorkspace hideHeading initialViewMode="chart" title={copy.people.title} />
-
       <StatStrip
         items={[
-          { label: copy.people.peopleInPool, value: String(people.length) },
-          { label: copy.people.unallocated, value: unallocated.toFixed(1) },
-          { label: copy.people.unevidencedCount, value: String(unev), note: copy.people.dataGap },
+          {
+            label: copy.people.peopleAvailable,
+            value: String(WALKTHROUGH_PEOPLE.length),
+            note: copy.people.acrossDisciplines,
+          },
+          {
+            label: copy.people.unallocated,
+            value: unallocated.toFixed(1),
+            note: copy.people.unallocatedNote,
+          },
+          {
+            label: copy.people.unevidencedCount,
+            value: String(unev),
+            note: copy.people.dataGap,
+          },
+          {
+            label: copy.people.stayFullPhase,
+            value: `${Math.round(stayShare * 100)}%`,
+            note: copy.people.stayWant,
+          },
         ]}
       />
+
+      <h2 className="mb-3 mt-8 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+        {copy.people.everyoneAvailable}
+      </h2>
+      <div className="sheet overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th>{copy.people.person}</th>
+              <th>{copy.people.free}</th>
+              <th>{copy.people.stayingPower}</th>
+              <th>{copy.people.rigour}</th>
+              <th>{copy.people.bestSuited}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {WALKTHROUGH_PEOPLE.map((p, i) => {
+              const stay = stayBand(p.phases);
+              const top = fitsForPerson(p)[0];
+              return (
+                <tr
+                  key={p.name}
+                  className="clickable"
+                  tabIndex={0}
+                  role="button"
+                  onClick={() => setDrawerIndex(i)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setDrawerIndex(i);
+                    }
+                  }}
+                >
+                  <td>
+                    <div className="font-semibold">{p.name}</div>
+                    <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{p.role}</div>
+                  </td>
+                  <td className="num">
+                    {p.free.toFixed(1)}
+                    <div className="font-data text-[9.5px] uppercase tracking-[0.1em] text-[color:var(--graphite)]">
+                      {copy.people.freeBand}
+                    </div>
+                  </td>
+                  <td>
+                    <span
+                      className={`flag ${stay === 'stable' ? 'flag-ok' : stay === 'fragmented' ? 'flag-risk' : ''}`}
+                    >
+                      {copy.people[stay]}
+                    </span>
+                  </td>
+                  <td>
+                    {p.signals.length ? (
+                      fillCopy(copy.people.recordedCount, { count: p.signals.length })
+                    ) : (
+                      <span className="flag">{copy.people.unevidenced}</span>
+                    )}
+                  </td>
+                  <td>
+                    {top ? (
+                      <>
+                        {top.role.title}
+                        <div className="font-data text-[9.5px] uppercase tracking-[0.1em] text-[color:var(--graphite)]">
+                        {fillCopy(copy.people.scoreBand, {
+                          score: top.fit.compositeScore.toFixed(2),
+                          band: copy.fitBands[top.fit.band],
+                        })}
+                        </div>
+                      </>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-3 text-[12.5px] text-[color:var(--graphite)]">{copy.people.selectHint}</p>
+
+      <Drawer open={drawerPerson !== null} onClose={() => setDrawerIndex(null)}>
+        {drawerPerson ? <WalkthroughPersonPanel person={drawerPerson} /> : null}
+      </Drawer>
 
       <h2
         id="pool"
@@ -130,7 +234,10 @@ export default function PeoplePage() {
                           <span className="font-semibold">{p.name}</span>
                         </button>
                       </td>
-                      <td>
+                      <td
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.stopPropagation()}
+                      >
                         <PersonRoleSelect
                           personId={p.id}
                           personName={p.name}

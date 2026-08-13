@@ -68,6 +68,9 @@ export const copyCy: Copy = {
     maturity: 'Aeddfedrwydd',
     changeEngagement: 'Newid ymgysylltiad',
     maturityValue: 'Lefel {level} · {name}',
+    demoEngagement: 'Gwasanaeth Trwyddedu CNC',
+    demoPhase: 'Darganfod, wythnos 4 o 8',
+    demoStandards: 'Safon Gwasanaeth Digidol Cymru · Porth 1',
   },
 
   verdicts: {
@@ -82,6 +85,31 @@ export const copyCy: Copy = {
     viable: 'Neilltuo, a nodi’r angen datblygu.',
     stretch: 'Neilltuo dim ond gyda rheswm datganedig a chynllun cymorth.',
     gap: 'Peidio neilltuo. Mae hyn yn codi bwlch gallu.',
+  },
+
+  fitBands: {
+    strong: 'cryf',
+    viable: 'hyfyw',
+    stretch: 'ymestyn',
+    gap: 'bwlch',
+  },
+
+  levels: {
+    awareness: 'Ymwybyddiaeth',
+    working: 'Gweithio',
+    practitioner: 'Ymarferydd',
+    expert: 'Arbenigwr',
+  },
+
+  signals: {
+    sustained_assignment: 'Neilltuad parhaus',
+    capacity_discipline: 'Disgyblaeth capasiti',
+    nfr_planning: 'Cynllunio NFR',
+    spike_discipline: 'Disgyblaeth spike',
+    assurance_participation: 'Cyfranogiad sicrwydd',
+    handover_quality: 'Ansawdd trosglwyddo',
+    derived: 'o’n cofnodion',
+    asserted: 'wedi’i gofnodi gan berson',
   },
 
   gaps: {
@@ -118,6 +146,7 @@ export const copyCy: Copy = {
   },
 
   practice: {
+    eyebrow: 'Ymarfer',
     looksLikeTitle: 'Sut olwg sydd ar gyflawni da yma',
     looksLikeLede:
       'Darllenwch hyn yn gyntaf. Mae popeth y mae Datum yn ei fesur yn cael ei fesur yn erbyn yr hyn sydd ar y dudalen hon, felly nid yw ffigur yn golygu dim nes i chi weld beth yw ffigur ohono.',
@@ -151,7 +180,7 @@ export const copyCy: Copy = {
   people: {
     eyebrow: 'Pobl',
     title: 'Y gallu a ddelir mewn gwirionedd',
-    lede: 'Y strwythur byw yn gyntaf: cylchoedd, rolau a phwy sy’n eu dal. Newidiwch y dyluniad yma. Y pwll isod yw’r hyn y gall y sefydliad ei faesu cyn i unrhyw ymgysylltiad ofyn amdano.',
+    lede: 'Pawb sydd ar gael, faint ohonynt sy’n rhydd, pa mor hir y maent yn tueddu i aros gyda’r un darn o waith, a’r hyn y gallwn ei dystio am sut maent yn cyflawni.',
     viewAsGraph: 'Gweld fel graff',
     viewAsTable: 'Gweld fel tabl',
     pool: 'Y pwll',
@@ -198,6 +227,24 @@ export const copyCy: Copy = {
     fteHeld: '{fte} FTE',
     assignmentCount: '{count} neilltuad',
     personLede: '{fte} FTE · {count} neilltuad',
+    everyoneAvailable: 'Pawb sydd ar gael',
+    peopleAvailable: 'Pobl ar gael',
+    selectHint: 'Dewiswch unrhyw un i weld yr hyn a wyddom a sut y cafodd ei weithio allan.',
+    stayFullPhase: 'Aros cyfnod llawn',
+    stayWant: 'rydym eisiau uwchben 75%',
+    acrossDisciplines: 'ar draws y disgyblaethau',
+    unallocatedNote: 'FTE, y lle i ddweud ie',
+    recordedCount: '{count} wedi’u cofnodi',
+    bestSuited: 'Gorau i',
+    freeBand: 'rhydd',
+    drawerEyebrow: 'Person',
+    bestSuitedHeading: 'Gorau i: {title}',
+    skillsWorking: 'Sut y cafodd ffigur y sgiliau ei weithio allan',
+    overallMeta: 'cyffredinol {comp} · sgiliau {skill} · tystiolaeth ×{evidence}',
+    fitAcross: 'Ffit ar draws pob rôl yn y sgwad hwn',
+    notHeld: 'heb ei ddal',
+    heldVsNeed: '{have} / {need}',
+    scoreBand: '{score} {band}',
   },
 
   squads: {
@@ -549,6 +596,23 @@ export const copyCy: Copy = {
     assignToRole: 'Neilltuo i’r rôl hon',
     remove: 'Tynnu',
     liveHint: 'Sgwad dysgu yw’r daith isod. Nid yw’n cael ei chadw yn erbyn ymgysylltiad.',
+    confirmedEyebrow: 'Wedi’i gadarnhau',
+    confirmedHeading: 'Sgwad wedi’i gofnodi',
+    roleEyebrow: 'Rôl',
+    roleMeta: '{fte} FTE · isafswm {level} · {crit}',
+    roleLine: '{fte} FTE · {crit}',
+    roleSkillsHeading: 'Beth y mae’n rhaid i’r rôl hon allu ei wneud',
+    rankedHeading: 'Pawb, wedi’u rhestru',
+    skillWeight: '×{weight}',
+    eyebrow: 'Cydosod sgwad',
+    archetypeName: 'Sgwad darganfod',
+    lede: 'Saith rôl. Llenwch bob un, a gwyliwch beth a wna i siâp ac iechyd y tîm. Nid oes dim yn cael ei gadw nes i chi gadarnhau.',
+    assigned: 'Neilltuwyd',
+    score: 'Sgôr',
+    notFilled: 'heb ei llenwi',
+    fitAgainstDatum: 'Ffit yn erbyn y datum',
+    thisEngagement: 'Yr ymgysylltiad hwn',
+    engagementsHeading: 'Ymgysylltiadau',
   },
 
   footer: {
@@ -574,6 +638,7 @@ export const copyCy: Copy = {
     managePeople: 'Rheoli pobl',
     back: 'Yn ôl',
     continue: 'Parhau',
+    close: 'Cau',
   },
 
   wizard: {

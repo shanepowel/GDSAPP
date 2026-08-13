@@ -22,9 +22,9 @@ export default function SquadsIndexPage() {
   return (
     <>
       <PageHeader
-        eyebrow={copy.squads.eyebrow}
-        title={copy.squads.indexTitle}
-        lede={copy.squads.indexLede}
+        eyebrow={copy.walkthrough.eyebrow}
+        title={copy.walkthrough.archetypeName}
+        lede={copy.walkthrough.lede}
         actions={<InkButton href="/engagements/new">{copy.ui.createEngagement}</InkButton>}
       />
       <TeachPanel tag={copy.teach.whatYouAreDoing.tag} title={copy.teach.whatYouAreDoing.title}>
@@ -43,7 +43,11 @@ export default function SquadsIndexPage() {
         />
       ) : null}
       {!isLoading && (data?.length ?? 0) > 0 ? (
-        <div className="sheet overflow-x-auto">
+        <>
+          <h2 className="mb-3 mt-10 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+            {copy.walkthrough.engagementsHeading}
+          </h2>
+          <div className="sheet overflow-x-auto">
           <table>
             <thead>
               <tr>
@@ -67,6 +71,7 @@ export default function SquadsIndexPage() {
             </tbody>
           </table>
         </div>
+        </>
       ) : null}
     </>
   );

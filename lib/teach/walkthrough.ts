@@ -318,6 +318,24 @@ export function longestRun(phases: number[]): number {
   return Math.max(0, ...phases.join('').split('0').map((s) => s.length));
 }
 
+export function stayBand(phases: number[]): 'stable' | 'settling' | 'fragmented' {
+  const run = longestRun(phases);
+  if (run >= 3) return 'stable';
+  if (run <= 1) return 'fragmented';
+  return 'settling';
+}
+
+export function fullPhaseShare(people: WalkthroughPerson[]): number {
+  if (people.length === 0) return 0;
+  return people.filter((p) => longestRun(p.phases) >= 2).length / people.length;
+}
+
+export function fitsForPerson(person: WalkthroughPerson) {
+  return WALKTHROUGH_ROLES.map((role) => ({ role, fit: fitWalkthrough(role, person) })).sort(
+    (a, b) => b.fit.compositeScore - a.fit.compositeScore,
+  );
+}
+
 export function fitWalkthrough(role: WalkthroughRole, person: WalkthroughPerson): FitResult {
   return computeFit({
     requirement: {

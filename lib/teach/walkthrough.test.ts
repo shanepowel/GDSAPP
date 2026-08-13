@@ -6,7 +6,9 @@ import {
   WALKTHROUGH_ROLES,
   assignmentForTourStep,
   fitWalkthrough,
+  fullPhaseShare,
   isWalkthroughTourStep,
+  stayBand,
 } from '@/lib/teach/walkthrough';
 
 describe('spec 12 walkthrough', () => {
@@ -29,5 +31,11 @@ describe('spec 12 walkthrough', () => {
     expect(assignmentForTourStep(5)).toEqual({});
     expect(assignmentForTourStep(6)).toEqual({ 0: 0, 2: 2, 4: 4 });
     expect(assignmentForTourStep(7)[5]).toBe(5);
+  });
+
+  it('treats a two-phase run as staying a full phase', () => {
+    expect(fullPhaseShare(WALKTHROUGH_PEOPLE)).toBeCloseTo(0.625);
+    expect(stayBand([1, 1, 1, 1])).toBe('stable');
+    expect(stayBand([0, 1, 0, 1])).toBe('fragmented');
   });
 });

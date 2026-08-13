@@ -1,7 +1,12 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { Drawer } from '@/components/datum/Drawer';
 import { FigureFrame, SquadShapeFigure } from '@/components/teach/figures';
+import {
+  WalkthroughConfirmPanel,
+  WalkthroughRolePanel,
+} from '@/components/teach/WalkthroughDrawers';
 import { FitBandCell, FitStrip } from '@/components/team-fit/FitStrip';
 import { StatStrip } from '@/components/datum/PageChrome';
 import { useI18n } from '@/components/app/LocaleProvider';
@@ -23,7 +28,7 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
   const copy = getCopy(locale);
   const seeded = useMemo(() => assignmentForTourStep(tourStep), [tourStep]);
   const [assigned, setAssigned] = useState<WalkthroughAssignment>(seeded);
-  const [openRole, setOpenRole] = useState<number | null>(null);
+  const [drawerRole, setDrawerRole] = useState<number | null>(null);
   const [confirmed, setConfirmed] = useState(false);
 
   const health = squadHealth(assigned);
@@ -49,7 +54,7 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
 
   function assign(roleIndex: number, personIndex: number) {
     setAssigned((current) => ({ ...current, [roleIndex]: personIndex }));
-    setOpenRole(null);
+    setDrawerRole(null);
     setConfirmed(false);
   }
 
@@ -59,7 +64,7 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
       delete next[roleIndex];
       return next;
     });
-    setOpenRole(null);
+    setDrawerRole(null);
     setConfirmed(false);
   }
 
@@ -116,9 +121,9 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
           <thead>
             <tr>
               <th>{copy.squads.role}</th>
-              <th>{copy.squads.bestCandidate}</th>
-              <th>{copy.squads.fitAgainstDatum}</th>
-              <th>{copy.walkthrough.action}</th>
+              <th>{copy.walkthrough.assigned}</th>
+              <th>{copy.walkthrough.fitAgainstDatum}</th>
+              <th className="text-right">{copy.walkthrough.score}</th>
             </tr>
           </thead>
           <tbody>
@@ -126,101 +131,88 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
               const personIndex = assigned[roleIndex];
               const ranked = rankedForRole(role);
               const top = ranked.find((c) => c.enoughTime) ?? ranked[0];
-              const open = openRole === roleIndex;
-              const meta = `${role.fte.toFixed(1)} FTE · ${essentialLabel(role.crit)}`;
-
-              const detail = open ? (
-                <tr key={`${role.rid}-detail`} className="sheet-detail">
-                  <td colSpan={4}>
-                    <RankedList
-                      roleIndex={roleIndex}
-                      assigned={assigned}
-                      onAssign={assign}
-                      onUnassign={unassign}
-                    />
-                  </td>
-                </tr>
-              ) : null;
+              const meta = fillCopy(copy.walkthrough.roleLine, {
+                fte: role.fte.toFixed(1),
+                crit: essentialLabel(role.crit),
+              });
 
               if (personIndex === undefined) {
                 return (
-                  <FragmentRow key={role.rid}>
-                    <tr className={open ? 'is-open' : undefined}>
-                      <td>
-                        <div className="font-semibold">{role.title}</div>
-                        <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{meta}</div>
-                      </td>
-                      <td colSpan={2}>
-                        <span className="flag flag-risk">{copy.squads.unfilled}</span>
-                        {top ? (
-                          <div className="mt-1 font-data text-[10.5px] text-[color:var(--graphite)]">
-                            {top.enoughTime
-                              ? fillCopy(copy.walkthrough.bestAvailableNamed, {
-                                  name: top.person.name,
-                                  score: top.fit.compositeScore.toFixed(2),
-                                })
-                              : fillCopy(copy.walkthrough.bestAvailableNamedShort, {
-                                  name: top.person.name,
-                                  score: top.fit.compositeScore.toFixed(2),
-                                })}
-                          </div>
-                        ) : null}
-                      </td>
-                      <td>
-                        {top ? (
-                          <button
-                            type="button"
-                            className="btn-teach pri"
-                            onClick={() => assign(roleIndex, top.personIndex)}
-                          >
-                            {fillCopy(copy.walkthrough.assignName, {
-                              name: top.person.name.split(' ')[0] ?? top.person.name,
-                            })}
-                          </button>
-                        ) : null}
+                  <tr key={role.rid}>
+                    <td>
+                      <div className="font-semibold">{role.title}</div>
+                      <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{meta}</div>
+                    </td>
+                    <td colSpan={2}>
+                      <span className="flag flag-risk">{copy.walkthrough.notFilled}</span>
+                      {top ? (
+                        <div className="mt-1 font-data text-[10.5px] text-[color:var(--graphite)]">
+                          {top.enoughTime
+                            ? fillCopy(copy.walkthrough.bestAvailableNamed, {
+                                name: top.person.name,
+                                score: top.fit.compositeScore.toFixed(2),
+                              })
+                            : fillCopy(copy.walkthrough.bestAvailableNamedShort, {
+                                name: top.person.name,
+                                score: top.fit.compositeScore.toFixed(2),
+                              })}
+                        </div>
+                      ) : null}
+                    </td>
+                    <td className="text-right">
+                      {top ? (
                         <button
                           type="button"
-                          className="btn-teach ml-2"
-                          onClick={() => setOpenRole(open ? null : roleIndex)}
+                          className="btn-teach pri"
+                          onClick={() => assign(roleIndex, top.personIndex)}
                         >
-                          {copy.walkthrough.seeAll}
+                          {fillCopy(copy.walkthrough.assignName, {
+                            name: top.person.name.split(' ')[0] ?? top.person.name,
+                          })}
                         </button>
-                      </td>
-                    </tr>
-                    {detail}
-                  </FragmentRow>
+                      ) : null}
+                      <button
+                        type="button"
+                        className="btn-teach ml-2"
+                        onClick={() => setDrawerRole(roleIndex)}
+                      >
+                        {copy.walkthrough.seeAll}
+                      </button>
+                    </td>
+                  </tr>
                 );
               }
 
               const person = WALKTHROUGH_PEOPLE[personIndex];
               const fit = fitWalkthrough(role, person);
               return (
-                <FragmentRow key={role.rid}>
-                  <tr className={open ? 'is-open' : undefined}>
-                    <td>
-                      <div className="font-semibold">{role.title}</div>
-                      <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{meta}</div>
-                    </td>
-                    <td>
-                      <div className="font-semibold">{person.name}</div>
-                      <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{person.role}</div>
-                    </td>
-                    <td>
-                      <FitStrip fit={fit} candidateName={person.name} />
-                    </td>
-                    <td>
+                <tr key={role.rid}>
+                  <td>
+                    <div className="font-semibold">{role.title}</div>
+                    <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{meta}</div>
+                  </td>
+                  <td>
+                    <div className="font-semibold">{person.name}</div>
+                    <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{person.role}</div>
+                  </td>
+                  <td>
+                    <FitStrip fit={fit} candidateName={person.name} />
+                  </td>
+                  <td className="text-right">
+                    <div className="inline-block text-right">
                       <FitBandCell fit={fit} />
+                    </div>
+                    <div>
                       <button
                         type="button"
                         className="btn-teach mt-2"
-                        onClick={() => setOpenRole(open ? null : roleIndex)}
+                        onClick={() => setDrawerRole(roleIndex)}
                       >
                         {copy.walkthrough.change}
                       </button>
-                    </td>
-                  </tr>
-                  {detail}
-                </FragmentRow>
+                    </div>
+                  </td>
+                </tr>
               );
             })}
           </tbody>
@@ -251,7 +243,10 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
           type="button"
           className="btn-teach pri"
           disabled={health.coreGaps > 0}
-          onClick={() => setConfirmed(true)}
+          onClick={() => {
+            setDrawerRole(null);
+            setConfirmed(true);
+          }}
         >
           {copy.walkthrough.confirm}
         </button>
@@ -261,7 +256,7 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
           onClick={() => {
             setAssigned({});
             setConfirmed(false);
-            setOpenRole(null);
+            setDrawerRole(null);
           }}
         >
           {copy.walkthrough.startAgain}
@@ -271,101 +266,23 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
         </p>
       </div>
 
-      {confirmed ? (
-        <div className="teach-note mt-6">
-          <p className="font-[family-name:var(--font-cond)] text-[15px] font-semibold">
-            {fillCopy(copy.walkthrough.confirmedTitle, {
-              filled: health.filled,
-              total: health.total,
-              above: health.above,
-            })}
-          </p>
-          <p>{copy.walkthrough.confirmedBody}</p>
-          <p className="teach-note-alert">{copy.walkthrough.confirmedOutstanding}</p>
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function FragmentRow({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
-}
-
-function RankedList({
-  roleIndex,
-  assigned,
-  onAssign,
-  onUnassign,
-}: {
-  roleIndex: number;
-  assigned: WalkthroughAssignment;
-  onAssign: (roleIndex: number, personIndex: number) => void;
-  onUnassign: (roleIndex: number) => void;
-}) {
-  const { locale } = useI18n();
-  const copy = getCopy(locale);
-  const role = WALKTHROUGH_ROLES[roleIndex];
-  const list = rankedForRole(role);
-
-  return (
-    <div className="space-y-3 pt-1">
-      <p className="font-data text-[10px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
-        {copy.squads.rankedCandidates}
-      </p>
-      {list.map((c) => {
-        const unev = c.fit.breakdown.notes.includes('no_rigour_signals');
-        const meta = unev
-          ? fillCopy(
-              c.enoughTime ? copy.walkthrough.candidateMetaUnev : copy.walkthrough.candidateMetaUnevShort,
-              { skill: c.fit.skillScore.toFixed(2) },
-            )
-          : fillCopy(
-              c.enoughTime ? copy.walkthrough.candidateMeta : copy.walkthrough.candidateMetaShort,
-              {
-                skill: c.fit.skillScore.toFixed(2),
-                evidence: c.fit.rigourMultiplier.toFixed(2),
-              },
-            );
-        return (
-          <div
-            key={c.person.name}
-            className="border border-[color:var(--rule)] bg-[var(--raised)] px-3.5 py-3"
-            style={{ borderRadius: 'var(--radius)' }}
-          >
-            <div className="flex items-baseline justify-between gap-3">
-              <div>
-                <b>{c.person.name}</b>
-                <div className="font-data text-[10.5px] text-[color:var(--graphite)]">
-                  {fillCopy(copy.walkthrough.personMeta, {
-                    role: c.person.role,
-                    free: c.person.free.toFixed(1),
-                  })}
-                </div>
-              </div>
-              <FitBandCell fit={c.fit} />
-            </div>
-            <FitStrip fit={c.fit} candidateName={c.person.name} />
-            <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{meta}</div>
-            <button
-              type="button"
-              className="btn-teach pri mt-2"
-              onClick={() => onAssign(roleIndex, c.personIndex)}
-            >
-              {copy.walkthrough.assignToRole}
-            </button>
-            {assigned[roleIndex] === c.personIndex ? (
-              <button
-                type="button"
-                className="btn-teach mt-2 ml-2"
-                onClick={() => onUnassign(roleIndex)}
-              >
-                {copy.walkthrough.remove}
-              </button>
-            ) : null}
-          </div>
-        );
-      })}
+      <Drawer
+        open={drawerRole !== null || confirmed}
+        onClose={() => {
+          setDrawerRole(null);
+          setConfirmed(false);
+        }}
+      >
+        {drawerRole !== null ? (
+          <WalkthroughRolePanel
+            roleIndex={drawerRole}
+            assigned={assigned}
+            onAssign={assign}
+            onUnassign={unassign}
+          />
+        ) : null}
+        {confirmed ? <WalkthroughConfirmPanel assigned={assigned} /> : null}
+      </Drawer>
     </div>
   );
 }

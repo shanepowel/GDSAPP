@@ -82,6 +82,9 @@ export const copy = {
     maturity: 'Maturity',
     changeEngagement: 'Change engagement',
     maturityValue: 'Level {level} · {name}',
+    demoEngagement: 'NRW Permitting Service',
+    demoPhase: 'Discovery, week 4 of 8',
+    demoStandards: 'Wales DSS · Gate 1',
   },
 
   verdicts: {
@@ -91,11 +94,36 @@ export const copy = {
     notAssessed: 'Not assessed',
   },
 
-  bands: {
+    bands: {
     strong: 'Assign without qualification.',
     viable: 'Assign, and note the development need.',
     stretch: 'Assign only with a stated reason and a support plan.',
     gap: 'Do not assign. This raises a capability gap.',
+  },
+
+  fitBands: {
+    strong: 'strong',
+    viable: 'viable',
+    stretch: 'stretch',
+    gap: 'gap',
+  },
+
+  levels: {
+    awareness: 'Awareness',
+    working: 'Working',
+    practitioner: 'Practitioner',
+    expert: 'Expert',
+  },
+
+  signals: {
+    sustained_assignment: 'Sustained assignment',
+    capacity_discipline: 'Capacity discipline',
+    nfr_planning: 'NFR planning',
+    spike_discipline: 'Spike discipline',
+    assurance_participation: 'Assurance participation',
+    handover_quality: 'Handover quality',
+    derived: 'from our records',
+    asserted: 'recorded by a person',
   },
 
   gaps: {
@@ -131,6 +159,7 @@ export const copy = {
   },
 
   practice: {
+    eyebrow: 'Practice',
     looksLikeTitle: 'What good delivery looks like here',
     looksLikeLede:
       'Read this first. Everything Datum measures is measured against what is on this page, so a figure only means something once you have seen what it is a figure of.',
@@ -163,8 +192,8 @@ export const copy = {
 
   people: {
     eyebrow: 'People',
-    title: 'Capability we actually hold',
-    lede: 'The live structure first: circles, roles and who holds them. Change the design here. The pool below is what the organisation can field before any one engagement asks for it.',
+    title: 'The capability we actually hold',
+    lede: 'Everyone available, how much of them is free, how long they tend to stay with one piece of work, and what we can evidence about how they deliver.',
     viewAsGraph: 'View as graph',
     viewAsTable: 'View as table',
     pool: 'The pool',
@@ -211,6 +240,24 @@ export const copy = {
     fteHeld: '{fte} FTE',
     assignmentCount: '{count} assignments',
     personLede: '{fte} FTE · {count} assignments',
+    everyoneAvailable: 'Everyone available',
+    peopleAvailable: 'People available',
+    selectHint: 'Select anyone to see what we know and how it was worked out.',
+    stayFullPhase: 'Stay a full phase',
+    stayWant: 'we want above 75%',
+    acrossDisciplines: 'across the disciplines',
+    unallocatedNote: 'FTE, the room to say yes',
+    recordedCount: '{count} recorded',
+    bestSuited: 'Best suited to',
+    freeBand: 'free',
+    drawerEyebrow: 'Person',
+    bestSuitedHeading: 'Best suited to: {title}',
+    skillsWorking: 'How the skills figure was worked out',
+    overallMeta: 'overall {comp} · skills {skill} · evidence ×{evidence}',
+    fitAcross: 'Fit across every role in this squad',
+    notHeld: 'not held',
+    heldVsNeed: '{have} / {need}',
+    scoreBand: '{score} {band}',
   },
 
   squads: {
@@ -562,6 +609,23 @@ export const copy = {
     assignToRole: 'Assign to this role',
     remove: 'Remove',
     liveHint: 'The walkthrough below is a teaching squad. It is not saved against an engagement.',
+    confirmedEyebrow: 'Confirmed',
+    confirmedHeading: 'Squad recorded',
+    roleEyebrow: 'Role',
+    roleMeta: '{fte} FTE · minimum {level} · {crit}',
+    roleLine: '{fte} FTE · {crit}',
+    roleSkillsHeading: 'What this role has to be able to do',
+    rankedHeading: 'Everyone, ranked',
+    skillWeight: '×{weight}',
+    eyebrow: 'Build a squad',
+    archetypeName: 'Discovery squad',
+    lede: 'Seven roles. Fill each one, and watch what it does to the shape and the health of the team. Nothing here is saved until you confirm it.',
+    assigned: 'Assigned',
+    score: 'Score',
+    notFilled: 'not filled',
+    fitAgainstDatum: 'Fit against the datum',
+    thisEngagement: 'This engagement',
+    engagementsHeading: 'Engagements',
   },
 
   footer: {
@@ -587,6 +651,7 @@ export const copy = {
     managePeople: 'Manage people',
     back: 'Back',
     continue: 'Continue',
+    close: 'Close',
   },
 
   wizard: {

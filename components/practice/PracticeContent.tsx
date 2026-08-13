@@ -28,29 +28,12 @@ export function PracticeOverview() {
         <PracticeTourScroll />
       </Suspense>
 
-      <section className="border-b border-[color:var(--rule)] pb-12">
-        <p className="mb-3 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-[color:var(--graphite)]">
-          {c.eyebrow}
-        </p>
-        <h1 className="max-w-[18ch] font-[family-name:var(--font-cond)] text-[clamp(32px,6vw,48px)] font-bold leading-[1.08] tracking-[-0.01em]">
+      <section className="border-b border-[color:var(--rule)] pb-8">
+        <p className="eyebrow mb-2 text-[color:var(--graphite)]">{copy.practice.eyebrow}</p>
+        <h1 className="max-w-[22ch] font-[family-name:var(--font-cond)] text-[30px] font-bold leading-[1.12]">
           {copy.practice.looksLikeTitle}
         </h1>
-        <p className="mt-4 max-w-[62ch] text-[16px] text-[color:var(--graphite)]">{copy.practice.looksLikeLede}</p>
-
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/?tour=1"
-            className="rounded-[var(--radius)] bg-[var(--survey)] px-5 py-2.5 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.1em] text-[var(--stock)]"
-          >
-            {c.primaryCta}
-          </Link>
-          <Link
-            href="/practice/pillars"
-            className="rounded-[var(--radius)] border border-[color:var(--ink)] px-5 py-2.5 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.1em]"
-          >
-            {c.secondaryCta}
-          </Link>
-        </div>
+        <p className="mt-2 max-w-[64ch] text-[15px] text-[color:var(--graphite)]">{copy.practice.looksLikeLede}</p>
       </section>
 
       <section className="py-10">

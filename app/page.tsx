@@ -3,7 +3,7 @@ import { DatumAppShell } from '@/components/shell/AppShell';
 
 export default function PracticeHome() {
   return (
-    <DatumAppShell>
+    <DatumAppShell showDemoContext>
       <PracticeOverview />
     </DatumAppShell>
   );

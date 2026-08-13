@@ -78,6 +78,8 @@ function describe(fit: FitResult, name?: string): string {
 }
 
 export function FitBandCell({ fit }: { fit: FitResult }) {
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
   return (
     <div>
       <div className="font-data text-[15px] font-medium tabular-nums">{fit.compositeScore.toFixed(2)}</div>
@@ -85,7 +87,7 @@ export function FitBandCell({ fit }: { fit: FitResult }) {
         className="mt-0.5 font-data text-[9.5px] uppercase tracking-[0.1em]"
         style={{ color: fit.band === 'gap' ? 'var(--survey)' : 'var(--graphite)' }}
       >
-        {fit.band}
+        {copy.fitBands[fit.band]}
       </div>
     </div>
   );

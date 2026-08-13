@@ -50,6 +50,7 @@ export function DatumAppShell({
   showTour = true,
   accountHref = '/sign-in',
   accountLabel,
+  showDemoContext = false,
 }: {
   engagement?: EngagementContext;
   engagements?: EngagementContext[];
@@ -57,10 +58,21 @@ export function DatumAppShell({
   showTour?: boolean;
   accountHref?: string;
   accountLabel?: string;
+  showDemoContext?: boolean;
 }) {
   const pathname = usePathname();
   const { locale } = useI18n();
   const c = getCopy(locale);
+  const demoEngagement: EngagementContext | undefined = showDemoContext
+    ? {
+        id: 'demo',
+        name: c.context.demoEngagement,
+        phase: c.context.demoPhase,
+        standards: [c.context.demoStandards],
+        maturityLevel: 'evidenced',
+      }
+    : undefined;
+  const contextEngagement = engagement ?? demoEngagement;
 
   return (
     <DatumShellProvider>
@@ -129,8 +141,11 @@ export function DatumAppShell({
         </aside>
 
         <main className="min-w-0 bg-[var(--stock)]">
-          {engagement && (
-            <ContextBar engagement={engagement} engagements={engagements ?? [engagement]} />
+          {contextEngagement && (
+            <ContextBar
+              engagement={contextEngagement}
+              engagements={engagements?.length ? engagements : [contextEngagement]}
+            />
           )}
           <div className="max-w-[1120px] px-4 pb-28 pt-7 md:px-8">{children}</div>
         </main>

@@ -272,7 +272,8 @@ th,
   cursor: pointer;
 }
 
-.sheet tbody tr.clickable:hover {
+.sheet tbody tr.clickable:hover,
+.sheet tbody tr.clickable:focus-visible {
   background: var(--sunk);
 }
 
@@ -394,6 +395,29 @@ th,
   padding: 11px 32px;
   background: var(--ink);
   color: var(--stock);
+}
+
+.tour-bar .tour-step {
+  white-space: nowrap;
+}
+
+.tour-bar .btn-teach {
+  border-color: color-mix(in srgb, var(--stock) 40%, transparent);
+  color: var(--stock);
+  flex: none;
+}
+
+.tour-bar .btn-teach.pri {
+  color: var(--stock);
+}
+
+.tour-bar .btn-teach.ghost {
+  border: none;
+  opacity: 0.55;
+}
+
+.tour-bar .btn-teach:disabled {
+  opacity: 0.35;
 }
 
 @media (max-width: 860px) {
@@ -554,6 +578,70 @@ th,
 .btn-teach:disabled {
   opacity: 0.35;
   cursor: not-allowed;
+}
+
+.datum-drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(500px, 94vw);
+  background: var(--raised);
+  border-left: 1px solid var(--rule);
+  transform: translateX(100%);
+  transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.3, 1);
+  z-index: 40;
+  overflow-y: auto;
+  padding: 24px 26px 70px;
+  pointer-events: none;
+}
+
+.datum-drawer.is-open {
+  transform: none;
+  pointer-events: auto;
+}
+
+.datum-drawer-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.datum-drawer-row {
+  display: grid;
+  grid-template-columns: 1fr 74px 44px;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  align-items: center;
+}
+
+.datum-drawer-row:last-of-type {
+  border-bottom: none;
+}
+
+.datum-drawer-row .lvl {
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  color: var(--graphite);
+  text-align: right;
+}
+
+.datum-drawer-row .val {
+  font-family: var(--font-data);
+  font-size: 12px;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .datum-drawer {
+    transition: none;
+  }
 }
 
 .teach-note {
