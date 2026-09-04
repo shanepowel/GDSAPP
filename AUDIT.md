@@ -211,4 +211,86 @@ All of 3.1 to 3.8 are unimplemented at audit time. `/practice/ceremonies` alread
 
 ## Part 4 after figures
 
-Filled after the fixes land. See the table at the end of this file once Part 3 is done.
+Re-run 4 September 2026 after the fixes. Same machine, seed, Playwright, axe-core 4.11. `afterCallback` is now `http://localhost:3000/portfolio`. Unit tests: 94 passed. `/demo` sets a `demo-reader` session and lands on `/squads/nrw-demo`. Mutation as that identity returns 403 FORBIDDEN.
+
+### Route re-run (selected)
+
+| Route | Before | After |
+|---|---|---|
+| `/` | Public essay, no primary CTA | Strapline, Try the demo, datum line figure. 200 |
+| `/demo` | 307 to `/?tour=1` | 307 `/api/auth/demo` then `/squads/nrw-demo` with session cookie |
+| `/practice` | Did not exist as chapters | 200, practice chapters |
+| `/people` SI | Teaching table (Carys Hughes) | Live pool. Harper Cole. 200 |
+| `/assurance` SI | Teaching 0.64 | Live engagements only. 200 |
+| `/assurance/nrw-demo` SI | Teaching 0.64 then live | Live index, grouped by point, pillar as secondary. No 0.64 |
+| `/sign-in` | Client Suspense Loading | Server-rendered email/password form |
+| callback `/sign-in?callbackUrl=/portfolio` | Landed `/squads/nrw-demo` | Lands `/portfolio` |
+
+Signed-out protected routes still 307 to `/sign-in?callbackUrl=...` (confirmed with a cookie-less curl). An audit pass that hits `/demo` first will appear signed in afterwards: that is the demonstration identity, not a missing redirect.
+
+### Auth
+
+| Check | Before | After |
+|---|---|---|
+| Launch demo vs callbackUrl | P0 fail | Pass |
+| `/sign-in` form without waiting on JS searchParams | Loading fallback | Form in the HTML |
+| Sign-out | Profile only | Sign out in the shell |
+| Session expiry copy | Missing | `copy.ui.sessionExpired` on `/sign-in?error=...` and load-failed empty states |
+| Demo without account | Missing | `/demo` |
+
+### Data integrity
+
+| Check | After |
+|---|---|
+| Datum line | `DATUM_LINE` in `lib/product.config.ts`, `VIABILITY_THRESHOLD` imports it, CSS `--viability` from layout |
+| Unevidenced | Harper Cole, `no_rigour_signals`, multiplier 1.00, labelled |
+| Ceremony identifiers | snake_case, matches enum |
+| Ceremony of origin | `RigourSignal.ceremony` seeded via `ceremonyForSignal` |
+| BSA golden thread | Framework `bsa-golden-thread`, 3 items, 3 GDS mappings. Seed reports 8 frameworks, 51 mappings |
+
+### Welsh / axe / viewport
+
+| Check | Before | After |
+|---|---|---|
+| Theme Dark/Light | English DARK/LIGHT | TYWYLL / GOLAU |
+| Maturity labels | English only | copy.maturityLevels (Yn ymarfer, Wedi’i dystio, …) |
+| Axe `/` colour-contrast | 4 serious | 1 serious |
+| Axe `/people` | 5 serious | 3 serious |
+| Axe `/assurance/nrw-demo` | 5 serious | 2 serious |
+| Axe `/squads/nrw-demo` | 19 serious | 20 serious (open) |
+| Overflow 375/768/1280 | none | none |
+| Keyboard squads | Next.js portal first | Unchanged, still P2 |
+
+### P0 / P1 status
+
+| ID | Status |
+|---|---|
+| P0-1 People teaching table | Fixed |
+| P0-2 Assurance 0.64 | Fixed |
+| P0-3 callbackUrl | Fixed |
+| P1-1 `/demo` | Fixed |
+| P1-2 ceremony identifiers | Fixed |
+| P1-3 ceremony of origin | Fixed |
+| P1-4 sign-in Loading | Fixed |
+| P1-5 session expiry message | Fixed (copy + sign-in error) |
+| P1-6 tRPC error panel | Fixed on People, Squads, Assurance, Portfolio |
+| P1-7 axe contrast | Partial: graphite darkened; Squads still serious |
+| P1-8 Welsh Dark/Light and maturity | Fixed |
+| P1-9 BSA seed | Fixed |
+| P1-10 Recharts -1 | Open (P2) |
+| P1-11 sign-out in nav | Fixed |
+| P1-12 teaching mixed with live | Fixed on People, Assurance, Portfolio |
+| P1-13 Assemble identity | User-facing pages, package name, meta: Datum. `docs/spec/` still says Assemble |
+
+### Part 3 status
+
+| Item | Status |
+|---|---|
+| 3.1 product.config and Datum identity | Done |
+| 3.2 numbered journey nav | Done |
+| 3.3 demo mode without sign-in | Done |
+| 3.4 engagement strip and explain copy | Done |
+| 3.5 GDS/DDaT bridge | Done |
+| 3.6 landing vs `/practice` | Done |
+| 3.7 datum line on `/` and squad hover | Done |
+| 3.8 ceremony in the working | Done |

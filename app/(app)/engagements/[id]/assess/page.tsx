@@ -3,11 +3,13 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { AppShell } from '@/components/app/AppShell';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { useEvidenceChain } from '@/components/chain/EvidenceChainRail';
 import { ENGAGEMENT_PHASES } from '@/lib/standards/catalog';
 import { trpc } from '@/lib/trpc/client';
+import { isDemoReaderRole } from '@/lib/demo/reader';
 
 export default function AssessPage() {
   const { messages: m, locale } = useI18n();
@@ -33,11 +35,14 @@ export default function AssessPage() {
     },
   });
 
+  const { data: session } = useSession();
+  const readOnly = isDemoReaderRole(session?.user?.role);
+
   useEffect(() => {
-    if (engagement) ensureBound.mutate({ engagementId: id });
+    if (engagement && !readOnly) ensureBound.mutate({ engagementId: id });
     // Bind once when engagement loads; mutation is stable enough for this gate.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [engagement?.id]);
+  }, [engagement?.id, readOnly]);
 
   const phase = data?.phase ?? engagement?.phase ?? 'discovery';
   const applicable = data?.criteria.length ?? 0;

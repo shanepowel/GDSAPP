@@ -27,8 +27,11 @@ test('people rows and squad assign controls open drawers', async ({ page }) => {
 
   await page.goto('/people');
   await expect(page.getByText('Harper Cole')).toBeVisible();
-  await page.locator('tr.clickable', { hasText: 'Harper Cole' }).click();
-  await expect(page.getByText(/multiplier stays at exactly 1.00|Nothing recorded for this person/i)).toBeVisible();
+  await page
+    .locator('tr.clickable', { hasText: 'Harper Cole' })
+    .getByRole('button', { name: 'Show working' })
+    .click();
+  await expect(page.getByText('Nothing recorded for this person')).toBeVisible();
 
   await page.goto('/assurance/nrw-demo');
   await expect(page.getByRole('heading', { name: 'Whether this team will pass' })).toBeVisible();
