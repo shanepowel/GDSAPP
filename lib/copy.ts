@@ -15,20 +15,23 @@
  * reaches production.
  */
 
+import { formatDatumLine, product as productIdentity } from '@/lib/product.config';
+
+const datumLine = formatDatumLine();
+
 export const copy = {
   product: {
-    name: 'Datum',
-    owner: 'Turner & Townsend',
-    thesis: 'The team is the delivery plan.',
-    strapline:
-      'How Turner & Townsend defines good delivery, measures the capability we hold against it, and assembles the squad that can do the work.',
+    name: productIdentity.name,
+    owner: productIdentity.owner,
+    thesis: productIdentity.thesis,
+    strapline: productIdentity.strapline,
   },
 
   home: {
     eyebrow: 'Delivery practice',
     headline: 'The team is the delivery plan.',
-    sub: 'Not the method, not the schedule. The people who turn up every day. Datum sets out what good delivery means here, scores the capability we actually hold against it, and assembles the squad for a specific job. Government Digital and Data capability scoring and service standard readiness are built in.',
-    primaryCta: 'Walk the demo',
+    sub: 'Not the method, not the schedule. The people who turn up every day. Datum sets out what good delivery means, scores the capability actually held against it, and assembles the squad for a specific job. Government Digital and Data capability scoring and service standard readiness are built in.',
+    primaryCta: 'Try the demo',
     secondaryCta: 'Read the practice',
     signIn: 'Sign in',
 
@@ -45,7 +48,7 @@ export const copy = {
       },
       {
         title: 'Assemble the squad',
-        body: 'Every candidate scored against the role: capability framework skills first, then adjusted by evidenced delivery discipline. One datum line at 0.60 runs through the whole table so a squad reads in a single pass.',
+        body: `Every candidate scored against the role: capability framework skills first, then adjusted by evidenced delivery discipline. One datum line at ${datumLine} runs through the whole table so a squad reads in a single pass.`,
         seeIn: 'See it in Squads',
       },
       {
@@ -73,6 +76,72 @@ export const copy = {
     squads: { label: 'Build a squad', hint: 'the team for this job' },
     assurance: { label: 'Assurance', hint: 'readiness against standards' },
     portfolio: { label: 'Portfolio', hint: 'across engagements' },
+    stages: 'Delivery stages',
+  },
+
+  journey: {
+    define: {
+      label: 'Define',
+      hint: 'Practice',
+      handover:
+        'This stage sets what good delivery looks like, then hands the pillars and ceremonies to the roles and people you hold.',
+      narration:
+        'For this engagement, the practice is the ruler. Nothing later is scored that is not required here: the five pillars, the ceremonies that emit evidence, and the datum at which a role is safely filled.',
+    },
+    hold: {
+      label: 'Hold',
+      hint: 'Roles and people',
+      handover:
+        'This stage takes the roles the practice named, shows the capability actually held, and hands that pool to squad assembly.',
+      narration:
+        'The pool is who can turn up. Free FTE and staying power are different facts. Someone with nothing recorded stays at a multiplier of 1.00: that is a gap in our instrumentation, not a mark against them.',
+    },
+    assemble: {
+      label: 'Assemble',
+      hint: 'Squads',
+      handover:
+        'This stage takes the people you hold, scores them against the roles this job needs, and hands a squad to assurance.',
+      narration:
+        'Each candidate is scored on skills, then adjusted by evidenced delivery discipline. The vertical line is the datum. Below it the role is not safely filled, whatever the job title says.',
+    },
+    assure: {
+      label: 'Assure',
+      hint: 'Assurance',
+      handover:
+        'This stage takes the assembled squad and reads it through the standard that governs the client, then hands the result to the portfolio.',
+      narration:
+        'Most of what is at risk on an assessment is a team problem wearing a standards costume. Changing who is on the squad often closes the point; a process rewrite rarely does.',
+    },
+    run: {
+      label: 'Run',
+      hint: 'Portfolio',
+      handover:
+        'This stage takes every engagement that has been assured and shows where the book of work is thin, so the next hire is against the pattern rather than the emergency.',
+      narration:
+        'A single engagement short of a researcher is a staffing problem. Four engagements short of the same role is a capability problem. This page exists to tell those two situations apart.',
+    },
+    next: 'Next: {label}',
+    previous: 'Previous: {label}',
+    ceremonies: 'Ceremonies',
+    roles: 'Roles',
+    stepper: 'Stage {current} of {total}',
+  },
+
+  demo: {
+    banner: 'Demonstration build. Representative data only. Nothing here is a hiring decision.',
+    tryCta: 'Try the demo',
+    opening: 'Opening the demonstration',
+    readOnly: 'Demonstration build is read-only.',
+  },
+
+  datumLine: {
+    title: 'The datum line',
+    body: 'A role is safely filled at {line} and above. Below it, the title may be filled and the work is still at risk. {line} is viable: assign, and note the development need. It is not excellence, and it is not a fail.',
+    above: 'Above the datum',
+    below: 'Below the datum',
+    why: 'Why {line}',
+    figureLabel: 'Two candidates against one line. The line is the datum at {line}.',
+    explain: 'The datum is {line}: below this, the role is not safely filled. Open the working for the skills and the ceremony that produced the evidence.',
   },
 
   context: {
@@ -108,11 +177,18 @@ export const copy = {
     gap: 'gap',
   },
 
-  levels: {
+    levels: {
     awareness: 'Awareness',
     working: 'Working',
     practitioner: 'Practitioner',
     expert: 'Expert',
+  },
+
+  maturityLevels: {
+    practising: 'Practising',
+    evidenced: 'Evidenced',
+    assured: 'Assured',
+    compounding: 'Compounding',
   },
 
   signals: {
@@ -264,10 +340,8 @@ export const copy = {
     eyebrow: 'Squads',
     title: 'Roles and best available fit',
     indexTitle: 'Squads',
-    indexLede:
-      'Assemble the team for a specific job. Every role is scored against the datum at 0.60.',
-    lede:
-      'Each candidate is scored on capability framework skills, then adjusted by evidenced delivery rigour. The vertical line is the datum: 0.60, the point below which a role is not safely filled.',
+    indexLede: `Assemble the team for a specific job. Every role is scored against the datum at ${datumLine}.`,
+    lede: `Each candidate is scored on capability framework skills, then adjusted by evidenced delivery rigour. The vertical line is the datum: ${datumLine}, the point below which a role is not safely filled.`,
     role: 'Role',
     criticality: 'Criticality',
     bestCandidate: 'Best candidate',
@@ -317,6 +391,7 @@ export const copy = {
     requirement: 'Requirement',
     status: 'Status',
     why: 'Why',
+    pillar: 'Pillar',
     preparedness: 'Preparedness',
     pointsAtRisk: 'Points at risk',
     inThisPhase: 'In this phase',
@@ -736,12 +811,15 @@ export const copy = {
     held: 'skill held at the level needed',
     partial: 'held, but below the level needed',
     absent: 'skill not held',
-    datum: 'the datum, 0.60',
+    datum: `the datum, ${datumLine}`,
     bracket: 'delivery evidence, dashed when we hold none',
   },
 
   ui: {
     loading: 'Loading…',
+    loadFailed: 'Could not load this page.',
+    loadFailedWhy: 'The service did not respond. Try again, or sign in again if your session has ended.',
+    sessionExpired: 'Your session has ended. Sign in again to continue.',
     createEngagement: 'Create engagement',
     showWorking: 'Show working',
     hideWorking: 'Hide working',
@@ -749,6 +827,11 @@ export const copy = {
     back: 'Back',
     continue: 'Continue',
     close: 'Close',
+    dark: 'Dark',
+    light: 'Light',
+    signOut: 'Sign out',
+    ceremony: 'Ceremony',
+    gdsBridge: 'GDS: points {points}',
   },
 
   wizard: {

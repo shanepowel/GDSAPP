@@ -7,14 +7,14 @@ export const copyCy: Copy = {
     owner: 'Turner & Townsend',
     thesis: 'Y tîm yw’r cynllun cyflawni.',
     strapline:
-      'Sut mae Turner & Townsend yn diffinio cyflawni da, yn mesur y gallu a ddelir yn ei erbyn, ac yn cydosod y sgwad a all wneud y gwaith.',
+      'Mae Datum yn diffinio sut olwg sydd ar gyflawni da, yn mesur y gallu a ddelir yn ei erbyn, ac yn cydosod y sgwad a all wneud y gwaith.',
   },
 
   home: {
     eyebrow: 'Ymarfer cyflawni',
     headline: 'Y tîm yw’r cynllun cyflawni.',
     sub: 'Nid y dull, nid y calendr. Y bobl sy’n troi i fyny bob dydd. Mae Datum yn gosod beth yw ystyr cyflawni da yma, yn sgorio’r gallu a ddelir yn ei erbyn, ac yn cydosod y sgwad ar gyfer swydd benodol. Mae sgorio gallu Llywodraeth Ddigidol a Data a pharodrwydd safon gwasanaeth wedi’u adeiladu i mewn.',
-    primaryCta: 'Cerdded y demo',
+    primaryCta: 'Rhoi cynnig ar y demo',
     secondaryCta: 'Darllen yr ymarfer',
     signIn: 'Mewngofnodi',
 
@@ -59,6 +59,72 @@ export const copyCy: Copy = {
     squads: { label: 'Cydosod sgwad', hint: 'y tîm ar gyfer y swydd hon' },
     assurance: { label: 'Sicrwydd', hint: 'parodrwydd yn erbyn safonau' },
     portfolio: { label: 'Portffolio', hint: 'ar draws ymgysylltiadau' },
+    stages: 'Camau cyflawni',
+  },
+
+  journey: {
+    define: {
+      label: 'Diffinio',
+      hint: 'Ymarfer',
+      handover:
+        'Mae’r cam hwn yn gosod sut olwg sydd ar gyflawni da, yna’n trosglwyddo’r colofnau a’r seremonïau i’r rolau a’r bobl a ddelir.',
+      narration:
+        'Ar gyfer yr ymgysylltiad hwn, yr ymarfer yw’r pren mesur. Ni sgoriwyd dim yn ddiweddarach nad yw’n ofynnol yma: y pum colofn, y seremonïau sy’n allyrru tystiolaeth, a’r datum lle mae rôl wedi’i llenwi’n ddiogel.',
+    },
+    hold: {
+      label: 'Dal',
+      hint: 'Rolau a phobl',
+      handover:
+        'Mae’r cam hwn yn cymryd y rolau a enwyd gan yr ymarfer, yn dangos y gallu a ddelir mewn gwirionedd, ac yn trosglwyddo’r pwll i gydosod sgwad.',
+      narration:
+        'Y pwll yw pwy all droi i fyny. Mae FTE rhydd a phŵer aros yn ffeithiau gwahanol. Mae rhywun heb ddim wedi’i gofnodi yn aros ar luosydd 1.00: bwlch yn ein hoffer yw hynny, nid marc yn eu herbyn.',
+    },
+    assemble: {
+      label: 'Cydosod',
+      hint: 'Sgwadiau',
+      handover:
+        'Mae’r cam hwn yn cymryd y bobl a ddelir, yn eu sgorio yn erbyn y rolau sydd eu hangen ar y swydd, ac yn trosglwyddo sgwad i sicrwydd.',
+      narration:
+        'Mae pob ymgeisydd yn cael ei sgorio ar sgiliau, yna ei addasu gan ddisgyblaeth cyflawni a dystiwyd. Y llinell fertigol yw’r datum. Islaw hynny nid yw’r rôl wedi’i llenwi’n ddiogel, beth bynnag yw teitl y swydd.',
+    },
+    assure: {
+      label: 'Sicrhau',
+      hint: 'Sicrwydd',
+      handover:
+        'Mae’r cam hwn yn cymryd y sgwad a gydosodwyd ac yn ei ddarllen trwy’r safon sy’n llywodraethu’r cleient, yna’n trosglwyddo’r canlyniad i’r portffolio.',
+      narration:
+        'Mae’r rhan fwyaf o’r hyn sydd mewn perygl ar asesiad yn broblem tîm mewn gwisg safonau. Mae newid pwy sydd ar y sgwad yn aml yn cau’r pwynt; anaml y bydd ailysgrifennu proses yn gwneud hynny.',
+    },
+    run: {
+      label: 'Rhedeg',
+      hint: 'Portffolio',
+      handover:
+        'Mae’r cam hwn yn cymryd pob ymgysylltiad a sicrhawyd ac yn dangos ble mae’r llyfr gwaith yn denau, fel bod y llogi nesaf yn erbyn y patrwm yn hytrach na’r argyfwng.',
+      narration:
+        'Mae un ymgysylltiad yn fyr o ymchwilydd yn broblem staffio. Mae pedwar ymgysylltiad yn fyr o’r un rôl yn broblem gallu. Mae’r dudalen hon yn bodoli i wahaniaethu rhwng y ddau.',
+    },
+    next: 'Nesaf: {label}',
+    previous: 'Blaenorol: {label}',
+    ceremonies: 'Seremonïau',
+    roles: 'Rolau',
+    stepper: 'Cam {current} o {total}',
+  },
+
+  demo: {
+    banner: 'Adeilad arddangos. Data cynrychioladol yn unig. Nid yw dim yma yn benderfyniad llogi.',
+    tryCta: 'Rhoi cynnig ar y demo',
+    opening: 'Yn agor yr arddangosiad',
+    readOnly: 'Mae’r adeilad arddangos yn darllen yn unig.',
+  },
+
+  datumLine: {
+    title: 'Y llinell datum',
+    body: 'Mae rôl wedi’i llenwi’n ddiogel ar {line} ac uwch. Islaw hynny, efallai bod y teitl wedi’i lenwi a bod y gwaith dal mewn perygl. {line} yw hyfyw: neilltuwch, a nodwch yr angen datblygu. Nid rhagoriaeth mohono, ac nid methiant mohono.',
+    above: 'Uwchben y datum',
+    below: 'Islaw’r datum',
+    why: 'Pam {line}',
+    figureLabel: 'Dau ymgeisydd yn erbyn un llinell. Y llinell yw’r datum ar {line}.',
+    explain: 'Y datum yw {line}: islaw hyn, nid yw’r rôl wedi’i llenwi’n ddiogel. Agorwch y gwaith am y sgiliau a’r seremoni a gynhyrchodd y dystiolaeth.',
   },
 
   context: {
@@ -99,6 +165,13 @@ export const copyCy: Copy = {
     working: 'Gweithio',
     practitioner: 'Ymarferydd',
     expert: 'Arbenigwr',
+  },
+
+  maturityLevels: {
+    practising: 'Yn ymarfer',
+    evidenced: 'Wedi’i dystio',
+    assured: 'Wedi’i sicrhau',
+    compounding: 'Yn cyfansawdd',
   },
 
   signals: {
@@ -304,6 +377,7 @@ export const copyCy: Copy = {
     requirement: 'Gofyniad',
     status: 'Statws',
     why: 'Pam',
+    pillar: 'Piler',
     preparedness: 'Parodrwydd',
     pointsAtRisk: 'Pwyntiau mewn perygl',
     inThisPhase: 'Yn y cyfnod hwn',
@@ -729,6 +803,9 @@ export const copyCy: Copy = {
 
   ui: {
     loading: 'Yn llwytho…',
+    loadFailed: 'Methu llwytho’r dudalen hon.',
+    loadFailedWhy: 'Ni ymatebodd y gwasanaeth. Ceisiwch eto, neu mewngofnodwch eto os yw eich sesiwn wedi dod i ben.',
+    sessionExpired: 'Mae eich sesiwn wedi dod i ben. Mewngofnodwch eto i barhau.',
     createEngagement: 'Creu ymgysylltiad',
     showWorking: 'Dangos y gwaith',
     hideWorking: 'Cuddio’r gwaith',
@@ -736,6 +813,11 @@ export const copyCy: Copy = {
     back: 'Yn ôl',
     continue: 'Parhau',
     close: 'Cau',
+    dark: 'Tywyll',
+    light: 'Golau',
+    signOut: 'Allgofnodi',
+    ceremony: 'Seremoni',
+    gdsBridge: 'GDS: pwyntiau {points}',
   },
 
   wizard: {
