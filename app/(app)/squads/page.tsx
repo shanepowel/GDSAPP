@@ -9,7 +9,7 @@ import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
 
 export default function SquadsIndexPage() {
-  const { data, isLoading } = trpc.engagement.list.useQuery();
+  const { data, isLoading, isError } = trpc.engagement.list.useQuery();
   const { locale } = useI18n();
   const copy = getCopy(locale);
 
@@ -34,7 +34,8 @@ export default function SquadsIndexPage() {
       </TeachPanel>
       <WalkthroughSlot force />
       {isLoading ? <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p> : null}
-      {!isLoading && (data?.length ?? 0) === 0 ? (
+      {isError ? <EmptyState title={copy.ui.loadFailed} why={copy.ui.loadFailedWhy} /> : null}
+      {!isLoading && !isError && (data?.length ?? 0) === 0 ? (
         <EmptyState
           title={copy.empty.noEngagements}
           why={copy.empty.noEngagementsWhy}
@@ -42,7 +43,7 @@ export default function SquadsIndexPage() {
           actionLabel={copy.ui.createEngagement}
         />
       ) : null}
-      {!isLoading && (data?.length ?? 0) > 0 ? (
+      {!isLoading && !isError && (data?.length ?? 0) > 0 ? (
         <>
           <h2 className="mb-3 mt-10 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
             {copy.walkthrough.engagementsHeading}

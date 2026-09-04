@@ -7,13 +7,18 @@
  * CSS only. Server renderable. No chart library, canvas, or layout JS.
  */
 
+import Link from 'next/link';
 import {
   VIABILITY_THRESHOLD,
   type FitResult,
   type SkillContribution,
 } from '@/lib/scoring/fit';
 import { useI18n } from '@/components/app/LocaleProvider';
+import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
+import { formatDatumLine } from '@/lib/product.config';
+import { SIGNAL_BRIDGE } from '@/lib/bridge/gds';
+import { GdsBridgeLabel } from '@/components/bridge/GdsBridgeLabel';
 
 interface FitStripProps {
   fit: FitResult;
@@ -25,13 +30,17 @@ export function FitStrip({ fit, width = 230, candidateName }: FitStripProps) {
   const { skillContributions, notes } = fit.breakdown;
   const unevidenced = notes.includes('no_rigour_signals');
   const weightTotal = skillContributions.reduce((a, c) => a + c.weight, 0) || 1;
+  const { locale } = useI18n();
+  const copy = getCopy(locale);
+  const datumTitle = fillCopy(copy.datumLine.explain, { line: formatDatumLine() });
 
   return (
     <div className="fit-strip-wrap" style={{ width }}>
-      <div
+      <Link
+        href="/#datum-line"
         className="fit-strip"
-        role="img"
-        aria-label={describe(fit, candidateName)}
+        aria-label={`${describe(fit, candidateName)}. ${datumTitle}`}
+        title={datumTitle}
         style={{ ['--viability' as string]: `${VIABILITY_THRESHOLD * 100}%` }}
       >
         <div className="fit-strip-fill" aria-hidden="true">
@@ -44,7 +53,7 @@ export function FitStrip({ fit, width = 230, candidateName }: FitStripProps) {
           className={`fit-bracket${unevidenced ? ' is-unevidenced' : ''}`}
           style={{ width: `${Math.min(100, fit.compositeScore * 100)}%` }}
         />
-      </div>
+      </Link>
       <span className="fit-strip-text">{describe(fit, candidateName)}</span>
     </div>
   );
@@ -128,10 +137,16 @@ export function FitBreakdownPanel({ fit }: { fit: FitResult }) {
             {breakdown.rigourContributions.map((r, i) => (
               <li key={`${r.type}-${i}`} className="flex flex-wrap justify-between gap-2">
                 <span>
-                  {r.type}{' '}
+                  {copy.signals[r.type] ?? r.type}{' '}
                   <span className="text-[color:var(--graphite)]">
                     ({r.provenance === 'derived' ? copy.teach.derived : copy.teach.asserted})
                   </span>
+                  {r.ceremony ? (
+                    <span className="ml-2 text-[color:var(--graphite)]">
+                      {copy.ui.ceremony}: {r.ceremony}
+                    </span>
+                  ) : null}
+                  <GdsBridgeLabel mapping={SIGNAL_BRIDGE[r.type]} />
                 </span>
                 <span className="font-data">{r.rawValue.toFixed(2)}</span>
               </li>

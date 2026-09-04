@@ -1,32 +1,18 @@
-'use client';
-
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { AuthTabs } from '@/components/auth/AuthTabs';
 
-function SignInContent() {
-  const params = useSearchParams();
-  const initialTab = params.get('tab') === 'register' ? 'register' : 'sign-in';
-  const rawCallback = params.get('callbackUrl');
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string; tab?: string; error?: string }>;
+}) {
+  const params = await searchParams;
+  const initialTab = params.tab === 'register' ? 'register' : 'sign-in';
+  const rawCallback = params.callbackUrl;
   const callbackUrl =
     rawCallback && rawCallback.startsWith('/') && !rawCallback.startsWith('//')
       ? rawCallback
       : '/squads';
   return (
-    <AuthTabs key={`${initialTab}-${callbackUrl}`} initialTab={initialTab} callbackUrl={callbackUrl} />
-  );
-}
-
-export default function SignInPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-screen items-center justify-center bg-bg text-text-muted">
-          Loading…
-        </div>
-      }
-    >
-      <SignInContent />
-    </Suspense>
+    <AuthTabs initialTab={initialTab} callbackUrl={callbackUrl} sessionError={params.error} />
   );
 }

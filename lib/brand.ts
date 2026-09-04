@@ -1,10 +1,12 @@
 /** Datum by Turner & Townsend: product identity (UI + exports). */
+import { product } from '@/lib/product.config';
+
 export const BRAND = {
-  company: 'Turner & Townsend',
-  product: 'Datum',
-  productLine: 'Datum by Turner & Townsend',
-  tagline: 'The team is the delivery plan',
-  legalLine: 'Turner & Townsend',
+  company: product.owner,
+  product: product.name,
+  productLine: `${product.name} by ${product.owner}`,
+  tagline: product.thesis,
+  legalLine: product.owner,
   site: 'https://www.turnerandtownsend.com',
   colors: {
     blue: '#003cb4',

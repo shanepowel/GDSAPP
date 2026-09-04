@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { BrandMark } from '@/components/brand/BrandMark';
 import { useI18n } from '@/components/app/LocaleProvider';
+import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
 
 type Tab = 'sign-in' | 'register';
@@ -17,11 +18,14 @@ const inputClass =
 export function AuthTabs({
   initialTab = 'sign-in',
   callbackUrl = '/squads',
+  sessionError,
 }: {
   initialTab?: Tab;
   callbackUrl?: string;
+  sessionError?: string;
 }) {
-  const { messages: m } = useI18n();
+  const { messages: m, locale } = useI18n();
+  const copy = getCopy(locale);
   const { data: authConfig } = trpc.user.authConfig.useQuery();
   const [tab, setTab] = useState<Tab>(initialTab);
   const [error, setError] = useState('');
@@ -126,6 +130,11 @@ export function AuthTabs({
             </div>
           )}
 
+          {sessionError ? (
+            <p className="mt-4 rounded-md border border-status-partial/40 bg-status-partial/10 px-3 py-2 text-sm text-text">
+              {copy.ui.sessionExpired}
+            </p>
+          ) : null}
           {success && (
             <p className="mt-4 rounded-md bg-brand-tint px-3 py-2 text-sm text-brand-hover">
               {success}
@@ -151,7 +160,9 @@ export function AuthTabs({
                 setEmail(m.signIn.demoEmail);
                 setPassword(m.signIn.demoPassword);
                 setShowEmailLogin(true);
-                setRedirectOverride('/squads/nrw-demo');
+                if (!callbackUrl || callbackUrl === '/squads') {
+                  setRedirectOverride('/squads/nrw-demo');
+                }
               }}
             >
               {m.signIn.demoFillButton}

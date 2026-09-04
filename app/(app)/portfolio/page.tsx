@@ -4,14 +4,13 @@ import { useRouter } from 'next/navigation';
 import { EmptyState, PageHeader, StatStrip } from '@/components/datum/PageChrome';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { DemandFigure, FigureFrame } from '@/components/teach/figures';
-import { PortfolioTeaching } from '@/components/teach/PortfolioTeaching';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
 
 export default function PortfolioPage() {
-  const { data, isLoading } = trpc.portfolio.summary.useQuery();
+  const { data, isLoading, isError } = trpc.portfolio.summary.useQuery();
   const { locale } = useI18n();
   const copy = getCopy(locale);
   const router = useRouter();
@@ -37,9 +36,8 @@ export default function PortfolioPage() {
         <DemandFigure label={copy.figures.demandAria} />
       </FigureFrame>
 
-      <PortfolioTeaching engagementIds={(data?.engagements ?? []).map((row) => row.id)} />
-
       {isLoading ? <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p> : null}
+      {isError ? <EmptyState title={copy.ui.loadFailed} why={copy.ui.loadFailedWhy} /> : null}
 
       {data ? (
         <>

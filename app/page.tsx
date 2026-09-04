@@ -1,10 +1,10 @@
-import { PracticeOverview } from '@/components/practice/PracticeContent';
+import { HomeLanding } from '@/components/practice/HomeLanding';
 import { DatumAppShell } from '@/components/shell/AppShell';
 
-export default function PracticeHome() {
+export default function HomePage() {
   return (
-    <DatumAppShell showDemoContext>
-      <PracticeOverview />
+    <DatumAppShell showTour={false}>
+      <HomeLanding />
     </DatumAppShell>
   );
 }

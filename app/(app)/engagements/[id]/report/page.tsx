@@ -237,7 +237,7 @@ export default function ReportPage() {
           </section>
 
           <footer className="border-t border-rule pt-3 font-data text-[11px] text-ink-2">
-            Assemble v{payload.productVersion} · Generated {payload.generatedAt}
+            Datum v{payload.productVersion} · Generated {payload.generatedAt}
           </footer>
         </article>
       )}

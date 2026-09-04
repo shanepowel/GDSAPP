@@ -4,8 +4,7 @@ import './globals.css';
 import { Providers } from './providers';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { copy } from '@/lib/copy';
-import { VIABILITY_THRESHOLD } from '@/lib/scoring/fit';
+import { product, DATUM_LINE } from '@/lib/product.config';
 
 const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
@@ -29,8 +28,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${copy.product.name} — ${copy.product.thesis}`,
-  description: copy.product.strapline,
+  title: `${product.name}: ${product.thesis}`,
+  description: product.metaDescription,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -38,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en-GB"
       className={`${ibmPlexSans.variable} ${ibmPlexCondensed.variable} ${ibmPlexMono.variable}`}
-      style={{ ['--viability' as string]: `${VIABILITY_THRESHOLD * 100}%` }}
+      style={{ ['--viability' as string]: `${DATUM_LINE * 100}%` }}
     >
       <body className="antialiased">
         <Providers>{children}</Providers>

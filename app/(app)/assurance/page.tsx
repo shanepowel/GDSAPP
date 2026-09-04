@@ -8,7 +8,7 @@ import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
 
 export default function AssuranceIndexPage() {
-  const { data, isLoading } = trpc.engagement.list.useQuery();
+  const { data, isLoading, isError } = trpc.engagement.list.useQuery();
   const { locale } = useI18n();
   const copy = getCopy(locale);
 
@@ -23,7 +23,12 @@ export default function AssuranceIndexPage() {
       <AssuranceTeaching />
 
       {isLoading ? <p className="mt-8 text-[color:var(--graphite)]">{copy.ui.loading}</p> : null}
-      {!isLoading && (data?.length ?? 0) === 0 ? (
+      {isError ? (
+        <div className="mt-8">
+          <EmptyState title={copy.ui.loadFailed} why={copy.ui.loadFailedWhy} />
+        </div>
+      ) : null}
+      {!isLoading && !isError && (data?.length ?? 0) === 0 ? (
         <div className="mt-8">
           <EmptyState
             title={copy.empty.noEngagements}
@@ -33,7 +38,7 @@ export default function AssuranceIndexPage() {
           />
         </div>
       ) : null}
-      {!isLoading && (data?.length ?? 0) > 0 ? (
+      {!isLoading && !isError && (data?.length ?? 0) > 0 ? (
         <>
           <h2 className="mb-3 mt-10 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
             {copy.walkthrough.engagementsHeading}

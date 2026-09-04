@@ -112,11 +112,14 @@ th,
 }
 
 .fit-strip {
+  display: block;
   position: relative;
   height: 26px;
   background: var(--sunk);
   border: 1px solid var(--rule);
   border-radius: var(--radius);
+  color: inherit;
+  text-decoration: none;
 }
 
 .fit-strip::after {
@@ -679,7 +682,190 @@ th,
   padding-top: 8px;
 }
 
+.demo-banner {
+  margin: 0;
+  padding: 8px 16px;
+  background: var(--sunk);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.stage-handover {
+  margin: 0 0 16px;
+  max-width: 68ch;
+  color: var(--graphite);
+  font-size: 14px;
+}
+
+.stage-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.stage-pager-link {
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.gds-bridge {
+  display: inline-block;
+  margin-left: 6px;
+  font-family: var(--font-data);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  cursor: help;
+}
+
+.journey-stepper {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 8px 12px;
+  list-style: none;
+  margin: 0;
+}
+
+.journey-stepper a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--ink);
+}
+
+.journey-stepper a.is-active {
+  background: var(--ink);
+  color: var(--stock);
+  border-color: var(--ink);
+}
+
+.journey-n {
+  font-family: var(--font-data);
+  font-size: 12px;
+}
+
+.datum-line-section {
+  margin: 24px 0 8px;
+}
+
+.datum-line-figure {
+  display: block;
+  max-width: 420px;
+  width: 100%;
+  height: auto;
+}
+
+.datum-fig-label {
+  font-family: var(--font-data);
+  font-size: 10px;
+  fill: var(--graphite);
+}
+}
+
 .role-card .role-why b {
   color: var(--ink);
   font-weight: 500;
+}
+
+.demo-banner {
+  margin: 0;
+  padding: 8px 16px;
+  background: var(--sunk);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.stage-handover {
+  margin: 0 0 16px;
+  max-width: 68ch;
+  color: var(--graphite);
+  font-size: 14px;
+}
+
+.stage-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.stage-pager-link {
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.gds-bridge {
+  display: inline-block;
+  margin-left: 6px;
+  font-family: var(--font-data);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  cursor: help;
+}
+
+.journey-stepper {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 8px 12px;
+  list-style: none;
+  margin: 0;
+}
+
+.journey-stepper a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--ink);
+}
+
+.journey-stepper a.is-active {
+  background: var(--ink);
+  color: var(--stock);
+  border-color: var(--ink);
+}
+
+.journey-n {
+  font-family: var(--font-data);
+  font-size: 12px;
+}
+
+.datum-line-section {
+  margin: 24px 0 8px;
+}
+
+.datum-line-figure {
+  display: block;
+  max-width: 420px;
+  width: 100%;
+  height: auto;
+}
+
+.datum-fig-label {
+  font-family: var(--font-data);
+  font-size: 10px;
+  fill: var(--graphite);
 }

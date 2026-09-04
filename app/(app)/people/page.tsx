@@ -3,47 +3,46 @@
 import { Fragment, useState } from 'react';
 import Link from 'next/link';
 import { EmptyState, PageHeader, StatStrip, TextLink } from '@/components/datum/PageChrome';
-import { Drawer } from '@/components/datum/Drawer';
 import { AddPersonForm, PersonRoleSelect } from '@/components/org-design/PersonRoleControls';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { ContinuityFigure, FigureFrame } from '@/components/teach/figures';
-import { WalkthroughPersonPanel } from '@/components/teach/WalkthroughDrawers';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
 import { trpc } from '@/lib/trpc/client';
-import {
-  WALKTHROUGH_PEOPLE,
-  fitsForPerson,
-  fullPhaseShare,
-  stayBand,
-} from '@/lib/teach/walkthrough';
+import { SIGNAL_BRIDGE } from '@/lib/bridge/gds';
+import { GdsBridgeLabel } from '@/components/bridge/GdsBridgeLabel';
+import type { RigourSignalType } from '@/lib/scoring/fit';
 
 export default function PeoplePage() {
   const { locale } = useI18n();
   const copy = getCopy(locale);
-  const { data } = trpc.orgDesign.graph.useQuery();
+  const { data, isError, isLoading } = trpc.orgDesign.graph.useQuery();
   const { data: signals } = trpc.teamFit.orgRigour.useQuery();
   const { data: engagements } = trpc.engagement.list.useQuery();
   const [openId, setOpenId] = useState<string | null>(null);
-  const [drawerIndex, setDrawerIndex] = useState<number | null>(null);
   const people = data?.people ?? [];
   const assignments = data?.assignments ?? [];
   const roleEntities = (data?.entities ?? [])
     .filter((e) => e.type === 'role')
     .map((e) => ({ id: e.id, name: e.name }));
   const signalCount = new Map<string, number>();
+  const signalsByPerson = new Map<string, NonNullable<typeof signals>>();
   for (const s of signals ?? []) {
     signalCount.set(s.personId, (signalCount.get(s.personId) ?? 0) + 1);
+    const list = signalsByPerson.get(s.personId) ?? [];
+    list.push(s);
+    signalsByPerson.set(s.personId, list);
   }
 
-  const unev = WALKTHROUGH_PEOPLE.filter((p) => p.signals.length === 0).length;
-  const unallocated = WALKTHROUGH_PEOPLE.reduce((a, p) => a + p.free, 0);
-  const stayShare = fullPhaseShare(WALKTHROUGH_PEOPLE);
+  const unev = people.filter((p) => (signalCount.get(p.id) ?? 0) === 0).length;
+  const unallocated = people.reduce((a, p) => {
+    const used = assignments.filter((x) => x.personId === p.id).reduce((s, x) => s + x.allocation, 0);
+    return a + Math.max(0, (p.fte - used) / 100);
+  }, 0);
   const manageHref = engagements?.[0]
     ? `/engagements/${engagements[0].id}/team/people`
     : '/engagements/new';
-  const drawerPerson = drawerIndex === null ? null : WALKTHROUGH_PEOPLE[drawerIndex];
 
   return (
     <>
@@ -82,7 +81,7 @@ export default function PeoplePage() {
         items={[
           {
             label: copy.people.peopleAvailable,
-            value: String(WALKTHROUGH_PEOPLE.length),
+            value: isLoading ? copy.ui.loading : String(people.length),
             note: copy.people.acrossDisciplines,
           },
           {
@@ -95,96 +94,8 @@ export default function PeoplePage() {
             value: String(unev),
             note: copy.people.dataGap,
           },
-          {
-            label: copy.people.stayFullPhase,
-            value: `${Math.round(stayShare * 100)}%`,
-            note: copy.people.stayWant,
-          },
         ]}
       />
-
-      <h2 className="mb-3 mt-8 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
-        {copy.people.everyoneAvailable}
-      </h2>
-      <div className="sheet overflow-x-auto">
-        <table>
-          <thead>
-            <tr>
-              <th>{copy.people.person}</th>
-              <th>{copy.people.free}</th>
-              <th>{copy.people.stayingPower}</th>
-              <th>{copy.people.rigour}</th>
-              <th>{copy.people.bestSuited}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {WALKTHROUGH_PEOPLE.map((p, i) => {
-              const stay = stayBand(p.phases);
-              const top = fitsForPerson(p)[0];
-              return (
-                <tr
-                  key={p.name}
-                  className="clickable"
-                  tabIndex={0}
-                  role="button"
-                  onClick={() => setDrawerIndex(i)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setDrawerIndex(i);
-                    }
-                  }}
-                >
-                  <td>
-                    <div className="font-semibold">{p.name}</div>
-                    <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{p.role}</div>
-                  </td>
-                  <td className="num">
-                    {p.free.toFixed(1)}
-                    <div className="font-data text-[9.5px] uppercase tracking-[0.1em] text-[color:var(--graphite)]">
-                      {copy.people.freeBand}
-                    </div>
-                  </td>
-                  <td>
-                    <span
-                      className={`flag ${stay === 'stable' ? 'flag-ok' : stay === 'fragmented' ? 'flag-risk' : ''}`}
-                    >
-                      {copy.people[stay]}
-                    </span>
-                  </td>
-                  <td>
-                    {p.signals.length ? (
-                      fillCopy(copy.people.recordedCount, { count: p.signals.length })
-                    ) : (
-                      <span className="flag">{copy.people.unevidenced}</span>
-                    )}
-                  </td>
-                  <td>
-                    {top ? (
-                      <>
-                        {top.role.title}
-                        <div className="font-data text-[9.5px] uppercase tracking-[0.1em] text-[color:var(--graphite)]">
-                        {fillCopy(copy.people.scoreBand, {
-                          score: top.fit.compositeScore.toFixed(2),
-                          band: copy.fitBands[top.fit.band],
-                        })}
-                        </div>
-                      </>
-                    ) : (
-                      '—'
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      <p className="mt-3 text-[12.5px] text-[color:var(--graphite)]">{copy.people.selectHint}</p>
-
-      <Drawer open={drawerPerson !== null} onClose={() => setDrawerIndex(null)}>
-        {drawerPerson ? <WalkthroughPersonPanel person={drawerPerson} /> : null}
-      </Drawer>
 
       <h2
         id="pool"
@@ -196,7 +107,11 @@ export default function PeoplePage() {
       {roleEntities.length === 0 ? (
         <p className="mb-3 text-sm text-[color:var(--graphite)]">{copy.people.noRolesYet}</p>
       ) : null}
-      {people.length === 0 ? (
+      {isLoading ? (
+        <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p>
+      ) : isError ? (
+        <EmptyState title={copy.ui.loadFailed} why={copy.ui.loadFailedWhy} />
+      ) : people.length === 0 ? (
         <EmptyState title={copy.empty.noPeople} why={copy.empty.noPeopleWhy} />
       ) : (
         <div className="sheet overflow-x-auto">
@@ -270,7 +185,26 @@ export default function PeoplePage() {
                             <p className="mb-3 max-w-[62ch] border-l-2 border-[color:var(--graphite)] pl-3 text-sm">
                               {copy.empty.noSignals}
                             </p>
-                          ) : null}
+                          ) : (
+                            <ul className="mb-3 space-y-1 text-sm">
+                              {(signalsByPerson.get(p.id) ?? []).map((s) => {
+                                const type = s.type as RigourSignalType;
+                                const label = type in copy.signals ? copy.signals[type] : s.type;
+                                const mapping = SIGNAL_BRIDGE[type];
+                                return (
+                                  <li key={`${s.type}-${s.observedAt}`} className="flex flex-wrap gap-2">
+                                    <span>{label}</span>
+                                    {s.ceremony ? (
+                                      <span className="text-[color:var(--graphite)]">
+                                        {copy.ui.ceremony}: {s.ceremony}
+                                      </span>
+                                    ) : null}
+                                    <GdsBridgeLabel mapping={mapping} />
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          )}
                           {p.skills.length ? (
                             <ul className="flex flex-wrap gap-2">
                               {p.skills.map((s) => (
