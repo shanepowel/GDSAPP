@@ -539,10 +539,7 @@ th,
   gap: 8px;
   width: 100%;
   min-height: 44px;
-  font-family: var(--font-data);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 13px;
   color: var(--graphite);
   background: none;
   border: 0;
