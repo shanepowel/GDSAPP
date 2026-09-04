@@ -413,6 +413,40 @@
           "sortOrder": 3
         }
       ]
+    },
+    {
+      "code": "bsa-golden-thread",
+      "name": "Building Safety Act golden thread",
+      "publisher": "Ministry of Housing, Communities and Local Government",
+      "version": "2022",
+      "licence": "OGL-3.0",
+      "attribution": "Contains public sector information licensed under the Open Government Licence v3.0.",
+      "items": [
+        {
+          "ref": "GT / Identity",
+          "title": "Golden thread identity",
+          "question": "Is there a single, enduring information set that identifies the building and its safety-critical decisions?",
+          "parentRef": "Golden thread",
+          "packRef": "bsa-gt",
+          "sortOrder": 1
+        },
+        {
+          "ref": "GT / Changes",
+          "title": "Golden thread change control",
+          "question": "Are design and construction changes recorded so the next dutyholder can explain them?",
+          "parentRef": "Golden thread",
+          "packRef": "bsa-gt",
+          "sortOrder": 2
+        },
+        {
+          "ref": "GT / Handover",
+          "title": "Golden thread handover",
+          "question": "Does handover pass a complete, current information set rather than a briefing?",
+          "parentRef": "Golden thread",
+          "packRef": "bsa-gt",
+          "sortOrder": 3
+        }
+      ]
     }
   ],
   "mappings": [
@@ -799,6 +833,30 @@
       "itemRef": "Live pack",
       "relation": "satisfies",
       "note": "GDS criterion 14 is typically emphasised at live."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "11",
+      "frameworkCode": "bsa-golden-thread",
+      "itemRef": "GT / Identity",
+      "relation": "informs",
+      "note": "Golden thread identity is the information-management duty a panel will ask about when the service is capital."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "12",
+      "frameworkCode": "bsa-golden-thread",
+      "itemRef": "GT / Changes",
+      "relation": "informs",
+      "note": "Change control on the golden thread maps to keeping technology and information choices inspectable."
+    },
+    {
+      "standardCode": "gds-service-standard",
+      "criterionRef": "14",
+      "frameworkCode": "bsa-golden-thread",
+      "itemRef": "GT / Handover",
+      "relation": "satisfies",
+      "note": "Handover of a current golden thread is the capital-programme form of operate a reliable service."
     }
   ],
   "authoredBy": "S Powell",

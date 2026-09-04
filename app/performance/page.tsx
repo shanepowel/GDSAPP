@@ -4,8 +4,8 @@ import { BrandMark } from '@/components/brand/BrandMark';
 import { getPerfSummary } from '@/lib/ops/perf-samples';
 
 export const metadata: Metadata = {
-  title: 'Performance — Assemble',
-  description: 'Assemble uptime and response times — Point 10 applied to the product itself.',
+  title: 'Performance — Datum',
+  description: 'Datum uptime and response times. Point 10 applied to the product itself.',
 };
 
 export const dynamic = 'force-dynamic';
@@ -21,7 +21,7 @@ export default function PerformancePage() {
       <main className="mx-auto max-w-2xl px-4 py-10 md:px-8">
         <h1 className="text-[28px] font-semibold tracking-[-0.02em]">Performance</h1>
         <p className="mt-3 text-[15px] leading-[1.55] text-ink-1">
-          Point 10 of the service standard applied to Assemble itself: published availability and
+          Point 10 of the service standard applied to Datum itself: published availability and
           response times from dogfood health samples.
         </p>
 

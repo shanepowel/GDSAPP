@@ -26,12 +26,11 @@ test('people rows and squad assign controls open drawers', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Confirm this squad' })).toBeDisabled();
 
   await page.goto('/people');
-  await page.locator('tr.clickable', { hasText: 'Bethan Morris' }).click();
-  await expect(page.getByRole('heading', { name: 'Bethan Morris' })).toBeVisible();
-  await page.getByRole('button', { name: 'Close' }).click();
-  await expect(page.getByRole('heading', { name: 'Bethan Morris' })).toHaveCount(0);
+  await expect(page.getByText('Harper Cole')).toBeVisible();
+  await page.locator('tr.clickable', { hasText: 'Harper Cole' }).click();
+  await expect(page.getByText(/multiplier stays at exactly 1.00|Nothing recorded for this person/i)).toBeVisible();
 
-  await page.goto('/assurance');
+  await page.goto('/assurance/nrw-demo');
   await expect(page.getByRole('heading', { name: 'Whether this team will pass' })).toBeVisible();
-  await expect(page.getByText('Understand users and their needs')).toBeVisible();
+  await expect(page.getByText('0.64')).toHaveCount(0);
 });

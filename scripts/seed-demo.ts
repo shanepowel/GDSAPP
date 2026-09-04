@@ -8,6 +8,7 @@ import {
   computeAndSnapshotIndex,
 } from '../lib/assurance/scoring-load';
 import { seedDemoPool } from '../lib/demo/seed-pool';
+import { ensureDemoReader } from '../lib/demo/reader';
 
 const prisma = new PrismaClient();
 
@@ -58,11 +59,13 @@ async function main() {
     update: { passwordHash, role: 'admin' },
   });
 
+  await ensureDemoReader(prisma);
+
   const engagement = await prisma.engagement.upsert({
     where: { id: 'nrw-demo' },
     create: {
       id: 'nrw-demo',
-      name: 'NRW regulatory permitting service (discovery)',
+      name: 'NRW Permitting Service',
       reference: 'NRW-DISC-01',
       standardId: 'wales',
       clientOrg: 'Natural Resources Wales',
@@ -74,8 +77,10 @@ async function main() {
       orgId: org.id,
       supplierTag: 'Turner & Townsend Demo',
       lotTag: 'Lot 1 Digital delivery',
+      maturityLevel: 'evidenced',
     },
     update: {
+      name: 'NRW Permitting Service',
       reference: 'NRW-DISC-01',
       clientOrg: 'Natural Resources Wales',
       sector: 'digital-service',
@@ -85,6 +90,7 @@ async function main() {
       ownerId: admin.id,
       supplierTag: 'Turner & Townsend Demo',
       lotTag: 'Lot 1 Digital delivery',
+      maturityLevel: 'evidenced',
     },
   });
 
