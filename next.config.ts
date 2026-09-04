@@ -19,7 +19,6 @@ const nextConfig: NextConfig = {
       { source: '/org-design', destination: '/people', permanent: false },
       { source: '/org-design/graph', destination: '/people/graph', permanent: false },
       { source: '/playbook', destination: '/practice/pillars', permanent: false },
-      { source: '/demo', destination: '/?tour=1', permanent: false },
     ];
   },
 };

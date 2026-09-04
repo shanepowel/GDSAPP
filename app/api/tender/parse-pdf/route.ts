@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { extractTextFromPdfBuffer, parseTenderPdfText } from '@/lib/tender/pdf-parser';
+import { demoWriteBlockedResponse } from '@/lib/demo/guard';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -11,6 +12,8 @@ export async function POST(req: Request) {
   if (!session?.user?.orgId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+  const blocked = demoWriteBlockedResponse(session.user.role);
+  if (blocked) return blocked;
 
   const form = await req.formData();
   const file = form.get('file');
