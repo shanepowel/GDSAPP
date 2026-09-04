@@ -2,7 +2,7 @@ import type { Messages } from '@/lib/i18n/types';
 
 export const cy: Messages = {
   signIn: {
-    title: 'Mewngofnodi i Datum',
+    title: 'Mewngofnodi i Assemble',
     subtitle:
       'Offeryn Turner & Townsend ar gyfer cydosod timau cyflawni a phrofi mai nhw yw’r rhai cywir, yn erbyn yr ymarfer a’r safon sy’n llywodraethu’r gwaith.',
     tabSignIn: 'Mewngofnodi',

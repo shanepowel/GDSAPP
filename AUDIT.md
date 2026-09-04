@@ -1,5 +1,7 @@
 # Datum audit
 
+Record of the 4 September 2026 audit of the then-named Datum build. The product name is now Assemble. The 0.60 fit line is still called the datum.
+
 Recorded against a clean local run on 4 September 2026: PostgreSQL 16, `npm run seed`, Next.js `npm run dev`, Playwright Chromium, axe-core 4.11. Signed in as `admin@demo.local` / `demo-password`.
 
 House rules applied: UK spelling, no em dashes in this file.

@@ -79,6 +79,7 @@ h2,
 h3 {
   font-family: var(--font-cond);
   letter-spacing: 0.01em;
+  color: var(--heading);
 }
 
 .num,
@@ -104,20 +105,24 @@ th,
   }
 }
 
-/* ---------- fit strip (doc 11 T11.5) ---------- */
+/* ---------- fit strip (the one memorable element) ---------- */
 
 .fit-strip-wrap {
+  display: grid;
+  grid-template-columns: 1fr 46px;
+  gap: 10px;
+  align-items: center;
   position: relative;
+  min-width: 180px;
   padding: 6px 0 12px;
 }
 
 .fit-strip {
   display: block;
   position: relative;
-  height: 26px;
+  height: 10px;
   background: var(--sunk);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
+  border-radius: 5px;
   color: inherit;
   text-decoration: none;
 }
@@ -126,22 +131,21 @@ th,
   content: '';
   position: absolute;
   left: var(--viability);
-  top: -5px;
-  bottom: -5px;
-  width: 1px;
-  background: var(--datum);
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--blue);
 }
 
 .fit-strip-fill {
   display: flex;
   height: 100%;
   overflow: hidden;
-  border-radius: 1px;
+  border-radius: 5px;
 }
 
 .fit-seg-slot {
   height: 100%;
-  border-right: 1px solid var(--raised);
 }
 
 .fit-seg-slot:last-child {
@@ -153,7 +157,11 @@ th,
 }
 
 .fit-seg.is-held {
-  background: var(--ink);
+  background: var(--navy);
+}
+
+.fit-strip.is-below .fit-seg.is-held {
+  background: var(--risk);
 }
 
 .fit-seg.is-partial {
@@ -164,19 +172,38 @@ th,
   );
 }
 
+.fit-strip.is-below .fit-seg.is-partial {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--risk) 0 3px,
+    color-mix(in srgb, var(--risk) 70%, white) 3px 6px
+  );
+}
+
 .fit-bracket {
   position: absolute;
   left: 0;
   bottom: -9px;
   height: 5px;
-  border-left: 1px solid var(--survey);
-  border-right: 1px solid var(--survey);
-  border-bottom: 1px solid var(--survey);
+  border-left: 1px solid var(--mute);
+  border-right: 1px solid var(--mute);
+  border-bottom: 1px solid var(--mute);
 }
 
 .fit-bracket.is-unevidenced {
   border-style: dashed;
   border-color: var(--graphite);
+}
+
+.fit-strip-num {
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--navy);
+}
+
+.fit-strip-num.is-low {
+  color: var(--risk);
 }
 
 .fit-strip-text {
@@ -198,7 +225,7 @@ th,
 }
 
 .legend-swatch.is-held {
-  background: var(--ink);
+  background: var(--navy);
 }
 
 .legend-swatch.is-partial {
@@ -224,8 +251,8 @@ th,
   left: 50%;
   top: -3px;
   bottom: -3px;
-  width: 1px;
-  background: var(--datum);
+  width: 2px;
+  background: var(--blue);
 }
 
 .legend-swatch.is-bracket {
@@ -338,13 +365,13 @@ th,
 }
 
 .flag-risk {
-  border-color: var(--survey);
-  color: var(--survey);
+  border-color: var(--risk);
+  color: var(--risk);
 }
 
 .flag-ok {
-  border-color: var(--datum);
-  color: var(--datum);
+  border-color: var(--ok);
+  color: var(--ok);
 }
 
 /* Native select: Tailwind preflight sets a transparent background, which
@@ -447,9 +474,9 @@ th,
 
 .teach-panel {
   border: 1px solid var(--rule);
-  border-left: 3px solid var(--survey);
-  background: var(--raised);
-  border-radius: var(--radius);
+  border-left: 3px solid var(--blue);
+  background: var(--blue-tint);
+  border-radius: var(--radius-lg);
   padding: 16px 18px;
   margin: 0 0 22px;
 }
@@ -471,11 +498,9 @@ th,
 }
 
 .teach-tag {
-  font-family: var(--font-data);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--survey);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--heading);
   display: block;
   margin-bottom: 6px;
 }
@@ -550,8 +575,8 @@ th,
 }
 
 .learn-toggle.on .learn-switch {
-  background: var(--survey);
-  border-color: var(--survey);
+  background: var(--blue);
+  border-color: var(--blue);
 }
 
 .learn-toggle.on .learn-switch i {
@@ -573,9 +598,9 @@ th,
 }
 
 .btn-teach.pri {
-  background: var(--survey);
-  border-color: var(--survey);
-  color: var(--stock);
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--on-navy);
 }
 
 .btn-teach:disabled {
@@ -655,9 +680,9 @@ th,
 }
 
 .teach-note-alert {
-  border-left: 2px solid var(--survey);
+  border-left: 2px solid var(--risk);
   padding: 10px 13px;
-  background: var(--sunk);
+  background: var(--risk-tint);
 }
 
 .role-cards {
@@ -685,11 +710,10 @@ th,
 .demo-banner {
   margin: 0;
   padding: 8px 16px;
-  background: var(--sunk);
+  background: var(--blue-tint);
   border-bottom: 1px solid var(--rule);
-  font-family: var(--font-data);
-  font-size: 11px;
-  letter-spacing: 0.04em;
+  color: var(--heading);
+  font-size: 13px;
 }
 
 .stage-handover {
@@ -746,9 +770,9 @@ th,
 }
 
 .journey-stepper a.is-active {
-  background: var(--ink);
-  color: var(--stock);
-  border-color: var(--ink);
+  background: var(--blue);
+  color: var(--on-navy);
+  border-color: var(--blue);
 }
 
 .journey-n {
@@ -776,4 +800,33 @@ th,
 .role-card .role-why b {
   color: var(--ink);
   font-weight: 500;
+}
+
+aside .learn-toggle {
+  color: var(--on-navy-mute);
+}
+
+aside .learn-toggle.on {
+  color: var(--on-navy);
+}
+
+aside .learn-switch {
+  border-color: var(--on-navy-mute);
+  background: transparent;
+}
+
+aside .journey-stepper a {
+  color: var(--on-navy);
+  border-color: var(--on-navy-mute);
+}
+
+aside .journey-stepper a.is-active {
+  background: var(--blue);
+  color: var(--on-navy);
+  border-color: var(--blue);
+}
+
+aside select option {
+  color: var(--ink);
+  background: var(--card);
 }

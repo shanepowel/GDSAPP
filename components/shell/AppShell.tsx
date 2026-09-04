@@ -106,13 +106,13 @@ export function DatumAppShell({
   return (
     <DatumShellProvider>
       <div className="grid min-h-screen grid-cols-1 md:grid-cols-[216px_1fr]">
-        <aside className="sticky top-0 z-20 flex h-auto flex-col border-b border-[color:var(--rule)] bg-[var(--stock)] md:h-screen md:border-b-0 md:border-r">
-          <div className="border-b border-[color:var(--rule)] px-5 pb-5 pt-6">
+        <aside className="sticky top-0 z-20 flex h-auto flex-col border-b border-[color:var(--on-navy-rule)] bg-[var(--navy)] text-[color:var(--on-navy)] md:h-screen md:border-b-0 md:border-r md:border-r-[color:var(--on-navy-rule)]">
+          <div className="border-b border-[color:var(--on-navy-rule)] px-5 pb-5 pt-6">
             <Link href="/" className="block">
-              <span className="block font-[family-name:var(--font-cond)] text-[22px] font-bold uppercase leading-none tracking-[0.14em]">
+              <span className="block text-[22px] font-bold leading-none tracking-[0.01em]">
                 {c.product.name}
               </span>
-              <span className="mt-2 block font-[family-name:var(--font-mono)] text-[9.5px] uppercase tracking-[0.1em] text-[color:var(--graphite)]">
+              <span className="mt-2 block text-[12px] text-[color:var(--on-navy-mute)]">
                 {c.product.owner}
               </span>
             </Link>
@@ -120,38 +120,32 @@ export function DatumAppShell({
 
           <JourneyNav engagementId={contextEngagement?.id} />
 
-          <div className="border-t border-[color:var(--rule)] px-5 py-3">
+          <div className="border-t border-[color:var(--on-navy-rule)] px-5 py-3">
             <TeachToggle />
           </div>
-          <div className="flex items-center gap-2 border-t border-[color:var(--rule)] px-5 py-3">
+          <div className="flex items-center gap-2 border-t border-[color:var(--on-navy-rule)] px-5 py-3 text-[13px]">
             <LanguageSwitcher />
             <ThemeToggle />
             {signedIn ? (
               <>
-                <Link
-                  href={accountHref}
-                  className="ml-auto font-[family-name:var(--font-mono)] text-[10.5px] uppercase tracking-[0.1em]"
-                >
+                <Link href={accountHref} className="ml-auto text-[color:var(--on-navy)]">
                   {accountLabel ?? c.home.signIn}
                 </Link>
                 <button
                   type="button"
-                  className="font-[family-name:var(--font-mono)] text-[10.5px] uppercase tracking-[0.1em]"
+                  className="text-[color:var(--on-navy)]"
                   onClick={() => signOut({ callbackUrl: '/' })}
                 >
                   {c.ui.signOut}
                 </button>
               </>
             ) : (
-              <Link
-                href={accountHref}
-                className="ml-auto font-[family-name:var(--font-mono)] text-[10.5px] uppercase tracking-[0.1em]"
-              >
+              <Link href={accountHref} className="ml-auto text-[color:var(--on-navy)]">
                 {accountLabel ?? c.home.signIn}
               </Link>
             )}
           </div>
-          <div className="px-5 pb-3.5 font-[family-name:var(--font-mono)] text-[10px] text-[color:var(--graphite)]">
+          <div className="px-5 pb-3.5 text-[12px] text-[color:var(--on-navy-mute)]">
             {c.footer.demonstration}
             <br />
             {c.footer.representative}
@@ -211,16 +205,16 @@ function JourneyNav({ engagementId }: { engagementId?: string }) {
                 href={stageHref(s, engagementId)}
                 aria-current={active ? 'page' : undefined}
                 className={[
-                  'flex min-h-11 flex-col justify-center border-l-[3px] px-5 py-2 text-sm',
+                  'flex min-h-11 flex-col justify-center border-l-[3px] px-5 py-2 text-sm text-[color:var(--on-navy)]',
                   active
-                    ? 'border-l-[color:var(--survey)] bg-[var(--raised)] font-semibold'
-                    : 'border-l-transparent hover:bg-[var(--raised)]',
+                    ? 'border-l-[color:var(--blue)] bg-[var(--on-navy-active)] font-semibold'
+                    : 'border-l-transparent hover:bg-[var(--on-navy-hover)]',
                 ].join(' ')}
               >
                 <span>
                   {s.number} {item.label}
                 </span>
-                <span className="mt-px font-[family-name:var(--font-mono)] text-[10px] text-[color:var(--graphite)]">
+                <span className="mt-px text-[12.5px] text-[color:var(--on-navy-mute)]">
                   {item.hint}
                 </span>
               </Link>
@@ -228,7 +222,7 @@ function JourneyNav({ engagementId }: { engagementId?: string }) {
                 <Link
                   key={extra.href}
                   href={extra.href}
-                  className="ml-8 block py-1 text-[12px] text-[color:var(--graphite)] hover:text-[color:var(--ink)]"
+                  className="ml-8 block py-1 text-[12px] text-[color:var(--on-navy-mute)] hover:text-[color:var(--on-navy)]"
                 >
                   {c.journey[extra.copyKey]}
                 </Link>
@@ -276,7 +270,7 @@ function ContextBar({
           <select
             value={engagement.id}
             aria-label={c.context.changeEngagement}
-            className="border border-[color:var(--rule)] bg-[var(--stock)] px-1 py-0.5 font-[family-name:var(--font-mono)] text-[11px]"
+            className="rounded-[var(--radius)] border border-[color:var(--rule)] bg-[var(--raised)] px-2 py-1 text-[13px] font-semibold"
             onChange={(e) => {
               const next = e.target.value;
               document.cookie = `${ENGAGEMENT_COOKIE}=${next};path=/;max-age=31536000;SameSite=Lax`;
@@ -313,8 +307,8 @@ function ContextBar({
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="font-[family-name:var(--font-mono)] text-[11px]">
-      <span className="block text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
+    <div className="text-[13px]">
+      <span className="block text-[12px] text-[color:var(--graphite)]">
         {label}
       </span>
       {children}

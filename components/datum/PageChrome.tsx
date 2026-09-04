@@ -25,7 +25,7 @@ export function PageHeader({
 }
 
 const inkButtonClass =
-  'inline-flex min-h-11 items-center rounded-[var(--radius)] bg-[var(--ink)] px-4 py-2 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.1em] text-[var(--stock)]';
+  'inline-flex min-h-11 items-center rounded-[var(--radius)] bg-[var(--blue)] px-4 py-2 text-sm font-medium text-[var(--on-navy)] hover:bg-[var(--blue-ink)]';
 
 export function InkButton({ href, children }: { href: string; children: React.ReactNode }) {
   return (

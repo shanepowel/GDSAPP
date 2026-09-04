@@ -1,19 +1,18 @@
 import type { Copy } from '@/lib/copy';
 
-/** Welsh strings for Datum copy. Human-authored; not machine-translated. */
+/** Welsh strings for Assemble copy. Human-authored; not machine-translated. */
 export const copyCy: Copy = {
   product: {
-    name: 'Datum',
+    name: 'Assemble',
     owner: 'Turner & Townsend',
     thesis: 'Y tîm yw’r cynllun cyflawni.',
-    strapline:
-      'Mae Datum yn diffinio sut olwg sydd ar gyflawni da, yn mesur y gallu a ddelir yn ei erbyn, ac yn cydosod y sgwad a all wneud y gwaith.',
+    strapline: 'Cydosodwch y tîm, yna profwch y bydd yn pasio.',
   },
 
   home: {
     eyebrow: 'Ymarfer cyflawni',
-    headline: 'Y tîm yw’r cynllun cyflawni.',
-    sub: 'Nid y dull, nid y calendr. Y bobl sy’n troi i fyny bob dydd. Mae Datum yn gosod beth yw ystyr cyflawni da yma, yn sgorio’r gallu a ddelir yn ei erbyn, ac yn cydosod y sgwad ar gyfer swydd benodol. Mae sgorio gallu Llywodraeth Ddigidol a Data a pharodrwydd safon gwasanaeth wedi’u adeiladu i mewn.',
+    headline: 'Cydosodwch y tîm, yna profwch y bydd yn pasio.',
+    sub: 'Nid y dull, nid y calendr. Y bobl sy’n troi i fyny bob dydd. Mae Assemble yn gosod beth yw ystyr cyflawni da yma, yn sgorio’r gallu a ddelir yn ei erbyn, ac yn cydosod y sgwad ar gyfer swydd benodol. Mae sgorio gallu Llywodraeth Ddigidol a Data a pharodrwydd safon gwasanaeth wedi’u adeiladu i mewn.',
     primaryCta: 'Rhoi cynnig ar y demo',
     secondaryCta: 'Darllen yr ymarfer',
     signIn: 'Mewngofnodi',
@@ -222,10 +221,10 @@ export const copyCy: Copy = {
     eyebrow: 'Ymarfer',
     looksLikeTitle: 'Sut olwg sydd ar gyflawni da yma',
     looksLikeLede:
-      'Darllenwch hyn yn gyntaf. Mae popeth y mae Datum yn ei fesur yn cael ei fesur yn erbyn yr hyn sydd ar y dudalen hon, felly nid yw ffigur yn golygu dim nes i chi weld beth yw ffigur ohono.',
+      'Darllenwch hyn yn gyntaf. Mae popeth y mae Assemble yn ei fesur yn cael ei fesur yn erbyn yr hyn sydd ar y dudalen hon, felly nid yw ffigur yn golygu dim nes i chi weld beth yw ffigur ohono.',
     pillarsTitle: 'Y pum piler',
     pillarsLede:
-      'Pum piler, un model gweithredu. Mae pob ffigur yn Datum yn olrhain i rywbeth ar y rhestr hon. Dim byd yn cael ei fesur nad yw’r ymarfer yn ei ofyn.',
+      'Pum piler, un model gweithredu. Mae pob ffigur yn Assemble yn olrhain i rywbeth ar y rhestr hon. Dim byd yn cael ei fesur nad yw’r ymarfer yn ei ofyn.',
     capacityTitle: 'Faint o wythnos person sydd wir yn rhydd',
     ceremoniesTitle: 'Seremonïau, a’r hyn y mae’n rhaid i bob un ei allyrru',
     ceremoniesLede:

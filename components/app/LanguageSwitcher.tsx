@@ -7,12 +7,12 @@ export function LanguageSwitcher() {
   const { locale, setLocale, messages } = useI18n();
 
   return (
-    <label className="flex items-center gap-2 text-[12px] text-text-muted">
+    <label className="flex items-center gap-2 text-[12px] text-[color:inherit]">
       <span className="sr-only">{messages.app.language}</span>
       <select
         value={locale}
         onChange={(e) => setLocale(e.target.value as Locale)}
-        className="rounded-md border border-border bg-surface px-2 py-1 text-[12px] text-text"
+        className="rounded-[var(--radius)] border border-[color:var(--on-navy-mute)] bg-transparent px-2 py-1 text-[12px] text-[color:inherit]"
         aria-label={messages.app.language}
       >
         <option value="en">{messages.app.english}</option>

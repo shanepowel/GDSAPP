@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { BrandMark } from '@/components/brand/BrandMark';
 
 export const metadata: Metadata = {
-  title: 'Accessibility — Datum',
-  description: 'Accessibility statement for Datum by Turner & Townsend.',
+  title: 'Accessibility',
+  description: 'Accessibility statement for Assemble by Turner & Townsend.',
 };
 
 export default function AccessibilityPage() {
@@ -16,7 +16,7 @@ export default function AccessibilityPage() {
       <main className="mx-auto max-w-2xl px-4 py-10 md:px-8">
         <h1 className="text-[28px] font-semibold tracking-[-0.02em]">Accessibility statement</h1>
         <p className="mt-3 text-[15px] leading-[1.55] text-ink-1">
-          This statement applies to the Datum web application operated by Turner &amp; Townsend.
+          This statement applies to the Assemble web application operated by Turner &amp; Townsend.
           We aim to meet WCAG 2.2 AA.
         </p>
 

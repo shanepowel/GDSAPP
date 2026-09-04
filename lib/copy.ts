@@ -29,8 +29,8 @@ export const copy = {
 
   home: {
     eyebrow: 'Delivery practice',
-    headline: 'The team is the delivery plan.',
-    sub: 'Not the method, not the schedule. The people who turn up every day. Datum sets out what good delivery means, scores the capability actually held against it, and assembles the squad for a specific job. Government Digital and Data capability scoring and service standard readiness are built in.',
+    headline: productIdentity.strapline,
+    sub: 'Not the method, not the schedule. The people who turn up every day. Assemble sets out what good delivery means, scores the capability actually held against it, and assembles the squad for a specific job. Government Digital and Data capability scoring and service standard readiness are built in.',
     primaryCta: 'Try the demo',
     secondaryCta: 'Read the practice',
     signIn: 'Sign in',
@@ -238,10 +238,10 @@ export const copy = {
     eyebrow: 'Practice',
     looksLikeTitle: 'What good delivery looks like here',
     looksLikeLede:
-      'Read this first. Everything Datum measures is measured against what is on this page, so a figure only means something once you have seen what it is a figure of.',
+      'Read this first. Everything Assemble measures is measured against what is on this page, so a figure only means something once you have seen what it is a figure of.',
     pillarsTitle: 'The five pillars',
     pillarsLede:
-      'Five pillars, one operating model. Every figure in Datum traces to something on this list. Nothing is measured that the practice does not require.',
+      'Five pillars, one operating model. Every figure in Assemble traces to something on this list. Nothing is measured that the practice does not require.',
     capacityTitle: 'How much of a person\'s week is actually free',
     ceremoniesTitle: 'Ceremonies, and what each one has to emit',
     ceremoniesLede:

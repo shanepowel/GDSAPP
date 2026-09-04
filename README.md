@@ -1,8 +1,10 @@
-# Datum
+# Assemble
 
 **Turner & Townsend** instrument for assembling delivery teams and proving they are the right ones. Government Digital and Data Profession Capability Framework scoring and service standard readiness (GDS, Wales) are lenses, not the product.
 
-Brand palette: drafting stock, survey pink `#E5006D`, datum teal `#1F4B4A`. See `styles/tokens.css`. Product name, strapline, meta description and the datum line (`0.60`) live in `lib/product.config.ts`.
+Brand palette: navy `#0A2647`, electric blue `#1A5CFF`, paper `#F5F7FA`. See `styles/tokens.css`. Product name, strapline, meta description and the datum line (`0.60`) live in `lib/product.config.ts`. "The datum" is the 0.60 fit line, not the product name.
+
+## Advisory and legal
 
 ## Advisory and legal
 

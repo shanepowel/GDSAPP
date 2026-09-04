@@ -33,12 +33,13 @@ export function FitStrip({ fit, width = 230, candidateName }: FitStripProps) {
   const { locale } = useI18n();
   const copy = getCopy(locale);
   const datumTitle = fillCopy(copy.datumLine.explain, { line: formatDatumLine() });
+  const below = fit.compositeScore < VIABILITY_THRESHOLD;
 
   return (
     <div className="fit-strip-wrap" style={{ width }}>
       <Link
         href="/#datum-line"
-        className="fit-strip"
+        className={`fit-strip${below ? ' is-below' : ''}`}
         aria-label={`${describe(fit, candidateName)}. ${datumTitle}`}
         title={datumTitle}
         style={{ ['--viability' as string]: `${VIABILITY_THRESHOLD * 100}%` }}
@@ -54,6 +55,9 @@ export function FitStrip({ fit, width = 230, candidateName }: FitStripProps) {
           style={{ width: `${Math.min(100, fit.compositeScore * 100)}%` }}
         />
       </Link>
+      <span className={`fit-strip-num${below ? ' is-low' : ''}`} aria-hidden="true">
+        {fit.compositeScore.toFixed(2)}
+      </span>
       <span className="fit-strip-text">{describe(fit, candidateName)}</span>
     </div>
   );
@@ -94,7 +98,7 @@ export function FitBandCell({ fit }: { fit: FitResult }) {
       <div className="font-data text-[15px] font-medium tabular-nums">{fit.compositeScore.toFixed(2)}</div>
       <div
         className="mt-0.5 font-data text-[9.5px] uppercase tracking-[0.1em]"
-        style={{ color: fit.band === 'gap' ? 'var(--survey)' : 'var(--graphite)' }}
+        style={{ color: fit.band === 'gap' ? 'var(--risk)' : 'var(--graphite)' }}
       >
         {copy.fitBands[fit.band]}
       </div>

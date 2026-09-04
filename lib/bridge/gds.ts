@@ -1,5 +1,5 @@
 /**
- * Vocabulary bridge from Datum pillars and rigour signals to GDS / DDaT.
+ * Vocabulary bridge from Assemble pillars and rigour signals to GDS / DDaT.
  * Populated from the published Service Standard and the crosswalk seed
  * (NISTA, TCoP, ISO 19650, Construction Playbook, Building Safety Act).
  */

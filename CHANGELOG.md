@@ -2,7 +2,13 @@
 
 ## 2026-09-04
 
+### Changed
+
+- Product name is Assemble. Strapline: Assemble the team, then prove it will pass. The word datum is kept only for the 0.60 fit line.
+- Colour tokens are Turner & Townsend navy and electric blue. Survey pink and drafting-stock teal are gone. Public Sans is the UI face. The fit strip is a navy (or risk-red) fill with a 2px blue datum line.
+
 ### Fixed
+
 
 - People signed-in table reads the live pool. Unevidenced person is Harper Cole, multiplier stays at 1.00.
 - Assurance no longer shows a hard-coded Wales DSS 0.64 teaching result above live analysis.
@@ -30,4 +36,4 @@
 - Axe serious colour-contrast remains on Squads (about 20 nodes of small caps and flags).
 - Lighthouse CLI was not available in this environment; LCP/CLS/bundle size still unmeasured.
 - Tab order on Squads still lands on the Next.js portal marker before page controls.
-- Historical comments and `docs/spec/` still say Assemble in places. User-facing product name is Datum.
+- Historical comments and `docs/spec/` still describe an earlier Datum identity. User-facing product name is Assemble.

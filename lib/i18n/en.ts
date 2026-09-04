@@ -2,7 +2,7 @@ import type { Messages } from '@/lib/i18n/types';
 
 export const en: Messages = {
   signIn: {
-    title: 'Sign in to Datum',
+    title: 'Sign in to Assemble',
     subtitle:
       'The Turner & Townsend instrument for assembling delivery teams and proving they are the right ones, against the practice and the standard that governs the work.',
     tabSignIn: 'Sign in',

@@ -24,9 +24,9 @@ export function DatumLineFigure() {
           role="img"
           aria-label={fillCopy(copy.datumLine.figureLabel, { line })}
         >
-          <rect x="8" y="28" width="304" height="8" fill="var(--rule)" />
-          <rect x="8" y="28" width="182" height="8" fill="var(--ink)" />
-          <rect x="190" y="20" width="3" height="24" fill="var(--datum)" />
+          <rect x="8" y="28" width="304" height="8" fill="var(--sunk)" />
+          <rect x="8" y="28" width="182" height="8" fill="var(--navy)" />
+          <rect x="190" y="20" width="2" height="24" fill="var(--blue)" />
           <text x="8" y="18" className="datum-fig-label">
             {copy.datumLine.below}
           </text>

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { AssembleLogo } from '@/components/brand/AssembleLogo';
 
-/** Product lockup for headers. Inline Datum wordmark. */
+/** Product lockup for headers. Inline Assemble wordmark. */
 export function BrandMark({
   href = '/',
   variant = 'light',

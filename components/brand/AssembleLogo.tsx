@@ -1,6 +1,6 @@
 import { BRAND } from '@/lib/brand';
 
-/** Hex mark + Datum wordmark. */
+/** Hex mark + Assemble wordmark. */
 export function AssembleHexIcon({
   className,
   color = 'currentColor',
@@ -43,11 +43,8 @@ export function AssembleLogo({
   return (
     <div className={`flex items-center gap-2.5 ${className ?? ''}`} aria-label={BRAND.product}>
       <AssembleHexIcon className={iconClassName} color={fg} />
-      <span
-        className="font-display text-[15px] font-extrabold uppercase tracking-[0.14em]"
-        style={{ color: fg }}
-      >
-        {BRAND.product.toUpperCase()}
+      <span className="text-[22px] font-bold tracking-[0.01em]" style={{ color: fg }}>
+        {BRAND.product}
       </span>
     </div>
   );

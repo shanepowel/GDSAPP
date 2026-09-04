@@ -60,7 +60,7 @@ export function PracticeChapters() {
       </section>
 
       <section className="py-14">
-        <div className="max-w-[62ch] border-l-2 border-[color:var(--survey)] pl-6">
+        <div className="max-w-[62ch] border-l-2 border-[color:var(--blue)] pl-6">
           <h2 className="mb-2 mt-0 font-[family-name:var(--font-cond)] text-[19px] font-semibold">
             {c.credibility.title}
           </h2>
@@ -164,7 +164,7 @@ export function MaturityLadder({ current }: { current?: number }) {
         >
           <div
             className="flex items-center justify-center border-r border-[color:var(--rule-soft)] font-[family-name:var(--font-mono)] text-[18px]"
-            style={{ color: m.level === current ? 'var(--survey)' : 'var(--graphite)' }}
+            style={{ color: m.level === current ? 'var(--blue)' : 'var(--graphite)' }}
           >
             {m.level}
           </div>
@@ -172,7 +172,7 @@ export function MaturityLadder({ current }: { current?: number }) {
             <h3 className="mb-1 font-[family-name:var(--font-cond)] text-sm font-semibold">
               {copy.maturityLevels[m.key]}
               {m.level === current ? (
-                <span className="ml-2.5 font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-[0.1em] text-[color:var(--survey)]">
+                <span className="ml-2.5 text-[12px] font-semibold text-[color:var(--blue)]">
                   {copy.practice.youAreHere}
                 </span>
               ) : null}

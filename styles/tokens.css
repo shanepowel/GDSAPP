@@ -1,31 +1,53 @@
 :root {
-  /* ---- Datum design tokens (docs/spec/10 + 11). Hex lives only in this file. ---- */
+  /* ---- Assemble design tokens. Hex lives only in this file. ---- */
 
-  /* Surfaces. Cool drafting stock. */
-  --stock: #edefea;
-  --raised: #f7f8f5;
-  --sunk: #e4e7e0;
+  /* Turner & Townsend blues (matched to turnerandtownsend.com). */
+  --navy: #0a2647;
+  --blue: #1a5cff;
+  --blue-ink: #123fb8;
+  --blue-tint: #e9f0ff;
+  --paper: #f5f7fa;
+  --card: #ffffff;
+  --ink: #14202b;
+  --mute: #5b6b7a;
+  --rule: #d7dee6;
+  --ok: #1b7f5a;
+  --ok-tint: #e4f4ec;
+  --warn: #9a5b00;
+  --warn-tint: #fff3df;
+  --risk: #b42318;
+  --risk-tint: #fdecea;
 
-  /* Ink */
-  --ink: #16191a;
-  --graphite: #3d4341;
+  --heading: var(--navy);
+  --on-navy: #ffffff;
+  --on-navy-mute: #b8c7e0;
+  --on-navy-rule: rgba(255, 255, 255, 0.14);
+  --on-navy-hover: rgba(255, 255, 255, 0.06);
+  --on-navy-active: rgba(255, 255, 255, 0.1);
+
+  /* Surfaces. Paper and raised cards. */
+  --stock: var(--paper);
+  --raised: var(--card);
+  --sunk: #e8edf3;
+
+  /* Ink aliases used by existing screens */
+  --graphite: var(--mute);
 
   /* Rules */
-  --rule: #c9cec8;
-  --rule-soft: #dde1da;
+  --rule-soft: #e6ebf1;
 
-  /* Signal. Survey pink. The only alarm colour. */
-  --survey: #e5006d;
+  /* Alarm. Risk red, never the only carrier of meaning. */
+  --survey: var(--risk);
 
-  /* Benchmark. Datum rule and passing states only. */
-  --datum: #1f4b4a;
+  /* The datum line. T&T blue. */
+  --datum: var(--blue);
 
   /* Caution. Filled-but-below-the-datum, never the only carrier of meaning. */
-  --amber: #b26b00;
+  --amber: var(--warn);
 
   /* Hatch for below-level skill segments (not a UI colour elsewhere). */
-  --hatch-0: #4a5150;
-  --hatch-1: #5e6564;
+  --hatch-0: #1a3a5c;
+  --hatch-1: #2a5278;
 
   /* Viability threshold. Overridden from scoring in layout so it cannot drift. */
   --viability: 60%;
@@ -37,44 +59,44 @@
   --ink-0: var(--ink);
   --ink-1: var(--graphite);
   --ink-2: var(--graphite);
-  --signal: var(--survey);
-  --signal-ink: #a30054;
-  --signal-wash: #fde8f1;
+  --signal: var(--blue);
+  --signal-ink: var(--blue-ink);
+  --signal-wash: var(--blue-tint);
 
   /* Verdicts. Always paired with label + glyph. */
-  --verdict-met: #1f6f4e;
-  --verdict-met-wash: #e6f2ec;
-  --verdict-at-risk: #8a5a00;
-  --verdict-at-risk-wash: #fbf0dc;
-  --verdict-not-met: #a32020;
-  --verdict-not-met-wash: #fae9e9;
-  --verdict-unassessed: #6b7480;
+  --verdict-met: var(--ok);
+  --verdict-met-wash: var(--ok-tint);
+  --verdict-at-risk: var(--warn);
+  --verdict-at-risk-wash: var(--warn-tint);
+  --verdict-not-met: var(--risk);
+  --verdict-not-met-wash: var(--risk-tint);
+  --verdict-unassessed: var(--mute);
   --verdict-unassessed-wash: #edeff1;
 
-  /* Brand — Turner & Townsend */
-  --brand: #003cb4;
-  --brand-ink: #002e8a;
-  --brand-wash: #e8eefb;
-  --brand-hero: #7fa3f5;
-  --brand-navy: #0a1633;
+  /* Brand */
+  --brand: var(--blue);
+  --brand-ink: var(--blue-ink);
+  --brand-wash: var(--blue-tint);
+  --brand-hero: #4d7cff;
+  --brand-navy: var(--navy);
 
   /* Type (faces applied via next/font on <body>) */
-  --font-ui: var(--font-ibm-plex-sans), system-ui, sans-serif;
-  --font-cond: var(--font-ibm-plex-sans-condensed), var(--font-ibm-plex-sans), system-ui, sans-serif;
-  --font-data: var(--font-ibm-plex-mono), ui-monospace, monospace;
-  --font-doc: 'Source Serif 4', Georgia, serif;
+  --font-ui: var(--font-public-sans), system-ui, sans-serif;
+  --font-cond: var(--font-public-sans), system-ui, sans-serif;
+  --font-data: var(--font-public-sans), system-ui, sans-serif;
+  --font-doc: var(--font-public-sans), Georgia, serif;
   --font-sans: var(--font-ui);
   --font-mono: var(--font-data);
 
-  /* Geometry */
-  --radius: 2px;
-  --radius-lg: 3px;
+  /* Geometry: 6px controls, 8px panels */
+  --radius: 6px;
+  --radius-lg: 8px;
   --rule-w: 1px;
   --plate-w: 2px;
 
   /* Focus: thick, high-contrast, never removed */
-  --focus: #ffd400;
-  --focus-shadow: #14181c;
+  --focus: var(--blue);
+  --focus-shadow: var(--navy);
 
   /* Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 */
   --space-1: 4px;
@@ -95,10 +117,10 @@
   --tt-navy: var(--brand-navy);
   --tt-ink: var(--ink-0);
   --tt-white: var(--stock-0);
-  --tt-slate: #64748b;
+  --tt-slate: var(--mute);
   --tt-muted: var(--ink-2);
-  --tt-border: #e5e9ef;
-  --tt-surface-alt: #f8fafc;
+  --tt-border: var(--rule);
+  --tt-surface-alt: var(--paper);
 
   --tt-charcoal: var(--tt-ink);
   --tt-charcoal-800: #1f2937;
@@ -119,7 +141,7 @@
   --grey-050: var(--tt-surface-alt);
 
   --status-strong: var(--verdict-met);
-  --status-met: #2e7d32;
+  --status-met: var(--ok);
   --status-partial: var(--verdict-at-risk);
   --status-gap: var(--verdict-not-met);
   --status-info: var(--tt-muted);
@@ -133,53 +155,75 @@
   --color-border: var(--rule);
   --color-text: var(--ink);
   --color-text-muted: var(--graphite);
-  --color-text-inverse: var(--tt-white);
+  --color-text-inverse: var(--on-navy);
   --color-brand: var(--tt-blue);
   --color-brand-hover: var(--tt-blue-700);
   --color-brand-tint: var(--tt-blue-050);
   --color-accent: var(--tt-navy);
-  --color-focus-ring: var(--tt-blue);
+  --color-focus-ring: var(--blue);
 
   --chart-primary: var(--tt-blue);
   --chart-secondary: var(--tt-navy);
   --chart-neutral: var(--tt-slate);
   --chart-grid: var(--grey-200);
 
-  /* Legacy radii — do not change in Phase 0 (screens must not move) */
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-legacy-lg: 16px;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
-  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --radius-md: 8px;
+  --radius-legacy-lg: 8px;
+  --shadow-sm: 0 1px 2px rgba(10, 38, 71, 0.08);
+  --shadow-md: 0 8px 24px rgba(10, 38, 71, 0.12);
+  --shadow-lg: 0 12px 32px rgba(10, 38, 71, 0.14);
+  --card-shadow: 0 8px 24px rgba(10, 38, 71, 0.12);
 }
 
 html.dark {
-  --stock: #16191c;
-  --raised: #1a1e22;
-  --sunk: #22262b;
-  --ink: #eaedef;
-  --graphite: #8a929c;
-  --rule: #3a424a;
-  --rule-soft: #2c3238;
-  --survey: #ff4d9d;
-  --datum: #7eb8b4;
-  --hatch-0: #9aa3a1;
-  --hatch-1: #b4bcb9;
-  --signal: var(--survey);
-  --signal-ink: #ff7eb5;
-  --signal-wash: #3a1528;
-  --verdict-met: #3d9a6e;
-  --verdict-met-wash: #1a3228;
-  --verdict-at-risk: #c48a2a;
-  --verdict-at-risk-wash: #322814;
-  --verdict-not-met: #d45a5a;
-  --verdict-not-met-wash: #321818;
-  --verdict-unassessed: #8a929c;
-  --verdict-unassessed-wash: #2a2e32;
-  --focus: #ffd400;
-  --focus-shadow: #eaedef;
+  --navy: #071525;
+  --blue: #4d7cff;
+  --blue-ink: #7aa0ff;
+  --blue-tint: #152a4d;
+  --paper: #0c1520;
+  --card: #152233;
+  --ink: #e8eef4;
+  --mute: #9aa8b5;
+  --rule: #2c3d50;
+  --ok: #3d9a6e;
+  --ok-tint: #1a3228;
+  --warn: #d08a20;
+  --warn-tint: #322814;
+  --risk: #e05555;
+  --risk-tint: #321818;
+
+  --heading: var(--ink);
+  --on-navy: #ffffff;
+  --on-navy-mute: #b8c7e0;
+  --on-navy-rule: rgba(255, 255, 255, 0.14);
+  --on-navy-hover: rgba(255, 255, 255, 0.06);
+  --on-navy-active: rgba(255, 255, 255, 0.1);
+
+  --stock: var(--paper);
+  --raised: var(--card);
+  --sunk: #1a2838;
+  --graphite: var(--mute);
+  --rule-soft: #223344;
+  --survey: var(--risk);
+  --datum: var(--blue);
+  --amber: var(--warn);
+  --hatch-0: #6e86ae;
+  --hatch-1: #8aa0c0;
+
+  --signal: var(--blue);
+  --signal-ink: var(--blue-ink);
+  --signal-wash: var(--blue-tint);
+  --verdict-met: var(--ok);
+  --verdict-met-wash: var(--ok-tint);
+  --verdict-at-risk: var(--warn);
+  --verdict-at-risk-wash: var(--warn-tint);
+  --verdict-not-met: var(--risk);
+  --verdict-not-met-wash: var(--risk-tint);
+  --verdict-unassessed: var(--mute);
+  --verdict-unassessed-wash: #1a2430;
+  --focus: var(--blue);
+  --focus-shadow: var(--ink);
 
   --stock-0: var(--raised);
   --stock-1: var(--stock);
@@ -188,14 +232,20 @@ html.dark {
   --ink-1: var(--graphite);
   --ink-2: var(--graphite);
 
+  --brand: var(--blue);
+  --brand-ink: var(--blue-ink);
+  --brand-wash: var(--blue-tint);
+  --brand-hero: #7aa0ff;
+  --brand-navy: var(--navy);
+
   --color-bg: var(--stock-1);
   --color-surface: var(--stock-0);
   --color-surface-alt: var(--stock-2);
   --color-border: var(--rule);
   --color-text: var(--ink-0);
   --color-text-muted: var(--ink-2);
-  --color-text-inverse: #14181c;
-  --color-brand-tint: rgba(127, 163, 245, 0.18);
+  --color-text-inverse: var(--on-navy);
+  --color-brand-tint: var(--blue-tint);
   --chart-grid: var(--rule);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
