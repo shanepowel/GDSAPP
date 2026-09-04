@@ -259,7 +259,7 @@ export const DEMO_POOL: readonly DemoPersonDef[] = [
   },
 ];
 
-export const DEMO_VACANCY_NAME = 'Vacancy — Developer';
+export const DEMO_VACANCY_NAME = 'Vacancy: Developer';
 
 export const DEMO_EXTRA_ENGAGEMENTS = [
   {

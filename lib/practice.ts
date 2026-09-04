@@ -4,6 +4,7 @@ import {
   MATURITY_LABELS,
   RIGOUR_METRIC_TARGETS,
 } from '@/lib/playbook/keel';
+import type { RigourSignalType } from '@/lib/scoring/fit';
 
 export const PILLARS = [
   {
@@ -33,17 +34,22 @@ export const PILLARS = [
   },
 ] as const;
 
-export const CEREMONIES = [
-  { name: 'Backlog refinement', cadence: 'Weekly', emits: 'Ready items with named NFRs', signal: 'nfr planning' },
-  { name: 'Sprint planning', cadence: 'Fortnightly', emits: 'Goal, scope, capacity position', signal: 'capacity discipline' },
+export const CEREMONIES: ReadonlyArray<{
+  name: string;
+  cadence: string;
+  emits: string;
+  signal: RigourSignalType | null;
+}> = [
+  { name: 'Backlog refinement', cadence: 'Weekly', emits: 'Ready items with named NFRs', signal: 'nfr_planning' },
+  { name: 'Sprint planning', cadence: 'Fortnightly', emits: 'Goal, scope, capacity position', signal: 'capacity_discipline' },
   { name: 'Daily standup', cadence: 'Daily', emits: 'Blocker log', signal: null },
-  { name: 'Spike close-out', cadence: 'On completion', emits: 'Decision record', signal: 'spike discipline' },
-  { name: 'Architecture decision', cadence: 'On decision', emits: 'ADR', signal: 'handover quality' },
-  { name: 'Show and tell', cadence: 'Fortnightly', emits: 'Working software, attendance', signal: 'assurance participation' },
+  { name: 'Spike close-out', cadence: 'On completion', emits: 'Decision record', signal: 'spike_discipline' },
+  { name: 'Architecture decision', cadence: 'On decision', emits: 'ADR', signal: 'handover_quality' },
+  { name: 'Show and tell', cadence: 'Fortnightly', emits: 'Working software, attendance', signal: 'assurance_participation' },
   { name: 'Retrospective', cadence: 'Fortnightly', emits: 'Actions with owners', signal: null },
-  { name: 'Phase close', cadence: 'Per phase', emits: 'Evidence pack, assembled not authored', signal: 'handover quality' },
+  { name: 'Phase close', cadence: 'Per phase', emits: 'Evidence pack, assembled not authored', signal: 'handover_quality' },
   { name: 'Delivery Compass review', cadence: 'Quarterly', emits: 'Metric trend', signal: null },
-] as const;
+];
 
 export const MATURITY = [
   {

@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
+import { DATUM_LINE } from '@/lib/product.config';
 import {
   FIT_SCORING_VERSION,
   RIGOUR_BOUNDS,
@@ -203,5 +204,29 @@ describe('FIT_SCORING_VERSION', () => {
   it('is stable for cache hashing', () => {
     expect(FIT_SCORING_VERSION).toBe('fit-1.0.0');
     expect(createHash('sha256').update(FIT_SCORING_VERSION).digest('hex')).toHaveLength(64);
+  });
+
+  it('uses the product datum line', () => {
+    expect(VIABILITY_THRESHOLD).toBe(DATUM_LINE);
+    expect(DATUM_LINE).toBe(0.6);
+  });
+});
+
+describe('ceremony of origin', () => {
+  it('records the ceremony on each rigour contribution', () => {
+    const result = computeFit(
+      baseInput({
+        rigourSignals: [
+          {
+            type: 'nfr_planning',
+            value: 0.5,
+            provenance: 'asserted',
+            observedAtDaysAgo: 10,
+            ceremony: 'Backlog refinement',
+          },
+        ],
+      }),
+    );
+    expect(result.breakdown.rigourContributions[0]?.ceremony).toBe('Backlog refinement');
   });
 });

@@ -1,13 +1,15 @@
 /**
- * Team Fit scoring — pure function.
+ * Team Fit scoring: pure function.
  * No I/O, no clock, no randomness, no imports from Prisma, next, or the network.
  * Anything time-dependent is passed in already computed by the caller.
  */
 
+import { DATUM_LINE } from '@/lib/product.config';
+
 export const FIT_SCORING_VERSION = 'fit-1.0.0';
 
-/** The datum. Read by the UI so the rule and the maths cannot drift apart. */
-export const VIABILITY_THRESHOLD = 0.6;
+/** The datum. Same value as product.config so the rule and the maths cannot drift apart. */
+export const VIABILITY_THRESHOLD = DATUM_LINE;
 
 export const BANDS = { strong: 0.8, viable: 0.6, stretch: 0.4 } as const;
 
@@ -72,6 +74,7 @@ export interface FitInput {
     value: number;
     provenance: SignalProvenance;
     observedAtDaysAgo: number;
+    ceremony?: string | null;
   }>;
 }
 
@@ -90,6 +93,7 @@ export interface RigourContribution {
   recencyWeight: number;
   contribution: number;
   provenance: SignalProvenance;
+  ceremony: string | null;
 }
 
 export interface FitBreakdown {
@@ -194,6 +198,7 @@ export function computeFit(input: FitInput): FitResult {
         recencyWeight,
         contribution: value * recencyWeight,
         provenance: signal.provenance,
+        ceremony: signal.ceremony ?? null,
       });
     }
 

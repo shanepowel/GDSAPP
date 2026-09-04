@@ -9,6 +9,7 @@ import {
   DEMO_VACANCY_NAME,
   demoSkillLabel,
 } from '@/lib/demo/pool';
+import { ceremonyForSignal } from '@/lib/bridge/gds';
 
 const ARCHETYPE_SLUGS = [
   'discovery-squad',
@@ -176,6 +177,7 @@ async function seedAssertedRigour(
     provenance: 'asserted';
     value: number;
     note: string;
+    ceremony: string | null;
     observedAt: Date;
     confirmedByUserId: string;
   }> = [];
@@ -185,6 +187,7 @@ async function seedAssertedRigour(
     const designId = opts.designIds.get(person.email);
     for (const signal of person.rigour) {
       const note = `${DEMO_SIGNAL_NOTE} ${signal.note}`;
+      const ceremony = ceremonyForSignal(signal.type);
       if (designId) {
         rows.push({
           orgId: opts.orgId,
@@ -194,6 +197,7 @@ async function seedAssertedRigour(
           provenance: 'asserted',
           value: signal.value,
           note,
+          ceremony,
           observedAt,
           confirmedByUserId: opts.adminUserId,
         });
@@ -209,6 +213,7 @@ async function seedAssertedRigour(
           provenance: 'asserted',
           value: signal.value,
           note,
+          ceremony,
           observedAt,
           confirmedByUserId: opts.adminUserId,
         });

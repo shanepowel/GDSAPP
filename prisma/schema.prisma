@@ -923,6 +923,8 @@ model RigourSignal {
   value             Float
   evidenceId        String?
   note              String?      @db.Text
+  /// Ceremony that emitted this signal, e.g. "Backlog refinement"
+  ceremony          String?
   observedAt        DateTime
   confirmedByUserId String?
   createdAt         DateTime     @default(now())

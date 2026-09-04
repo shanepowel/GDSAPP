@@ -1,14 +1,17 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 import {
   FIT_SCORING_VERSION,
+  VIABILITY_THRESHOLD,
   classifyGap,
   computeFit,
   type FitBand,
   type FitBreakdown,
   type FitResult,
   type RoleCriticality,
+  type RigourSignalType,
   type SkillLevel,
 } from '@/lib/scoring/fit';
+import { ceremonyForSignal } from '@/lib/bridge/gds';
 import { fitInputsHash } from '@/lib/team-fit/hash';
 import { refreshDerivedRigourSignals } from '@/lib/team-fit/derive-rigour';
 
@@ -130,10 +133,11 @@ export async function recomputeTeamFit(
           availableFte,
         },
         rigourSignals: (signalsByPerson.get(person.id) ?? []).map((s) => ({
-          type: s.type as 'sustained_assignment',
+          type: s.type as RigourSignalType,
           value: s.value,
           provenance: s.provenance as 'derived',
           observedAtDaysAgo: daysAgo(asOf, s.observedAt),
+          ceremony: s.ceremony ?? ceremonyForSignal(s.type as RigourSignalType),
         })),
       };
 
@@ -193,10 +197,10 @@ export async function recomputeTeamFit(
         bestSkill = result.skillScore;
         bestResult = result;
       }
-      if (result.breakdown.capacityShortfall == null && result.compositeScore >= 0.6) {
+      if (result.breakdown.capacityShortfall == null && result.compositeScore >= VIABILITY_THRESHOLD) {
         viableWithCapacity = true;
       }
-      if (result.compositeScore >= 0.6) {
+      if (result.compositeScore >= VIABILITY_THRESHOLD) {
         bestWithoutCapacity =
           bestWithoutCapacity == null
             ? result.compositeScore
@@ -207,7 +211,7 @@ export async function recomputeTeamFit(
     const capacityOnly =
       !viableWithCapacity &&
       bestWithoutCapacity != null &&
-      bestWithoutCapacity >= 0.6 &&
+      bestWithoutCapacity >= VIABILITY_THRESHOLD &&
       (bestComposite == null || bestComposite >= 0.4);
 
     roleBest.push({
@@ -251,7 +255,7 @@ export async function recomputeTeamFit(
         ? 'gap'
         : row.bestComposite >= 0.8
           ? 'strong'
-          : row.bestComposite >= 0.6
+          : row.bestComposite >= VIABILITY_THRESHOLD
             ? 'viable'
             : row.bestComposite >= 0.4
               ? 'stretch'

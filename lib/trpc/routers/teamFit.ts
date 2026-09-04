@@ -431,7 +431,15 @@ export const teamFitRouter = router({
   orgRigour: protectedProcedure.query(async ({ ctx }) => {
     return ctx.prisma.rigourSignal.findMany({
       where: { orgId: ctx.orgId },
-      select: { personId: true, type: true, value: true, provenance: true, note: true, observedAt: true },
+      select: {
+        personId: true,
+        type: true,
+        value: true,
+        provenance: true,
+        note: true,
+        ceremony: true,
+        observedAt: true,
+      },
       orderBy: { observedAt: 'desc' },
     });
   }),
