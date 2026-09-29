@@ -106,6 +106,7 @@ export const copyCy: Copy = {
     previous: 'Blaenorol: {label}',
     ceremonies: 'Seremonïau',
     roles: 'Rolau',
+    components: 'Llyfrgell cydrannau',
     stepper: 'Cam {current} o {total}',
   },
 
@@ -247,6 +248,55 @@ export const copyCy: Copy = {
     readyTitle: 'Diffiniad o barod',
     doneTitle: 'Diffiniad o wneud',
     keelNumbers: 'Isafswm rôl graidd {fte} FTE · capasiti {split}',
+  },
+
+  library: {
+    title: 'Llyfrgell cydrannau',
+    lede: 'Un raddfa maint ac un set o reolyddion. Mae pob canllaw gweithredu yn dechrau o angen defnyddiwr, yna’n nodi pryd i ddefnyddio’r gydran, sut y caiff ei maint, a pha gam adeiladu y mae’n perthyn iddo. Yr egwyddorion yw egwyddorion dylunio Gwasanaeth Digidol y Llywodraeth.',
+    englishNote:
+      'Mae testun y canllaw yn Saesneg, yr un iaith â’r fanyleb adeiladu. Mae enwau’r egwyddorion ar y dudalen hon yn Gymraeg.',
+    principlesTitle: 'Egwyddorion dylunio',
+    principlesLede:
+      'Nid yw cydran yn orffenedig nes bod ei chanllaw yn dweud pa egwyddor y mae’n ei gwasanaethu a sut mae Assemble yn ei chymhwyso.',
+    scaleTitle: 'Graddfa maint',
+    scaleLede:
+      'Mae bwlch, padin a mewnosodiad yn derbyn y camau hyn yn unig. Mae rheolyddion cynradd yn 44px o daldra. Y targed lleiaf yw 24px.',
+    typeTitle: 'Rolau teip',
+    typeLede: 'Rolau, nid meintiau mympwyol. Mae rhifolion yn y rolau mynegai, cyfeirnod a metadata yn dabiol.',
+    typeRole: '{role} · {px}px',
+    componentsTitle: 'Cydrannau a chanllawiau gweithredu',
+    componentsLede: 'Yr enghraifft yw’r gydran. Y nodiadau yw’r rheol adeiladu.',
+    buildTitle: 'Trefn adeiladu',
+    buildLede:
+      'Wedi’i gymryd o’r daflen adeiladu. Mae cam yn enwi’r darnau llyfrgell y mae’n dibynnu arnynt a’r egwyddor sy’n dweud pryd mae’n barod.',
+    userNeed: 'Angen y defnyddiwr',
+    whenToUse: 'Pryd i’w ddefnyddio',
+    whenNotToUse: 'Pryd i beidio â’i ddefnyddio',
+    howItWorks: 'Sut mae’n gweithio',
+    sizing: 'Maint',
+    accessibility: 'Hygyrchedd',
+    principleLabel: 'Egwyddorion',
+    buildStep: 'Cam adeiladu',
+    example: 'Enghraifft',
+    applies: 'Sut mae Assemble yn ei gymhwyso',
+    standardPoint: 'Pwynt Safon Gwasanaeth {points}',
+    standardPoints: 'Pwyntiau Safon Gwasanaeth {points}',
+    step: 'Cam {order}',
+    stepHeading: 'Cam',
+    dependsOn: 'Yn dibynnu ar',
+    doneWhen: 'Yn barod pan',
+    none: 'Dim',
+    spaceLabel: '{px}px',
+    samplePrimary: 'Mae ffeithiau cysylltiedig yn rhannu un bwlch fertigol.',
+    sampleSecondary: 'Mae label yn eistedd yn nes nag adran.',
+    sampleMeta: 'NRW-DISC-01',
+    sampleHeading: 'Pennawd adran',
+    sampleAction: 'Cofnodi dyfarniad',
+    sampleSecondaryAction: 'Canslo',
+    exampleLabel: 'Enw’r rôl',
+    exampleHint: 'Yr enw y bydd y panel yn ei weld ar y sgwad.',
+    exampleError: 'Rhowch enw rôl. Ni ellir sgorio rôl wag.',
+    showError: 'Dangos y cyflwr gwall',
   },
 
   people: {
@@ -817,6 +867,7 @@ export const copyCy: Copy = {
     signOut: 'Allgofnodi',
     ceremony: 'Seremoni',
     gdsBridge: 'GDS: pwyntiau {points}',
+    skipToContent: 'Neidio i’r prif gynnwys',
   },
 
   wizard: {

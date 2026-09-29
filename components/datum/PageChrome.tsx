@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Copy } from '@/lib/copy';
+import { ButtonLink } from '@/components/library/Button';
 
 export function PageHeader({
   eyebrow,
@@ -24,15 +25,8 @@ export function PageHeader({
   );
 }
 
-const inkButtonClass =
-  'inline-flex min-h-11 items-center rounded-[var(--radius)] bg-[var(--blue)] px-4 py-2 text-sm font-medium text-[var(--on-navy)] hover:bg-[var(--blue-ink)]';
-
 export function InkButton({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link href={href} className={inkButtonClass}>
-      {children}
-    </Link>
-  );
+  return <ButtonLink href={href}>{children}</ButtonLink>;
 }
 
 export function EmptyState({
@@ -54,9 +48,9 @@ export function EmptyState({
       <p className="font-[family-name:var(--font-cond)] text-[17px] font-semibold">{title}</p>
       <p className="mt-2 text-[15px] text-[color:var(--graphite)]">{why}</p>
       {actionHref && actionLabel ? (
-        <Link href={actionHref} className={`mt-4 ${inkButtonClass}`}>
+        <ButtonLink href={actionHref} className="mt-4">
           {actionLabel}
-        </Link>
+        </ButtonLink>
       ) : null}
     </div>
   );

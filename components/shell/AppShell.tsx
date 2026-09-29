@@ -11,6 +11,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { ThemeToggle } from '@/components/product/ThemeToggle';
 import { DatumShellProvider } from '@/components/shell/datum-shell-context';
+import { SkipLink } from '@/components/library/SkipLink';
 import { TourBar } from '@/components/shell/TourBar';
 import { TeachToggle } from '@/components/teach/TeachToggle';
 import { DemoBanner } from '@/components/shell/DemoBanner';
@@ -106,6 +107,7 @@ export function DatumAppShell({
   return (
     <DatumShellProvider>
       <div className="grid min-h-screen grid-cols-1 md:grid-cols-[216px_1fr]">
+        <SkipLink>{c.ui.skipToContent}</SkipLink>
         <aside className="sticky top-0 z-20 flex h-auto flex-col border-b border-[color:var(--on-navy-rule)] bg-[var(--navy)] text-[color:var(--on-navy)] md:h-screen md:border-b-0 md:border-r md:border-r-[color:var(--on-navy-rule)]">
           <div className="border-b border-[color:var(--on-navy-rule)] px-5 pb-5 pt-6">
             <Link href="/" className="block">
@@ -152,7 +154,7 @@ export function DatumAppShell({
           </div>
         </aside>
 
-        <main className="min-w-0 bg-[var(--stock)]">
+        <main id="main-content" tabIndex={-1} className="min-w-0 bg-[var(--stock)]">
           <DemoBanner />
           {showStrip && contextEngagement ? (
             <ContextBar

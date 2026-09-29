@@ -98,7 +98,7 @@
   --focus: var(--blue);
   --focus-shadow: var(--navy);
 
-  /* Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 */
+  /* Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48. Components accept these steps only. */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -108,6 +108,40 @@
   --space-8: 48px;
   --space-10: 64px;
   --container-max: 1100px;
+
+  /* Targets. Minimum is WCAG 2.2 AA; control height is the primary action. */
+  --target-min: 24px;
+  --target-control: 44px;
+
+  /* Type roles. Components use these, not ad hoc sizes. */
+  --type-plate-size: 24px;
+  --type-plate-weight: 600;
+  --type-plate-tracking: -0.02em;
+  --type-plate-leading: 1.2;
+  --type-section-size: 17px;
+  --type-section-weight: 600;
+  --type-section-tracking: -0.01em;
+  --type-section-leading: 1.35;
+  --type-body-size: 15px;
+  --type-body-weight: 400;
+  --type-body-tracking: 0;
+  --type-body-leading: 1.55;
+  --type-label-size: 13px;
+  --type-label-weight: 500;
+  --type-label-tracking: 0.01em;
+  --type-label-leading: 1.4;
+  --type-meta-size: 11px;
+  --type-meta-weight: 400;
+  --type-meta-tracking: 0.04em;
+  --type-meta-leading: 1.4;
+  --type-index-size: 40px;
+  --type-index-weight: 500;
+  --type-index-tracking: 0;
+  --type-index-leading: 1;
+  --type-ref-size: 12px;
+  --type-ref-weight: 500;
+  --type-ref-tracking: 0;
+  --type-ref-leading: 1.4;
 
   /* ---- Legacy T&T / app aliases (bridge until screens retokenise) ---- */
   --tt-blue: var(--brand);
