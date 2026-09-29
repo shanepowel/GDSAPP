@@ -15,6 +15,7 @@ const PUBLIC_ROUTES = [
   '/practice/ceremonies',
   '/practice/maturity',
   '/practice/standards',
+  '/practice/components',
   '/sign-in',
   '/accessibility',
   '/ai-use',

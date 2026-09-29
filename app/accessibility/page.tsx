@@ -26,6 +26,13 @@ export default function AccessibilityPage() {
             Authenticated engagement workflows (overview, assess, organise, evidence, assure, report)
             and public pages including sign-in, this statement, AI use, and performance.
           </p>
+          <p className="text-[15px] leading-[1.55] text-ink-1">
+            The{' '}
+            <Link href="/practice/components" className="underline-offset-2 hover:underline">
+              component library
+            </Link>{' '}
+            specifies the shared controls, the skip link, form fields and the sizing scale.
+          </p>
         </section>
 
         <section className="mt-8 space-y-3">

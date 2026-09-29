@@ -124,6 +124,7 @@ export const copy = {
     previous: 'Previous: {label}',
     ceremonies: 'Ceremonies',
     roles: 'Roles',
+    components: 'Component library',
     stepper: 'Stage {current} of {total}',
   },
 
@@ -264,6 +265,55 @@ export const copy = {
     readyTitle: 'Definition of ready',
     doneTitle: 'Definition of done',
     keelNumbers: 'Core role minimum {fte} FTE · capacity {split}',
+  },
+
+  library: {
+    title: 'Component library',
+    lede: 'One sizing scale and one set of controls. Each implementation guide starts from a user need, then states when to use the component, how it is sized, and which build step it belongs to. The principles are the Government Digital Service design principles.',
+    englishNote:
+      'The guide text is in English, the same language as the build specification. Principle names on this page are in Welsh.',
+    principlesTitle: 'Design principles',
+    principlesLede:
+      'A component is not done until its guide says which principle it serves and how Assemble applies it.',
+    scaleTitle: 'Sizing scale',
+    scaleLede:
+      'Gap, padding and inset accept these steps only. Primary controls are 44px tall. The minimum target is 24px.',
+    typeTitle: 'Type roles',
+    typeLede: 'Roles, not arbitrary sizes. Numerals in the index, reference and metadata roles are tabular.',
+    typeRole: '{role} · {px}px',
+    componentsTitle: 'Components and implementation guides',
+    componentsLede: 'The example is the component. The notes are the build rule.',
+    buildTitle: 'Build order',
+    buildLede:
+      'Taken from the build sheet. A step names the library pieces it depends on and the principle that says when it is done.',
+    userNeed: 'User need',
+    whenToUse: 'When to use',
+    whenNotToUse: 'When not to use',
+    howItWorks: 'How it works',
+    sizing: 'Sizing',
+    accessibility: 'Accessibility',
+    principleLabel: 'Principles',
+    buildStep: 'Build step',
+    example: 'Example',
+    applies: 'How Assemble applies it',
+    standardPoint: 'Service Standard point {points}',
+    standardPoints: 'Service Standard points {points}',
+    step: 'Step {order}',
+    stepHeading: 'Step',
+    dependsOn: 'Depends on',
+    doneWhen: 'Done when',
+    none: 'None',
+    spaceLabel: '{px}px',
+    samplePrimary: 'Related facts share one vertical gap.',
+    sampleSecondary: 'A label sits closer than a section.',
+    sampleMeta: 'NRW-DISC-01',
+    sampleHeading: 'Section heading',
+    sampleAction: 'Record judgement',
+    sampleSecondaryAction: 'Cancel',
+    exampleLabel: 'Role name',
+    exampleHint: 'The name the panel will see on the squad.',
+    exampleError: 'Enter a role name. A blank role cannot be scored.',
+    showError: 'Show the error state',
   },
 
   people: {
@@ -832,6 +882,7 @@ export const copy = {
     signOut: 'Sign out',
     ceremony: 'Ceremony',
     gdsBridge: 'GDS: points {points}',
+    skipToContent: 'Skip to main content',
   },
 
   wizard: {
