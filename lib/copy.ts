@@ -333,6 +333,7 @@ export const copy = {
     reportDraftLabel: 'Draft',
     reportStatus: 'Status: {status}.',
     reportMeasures: 'Measures: no measure recorded yet.',
+    reportMeasuresLine: 'Measures: predictability {predictability}, quality {quality}, team health {health}, client satisfaction {satisfaction}.',
     reportProgress: 'Next milestone: {milestone}.',
     reportProgressNone: 'No milestone recorded yet.',
     reportRisks: 'Top risk: {risk}.',

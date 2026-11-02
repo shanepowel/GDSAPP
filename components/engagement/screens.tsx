@@ -118,6 +118,21 @@ function measureTiles(copy: Copy, data: Spine) {
   });
 }
 
+/** Report line for the Compass readings, or the "none recorded" line when there are none. */
+function reportMeasures(copy: Copy, data: Spine): string {
+  const m = data.measures;
+  if ([m.predictability, m.quality, m.health, m.satisfaction].every((item) => item.latest == null)) {
+    return copy.spine.reportMeasures;
+  }
+  const show = (value: number | null, format: (v: number) => string) => (value == null ? copy.spine.missing : format(value));
+  return fillCopy(copy.spine.reportMeasuresLine, {
+    predictability: show(m.predictability.latest, (v) => `${Math.round(v)}%`),
+    quality: show(m.quality.latest, (v) => `${v.toFixed(1)}%`),
+    health: show(m.health.latest, (v) => v.toFixed(1)),
+    satisfaction: show(m.satisfaction.latest, (v) => v.toFixed(1)),
+  });
+}
+
 /** Engagement header, lifecycle and tabs. Shared by every engagement screen. */
 export function SpineFrame({ id, children }: { id: string; children: ReactNode }) {
   const { copy, data } = useSpine(id);
@@ -683,7 +698,7 @@ export function CompassScreen({ id }: { id: string }) {
               onClick={() => {
                 const lines = [
                   fillCopy(copy.spine.reportStatus, { status: statusText }),
-                  copy.spine.reportMeasures,
+                  reportMeasures(copy, data),
                   data.milestone ? fillCopy(copy.spine.reportProgress, { milestone: data.milestone }) : copy.spine.reportProgressNone,
                   data.raid[0]
                     ? fillCopy(copy.spine.reportRisks, { risk: storedTitle(data.raid[0].title, copy.spine.checks, copy.spine.poRaid) })

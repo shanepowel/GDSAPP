@@ -315,6 +315,7 @@ export const copyCy: Copy = {
     reportDraftLabel: 'Drafft',
     reportStatus: 'Statws: {status}.',
     reportMeasures: 'Mesurau: dim mesur wedi’i gofnodi eto.',
+    reportMeasuresLine: 'Mesurau: rhagweladwyedd {predictability}, ansawdd {quality}, iechyd y tîm {health}, boddhad y cleient {satisfaction}.',
     reportProgress: 'Carreg filltir nesaf: {milestone}.',
     reportProgressNone: 'Dim carreg filltir wedi’i chofnodi eto.',
     reportRisks: 'Prif risg: {risk}.',
