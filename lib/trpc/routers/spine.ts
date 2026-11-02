@@ -28,7 +28,8 @@ const spineInclude = {
   raidItems: { orderBy: { createdAt: 'desc' as const } },
   changeRequests: { orderBy: { createdAt: 'desc' as const } },
   decisionRecords: { orderBy: { decidedOn: 'desc' as const } },
-  measures: { orderBy: { period: 'asc' as const }, take: 12 },
+  // Newest twelve months; measureSummary puts them back in date order.
+  measures: { orderBy: { period: 'desc' as const }, take: 12 },
 } satisfies Prisma.EngagementInclude;
 
 type SpineRecord = Prisma.EngagementGetPayload<{ include: typeof spineInclude }>;
@@ -65,7 +66,7 @@ type MeasureKey = 'predictability' | 'quality' | 'health' | 'satisfaction';
 
 /** Latest reading and trend for each Compass measure, judged against the configured target. */
 function measureSummary(engagement: SpineRecord, targets: Targets) {
-  const rows = engagement.measures;
+  const rows = [...engagement.measures].sort((a, b) => a.period.getTime() - b.period.getTime());
   const pick = (key: MeasureKey) =>
     rows
       .map((row) =>
@@ -83,7 +84,7 @@ function measureSummary(engagement: SpineRecord, targets: Targets) {
     const latest = trend.length ? trend[trend.length - 1] : null;
     const target = Number(targets[key]);
     const onTarget =
-      latest == null || !Number.isFinite(target) ? null : key === 'quality' ? latest <= target : latest >= target;
+      latest == null || !Number.isFinite(target) ? null : key === 'quality' ? latest < target : latest >= target;
     return { latest, trend, onTarget };
   };
   return {

@@ -56,3 +56,31 @@
   letter-spacing: revert-layer;
   color: revert-layer;
 }
+
+/* Dark mode: brand as text, line or stroke uses the lighter --asm-brand-text so it stays
+   readable on dark surfaces. Brand fills (bg-asm-brand) are unchanged. */
+html.dark .text-asm-brand,
+html.dark .hover\:text-asm-brand:hover,
+html.dark .group:hover .group-hover\:text-asm-brand {
+  color: var(--asm-brand-text);
+}
+html.dark .border-asm-brand {
+  border-color: var(--asm-brand-text);
+}
+html.dark .stroke-asm-brand {
+  stroke: var(--asm-brand-text);
+}
+html.dark .fill-asm-brand {
+  fill: var(--asm-brand-text);
+}
+html.dark .accent-asm-brand {
+  accent-color: var(--asm-brand-text);
+}
+/* Text that sits on a brand fill must stay on-brand, not the lighter text colour. */
+html.dark .bg-asm-brand .text-asm-brand,
+html.dark .bg-asm-brand.text-asm-brand {
+  color: var(--asm-brand);
+}
+html.dark .bg-asm-brand .hover\:bg-asm-brand-wash:hover {
+  background-color: var(--asm-brand-tint);
+}

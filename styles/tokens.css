@@ -334,4 +334,33 @@ html.dark {
   --asm-radius-lg: 14px;
   --asm-shadow-pop: 0 30px 60px rgb(0 0 6 / 0.35);
   --asm-focus: #1e4479;
+  /* Brand used as text, lines and strokes. Same as --asm-brand in light mode. */
+  --asm-brand-text: #1e4479;
+}
+
+/* Library palette in dark mode. Brand fills stay navy (white text keeps 9.7:1);
+   brand used as text, lines and strokes switches to --asm-brand-text via library-theme.css. */
+html.dark {
+  --asm-brand-text: #8fb2e6;
+  --asm-brand-soft: #5b80b5;
+  --asm-brand-wash: #1a2a40;
+  --asm-brand-wash-2: #22344d;
+  --asm-canvas: #0e1218;
+  --asm-surface: #161c24;
+  --asm-sunk: #1c232c;
+  --asm-line: #2a333e;
+  --asm-line-soft: #222a34;
+  --asm-line-strong: #36414e;
+  --asm-ink: #e8edf3;
+  --asm-ink-2: #b8c3cf;
+  --asm-ink-3: #9aa6b3;
+  --asm-ok-ink: #7ee0a8;
+  --asm-ok-wash: #123526;
+  --asm-warn-ink: #f5c46b;
+  --asm-warn-wash: #3a2a0c;
+  --asm-warn-wash-2: #2a2010;
+  --asm-warn-line: #6b4e18;
+  --asm-risk-ink: #f5a39b;
+  --asm-risk-wash: #3d1512;
+  --asm-focus: #8fb2e6;
 }
