@@ -16,11 +16,17 @@ async function main() {
       console.log('[seed:spine] Demo engagements not found. Run npm run seed:demo first. Skipping.');
       return;
     }
-    const [checklist, measures] = await Promise.all([
-      prisma.engagementChecklistItem.count({ where: { engagementId: { in: DEMO_IDS } } }),
-      prisma.engagementMeasure.count({ where: { engagementId: { in: DEMO_IDS } } }),
+    // seedSpineDemo replaces every one of these tables, so skip if any of them has a row.
+    const where = { engagementId: { in: DEMO_IDS } };
+    const counts = await Promise.all([
+      prisma.engagementChecklistItem.count({ where }),
+      prisma.engagementMilestone.count({ where }),
+      prisma.raidItem.count({ where }),
+      prisma.changeRequest.count({ where }),
+      prisma.decisionRecord.count({ where }),
+      prisma.engagementMeasure.count({ where }),
     ]);
-    if (checklist > 0 || measures > 0) {
+    if (counts.some((n) => n > 0)) {
       console.log('[seed:spine] Demo engagements already have spine data. Skipping.');
       return;
     }
