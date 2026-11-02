@@ -9,8 +9,10 @@ import {
 } from '../lib/assurance/scoring-load';
 import { seedDemoPool } from '../lib/demo/seed-pool';
 import { ensureDemoReader } from '../lib/demo/reader';
+import { seedSpineDemo } from './seed-spine-demo';
 
 const prisma = new PrismaClient();
+
 
 async function main() {
   ensureFixtureCsvs();
@@ -294,6 +296,8 @@ async function main() {
       update: {},
     });
   }
+
+  await seedSpineDemo(prisma);
 
   const analysis = await runAndPersistAnalysis(requirement.id);
   if (analysis) {

@@ -22,7 +22,7 @@ export function AppShell({
           <h1 className="font-display text-2xl font-semibold text-[color:var(--ink)]">{title}</h1>
         ) : null}
         {datum && !hideTitle ? (
-          <h1 className="mb-4 font-[family-name:var(--font-cond)] text-[30px] font-bold leading-tight">
+          <h1 className="mb-4 text-[30px] font-bold text-asm-brand leading-tight">
             {title}
           </h1>
         ) : null}

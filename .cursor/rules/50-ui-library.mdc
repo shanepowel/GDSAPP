@@ -1,0 +1,13 @@
+---
+description: Building or changing screens. Use the shared component library and the T&T theme.
+globs: app/**/*.tsx, components/**/*.tsx
+---
+
+- Build screens from `@/components/library`. Do not create one-off buttons, inputs, cards or status pills.
+- Colours come from the `asm-*` Tailwind utilities (see `styles/library-theme.css`). Never write hex values outside `styles/tokens.css`.
+- Wrap new screens in `asm-root`.
+- Engagement status uses `DeliveryStatus` (glyph + label + wash). Other short states use `Badge` with words.
+- Every string comes from `lib/copy.ts` with a Welsh equivalent in `lib/copy.cy.ts`.
+- Engagement screens read `trpc.spine.get` and invalidate `spine.get` and `spine.board` after mutations.
+- New library components need a guide in `components/library/guides.ts` and an example in `Catalogue.tsx`.
+- Reference: `docs/redesign/README.md`.

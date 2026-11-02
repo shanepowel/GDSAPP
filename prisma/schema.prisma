@@ -235,6 +235,7 @@ model Engagement {
   raidItems              RaidItem[]
   changeRequests         ChangeRequest[]
   decisionRecords        DecisionRecord[]
+  measures               EngagementMeasure[]
 
   @@index([orgId])
   @@index([reference])
@@ -1180,4 +1181,27 @@ model DecisionRecord {
 
   @@index([engagementId])
   @@map("decision_records")
+}
+
+/// Monthly Delivery Compass reading for an engagement. One row per engagement per month.
+/// Values are nullable so a month can be recorded before every measure is in.
+model EngagementMeasure {
+  id                 String     @id @default(cuid())
+  engagementId       String
+  /// First day of the month, UTC.
+  period             DateTime
+  /// Percentage of sprint goals met over the last six sprints.
+  predictability     Float?
+  /// Escaped defects per sprint. Lower is better.
+  quality            Float?
+  /// Team health average on a five-point scale.
+  teamHealth         Float?
+  /// Client satisfaction on a five-point scale.
+  clientSatisfaction Float?
+  createdAt          DateTime   @default(now())
+  engagement         Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@unique([engagementId, period])
+  @@index([engagementId])
+  @@map("engagement_measures")
 }

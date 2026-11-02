@@ -32,7 +32,7 @@ function SquadGapsPageInner() {
       </p>
       <PageHeader eyebrow={copy.squads.eyebrow} title={copy.squads.gapsTitle} />
       {(gaps ?? []).length === 0 ? (
-        <p className="text-[color:var(--graphite)]">{copy.empty.noGaps}</p>
+        <p className="text-asm-ink-3">{copy.empty.noGaps}</p>
       ) : (
         <div className="sheet overflow-x-auto">
           <table>
@@ -58,7 +58,7 @@ function SquadGapsPageInner() {
                     <td>
                       <div>{finding}</div>
                       {scoreNote ? (
-                        <div className="font-data text-[10px] text-[color:var(--graphite)]">{scoreNote}</div>
+                        <div className="font-data text-[10px] text-asm-ink-3">{scoreNote}</div>
                       ) : null}
                     </td>
                     <td>{gapMoveLabel(copy, g.recommendation)}</td>

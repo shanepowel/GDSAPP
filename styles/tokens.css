@@ -2,15 +2,15 @@
   /* ---- Assemble design tokens. Hex lives only in this file. ---- */
 
   /* Turner & Townsend blues (matched to turnerandtownsend.com). */
-  --navy: #0a2647;
-  --blue: #1a5cff;
-  --blue-ink: #123fb8;
-  --blue-tint: #e9f0ff;
-  --paper: #f5f7fa;
+  --navy: #1e4479; /* T&T corporate blue: sidebar, headings */
+  --blue: #1e4479; /* T&T corporate blue: primary actions */
+  --blue-ink: #16335c;
+  --blue-tint: #eef3f9;
+  --paper: #f6f8fa;
   --card: #ffffff;
-  --ink: #14202b;
-  --mute: #5b6b7a;
-  --rule: #d7dee6;
+  --ink: #1b1f24;
+  --mute: #5b6570;
+  --rule: #e3e8ee;
   --ok: #1b7f5a;
   --ok-tint: #e4f4ec;
   --warn: #9a5b00;
@@ -20,7 +20,7 @@
 
   --heading: var(--navy);
   --on-navy: #ffffff;
-  --on-navy-mute: #b8c7e0;
+  --on-navy-mute: #c9d8ec;
   --on-navy-rule: rgba(255, 255, 255, 0.14);
   --on-navy-hover: rgba(255, 255, 255, 0.06);
   --on-navy-active: rgba(255, 255, 255, 0.1);
@@ -77,7 +77,7 @@
   --brand: var(--blue);
   --brand-ink: var(--blue-ink);
   --brand-wash: var(--blue-tint);
-  --brand-hero: #4d7cff;
+  --brand-hero: #3d6aa8;
   --brand-navy: var(--navy);
 
   /* Type (faces applied via next/font on <body>) */
@@ -89,8 +89,8 @@
   --font-mono: var(--font-data);
 
   /* Geometry: 6px controls, 8px panels */
-  --radius: 6px;
-  --radius-lg: 8px;
+  --radius: 10px;
+  --radius-lg: 14px;
   --rule-w: 1px;
   --plate-w: 2px;
 
@@ -229,7 +229,7 @@ html.dark {
 
   --heading: var(--ink);
   --on-navy: #ffffff;
-  --on-navy-mute: #b8c7e0;
+  --on-navy-mute: #c9d8ec;
   --on-navy-rule: rgba(255, 255, 255, 0.14);
   --on-navy-hover: rgba(255, 255, 255, 0.06);
   --on-navy-active: rgba(255, 255, 255, 0.1);
@@ -285,4 +285,82 @@ html.dark {
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --tt-surface-alt: var(--stock-2);
   --tt-border: var(--rule);
+}
+
+:root {
+  /* ---- Library palette (asm-*). Tailwind utilities: bg-asm-brand, text-asm-ink... ---- */
+  /* Brand */
+  --asm-brand: #1e4479;
+  --asm-brand-hover: #16335c;
+  --asm-brand-deep: #0f2647;
+  --asm-brand-mid: #3d6aa8;
+  --asm-brand-soft: #8faad1;
+  --asm-brand-tint: #b7cbe8;
+  --asm-brand-wash: #eef3f9;
+  --asm-brand-wash-2: #e3ebf5;
+  --asm-black: #000006;
+  --asm-white: #ffffff;
+
+  /* Surfaces and text */
+  --asm-canvas: #f6f8fa;
+  --asm-surface: #ffffff;
+  --asm-sunk: #f0f3f6;
+  --asm-line: #e3e8ee;
+  --asm-line-soft: #eef1f4;
+  --asm-line-strong: #d5dce4;
+  --asm-ink: #1b1f24;
+  --asm-ink-2: #44505c;
+  --asm-ink-3: #5b6570;
+  --asm-on-brand: #ffffff;
+  --asm-on-brand-2: #c9d8ec;
+  --asm-on-brand-3: #b9cce4;
+  --asm-on-brand-line: #6f8fbf;
+
+  /* Engagement status: on track / at risk / off track */
+  --asm-ok: #1e7b4c;
+  --asm-ok-ink: #155c38;
+  --asm-ok-wash: #e6f4ec;
+  --asm-warn: #b26b00;
+  --asm-warn-ink: #8a5300;
+  --asm-warn-wash: #fff4e0;
+  --asm-warn-wash-2: #fffaf0;
+  --asm-warn-line: #f2d7a6;
+  --asm-risk: #b42318;
+  --asm-risk-ink: #8f1d14;
+  --asm-risk-wash: #fbe9e7;
+
+  /* Shape */
+  --asm-radius: 10px;
+  --asm-radius-lg: 14px;
+  --asm-shadow-pop: 0 30px 60px rgb(0 0 6 / 0.35);
+  --asm-focus: #1e4479;
+  /* Brand used as text, lines and strokes. Same as --asm-brand in light mode. */
+  --asm-brand-text: #1e4479;
+}
+
+/* Library palette in dark mode. Brand fills stay navy (white text keeps 9.7:1);
+   brand used as text, lines and strokes switches to --asm-brand-text via library-theme.css. */
+html.dark {
+  --asm-brand-text: #8fb2e6;
+  --asm-brand-soft: #5b80b5;
+  --asm-brand-wash: #1a2a40;
+  --asm-brand-wash-2: #22344d;
+  --asm-canvas: #0e1218;
+  --asm-surface: #161c24;
+  --asm-sunk: #1c232c;
+  --asm-line: #2a333e;
+  --asm-line-soft: #222a34;
+  --asm-line-strong: #36414e;
+  --asm-ink: #e8edf3;
+  --asm-ink-2: #b8c3cf;
+  --asm-ink-3: #9aa6b3;
+  --asm-ok-ink: #7ee0a8;
+  --asm-ok-wash: #123526;
+  --asm-warn-ink: #f5c46b;
+  --asm-warn-wash: #3a2a0c;
+  --asm-warn-wash-2: #2a2010;
+  --asm-warn-line: #6b4e18;
+  --asm-risk-ink: #f5a39b;
+  --asm-risk-wash: #3d1512;
+  --asm-focus: #8fb2e6;
 }

@@ -13,7 +13,7 @@ import { getCopy } from '@/lib/copy-i18n';
 import { fitFromStored, type FitBreakdown } from '@/lib/scoring/fit';
 import { trpc } from '@/lib/trpc/client';
 import { Button } from '@/components/ui/Button';
-import { EngagementTabs } from '@/components/engagement/shared';
+import { SpineFrame } from '@/components/engagement/screens';
 
 export default function SquadFitPage() {
   return (
@@ -45,8 +45,7 @@ function SquadFitPageInner() {
   const hasRows = (data?.rows ?? []).length > 0;
 
   return (
-    <>
-      <EngagementTabs id={id} copy={copy} />
+    <SpineFrame id={id}>
       <PageHeader
         eyebrow={copy.walkthrough.eyebrow}
         title={copy.walkthrough.archetypeName}
@@ -60,12 +59,12 @@ function SquadFitPageInner() {
       </TeachPanel>
       <WalkthroughSlot force />
 
-      <h2 className="mb-3 mt-10 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-3 mt-10 text-lg font-bold text-asm-brand">
         {copy.walkthrough.thisEngagement}
       </h2>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <label className="text-sm">
-          <span className="mb-1 block font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
+          <span className="mb-1 block text-[13px] font-semibold text-asm-ink-2">
             {copy.squads.archetype}
           </span>
           <select
@@ -152,7 +151,7 @@ function SquadFitPageInner() {
                     >
                       <td>
                         <div className="font-semibold">{role.displayTitle}</div>
-                        <div className="font-data text-[10.5px] text-[color:var(--graphite)]">
+                        <div className="font-data text-[10.5px] text-asm-ink-3">
                           {role.minLevel} · {role.fteRequired.toFixed(1)} FTE
                         </div>
                       </td>
@@ -171,7 +170,7 @@ function SquadFitPageInner() {
                           <span className="flag flag-risk ml-2">{copy.squads.capacityFlag}</span>
                         ) : null}
                         {finding ? (
-                          <div className="mt-1 font-data text-[10px] text-[color:var(--graphite)]">
+                          <div className="mt-1 font-data text-[10px] text-asm-ink-3">
                             {finding}
                           </div>
                         ) : null}
@@ -198,13 +197,13 @@ function SquadFitPageInner() {
           </table>
         </div>
       )}
-      <p className="mt-3 text-[12.5px] text-[color:var(--graphite)]">{copy.squads.selectHint}</p>
+      <p className="mt-3 text-[12.5px] text-asm-ink-3">{copy.squads.selectHint}</p>
 
-      <h2 className="mt-10 mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mt-10 mb-3 text-lg font-bold text-asm-brand">
         {copy.squads.gapsTitle}
       </h2>
       {gaps.length === 0 ? (
-        <p className="text-[color:var(--graphite)]">{copy.empty.noGaps}</p>
+        <p className="text-asm-ink-3">{copy.empty.noGaps}</p>
       ) : (
         <div className="sheet overflow-x-auto">
           <table>
@@ -234,7 +233,7 @@ function SquadFitPageInner() {
                     <td>
                       <div>{finding}</div>
                       {scoreNote ? (
-                        <div className="font-data text-[10px] text-[color:var(--graphite)]">{scoreNote}</div>
+                        <div className="font-data text-[10px] text-asm-ink-3">{scoreNote}</div>
                       ) : null}
                     </td>
                     <td>{gapMoveLabel(copy, gap?.recommendation)}</td>
@@ -245,6 +244,6 @@ function SquadFitPageInner() {
           </table>
         </div>
       )}
-    </>
+    </SpineFrame>
   );
 }

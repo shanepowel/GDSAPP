@@ -63,7 +63,7 @@ function SquadRolePageInner() {
 
       <FitLegend copy={copy.legend} />
 
-      <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-3 text-lg font-bold text-asm-brand">
         {copy.walkthrough.rankedHeading}
       </h2>
       {(data?.candidates ?? []).length === 0 ? (
@@ -97,7 +97,7 @@ function SquadRolePageInner() {
                 >
                   <div>
                     <div className="font-semibold">{c.personName}</div>
-                    <div className="font-data text-[10.5px] text-[color:var(--graphite)]">
+                    <div className="font-data text-[10.5px] text-asm-ink-3">
                       {fillCopy(copy.squads.candidateMeta, {
                         skill: fit.skillScore.toFixed(2),
                         rigour: fit.rigourMultiplier.toFixed(2),
@@ -113,7 +113,7 @@ function SquadRolePageInner() {
                 {open ? <FitBreakdownPanel fit={fit} /> : null}
                 {needsOverride ? (
                   <label className="mt-3 block text-sm">
-                    <span className="mb-1 block font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
+                    <span className="mb-1 block text-[13px] font-semibold text-asm-ink-2">
                       {c.band === 'gap' ? copy.bands.gap : copy.bands.stretch}
                     </span>
                     <textarea

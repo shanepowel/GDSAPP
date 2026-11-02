@@ -18,11 +18,11 @@ export function PracticeChapters() {
   return (
     <>
       <section className="border-b border-[color:var(--rule)] pb-8">
-        <p className="eyebrow mb-2 text-[color:var(--graphite)]">{copy.practice.eyebrow}</p>
-        <h1 className="max-w-[22ch] font-[family-name:var(--font-cond)] text-[30px] font-bold leading-[1.12]">
+        <p className="eyebrow mb-2 text-asm-ink-3">{copy.practice.eyebrow}</p>
+        <h1 className="max-w-[22ch] text-[30px] font-bold text-asm-brand leading-[1.12]">
           {copy.practice.looksLikeTitle}
         </h1>
-        <p className="mt-2 max-w-[64ch] text-[15px] text-[color:var(--graphite)]">{copy.practice.looksLikeLede}</p>
+        <p className="mt-2 max-w-[64ch] text-[15px] text-asm-ink-3">{copy.practice.looksLikeLede}</p>
         <p className="mt-4">
           <Link href="/practice/components" className="text-sm underline-offset-2 hover:underline">
             {copy.journey.components}
@@ -31,7 +31,7 @@ export function PracticeChapters() {
       </section>
 
       <section className="py-10">
-        <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+        <h2 className="mb-3 text-lg font-bold text-asm-brand">
           {copy.practice.capacityTitle}
         </h2>
         <FigureFrame
@@ -52,10 +52,10 @@ export function PracticeChapters() {
       </section>
 
       <section className="pb-12">
-        <h2 className="mb-1 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+        <h2 className="mb-1 text-lg font-bold text-asm-brand">
           {copy.practice.ceremoniesTitle}
         </h2>
-        <p className="mb-4 max-w-[62ch] text-[color:var(--graphite)]">{copy.practice.ceremoniesLede}</p>
+        <p className="mb-4 max-w-[62ch] text-asm-ink-3">{copy.practice.ceremoniesLede}</p>
         <p className="mb-4">
           <Link href="/practice/ceremonies" className="text-sm underline-offset-2 hover:underline">
             {copy.journey.ceremonies}
@@ -80,7 +80,7 @@ export function PracticeChapters() {
       </section>
 
       <section className="pb-8">
-        <h2 className="mb-4 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+        <h2 className="mb-4 text-lg font-bold text-asm-brand">
           {copy.practice.maturityTitle}
         </h2>
         <MaturityLadder current={2} />
@@ -109,7 +109,7 @@ export function PillarsTable() {
                 {p.name} <GdsBridgeLabel mapping={PILLAR_BRIDGE[p.name]} />
               </td>
               <td>{p.owns}</td>
-              <td className="text-[color:var(--graphite)]">{p.produces}</td>
+              <td className="text-asm-ink-3">{p.produces}</td>
             </tr>
           ))}
         </tbody>
@@ -182,7 +182,7 @@ export function MaturityLadder({ current }: { current?: number }) {
                 </span>
               ) : null}
             </h3>
-            <p className="text-[color:var(--graphite)]">{m.body}</p>
+            <p className="text-asm-ink-3">{m.body}</p>
           </div>
         </div>
       ))}

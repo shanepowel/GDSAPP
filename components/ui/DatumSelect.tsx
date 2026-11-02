@@ -44,7 +44,7 @@ export function DatumSelect({
 
   return (
     <label className={className} htmlFor={id}>
-      <span className="mb-1 block font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
+      <span className="mb-1 block text-[13px] font-semibold text-asm-ink-2">
         {label}
       </span>
       {select}

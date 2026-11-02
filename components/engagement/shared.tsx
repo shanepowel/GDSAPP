@@ -57,7 +57,7 @@ export function EngagementTabs({ id, copy }: { id: string; copy: Copy }) {
   const pathname = usePathname();
   return (
     <nav aria-label={copy.spine.tabs.label} className="mb-6">
-      <ul className="flex gap-1 overflow-x-auto border-b border-[color:var(--rule)]">
+      <ul className="m-0 flex list-none gap-1 overflow-x-auto border-b border-asm-line-strong p-0">
         {TABS.map((tab) => {
           const href = tab.href(id);
           const active =
@@ -69,12 +69,11 @@ export function EngagementTabs({ id, copy }: { id: string; copy: Copy }) {
               <Link
                 href={href}
                 aria-current={active ? 'page' : undefined}
-                className="inline-flex min-h-11 items-center px-3 text-[14px]"
-                style={{
-                  color: 'var(--ink)',
-                  fontWeight: active ? 600 : 400,
-                  borderBottom: active ? '3px solid var(--brand)' : '3px solid transparent',
-                }}
+                className={
+                  active
+                    ? '-mb-px inline-flex min-h-11 items-center whitespace-nowrap border-b-2 border-asm-brand px-4 text-[15px] font-semibold text-asm-brand no-underline'
+                    : '-mb-px inline-flex min-h-11 items-center whitespace-nowrap border-b-2 border-transparent px-4 text-[15px] text-asm-ink-2 no-underline hover:text-asm-brand'
+                }
               >
                 {copy.spine.tabs[tab.key]}
               </Link>

@@ -113,7 +113,7 @@ export function FitBreakdownPanel({ fit }: { fit: FitResult }) {
   return (
     <div className="mt-3 space-y-3 border-t border-[color:var(--rule)] pt-3 text-sm">
       <div>
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-[color:var(--graphite)]">
+        <h4 className="text-xs font-semibold uppercase tracking-wide text-asm-ink-3">
           {copy.people.skills}
         </h4>
         <ul className="mt-1 space-y-1">
@@ -121,7 +121,7 @@ export function FitBreakdownPanel({ fit }: { fit: FitResult }) {
             <li key={s.skillId} className="flex flex-wrap justify-between gap-2">
               <span>
                 {s.skillId}{' '}
-                <span className="text-[color:var(--graphite)]">
+                <span className="text-asm-ink-3">
                   ({s.heldLevel ?? 'not held'} / {s.requiredLevel})
                 </span>
               </span>
@@ -131,22 +131,22 @@ export function FitBreakdownPanel({ fit }: { fit: FitResult }) {
         </ul>
       </div>
       <div>
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-[color:var(--graphite)]">
+        <h4 className="text-xs font-semibold uppercase tracking-wide text-asm-ink-3">
           {copy.people.rigourSignals}
         </h4>
         {breakdown.notes.includes('no_rigour_signals') ? (
-          <p className="mt-1 text-[color:var(--graphite)]">{copy.teach.nothingRecorded}</p>
+          <p className="mt-1 text-asm-ink-3">{copy.teach.nothingRecorded}</p>
         ) : (
           <ul className="mt-1 space-y-1">
             {breakdown.rigourContributions.map((r, i) => (
               <li key={`${r.type}-${i}`} className="flex flex-wrap justify-between gap-2">
                 <span>
                   {copy.signals[r.type] ?? r.type}{' '}
-                  <span className="text-[color:var(--graphite)]">
+                  <span className="text-asm-ink-3">
                     ({r.provenance === 'derived' ? copy.teach.derived : copy.teach.asserted})
                   </span>
                   {r.ceremony ? (
-                    <span className="ml-2 text-[color:var(--graphite)]">
+                    <span className="ml-2 text-asm-ink-3">
                       {copy.ui.ceremony}: {r.ceremony}
                     </span>
                   ) : null}
@@ -159,7 +159,7 @@ export function FitBreakdownPanel({ fit }: { fit: FitResult }) {
         )}
       </div>
       {breakdown.capacityShortfall != null ? (
-        <p className="text-[color:var(--graphite)]">{copy.squads.capacityFlag}</p>
+        <p className="text-asm-ink-3">{copy.squads.capacityFlag}</p>
       ) : null}
     </div>
   );

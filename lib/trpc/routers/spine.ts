@@ -28,6 +28,8 @@ const spineInclude = {
   raidItems: { orderBy: { createdAt: 'desc' as const } },
   changeRequests: { orderBy: { createdAt: 'desc' as const } },
   decisionRecords: { orderBy: { decidedOn: 'desc' as const } },
+  // Newest twelve months; measureSummary puts them back in date order.
+  measures: { orderBy: { period: 'desc' as const }, take: 12 },
 } satisfies Prisma.EngagementInclude;
 
 type SpineRecord = Prisma.EngagementGetPayload<{ include: typeof spineInclude }>;
@@ -58,7 +60,46 @@ async function loadConfig(prisma: PrismaClient) {
   };
 }
 
-function toFacts(engagement: SpineRecord, now: Date): SpineFacts {
+
+type Targets = { predictability: string; quality: string; health: string; satisfaction: string };
+type MeasureKey = 'predictability' | 'quality' | 'health' | 'satisfaction';
+
+/** Latest reading and trend for each Compass measure, judged against the configured target. */
+function measureSummary(engagement: SpineRecord, targets: Targets) {
+  const rows = [...engagement.measures].sort((a, b) => a.period.getTime() - b.period.getTime());
+  const pick = (key: MeasureKey) =>
+    rows
+      .map((row) =>
+        key === 'predictability'
+          ? row.predictability
+          : key === 'quality'
+            ? row.quality
+            : key === 'health'
+              ? row.teamHealth
+              : row.clientSatisfaction,
+      )
+      .filter((value): value is number => value != null);
+  const judge = (key: MeasureKey) => {
+    const trend = pick(key);
+    const latest = trend.length ? trend[trend.length - 1] : null;
+    const target = Number(targets[key]);
+    const onTarget =
+      latest == null || !Number.isFinite(target) ? null : key === 'quality' ? latest < target : latest >= target;
+    return { latest, trend, onTarget };
+  };
+  return {
+    predictability: judge('predictability'),
+    quality: judge('quality'),
+    health: judge('health'),
+    satisfaction: judge('satisfaction'),
+  };
+}
+
+function belowTarget(summary: ReturnType<typeof measureSummary>): number {
+  return Object.values(summary).filter((item) => item.onTarget === false).length;
+}
+
+function toFacts(engagement: SpineRecord, now: Date, below = 0): SpineFacts {
   const sprint = engagement.checklistItems.filter((item) => item.stage === 'sprint-zero');
   const overdue = sprint
     .filter((item) => !item.done && item.dueOn && item.dueOn.getTime() < now.getTime())
@@ -100,13 +141,14 @@ function toFacts(engagement: SpineRecord, now: Date): SpineFacts {
     milestoneName: nextMilestone?.name ?? null,
     milestoneOn: nextMilestone?.dueOn ?? null,
     milestoneWillBeMissed: engagement.milestones.some((item) => item.status === 'late'),
-    measuresBelowTarget: 0,
+    measuresBelowTarget: below,
     overdueSprintItem: overdue?.itemKey ?? null,
   };
 }
 
-function present(engagement: SpineRecord, now: Date, hours: number) {
-  const facts = toFacts(engagement, now);
+function present(engagement: SpineRecord, now: Date, hours: number, targets: Targets) {
+  const measures = measureSummary(engagement, targets);
+  const facts = toFacts(engagement, now, belowTarget(measures));
   return {
     id: engagement.id,
     name: engagement.name,
@@ -119,6 +161,7 @@ function present(engagement: SpineRecord, now: Date, hours: number) {
     rows: attentionRows(facts, now, hours),
     milestone: facts.milestoneName,
     milestoneOn: facts.milestoneOn ? isoDate(facts.milestoneOn) : null,
+    measures,
   };
 }
 
@@ -142,7 +185,7 @@ export const spineRouter = router({
     });
     return {
       targets: config.targets,
-      engagements: engagements.map((engagement) => present(engagement, now, config.hours)),
+      engagements: engagements.map((engagement) => present(engagement, now, config.hours, config.targets)),
     };
   }),
 
@@ -150,7 +193,7 @@ export const spineRouter = router({
     const now = new Date();
     const config = await loadConfig(ctx.prisma);
     const engagement = await loadOne(ctx.prisma, ctx.orgId, input.id);
-    const card = present(engagement, now, config.hours);
+    const card = present(engagement, now, config.hours, config.targets);
     return {
       ...card,
       targets: config.targets,
@@ -672,6 +715,29 @@ export const spineRouter = router({
       await ctx.prisma.engagement.update({
         where: { id: input.engagementId },
         data: { charterAgreedOn: agreed, charterReviewOn: review },
+      });
+      return { ok: true };
+    }),
+  /** Records this month's Compass readings. One row per engagement per month; later saves overwrite. */
+  recordMeasures: protectedProcedure
+    .input(
+      z.object({
+        engagementId: z.string(),
+        predictability: z.number().min(0).max(100).optional(),
+        quality: z.number().min(0).max(100).optional(),
+        teamHealth: z.number().min(1).max(5).optional(),
+        clientSatisfaction: z.number().min(1).max(5).optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      const now = new Date();
+      const period = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+      const { engagementId, ...values } = input;
+      await ctx.prisma.engagementMeasure.upsert({
+        where: { engagementId_period: { engagementId, period } },
+        create: { engagementId, period, ...values },
+        update: values,
       });
       return { ok: true };
     }),

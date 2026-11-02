@@ -71,3 +71,7 @@ Crosswalk seed (GDS, NISTA, ISO 19650, Construction Playbook, Building Safety Ac
 4. Once: `npm run db:provision` from your machine with the same `.env`.
 
 See [DEPLOY.md](DEPLOY.md) for the full checklist.
+
+## Redesign (Agile WOW)
+
+UI library, theme and rebuilt screens: [docs/redesign/README.md](docs/redesign/README.md). Live catalogue at `/practice/components`.

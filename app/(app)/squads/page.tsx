@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { ButtonLink } from '@/components/library/Button';
+import { Card } from '@/components/library/Card';
 import { DeliveryStatus } from '@/components/library/DeliveryStatus';
-import { Field, TextInput } from '@/components/library/Field';
-import { Cluster, Stack } from '@/components/library/layout';
-import { Heading, Text } from '@/components/library/type';
+import { EmptyState } from '@/components/library/EmptyState';
+import { Field, SelectInput, TextInput } from '@/components/library/Field';
+import { PageHeader } from '@/components/library/PageHeader';
+import { Table, TableScroll, Td, Th } from '@/components/library/Table';
 import { lifecycleLabels, showDate, statusLabel } from '@/components/engagement/shared';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy } from '@/lib/copy';
@@ -42,90 +44,90 @@ export default function SquadsIndexPage() {
   });
 
   return (
-    <Stack gap={5}>
-      <Stack gap={2}>
-        <Heading level={1}>{s.listTitle}</Heading>
-        <Text>{s.listSub}</Text>
-      </Stack>
-      <div>
-        <ButtonLink href="/engagements/new">{s.newEngagement}</ButtonLink>
-      </div>
-      <Field id="engagement-search" label={s.search}>
-        <TextInput value={search} onChange={(event) => setSearch(event.target.value)} />
-      </Field>
-      <Cluster gap={3}>
-        <Filter label={s.filterStage} value={stage} onChange={setStage} options={[['all', s.filterAll], ...Object.entries(labels)]} />
-        <Filter
-          label={s.filterStatus}
-          value={status}
-          onChange={setStatus}
-          options={[
-            ['all', s.filterAll],
-            ['on-track', copy.status.onTrack],
-            ['at-risk', copy.status.atRisk],
-            ['off-track', copy.status.offTrack],
-          ]}
-        />
-        <Filter label={s.filterClient} value={client} onChange={setClient} options={[['all', s.filterAll], ...clients.map((item) => [item, item] as const)]} />
-        <Filter label={s.filterLead} value={lead} onChange={setLead} options={[['all', s.filterAll], ...leads.map((item) => [item, item] as const)]} />
-        <Filter
-          label={s.filterSector}
-          value={sector}
-          onChange={setSector}
-          options={[
-            ['all', s.filterAll],
-            ...sectors.map((item) => [item, s.sectors[item as keyof typeof s.sectors] ?? item] as const),
-          ]}
-        />
-      </Cluster>
-      {query.isLoading ? <Text>{copy.ui.loading}</Text> : null}
-      {query.isError ? <Text>{copy.ui.loadFailed}</Text> : null}
+    <div className="asm-root flex flex-col gap-6">
+      <PageHeader title={s.listTitle} subtitle={s.listSub} actions={<ButtonLink href="/engagements/new">{s.newEngagement}</ButtonLink>} />
+      <Card className="flex flex-col gap-4 p-5">
+        <Field id="engagement-search" label={s.search}>
+          <TextInput type="search" value={search} onChange={(event) => setSearch(event.target.value)} />
+        </Field>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+          <Filter label={s.filterStage} value={stage} onChange={setStage} options={[['all', s.filterAll], ...Object.entries(labels)]} />
+          <Filter
+            label={s.filterStatus}
+            value={status}
+            onChange={setStatus}
+            options={[
+              ['all', s.filterAll],
+              ['on-track', copy.status.onTrack],
+              ['at-risk', copy.status.atRisk],
+              ['off-track', copy.status.offTrack],
+            ]}
+          />
+          <Filter label={s.filterClient} value={client} onChange={setClient} options={[['all', s.filterAll], ...clients.map((item) => [item, item] as const)]} />
+          <Filter label={s.filterLead} value={lead} onChange={setLead} options={[['all', s.filterAll], ...leads.map((item) => [item, item] as const)]} />
+          <Filter
+            label={s.filterSector}
+            value={sector}
+            onChange={setSector}
+            options={[
+              ['all', s.filterAll],
+              ...sectors.map((item) => [item, s.sectors[item as keyof typeof s.sectors] ?? item] as const),
+            ]}
+          />
+        </div>
+      </Card>
+      {query.isLoading ? <p className="m-0 text-asm-ink-3">{copy.ui.loading}</p> : null}
+      {query.isError ? <p className="m-0 text-asm-ink-3">{copy.ui.loadFailed}</p> : null}
       {!query.isLoading && rows.length === 0 ? (
-        <Stack gap={2}>
-          <Heading level={2}>{copy.attention.emptyTitle}</Heading>
-          <Text>{copy.attention.emptyBody}</Text>
-        </Stack>
+        <EmptyState title={copy.attention.emptyTitle} body={copy.attention.emptyBody} action={<ButtonLink href="/engagements/new">{s.newEngagement}</ButtonLink>} />
       ) : null}
       {!query.isLoading && rows.length > 0 && filtered.length === 0 ? (
-        <Text>{fillCopy(s.noResults, { query: search || s.filterAll })}</Text>
+        <p role="status" className="m-0 text-asm-ink-2">
+          {fillCopy(s.noResults, { query: search || s.filterAll })}
+        </p>
       ) : null}
       {filtered.length > 0 ? (
-        <div className="sheet overflow-x-auto">
-          <table>
-            <thead>
-              <tr>
-                <th>{s.colEngagement}</th>
-                <th>{s.colClient}</th>
-                <th>{s.colStage}</th>
-                <th>{s.colStatus}</th>
-                <th>{s.colLead}</th>
-                <th>{s.colMilestone}</th>
-                <th>{s.colAction}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((row) => (
-                <tr key={row.id}>
-                  <td>
-                    <Link href={`/squads/${row.id}/overview`} className="font-semibold underline-offset-2 hover:underline">
-                      {row.name}
-                    </Link>
-                  </td>
-                  <td>{row.client ?? s.missing}</td>
-                  <td>{row.stage ? labels[row.stage] : s.missing}</td>
-                  <td>
-                    <DeliveryStatus status={row.status} label={statusLabel(copy, row.status)} />
-                  </td>
-                  <td>{row.squadLead ?? s.missing}</td>
-                  <td>{row.milestone ? (row.milestoneOn ? fillCopy(s.milestoneWhen, { name: row.milestone, date: showDate(row.milestoneOn) }) : row.milestone) : s.missing}</td>
-                  <td>{nextActionSentence(row.attention, copy.nextAction)}</td>
+        <Card>
+          <TableScroll minWidth={1040}>
+            <Table>
+              <thead>
+                <tr>
+                  <Th>{s.colEngagement}</Th>
+                  <Th>{s.colStage}</Th>
+                  <Th>{s.colStatus}</Th>
+                  <Th>{s.colLead}</Th>
+                  <Th>{s.colMilestone}</Th>
+                  <Th>{s.colAction}</Th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filtered.map((row) => (
+                  <tr key={row.id} className="hover:bg-asm-brand-wash">
+                    <Td>
+                      <span className="flex flex-col gap-0.5">
+                        <Link href={`/squads/${row.id}/overview`} className="font-semibold text-asm-brand underline-offset-2 hover:underline">
+                          {row.name}
+                        </Link>
+                        <span className="text-[13px] text-asm-ink-3">{row.client ?? s.missing}</span>
+                      </span>
+                    </Td>
+                    <Td className="whitespace-nowrap">{row.stage ? labels[row.stage] : s.missing}</Td>
+                    <Td>
+                      <DeliveryStatus status={row.status} label={statusLabel(copy, row.status)} size="sm" />
+                    </Td>
+                    <Td className="whitespace-nowrap text-asm-ink-2">{row.squadLead ?? s.missing}</Td>
+                    <Td className="text-asm-ink-2">
+                      {row.milestone ? (row.milestoneOn ? fillCopy(s.milestoneWhen, { name: row.milestone, date: showDate(row.milestoneOn) }) : row.milestone) : s.missing}
+                    </Td>
+                    <Td className="max-w-[320px] text-asm-ink-2">{nextActionSentence(row.attention, copy.nextAction)}</Td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </TableScroll>
+        </Card>
       ) : null}
-    </Stack>
+    </div>
   );
 }
 
@@ -143,13 +145,13 @@ function Filter({
   const id = `filter-${label.replace(/\s+/g, '-').toLowerCase()}`;
   return (
     <Field id={id} label={label}>
-      <select id={id} value={value} onChange={(event) => onChange(event.target.value)}>
+      <SelectInput value={value} onChange={(event) => onChange(event.target.value)}>
         {options.map(([option, text]) => (
           <option key={option} value={option}>
             {text}
           </option>
         ))}
-      </select>
+      </SelectInput>
     </Field>
   );
 }
