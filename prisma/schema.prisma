@@ -199,6 +199,42 @@ model Engagement {
   squadProposals      SquadProposal[]
   capabilityGapsFit   CapabilityGap[]
   rigourSignals       RigourSignal[]
+  /// Delivery spine. Null status means the squad lead has not confirmed one.
+  commercialModel        String?
+  marketSector           String?
+  startsOn               DateTime?
+  endsOn                 DateTime?
+  outcomes               String?   @db.Text
+  squadShape             String?
+  scopeClear             Boolean?
+  steeringChair          String?
+  steeringFrequency      String?
+  clientProductOwner     String?
+  productOwnerDays       Float?
+  accountManagerName     String?
+  changeThresholdGbp     Int?
+  deliveryStatus         String?
+  deliveryStatusNote     String?   @db.Text
+  deliveryStatusById     String?
+  recoveryPlan           String?   @db.Text
+  riskLockAt             DateTime?
+  steeringOn             DateTime?
+  steeringPackReady      Boolean   @default(false)
+  goLiveOn               DateTime?
+  hasAftercare           Boolean   @default(false)
+  reportDueOn            DateTime?
+  surveyDue              String?
+  surveySentOn           DateTime?
+  charterReviewOn        DateTime?
+  charterAgreedOn        DateTime?
+  monthlyReportDraft     String?   @db.Text
+  monthlyReportSubmittedAt DateTime?
+  leadNotifiedAt         DateTime?
+  milestones             EngagementMilestone[]
+  checklistItems         EngagementChecklistItem[]
+  raidItems              RaidItem[]
+  changeRequests         ChangeRequest[]
+  decisionRecords        DecisionRecord[]
 
   @@index([orgId])
   @@index([reference])
@@ -1042,4 +1078,106 @@ model CapabilityFrameworkPin {
 
   @@index([importedAt])
   @@map("capability_framework_pins")
+}
+
+/// Handbook checklist rows. Copied onto an engagement at creation.
+model HandbookChecklistItem {
+  id        String @id
+  stage     String
+  itemKey   String @unique
+  title     String
+  sortOrder Int
+
+  @@index([stage])
+  @@map("handbook_checklist_items")
+}
+
+/// Handbook thresholds. Read by the rules, not hardcoded in a screen.
+model HandbookConfig {
+  key   String @id
+  value String
+
+  @@map("handbook_config")
+}
+
+model EngagementChecklistItem {
+  id             String     @id @default(cuid())
+  engagementId   String
+  stage          String
+  itemKey        String
+  title          String
+  sortOrder      Int
+  done           Boolean    @default(false)
+  doneAt         DateTime?
+  doneByUserId   String?
+  ownerName      String?
+  dueOn          DateTime?
+  engagement     Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@unique([engagementId, itemKey])
+  @@index([engagementId])
+  @@map("engagement_checklist_items")
+}
+
+model EngagementMilestone {
+  id             String     @id @default(cuid())
+  engagementId   String
+  name           String
+  dueOn          DateTime?
+  proves         String?
+  paymentLinked  Boolean    @default(false)
+  /// on-time | at-risk | late | replanned
+  status         String     @default("on-time")
+  engagement     Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@index([engagementId])
+  @@map("engagement_milestones")
+}
+
+model RaidItem {
+  id           String     @id @default(cuid())
+  engagementId String
+  /// risk | assumption | issue | dependency
+  type         String
+  title        String
+  ownerName    String?
+  action       String?
+  dueOn        DateTime?
+  /// open | closed
+  status       String     @default("open")
+  createdAt    DateTime   @default(now())
+  engagement   Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@index([engagementId])
+  @@map("raid_items")
+}
+
+model ChangeRequest {
+  id           String     @id @default(cuid())
+  engagementId String
+  ref          String
+  description  String     @db.Text
+  /// submitted | triaged | assessed
+  status       String     @default("submitted")
+  createdAt    DateTime   @default(now())
+  engagement   Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@unique([engagementId, ref])
+  @@index([engagementId])
+  @@map("change_requests")
+}
+
+model DecisionRecord {
+  id           String     @id @default(cuid())
+  engagementId String
+  forum        String
+  decision     String     @db.Text
+  ownerName    String?
+  decidedOn    DateTime   @default(now())
+  confirmedAt  DateTime?
+  confirmedById String?
+  engagement   Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@index([engagementId])
+  @@map("decision_records")
 }

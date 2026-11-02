@@ -19,6 +19,8 @@ import { StageChrome } from '@/components/shell/StageChrome';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 import { fillCopy } from '@/lib/copy';
+import { lifecycleLabels } from '@/components/engagement/shared';
+import { lifecycleStageForPhase } from '@/lib/attention/lifecycle';
 import { stageDefForPath } from '@/lib/explain/stages';
 import { trpc } from '@/lib/trpc/client';
 import type { MaturityLevel } from '@/lib/playbook/keel';
@@ -261,7 +263,9 @@ function ContextBar({
   const levelKey = (['practising', 'evidenced', 'assured', 'compounding'][level - 1] ??
     'practising') as MaturityLevel;
   const maturityName = c.maturityLevels[levelKey];
-  const phaseLabel = engagement.id === 'nrw-demo' ? c.context.demoPhase : engagement.phase;
+  const stage = lifecycleStageForPhase(engagement.phase);
+  const phaseLabel =
+    engagement.id === 'nrw-demo' ? c.context.demoPhase : stage ? lifecycleLabels(c)[stage] : engagement.phase;
   const standardsLabel =
     engagement.id === 'nrw-demo' ? c.context.demoStandards : engagement.standards.join(' · ') || '-';
 

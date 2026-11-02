@@ -11,6 +11,7 @@ import { standardsRouter } from '@/lib/trpc/routers/standards';
 import { assuranceRouter } from '@/lib/trpc/routers/assurance';
 import { crosswalkRouter } from '@/lib/trpc/routers/crosswalk';
 import { integrationsRouter } from '@/lib/trpc/routers/integrations';
+import { spineRouter } from '@/lib/trpc/routers/spine';
 import { teamFitRouter } from '@/lib/trpc/routers/teamFit';
 
 export const appRouter = router({
@@ -27,6 +28,7 @@ export const appRouter = router({
   crosswalk: crosswalkRouter,
   integrations: integrationsRouter,
   teamFit: teamFitRouter,
+  spine: spineRouter,
 });
 
 export type AppRouter = typeof appRouter;

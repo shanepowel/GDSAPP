@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { attentionFor, attentionRows, type SpineFacts } from '@/lib/attention/facts';
 import { dayPart, hourInLondon } from '@/lib/attention/greeting';
 import { lifecycleStageForPhase } from '@/lib/attention/lifecycle';
 import { nextAction, suggestStatus } from '@/lib/attention/next-action';
@@ -80,6 +81,112 @@ describe('next action sentence', () => {
     expect(
       nextActionSentence(nextAction({ surveyDue: 'pulse' }), copy.nextAction),
     ).toBe("Send this month's pulse.");
+  });
+});
+
+function facts(partial: Partial<SpineFacts> = {}): SpineFacts {
+  return {
+    confirmedStatus: null,
+    riskLockAt: null,
+    hasRecoveryPlan: false,
+    steeringOn: null,
+    packReady: false,
+    unconfirmedDecisions: 0,
+    stage: null,
+    sprintZeroOpen: 0,
+    sprintZeroBy: null,
+    submittedChange: null,
+    triagedChange: null,
+    exceptionPerson: null,
+    goLiveOn: null,
+    hasAftercare: false,
+    reportDueOn: null,
+    surveyDue: null,
+    charterReviewOn: null,
+    milestoneName: null,
+    milestoneOn: null,
+    milestoneWillBeMissed: false,
+    measuresBelowTarget: 0,
+    overdueSprintItem: null,
+    ...partial,
+  };
+}
+
+describe('engagement facts', () => {
+  const now = new Date('2026-11-02T12:00:00.000Z');
+
+  it('asks to finish Sprint Zero when that stage is open', () => {
+    const action = attentionFor(facts({ stage: 'sprint-zero', sprintZeroOpen: 11 }), now, 48);
+    expect(action).toMatchObject({ code: 'sprint-zero', priority: 5, vars: { n: 11, date: '' } });
+  });
+
+  it('books a risk lock when a late milestone has no recent lock', () => {
+    const action = attentionFor(
+      facts({ milestoneWillBeMissed: true, stage: 'sprint-zero', sprintZeroOpen: 2 }),
+      now,
+      48,
+    );
+    expect(action.code).toBe('risk-lock');
+  });
+
+  it('stays quiet when a risk lock was booked inside the window', () => {
+    const action = attentionFor(
+      facts({
+        confirmedStatus: 'off-track',
+        riskLockAt: new Date('2026-11-02T00:00:00.000Z'),
+      }),
+      now,
+      48,
+    );
+    expect(action.code).not.toBe('risk-lock');
+  });
+
+  it('does not invent a steering or go-live task without a date', () => {
+    expect(attentionFor(facts({ packReady: false, hasAftercare: false }), now, 48).code).toBe('on-track');
+  });
+
+  it('raises the dated rules in priority order', () => {
+    const action = attentionFor(
+      facts({
+        steeringOn: new Date('2026-11-03T00:00:00.000Z'),
+        packReady: false,
+        goLiveOn: new Date('2026-11-20T00:00:00.000Z'),
+        hasAftercare: false,
+        reportDueOn: new Date('2026-11-04T00:00:00.000Z'),
+      }),
+      now,
+      48,
+    );
+    expect(action.code).toBe('steering-pack');
+    expect(action.vars.date).toBe('3 Nov 2026');
+  });
+
+  it('waits two days before asking to triage a change', () => {
+    const fresh = attentionFor(
+      facts({ submittedChange: { ref: 'CR-001', at: new Date('2026-11-02T10:00:00.000Z') } }),
+      now,
+      48,
+    );
+    const stale = attentionFor(
+      facts({ submittedChange: { ref: 'CR-001', at: new Date('2026-10-28T00:00:00.000Z') } }),
+      now,
+      48,
+    );
+    expect(fresh.code).toBe('on-track');
+    expect(stale).toMatchObject({ code: 'triage-change', vars: { ref: 'CR-001' } });
+  });
+
+  it('lists attention rows only for facts that are present', () => {
+    const rows = attentionRows(
+      facts({
+        confirmedStatus: 'at-risk',
+        overdueSprintItem: 'Squad charter signed off',
+        surveyDue: 'health',
+      }),
+      now,
+      48,
+    );
+    expect(rows.map((row) => row.code)).toEqual(['at-risk', 'sprint-overdue', 'survey-health']);
   });
 });
 

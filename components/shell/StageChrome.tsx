@@ -7,11 +7,17 @@ import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
 import { STAGE_DEFS, stageDefForPath, type StageId } from '@/lib/explain/stages';
 
+/** List and delivery screens use the engagement spine, not the old journey narration. */
+function isEngagementSpine(pathname: string): boolean {
+  if (/^\/squads\/?$/.test(pathname)) return true;
+  return /^\/squads\/[^/]+\/(overview|plan|compass|decisions|change|stage)(\/|$)/.test(pathname);
+}
+
 export function StageChrome({ pathname, children }: { pathname: string; children: React.ReactNode }) {
   const { locale } = useI18n();
   const copy = getCopy(locale);
   const def = stageDefForPath(pathname);
-  if (!def) return <>{children}</>;
+  if (!def || isEngagementSpine(pathname)) return <>{children}</>;
 
   const stageCopy = copy.journey[def.id];
   const prev = def.previousId ? STAGE_DEFS.find((s) => s.id === def.previousId) : null;

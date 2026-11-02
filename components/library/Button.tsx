@@ -71,6 +71,7 @@ export function ButtonLink({
   variant,
   size,
   style,
+  onClick,
 }: {
   href: string;
   children: ReactNode;
@@ -78,11 +79,13 @@ export function ButtonLink({
   variant?: ButtonVariant;
   size?: ButtonSize;
   style?: CSSProperties;
+  onClick?: () => void;
 }) {
   const resolved = size ?? 'md';
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={button({ variant, size: resolved, className })}
       style={{ ...buttonMetrics(resolved), ...style }}
     >

@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import { en } from '@/lib/i18n/en';
-import { getMessages, isLocale, LOCALE_COOKIE, type Locale } from '@/lib/i18n/index';
+import { getMessages, LOCALE_COOKIE, type Locale } from '@/lib/i18n/index';
 import type { Messages } from '@/lib/i18n/types';
 
 interface LocaleContextValue {
@@ -24,15 +24,14 @@ const LocaleContext = createContext<LocaleContextValue>({
   setLocale: () => {},
 });
 
-function readCookieLocale(): Locale {
-  if (typeof document === 'undefined') return 'en';
-  const match = document.cookie.match(new RegExp(`${LOCALE_COOKIE}=([^;]+)`));
-  const value = match?.[1];
-  return value && isLocale(value) ? value : 'en';
-}
-
-export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(readCookieLocale);
+export function LocaleProvider({
+  children,
+  initialLocale = 'en',
+}: {
+  children: ReactNode;
+  initialLocale?: Locale;
+}) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
