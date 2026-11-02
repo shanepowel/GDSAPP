@@ -888,7 +888,8 @@ h3 {
   border: 1px solid var(--asm-line);
   background: var(--asm-surface);
   border-radius: var(--asm-radius-lg);
-  overflow: hidden;
+  /* Scroll wide tables sideways inside the rounded card; never clip columns. */
+  overflow-x: auto;
 }
 
 .sheet th {
