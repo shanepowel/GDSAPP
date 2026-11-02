@@ -5,40 +5,73 @@ export const copyCy: Copy = {
   product: {
     name: 'Assemble',
     owner: 'Turner & Townsend',
-    thesis: 'Y tîm yw’r cynllun cyflawni.',
-    strapline: 'Cydosodwch y tîm, yna profwch y bydd yn pasio.',
+    thesis: 'sut mae Turner & Townsend yn sefydlu, rhedeg a sicrhau timau cyflawni',
+    strapline: 'Cydosodwch dimau cyflawni gwych, yna cadwch nhw’n wych.',
   },
 
   home: {
-    eyebrow: 'Ymarfer cyflawni',
-    headline: 'Cydosodwch y tîm, yna profwch y bydd yn pasio.',
-    sub: 'Nid y dull, nid y calendr. Y bobl sy’n troi i fyny bob dydd. Mae Assemble yn gosod beth yw ystyr cyflawni da yma, yn sgorio’r gallu a ddelir yn ei erbyn, ac yn cydosod y sgwad ar gyfer swydd benodol. Mae sgorio gallu Llywodraeth Ddigidol a Data a pharodrwydd safon gwasanaeth wedi’u adeiladu i mewn.',
-    primaryCta: 'Rhoi cynnig ar y demo',
-    secondaryCta: 'Darllen yr ymarfer',
+    eyebrow: 'Timau cyflawni',
+    headline: 'Cydosodwch dimau cyflawni gwych, yna cadwch nhw’n wych.',
+    sub: 'Mae Assemble yn eich helpu i staffio, sefydlu a sicrhau timau cyflawni, o gynnig i ofal wedi’r ffaith, gyda thrylwyredd y sector cyhoeddus wedi’i adeiladu i mewn.',
+    primaryCta: 'Gweld y demo',
+    secondaryCta: 'Trefnu taith',
     signIn: 'Mewngofnodi',
 
     claims: [
       {
-        title: 'Diffinio da, yn gyhoeddus',
-        body: 'Mae’r llyfr chwarae yn agored ac yn ddarllenadwy cyn i chi fewngofnodi. Pum piler, y seremonïau sy’n eu bwydo, a’r hyn y mae’n rhaid i bob un ei gynhyrchu. Dim byd yn cael ei sgorio nad yw’r ymarfer yn ei ofyn.',
-        seeIn: 'Gweld yn Ymarfer',
+        title: 'Adeiladu’r tîm cywir',
+        body: 'Parwch bobl â rolau ar sgiliau, trylwyredd ac argaeledd, heb orlwytho neb.',
       },
       {
-        title: 'Gweld y sefydliad, yna ei newid',
-        body: 'Cylchoedd, rolau a’r bobl sy’n eu dal, wedi’u tynnu o’r dyluniad byw. Mae templedi, senarios a swyddi gwag ar yr un olwg, fel bod ailgynllunio yn symudiad gweledol yn hytrach nag sleid.',
-        seeIn: 'Gweld yn Pobl',
+        title: 'Dechrau pob ymgysylltiad yn dda',
+        body: 'Mae siapiau sgwad, siarteri a rhestr wirio Sprint Zero yn golygu dim mwy o ddechreuadau araf a blêr.',
       },
       {
-        title: 'Cydosod y sgwad',
-        body: 'Pob ymgeisydd wedi’i sgorio yn erbyn y rôl: sgiliau’r fframwaith gallu yn gyntaf, yna wedi’i addasu gan ddisgyblaeth cyflawni a dystiwyd. Un llinell datum ar 0.60 yn rhedeg trwy’r tabl cyfan fel y gellir darllen sgwad mewn un pas.',
-        seeIn: 'Gweld yn Sgwadiau',
-      },
-      {
-        title: 'Ei ddarllen trwy unrhyw safon',
-        body: 'Yr un sgwad, wedi’i asesu yn erbyn y safon sy’n llywodraethu’r cleient. GDS, Safon Gwasanaeth Digidol Cymru, adolygiad porth, neu ddyletswyddau rheoli gwybodaeth ar raglen gyfalaf.',
-        seeIn: 'Gweld yn Sicrwydd',
+        title: 'Gweld trafferth yn gynnar',
+        body: 'Pedwar mesur, un statws a’r cam nesaf yn glir ar bob ymgysylltiad.',
       },
     ],
+
+    how: {
+      title: 'Sut mae’n gweithio',
+      steps: [
+        {
+          title: 'Siâp',
+          body: 'Gwiriwch y gallwch staffio’r gwaith a sefydlu llywodraethu cyn i chi lofnodi.',
+        },
+        {
+          title: 'Sefydlu',
+          body: 'Dewiswch siâp sgwad. Mae Assemble yn drafftio’r siarter, y cynllun a’r rhestr wirio.',
+        },
+        {
+          title: 'Cyflawni',
+          body: 'Traciwch ragweladwyedd, ansawdd, iechyd y tîm a boddhad y cleient bob mis.',
+        },
+        {
+          title: 'Penderfynu',
+          body: 'Cynaliwch bwyllgorau llywio a chloeon risg sy’n gorffen mewn penderfyniadau, nid diweddariadau.',
+        },
+        {
+          title: 'Cefnogi',
+          body: 'Cytunwch ar ofal wedi’r ffaith cyn mynd yn fyw, a thriniwch newid heb ei amsugno.',
+        },
+      ],
+    },
+
+    standards: {
+      title: 'Tystiolaeth unwaith, bodloni pob fframwaith',
+      body: 'Mae Assemble yn mapio Safon Gwasanaeth GDS i’r Cod Ymarfer Technoleg, adolygiadau porth NISTA, ISO 19650, y Llyfr Chwarae Adeiladu ac edefyn aur Deddf Diogelwch Adeiladau. Cofnodwch dystiolaeth lle mae’r gwaith yn digwydd, a’i hailddefnyddio lle bynnag y mae ei hangen.',
+    },
+
+    builtOn: {
+      title: 'Wedi’i adeiladu ar sut rydym yn cyflawni mewn gwirionedd',
+      body: 'Mae Assemble yn amgodio Agile WOW, llyfr chwarae cyflawni Turner & Townsend ar gyfer timau sydd angen ystwythder a thrylwyredd ar yr un pryd. Daw’r rheolau, y templedi a’r rhestrau gwirio o ymgysylltiadau byw, nid theori.',
+    },
+
+    close: {
+      title: 'Gweld ymgysylltiad o gynnig i ofal wedi’r ffaith mewn deg munud',
+      cta: 'Gweld y demo',
+    },
 
     credibility: {
       title: 'Heb dystiolaeth nid yw’r un peth â gwael',
@@ -59,6 +92,78 @@ export const copyCy: Copy = {
     assurance: { label: 'Sicrwydd', hint: 'parodrwydd yn erbyn safonau' },
     portfolio: { label: 'Portffolio', hint: 'ar draws ymgysylltiadau' },
     stages: 'Camau cyflawni',
+  },
+
+  shell: {
+    navLabel: 'Prif',
+    home: 'Hafan',
+    engagements: 'Ymgysylltiadau',
+    people: 'Pobl',
+    capability: 'Gallu',
+    playbook: 'Llyfr chwarae',
+    portfolio: 'Portffolio',
+    standards: 'Safonau',
+    settings: 'Gosodiadau',
+    ask: 'Gofyn i Assemble',
+  },
+
+  lifecycle: {
+    label: 'Cylch bywyd',
+    shape: 'Siâp',
+    sprintZero: 'Sprint Zero',
+    discovery: 'Darganfod',
+    alpha: 'Alffa',
+    beta: 'Beta',
+    live: 'Byw',
+    operate: 'Gweithredu',
+    done: 'Wedi’i gwblhau',
+    current: 'Cyfredol',
+  },
+
+  status: {
+    onTrack: 'Ar y trywydd',
+    atRisk: 'Mewn perygl',
+    offTrack: 'Oddi ar y trywydd',
+  },
+
+  attention: {
+    morning: 'Bore da',
+    afternoon: 'Prynhawn da',
+    evening: 'Noswaith dda',
+    morningNamed: 'Bore da, {name}',
+    afternoonNamed: 'Prynhawn da, {name}',
+    eveningNamed: 'Noswaith dda, {name}',
+    needsAttention: 'Mae {count} peth angen eich sylw.',
+    needsAttentionOne: 'Mae 1 peth angen eich sylw.',
+    clear: 'Does dim angen eich sylw ar hyn o bryd.',
+    needsTitle: 'Angen sylw',
+    mineTitle: 'Fy ymgysylltiadau',
+    open: 'Agor',
+    emptyTitle: 'Dim ymgysylltiadau eto',
+    emptyBody: 'Crëwch un i ddechrau staffio eich sgwad a sefydlu Sprint Zero.',
+    newEngagement: 'Ymgysylltiad newydd',
+    exploreDemo: 'Archwilio’r ymgysylltiad demo',
+  },
+
+  nextAction: {
+    riskLock: 'Trefnwch glo risg. Mae’r ymgysylltiad hwn oddi ar y trywydd.',
+    recovery: 'Ychwanegwch gynllun adfer yr wythnos hon.',
+    steeringPack: 'Drafftiwch becyn y pwyllgor llywio ar gyfer {date}.',
+    steeringPackOpen: 'Drafftiwch becyn y pwyllgor llywio.',
+    confirmDecisions: 'Cadarnhewch {n} penderfyniad yn ysgrifenedig.',
+    sprintZero: 'Gorffennwch {n} eitem Sprint Zero cyn {date}.',
+    sprintZeroOpen: 'Gorffennwch {n} eitem Sprint Zero.',
+    triageChange: 'Brysbennwch gais newid {ref}.',
+    assessChange: 'Aseswch gais newid {ref}.',
+    keelEnd: 'Gosodwch ddyddiad gorffen ar gyfer eithriad {person}.',
+    aftercare: 'Sefydlwch ofal wedi’r ffaith cyn mynd yn fyw ar {date}.',
+    aftercareOpen: 'Sefydlwch ofal wedi’r ffaith cyn mynd yn fyw.',
+    monthlyReport: 'Drafftiwch adroddiad y mis hwn.',
+    surveyHealth: 'Anfonwch wiriad iechyd tîm y mis hwn.',
+    surveyPulse: 'Anfonwch byls y mis hwn.',
+    charterReview: 'Adolygwch siarter y sgwad yn eich adolygiad nesaf.',
+    onTrack: 'Rydych ar y trywydd. Carreg filltir nesaf: {milestone} ar {date}.',
+    onTrackOpen: 'Rydych ar y trywydd.',
   },
 
   journey: {

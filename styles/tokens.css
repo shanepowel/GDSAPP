@@ -107,7 +107,7 @@
   --space-6: 32px;
   --space-8: 48px;
   --space-10: 64px;
-  --container-max: 1100px;
+  --container-max: 1200px;
 
   /* Targets. Minimum is WCAG 2.2 AA; control height is the primary action. */
   --target-min: 24px;

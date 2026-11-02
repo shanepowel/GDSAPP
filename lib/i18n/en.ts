@@ -3,8 +3,7 @@ import type { Messages } from '@/lib/i18n/types';
 export const en: Messages = {
   signIn: {
     title: 'Sign in to Assemble',
-    subtitle:
-      'The Turner & Townsend instrument for assembling delivery teams and proving they are the right ones, against the practice and the standard that governs the work.',
+    subtitle: 'Set up, run and assure your delivery teams.',
     tabSignIn: 'Sign in',
     tabRegister: 'Create account',
     email: 'Email',
@@ -16,11 +15,11 @@ export const en: Messages = {
     registerHint: 'Creates your organisation and an admin account. You can invite colleagues later.',
     signInHint: 'Use the email and password for your organisation account.',
     accountCreated: 'Account created. Sign in with your new credentials.',
-    entraSignIn: 'Sign in with Microsoft',
+    entraSignIn: 'Continue with Microsoft',
     orDivider: 'or',
     invalidCredentials: 'Invalid email or password.',
     invalidCredentialsOrSso:
-      'Invalid password, or this account uses Microsoft sign-in only. Use Sign in with Microsoft.',
+      'Invalid password, or this account uses Microsoft sign-in only. Use Continue with Microsoft.',
     databaseNotReady:
       'The database is not provisioned yet. Run npm run db:provision against this environment, or redeploy after migrations are configured (DIRECT_URL on Vercel).',
     singleLoginHint: 'Use your organisation Microsoft account (Turner & Townsend Entra ID).',
@@ -28,7 +27,7 @@ export const en: Messages = {
     demoHint: 'Live demo: NRW discovery in two minutes',
     demoEmail: 'admin@demo.local',
     demoPassword: 'demo-password',
-    demoFillButton: 'Launch demo · NRW discovery',
+    demoFillButton: 'Use a demo account',
   },
   reviews: {
     title: 'Approval chain',

@@ -28,35 +28,68 @@ export const copy = {
   },
 
   home: {
-    eyebrow: 'Delivery practice',
+    eyebrow: 'Delivery teams',
     headline: productIdentity.strapline,
-    sub: 'Not the method, not the schedule. The people who turn up every day. Assemble sets out what good delivery means, scores the capability actually held against it, and assembles the squad for a specific job. Government Digital and Data capability scoring and service standard readiness are built in.',
-    primaryCta: 'Try the demo',
-    secondaryCta: 'Read the practice',
+    sub: 'Assemble helps you staff, set up and assure delivery teams, from bid to aftercare, with public sector rigour built in.',
+    primaryCta: 'See the demo',
+    secondaryCta: 'Book a walkthrough',
     signIn: 'Sign in',
 
     claims: [
       {
-        title: 'Define good, in public',
-        body: 'The playbook is open and readable before you sign in. Five pillars, the ceremonies that feed them, and what each one has to produce. Nothing is scored that the practice does not require.',
-        seeIn: 'See it in Practice',
+        title: 'Build the right team',
+        body: 'Match people to roles on skills, rigour and availability, without overloading anyone.',
       },
       {
-        title: 'See the organisation, then change it',
-        body: 'Circles, roles and the people who hold them, drawn from the live design. Templates, scenarios and vacancies sit on the same view, so a redesign is a visible move rather than a slide.',
-        seeIn: 'See it in People',
+        title: 'Start every engagement well',
+        body: 'Squad shapes, charters and a Sprint Zero checklist mean no more slow, messy starts.',
       },
       {
-        title: 'Assemble the squad',
-        body: `Every candidate scored against the role: capability framework skills first, then adjusted by evidenced delivery discipline. One datum line at ${datumLine} runs through the whole table so a squad reads in a single pass.`,
-        seeIn: 'See it in Squads',
-      },
-      {
-        title: 'Read it through any standard',
-        body: 'The same squad, assessed against the standard that governs the client. GDS, the Wales Digital Service Standard, gateway review, or the information management duties on a capital programme.',
-        seeIn: 'See it in Assurance',
+        title: 'See trouble early',
+        body: 'Four measures, one status and a clear next action on every engagement.',
       },
     ],
+
+    how: {
+      title: 'How it works',
+      steps: [
+        {
+          title: 'Shape',
+          body: 'Check you can staff the work and set up governance before you sign.',
+        },
+        {
+          title: 'Set up',
+          body: 'Pick a squad shape. Assemble drafts the charter, plan and checklist.',
+        },
+        {
+          title: 'Deliver',
+          body: 'Track predictability, quality, team health and client satisfaction every month.',
+        },
+        {
+          title: 'Decide',
+          body: 'Run steering committees and risk locks that end in decisions, not updates.',
+        },
+        {
+          title: 'Support',
+          body: 'Agree aftercare before go-live and handle change without absorbing it.',
+        },
+      ],
+    },
+
+    standards: {
+      title: 'Evidence once, satisfy every framework',
+      body: 'Assemble maps the GDS Service Standard to the Technology Code of Practice, NISTA gateway reviews, ISO 19650, the Construction Playbook and the Building Safety Act golden thread. Record evidence where the work happens and reuse it wherever it is needed.',
+    },
+
+    builtOn: {
+      title: 'Built on how we actually deliver',
+      body: "Assemble encodes Agile WOW, Turner & Townsend's delivery playbook for teams that need agility and rigour at the same time. The rules, templates and checklists come from live engagements, not theory.",
+    },
+
+    close: {
+      title: 'See an engagement from bid to aftercare in ten minutes',
+      cta: 'See the demo',
+    },
 
     credibility: {
       title: 'Unevidenced is not the same as poor',
@@ -77,6 +110,78 @@ export const copy = {
     assurance: { label: 'Assurance', hint: 'readiness against standards' },
     portfolio: { label: 'Portfolio', hint: 'across engagements' },
     stages: 'Delivery stages',
+  },
+
+  shell: {
+    navLabel: 'Main',
+    home: 'Home',
+    engagements: 'Engagements',
+    people: 'People',
+    capability: 'Capability',
+    playbook: 'Playbook',
+    portfolio: 'Portfolio',
+    standards: 'Standards',
+    settings: 'Settings',
+    ask: 'Ask Assemble',
+  },
+
+  lifecycle: {
+    label: 'Lifecycle',
+    shape: 'Shape',
+    sprintZero: 'Sprint Zero',
+    discovery: 'Discovery',
+    alpha: 'Alpha',
+    beta: 'Beta',
+    live: 'Live',
+    operate: 'Operate',
+    done: 'Done',
+    current: 'Current',
+  },
+
+  status: {
+    onTrack: 'On track',
+    atRisk: 'At risk',
+    offTrack: 'Off track',
+  },
+
+  attention: {
+    morning: 'Good morning',
+    afternoon: 'Good afternoon',
+    evening: 'Good evening',
+    morningNamed: 'Good morning, {name}',
+    afternoonNamed: 'Good afternoon, {name}',
+    eveningNamed: 'Good evening, {name}',
+    needsAttention: '{count} things need your attention.',
+    needsAttentionOne: '1 thing needs your attention.',
+    clear: 'Nothing needs your attention right now.',
+    needsTitle: 'Needs attention',
+    mineTitle: 'My engagements',
+    open: 'Open',
+    emptyTitle: 'No engagements yet',
+    emptyBody: 'Create one to start staffing your squad and setting up Sprint Zero.',
+    newEngagement: 'New engagement',
+    exploreDemo: 'Explore the demo engagement',
+  },
+
+  nextAction: {
+    riskLock: 'Book a risk lock. This engagement is off track.',
+    recovery: 'Add a recovery plan this week.',
+    steeringPack: 'Draft the steering committee pack for {date}.',
+    steeringPackOpen: 'Draft the steering committee pack.',
+    confirmDecisions: 'Confirm {n} decisions in writing.',
+    sprintZero: 'Finish {n} Sprint Zero items before {date}.',
+    sprintZeroOpen: 'Finish {n} Sprint Zero items.',
+    triageChange: 'Triage change request {ref}.',
+    assessChange: 'Assess change request {ref}.',
+    keelEnd: "Set an end date for {person}'s exception.",
+    aftercare: 'Set up aftercare before go-live on {date}.',
+    aftercareOpen: 'Set up aftercare before go-live.',
+    monthlyReport: "Draft this month's report.",
+    surveyHealth: "Send this month's team health check.",
+    surveyPulse: "Send this month's pulse.",
+    charterReview: 'Review the squad charter at your next retrospective.',
+    onTrack: 'You are on track. Next milestone: {milestone} on {date}.',
+    onTrackOpen: 'You are on track.',
   },
 
   journey: {

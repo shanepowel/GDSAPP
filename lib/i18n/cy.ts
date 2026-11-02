@@ -3,8 +3,7 @@ import type { Messages } from '@/lib/i18n/types';
 export const cy: Messages = {
   signIn: {
     title: 'Mewngofnodi i Assemble',
-    subtitle:
-      'Offeryn Turner & Townsend ar gyfer cydosod timau cyflawni a phrofi mai nhw yw’r rhai cywir, yn erbyn yr ymarfer a’r safon sy’n llywodraethu’r gwaith.',
+    subtitle: 'Sefydlu, rhedeg a sicrhau eich timau cyflawni.',
     tabSignIn: 'Mewngofnodi',
     tabRegister: 'Creu cyfrif',
     email: 'E-bost',
@@ -17,11 +16,11 @@ export const cy: Messages = {
       'Yn creu eich sefydliad a chyfrif gweinyddwr. Gallwch wahodd cydweithwyr yn ddiweddarach.',
     signInHint: 'Defnyddiwch yr e-bost a chyfrinair ar gyfer eich cyfrif sefydliad.',
     accountCreated: 'Crëwyd y cyfrif. Mewngofnodwch gyda manylion newydd.',
-    entraSignIn: 'Mewngofnodi gyda Microsoft',
+    entraSignIn: 'Parhau gyda Microsoft',
     orDivider: 'neu',
     invalidCredentials: 'E-bost neu gyfrinair annilys.',
     invalidCredentialsOrSso:
-      'Cyfrinair annilys, neu mae’r cyfrif hwn yn defnyddio Microsoft yn unig. Defnyddiwch Mewngofnodi gyda Microsoft.',
+      'Cyfrinair annilys, neu mae’r cyfrif hwn yn defnyddio Microsoft yn unig. Defnyddiwch Parhau gyda Microsoft.',
     databaseNotReady:
       'Nid yw’r gronfa ddata wedi’i darparu eto. Rhedegwch npm run db:provision ar gyfer yr amgylchedd hwn, neu ail-ddatblygu ar ôl ffurfweddu migrasiynau (DIRECT_URL ar Vercel).',
     singleLoginHint: 'Defnyddiwch eich cyfrif Microsoft sefydliad (Entra ID Turner & Townsend).',
@@ -29,7 +28,7 @@ export const cy: Messages = {
     demoHint: 'Demo byw: darganfod NRW mewn dwy funud',
     demoEmail: 'admin@demo.local',
     demoPassword: 'demo-password',
-    demoFillButton: 'Lansio demo · darganfod NRW',
+    demoFillButton: 'Defnyddio cyfrif demo',
   },
   reviews: {
     title: 'Cadwyn cymeradwyo',

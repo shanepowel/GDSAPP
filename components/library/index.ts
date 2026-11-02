@@ -17,7 +17,10 @@ export type {
   LibraryComponentId,
   PrincipleId,
 } from '@/components/library/guides';
+export { DeliveryStatus } from '@/components/library/DeliveryStatus';
+export { LifecycleBar } from '@/components/library/LifecycleBar';
 export { Cluster, Grid, Inset, Measure, Stack } from '@/components/library/layout';
+export { NextActionCard } from '@/components/library/NextActionCard';
 export { Panel } from '@/components/library/Panel';
 export { SkipLink } from '@/components/library/SkipLink';
 export {
