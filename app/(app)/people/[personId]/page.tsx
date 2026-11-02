@@ -20,7 +20,7 @@ export default function PersonDetailPage() {
   const rigour = (signals ?? []).filter((s) => s.personId === id);
 
   if (!person) {
-    return <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p>;
+    return <p className="text-asm-ink-3">{copy.ui.loading}</p>;
   }
 
   return (
@@ -37,7 +37,7 @@ export default function PersonDetailPage() {
         })}
       />
 
-      <h2 className="mt-8 mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mt-8 mb-3 text-lg font-bold text-asm-brand">
         {copy.people.skillsHeld}
       </h2>
       {person.skills.length ? (
@@ -49,10 +49,10 @@ export default function PersonDetailPage() {
           ))}
         </ul>
       ) : (
-        <p className="text-[color:var(--graphite)]">{copy.people.noSkills}</p>
+        <p className="text-asm-ink-3">{copy.people.noSkills}</p>
       )}
 
-      <h2 className="mt-8 mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mt-8 mb-3 text-lg font-bold text-asm-brand">
         {copy.people.assignments}
       </h2>
       {assignments.length ? (
@@ -65,10 +65,10 @@ export default function PersonDetailPage() {
           ))}
         </ul>
       ) : (
-        <p className="text-[color:var(--graphite)]">{copy.people.noAssignments}</p>
+        <p className="text-asm-ink-3">{copy.people.noAssignments}</p>
       )}
 
-      <h2 className="mt-8 mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mt-8 mb-3 text-lg font-bold text-asm-brand">
         {copy.people.rigourSignals}
       </h2>
       {rigour.length === 0 ? (
@@ -85,10 +85,10 @@ export default function PersonDetailPage() {
               <div>
                 {r.type.replaceAll('_', ' ')}
                 {r.note ? (
-                  <div className="font-data text-[10px] text-[color:var(--graphite)]">{r.note}</div>
+                  <div className="font-data text-[10px] text-asm-ink-3">{r.note}</div>
                 ) : null}
               </div>
-              <div className="font-data text-right text-[color:var(--graphite)]">{r.provenance}</div>
+              <div className="font-data text-right text-asm-ink-3">{r.provenance}</div>
               <div className="font-data text-right tabular-nums">{r.value.toFixed(2)}</div>
             </div>
           ))}

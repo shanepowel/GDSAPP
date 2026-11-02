@@ -74,7 +74,7 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
 
   return (
     <div className="mb-10">
-      <p className="mb-4 text-[12.5px] text-[color:var(--graphite)]">{copy.walkthrough.liveHint}</p>
+      <p className="mb-4 text-[12.5px] text-asm-ink-3">{copy.walkthrough.liveHint}</p>
 
       <FigureFrame
         id="figure-squad"
@@ -112,7 +112,7 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
         ]}
       />
 
-      <h2 className="mb-3 mt-8 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-3 mt-8 text-lg font-bold text-asm-brand">
         {copy.walkthrough.rolesHeading}
       </h2>
 
@@ -141,12 +141,12 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
                   <tr key={role.rid}>
                     <td>
                       <div className="font-semibold">{role.title}</div>
-                      <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{meta}</div>
+                      <div className="font-data text-[10.5px] text-asm-ink-3">{meta}</div>
                     </td>
                     <td colSpan={2}>
                       <span className="flag flag-risk">{copy.walkthrough.notFilled}</span>
                       {top ? (
-                        <div className="mt-1 font-data text-[10.5px] text-[color:var(--graphite)]">
+                        <div className="mt-1 font-data text-[10.5px] text-asm-ink-3">
                           {top.enoughTime
                             ? fillCopy(copy.walkthrough.bestAvailableNamed, {
                                 name: top.person.name,
@@ -189,11 +189,11 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
                 <tr key={role.rid}>
                   <td>
                     <div className="font-semibold">{role.title}</div>
-                    <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{meta}</div>
+                    <div className="font-data text-[10.5px] text-asm-ink-3">{meta}</div>
                   </td>
                   <td>
                     <div className="font-semibold">{person.name}</div>
-                    <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{person.role}</div>
+                    <div className="font-data text-[10.5px] text-asm-ink-3">{person.role}</div>
                   </td>
                   <td>
                     <FitStrip fit={fit} candidateName={person.name} />
@@ -219,7 +219,7 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
         </table>
       </div>
 
-      <ul className="mb-4 mt-3 flex flex-wrap gap-x-5 gap-y-2 font-data text-[10px] text-[color:var(--graphite)]">
+      <ul className="mb-4 mt-3 flex flex-wrap gap-x-5 gap-y-2 font-data text-[10px] text-asm-ink-3">
         <li className="flex items-center gap-2">
           <span className="legend-swatch is-held" aria-hidden />
           {copy.legend.held}
@@ -261,7 +261,7 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
         >
           {copy.walkthrough.startAgain}
         </button>
-        <p className="m-0 text-[12.5px] text-[color:var(--graphite)]">
+        <p className="m-0 text-[12.5px] text-asm-ink-3">
           {health.coreGaps > 0 ? copy.walkthrough.coverEssential : copy.walkthrough.confirmHint}
         </p>
       </div>

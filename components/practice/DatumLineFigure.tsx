@@ -11,10 +11,10 @@ export function DatumLineFigure() {
   const line = formatDatumLine();
   return (
     <section id="datum-line" className="datum-line-section">
-      <h2 className="mb-2 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-2 text-lg font-bold text-asm-brand">
         {copy.datumLine.title}
       </h2>
-      <p className="mb-4 max-w-[62ch] text-[color:var(--graphite)]">
+      <p className="mb-4 max-w-[62ch] text-asm-ink-3">
         {fillCopy(copy.datumLine.body, { line })}
       </p>
       <figure>

@@ -100,7 +100,7 @@ export default function TeamPage() {
       >
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block text-sm">
-            <span className="mb-1 block font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
+            <span className="mb-1 block text-[13px] font-semibold text-asm-ink-2">
               {m.engagement.personName}
             </span>
             <input

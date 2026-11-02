@@ -25,7 +25,7 @@ export default function RolesPage() {
         {cards.map((r) => (
           <article key={r.id} className="role-card">
             <h3 className="font-[family-name:var(--font-cond)] text-sm font-semibold">{r.title}</h3>
-            <p className="font-data text-[10.5px] text-[color:var(--graphite)]">{r.group}</p>
+            <p className="font-data text-[10.5px] text-asm-ink-3">{r.group}</p>
             <p className="mt-2">{r.what}</p>
             <p className="role-why">
               <b>{copy.roles.withoutLabel}:</b> {r.without}
@@ -37,7 +37,7 @@ export default function RolesPage() {
         ))}
       </div>
 
-      <h2 className="mb-3 mt-10 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-3 mt-10 text-lg font-bold text-asm-brand">
         {copy.roles.discoveryTitle}
       </h2>
       <div className="sheet overflow-x-auto">
@@ -61,7 +61,7 @@ export default function RolesPage() {
                   <td>
                     <span className={`flag ${role.crit === 'core' ? 'flag-risk' : ''}`}>{essential}</span>
                   </td>
-                  <td className="text-[color:var(--graphite)]">{card?.without ?? '—'}</td>
+                  <td className="text-asm-ink-3">{card?.without ?? '—'}</td>
                 </tr>
               );
             })}

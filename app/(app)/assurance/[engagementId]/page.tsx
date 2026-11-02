@@ -1,5 +1,6 @@
 'use client';
 
+import { SpineFrame } from '@/components/engagement/screens';
 import { useParams, useRouter } from 'next/navigation';
 import { EmptyState, StatStrip, TextLink } from '@/components/datum/PageChrome';
 import { AssuranceTeaching } from '@/components/teach/AssuranceTeaching';
@@ -47,17 +48,17 @@ export default function AssurancePage() {
     engagement?.standardId === 'gds' ? copy.squads.standardGds : copy.squads.standardWales;
 
   return (
-    <>
+    <SpineFrame id={id}>
       <AssuranceTeaching />
 
-      <h2 className="mb-3 mt-10 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-3 mt-4 text-lg font-bold text-asm-brand">
         {standardLabel}
       </h2>
       <p className="mb-4">
         <TextLink href={`/engagements/${id}/assess`}>{copy.assurance.openAssess}</TextLink>
       </p>
 
-      {isLoading ? <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p> : null}
+      {isLoading ? <p className="text-asm-ink-3">{copy.ui.loading}</p> : null}
       {isError ? <EmptyState title={copy.ui.loadFailed} why={copy.ui.loadFailedWhy} /> : null}
 
       {!isLoading && !isError ? (
@@ -118,11 +119,11 @@ export default function AssurancePage() {
                   >
                     <td className="num">{c.ref}</td>
                     <td>{c.title}</td>
-                    <td className="text-[color:var(--graphite)]">{pillars || '—'}</td>
+                    <td className="text-asm-ink-3">{pillars || '—'}</td>
                     <td>
                       <Verdict value={pointVerdict(point?.status)} />
                     </td>
-                    <td className="font-data text-[10.5px] text-[color:var(--graphite)]">
+                    <td className="font-data text-[10.5px] text-asm-ink-3">
                       {point?.rationale[0] ?? point?.evidenceGaps[0] ?? '-'}
                     </td>
                   </tr>
@@ -132,6 +133,6 @@ export default function AssurancePage() {
           </table>
         </div>
       ) : null}
-    </>
+    </SpineFrame>
   );
 }

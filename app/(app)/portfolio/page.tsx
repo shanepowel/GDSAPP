@@ -36,7 +36,7 @@ export default function PortfolioPage() {
         <DemandFigure label={copy.figures.demandAria} />
       </FigureFrame>
 
-      {isLoading ? <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p> : null}
+      {isLoading ? <p className="text-asm-ink-3">{copy.ui.loading}</p> : null}
       {isError ? <EmptyState title={copy.ui.loadFailed} why={copy.ui.loadFailedWhy} /> : null}
 
       {data ? (
@@ -66,7 +66,7 @@ export default function PortfolioPage() {
             ]}
           />
 
-          <h2 className="mb-3 mt-10 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+          <h2 className="mb-3 mt-10 text-lg font-bold text-asm-brand">
             {copy.portfolio.liveHeading}
           </h2>
           {data.engagements.length === 0 ? (
@@ -114,7 +114,7 @@ export default function PortfolioPage() {
                       <td className="num">
                         {row.gapPointCount}
                         {row.statutoryGapCount > 0 ? (
-                          <div className="font-data text-[10px] uppercase tracking-wide text-[color:var(--graphite)]">
+                          <div className="font-data text-[10px] uppercase tracking-wide text-asm-ink-3">
                             {fillCopy(copy.portfolio.statutoryCount, { count: row.statutoryGapCount })}
                           </div>
                         ) : null}

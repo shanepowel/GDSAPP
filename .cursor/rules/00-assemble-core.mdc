@@ -18,8 +18,9 @@ Assemble is an assurance platform for UK public sector digital and capital deliv
   or evidence.
 - **Scoring lives in `lib/scoring`** as a pure function. Never compute an index, verdict, gap or
   contribution in a component, route handler or PDF layer.
-- **Read from delivery tools, never replace them.** Do not build a backlog, sprint board, test
-  manager, document store or risk register.
+- **Read from delivery tools where they exist.** Do not build a backlog, sprint board, test manager
+  or document store. The engagement spine (RAID log, decisions, change requests, milestones,
+  Compass measures) is in scope: it is the governance record a Squad Lead keeps, not a copy of Jira.
 
 ## Vocabulary — one word per concept, in code and in UI
 
@@ -28,8 +29,14 @@ Assemble is an assurance platform for UK public sector digital and capital deliv
 `circle` / `role` / `product` · `vacant` · `framework` (for NISTA/ISO/RIBA, as distinct from
 `standard`) · `superseded`.
 
-Never use: workspace, project, score (for a single criterion), rating, RAG, pass/fail, issue,
-document (for evidence), recommendation, unstaffed, archived.
+Delivery spine vocabulary (also locked): `squad` · `Squad Lead` · `Delivery Compass` · `measure` ·
+`on track` / `at risk` / `off track` (engagement status) · `RAID log` (risk, assumption, issue,
+dependency) · `decision` · `change request` · `milestone` · `steering committee` · `next action`.
+
+Never use: workspace, project, score (for a single criterion), rating, RAG, pass/fail,
+document (for evidence), recommendation, unstaffed, archived. `issue` is allowed only as a RAID type.
+
+The product is called **Assemble**, by Turner & Townsend. Do not use the older name "Datum" in UI.
 
 ## Refuse these patterns
 

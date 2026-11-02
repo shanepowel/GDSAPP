@@ -32,7 +32,7 @@ export default function PeopleGraphPage() {
           height={560}
         />
       ) : (
-        <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p>
+        <p className="text-asm-ink-3">{copy.ui.loading}</p>
       )}
     </>
   );

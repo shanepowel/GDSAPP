@@ -19,7 +19,7 @@ export default function StandardsPage() {
         lede={copy.practice.standardsLede}
       />
 
-      <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-3 text-lg font-bold text-asm-brand">
         {copy.practice.readyTitle}
       </h2>
       <div className="sheet mb-8">
@@ -32,7 +32,7 @@ export default function StandardsPage() {
         </ul>
       </div>
 
-      <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-3 text-lg font-bold text-asm-brand">
         {copy.practice.doneTitle}
       </h2>
       <div className="sheet mb-8">
@@ -45,11 +45,11 @@ export default function StandardsPage() {
         </ul>
       </div>
 
-      <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-3 text-lg font-bold text-asm-brand">
         {copy.practice.keelTitle}
       </h2>
-      <p className="mb-4 max-w-[62ch] text-[color:var(--graphite)]">{copy.practice.keelLede}</p>
-      <p className="font-data text-sm text-[color:var(--graphite)]">
+      <p className="mb-4 max-w-[62ch] text-asm-ink-3">{copy.practice.keelLede}</p>
+      <p className="font-data text-sm text-asm-ink-3">
         {fillCopy(copy.practice.keelNumbers, { fte: KEEL_SUMMARY.coreRoleMinFte, split })}
       </p>
     </>

@@ -1193,7 +1193,7 @@ export const copy = {
     squadShapeAria:
       'Squad shape: circle size shows how much of a person the role needs. Dashed circles are unfilled.',
     demand:
-      'What the book of work needs against what we hold, in full-time equivalents. Survey pink is demand, ink is capability. Accessibility is the one to act on: demand across four engagements and nobody at all, which is also the most common reason services fail assessment.',
+      'What the book of work needs against what we hold, in full-time equivalents. Amber is demand, navy is capability. Accessibility is the one to act on: demand across four engagements and nobody at all, which is also the most common reason services fail assessment.',
     demandAria: 'Demand against capability held, by role.',
   },
 

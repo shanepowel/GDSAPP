@@ -55,9 +55,20 @@ Rules that still hold: tokens only, status is glyph plus label plus wash, every 
 | Shell (sidebar, context bar) | `components/shell/AppShell.tsx` |
 | `/practice/components` | `components/library/Catalogue.tsx` |
 
-Screens not yet rebuilt (People, Capability, Playbook, Portfolio, Standards, Settings, the Squad tab)
-use the legacy styles but pick up the T&T palette from `tokens.css`. Rebuild them with the library
-the same way: keep the existing tRPC calls and copy keys, replace the markup.
+Every other screen (People, Capability, Playbook, Portfolio, Standards, Settings, profile,
+benchmarking, handover and the rest) is brought into the same look in two places, so it does not
+need its own rebuild to match:
+
+- `components/datum/PageChrome.tsx`: PageHeader, StatStrip, EmptyState and TextLink use the library styles.
+- `app/globals.css`, "Redesign overrides for legacy classes": `.sheet` tables, `.flag` pills,
+  teaching panels and figures, role cards, the tour bar and teaching buttons.
+
+The Squad and Standards tabs (`/squads/[id]`, `/assurance/[id]`) sit inside `SpineFrame`, so they
+share the engagement header, lifecycle and tabs. When you next touch one of these screens, move its
+markup onto library components rather than adding more global CSS.
+
+The locked rules were updated for this direction: see `.cursor/rules/00-assemble-core.mdc` and
+`10-ui-and-a11y.mdc` (radius, pills, no signal pink, RAID log in scope, delivery vocabulary).
 
 ## Data
 

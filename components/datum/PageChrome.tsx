@@ -14,13 +14,13 @@ export function PageHeader({
   actions?: React.ReactNode;
 }) {
   return (
-    <header className="mb-6">
-      <p className="eyebrow mb-2 text-[color:var(--graphite)]">{eyebrow}</p>
+    <header className="asm-root mb-8 flex flex-col gap-2">
+      <p className="eyebrow m-0">{eyebrow}</p>
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="font-[family-name:var(--font-cond)] text-[30px] font-bold leading-tight">{title}</h1>
-        {actions ? <div className="mb-1 flex flex-wrap items-center gap-3">{actions}</div> : null}
+        <h1 className="m-0 text-[30px] font-bold leading-tight text-asm-brand">{title}</h1>
+        {actions ? <div className="mb-1 flex flex-wrap items-center gap-2.5">{actions}</div> : null}
       </div>
-      {lede ? <p className="mt-2 max-w-[62ch] text-[color:var(--graphite)]">{lede}</p> : null}
+      {lede ? <p className="m-0 max-w-[68ch] text-base text-asm-ink-3">{lede}</p> : null}
     </header>
   );
 }
@@ -41,14 +41,11 @@ export function EmptyState({
   actionLabel?: string;
 }) {
   return (
-    <div
-      className="max-w-[54ch] border border-[color:var(--rule)] bg-[var(--raised)] px-5 py-6"
-      style={{ borderRadius: 'var(--radius)' }}
-    >
-      <p className="font-[family-name:var(--font-cond)] text-[17px] font-semibold">{title}</p>
-      <p className="mt-2 text-[15px] text-[color:var(--graphite)]">{why}</p>
+    <div className="flex max-w-[60ch] flex-col items-start gap-2 rounded-asm-lg border border-dashed border-asm-line-strong bg-asm-surface px-6 py-8">
+      <p className="m-0 text-base font-bold text-asm-brand">{title}</p>
+      <p className="m-0 text-sm text-asm-ink-2">{why}</p>
       {actionHref && actionLabel ? (
-        <ButtonLink href={actionHref} className="mt-4">
+        <ButtonLink href={actionHref} className="mt-2">
           {actionLabel}
         </ButtonLink>
       ) : null}
@@ -59,14 +56,12 @@ export function EmptyState({
 export function StatStrip({ items }: { items: { label: string; value: string; note?: string }[] }) {
   const cols = items.length >= 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3';
   return (
-    <div className={`mb-6 grid grid-cols-1 gap-px bg-[var(--rule)] ${cols}`}>
+    <div className={`mb-8 grid grid-cols-1 gap-4 ${cols}`}>
       {items.map((item) => (
-        <div key={item.label} className="bg-[var(--raised)] p-4">
-          <div className="font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
-            {item.label}
-          </div>
-          <div className="mt-1 font-data text-[26px] tabular-nums">{item.value}</div>
-          {item.note ? <div className="text-[12px] text-[color:var(--graphite)]">{item.note}</div> : null}
+        <div key={item.label} className="flex flex-col gap-1 rounded-asm-lg border border-asm-line bg-asm-surface px-5 py-4">
+          <span className="text-sm text-asm-ink-3">{item.label}</span>
+          <span className="text-[28px] font-bold leading-tight text-asm-brand tabular-nums">{item.value}</span>
+          {item.note ? <span className="text-xs text-asm-ink-3">{item.note}</span> : null}
         </div>
       ))}
     </div>
@@ -75,7 +70,7 @@ export function StatStrip({ items }: { items: { label: string; value: string; no
 
 export function FitLegend({ copy }: { copy: Copy['legend'] }) {
   return (
-    <ul className="mb-4 flex flex-wrap gap-x-5 gap-y-2 font-data text-[10px] text-[color:var(--graphite)]">
+    <ul className="mb-4 flex flex-wrap gap-x-5 gap-y-2 font-data text-[10px] text-asm-ink-3">
       <li className="flex items-center gap-2">
         <span className="legend-swatch is-held" aria-hidden />
         {copy.held}
@@ -102,7 +97,10 @@ export function FitLegend({ copy }: { copy: Copy['legend'] }) {
 
 export function TextLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="text-sm underline-offset-2 hover:underline">
+    <Link
+      href={href}
+      className="inline-flex min-h-9 items-center rounded-asm border border-asm-line-strong bg-asm-surface px-3.5 text-sm font-semibold text-asm-brand no-underline hover:border-asm-brand-soft hover:bg-asm-brand-wash"
+    >
       {children}
     </Link>
   );

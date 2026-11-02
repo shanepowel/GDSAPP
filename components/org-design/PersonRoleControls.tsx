@@ -47,7 +47,7 @@ export function AddPersonForm({
       }}
     >
       <label className="text-sm">
-        <span className="mb-1 block font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
+        <span className="mb-1 block text-[13px] font-semibold text-asm-ink-2">
           {copy.people.name}
         </span>
         <input
@@ -59,7 +59,7 @@ export function AddPersonForm({
         />
       </label>
       <label className="text-sm">
-        <span className="mb-1 block font-data text-[9.5px] uppercase tracking-[0.12em] text-[color:var(--graphite)]">
+        <span className="mb-1 block text-[13px] font-semibold text-asm-ink-2">
           {copy.people.email}
         </span>
         <input

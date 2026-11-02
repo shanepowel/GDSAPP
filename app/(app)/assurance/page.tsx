@@ -22,7 +22,7 @@ export default function AssuranceIndexPage() {
     <>
       <AssuranceTeaching />
 
-      {isLoading ? <p className="mt-8 text-[color:var(--graphite)]">{copy.ui.loading}</p> : null}
+      {isLoading ? <p className="mt-8 text-asm-ink-3">{copy.ui.loading}</p> : null}
       {isError ? (
         <div className="mt-8">
           <EmptyState title={copy.ui.loadFailed} why={copy.ui.loadFailedWhy} />
@@ -40,7 +40,7 @@ export default function AssuranceIndexPage() {
       ) : null}
       {!isLoading && !isError && (data?.length ?? 0) > 0 ? (
         <>
-          <h2 className="mb-3 mt-10 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+          <h2 className="mb-3 mt-10 text-lg font-bold text-asm-brand">
             {copy.walkthrough.engagementsHeading}
           </h2>
           <p className="mb-4">

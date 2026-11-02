@@ -36,7 +36,7 @@ export function WalkthroughPersonPanel({ person }: { person: WalkthroughPerson }
       <h1 className="mb-2 font-[family-name:var(--font-cond)] text-[22px] font-bold leading-tight">
         {person.name}
       </h1>
-      <p className="mb-3.5 font-data text-[10.5px] text-[color:var(--graphite)]">
+      <p className="mb-3.5 font-data text-[10.5px] text-asm-ink-3">
         {fillCopy(copy.walkthrough.personMeta, {
           role: person.role,
           free: person.free.toFixed(1),
@@ -44,18 +44,18 @@ export function WalkthroughPersonPanel({ person }: { person: WalkthroughPerson }
       </p>
       {top ? (
         <>
-          <h2 className="mb-2 mt-4 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+          <h2 className="mb-2 mt-4 text-lg font-bold text-asm-brand">
             {fillCopy(copy.people.bestSuitedHeading, { title: top.role.title })}
           </h2>
           <FitStrip fit={top.fit} candidateName={person.name} />
-          <p className="font-data text-[10.5px] text-[color:var(--graphite)]">
+          <p className="font-data text-[10.5px] text-asm-ink-3">
             {fillCopy(copy.people.overallMeta, {
               comp: top.fit.compositeScore.toFixed(2),
               skill: top.fit.skillScore.toFixed(2),
               evidence: top.fit.rigourMultiplier.toFixed(2),
             })}
           </p>
-          <h2 className="mb-2 mt-5 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+          <h2 className="mb-2 mt-5 text-lg font-bold text-asm-brand">
             {copy.people.skillsWorking}
           </h2>
           {top.fit.breakdown.skillContributions.map((c) => (
@@ -74,7 +74,7 @@ export function WalkthroughPersonPanel({ person }: { person: WalkthroughPerson }
           ))}
         </>
       ) : null}
-      <h2 className="mb-2 mt-5 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-2 mt-5 text-lg font-bold text-asm-brand">
         {copy.people.rigourSignals}
       </h2>
       {unev ? (
@@ -86,14 +86,14 @@ export function WalkthroughPersonPanel({ person }: { person: WalkthroughPerson }
           <div key={`${r.type}-${r.note}`} className="datum-drawer-row">
             <div>
               {signalLabel(copy, r.type)}
-              <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{r.note}</div>
+              <div className="font-data text-[10.5px] text-asm-ink-3">{r.note}</div>
             </div>
             <div className="lvl">{copy.signals[r.provenance]}</div>
             <div className="val">{r.value.toFixed(2)}</div>
           </div>
         ))
       )}
-      <h2 className="mb-2 mt-5 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-2 mt-5 text-lg font-bold text-asm-brand">
         {copy.people.fitAcross}
       </h2>
       {scored.map((s) => (
@@ -130,7 +130,7 @@ export function WalkthroughRolePanel({
       <h1 className="mb-2 font-[family-name:var(--font-cond)] text-[22px] font-bold leading-tight">
         {role.title}
       </h1>
-      <p className="mb-3 font-data text-[10.5px] text-[color:var(--graphite)]">
+      <p className="mb-3 font-data text-[10.5px] text-asm-ink-3">
         {fillCopy(copy.walkthrough.roleMeta, {
           fte: role.fte.toFixed(1),
           level: copy.levels[role.min],
@@ -145,7 +145,7 @@ export function WalkthroughRolePanel({
           </p>
         </div>
       ) : null}
-      <h2 className="mb-2 mt-5 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-2 mt-5 text-lg font-bold text-asm-brand">
         {copy.walkthrough.roleSkillsHeading}
       </h2>
       {role.skills.map((s) => (
@@ -155,7 +155,7 @@ export function WalkthroughRolePanel({
           <div className="val">{fillCopy(copy.walkthrough.skillWeight, { weight: s.weight })}</div>
         </div>
       ))}
-      <h2 className="mb-3 mt-5 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-3 mt-5 text-lg font-bold text-asm-brand">
         {copy.walkthrough.rankedHeading}
       </h2>
       {list.map((c) => (
@@ -203,7 +203,7 @@ function RankedCard({
       <div className="flex items-baseline justify-between gap-3">
         <div>
           <b>{c.person.name}</b>
-          <div className="font-data text-[10.5px] text-[color:var(--graphite)]">
+          <div className="font-data text-[10.5px] text-asm-ink-3">
             {fillCopy(copy.walkthrough.personMeta, {
               role: c.person.role,
               free: c.person.free.toFixed(1),
@@ -213,7 +213,7 @@ function RankedCard({
         <FitBandCell fit={c.fit} />
       </div>
       <FitStrip fit={c.fit} candidateName={c.person.name} />
-      <div className="font-data text-[10.5px] text-[color:var(--graphite)]">{meta}</div>
+      <div className="font-data text-[10.5px] text-asm-ink-3">{meta}</div>
       <button type="button" className="btn-teach pri mt-2" onClick={onAssign}>
         {copy.walkthrough.assignToRole}
       </button>

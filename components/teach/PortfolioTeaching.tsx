@@ -42,7 +42,7 @@ export function PortfolioTeaching({
         ]}
       />
 
-      <h2 className="mb-3 font-[family-name:var(--font-cond)] text-[17px] font-semibold">
+      <h2 className="mb-3 text-lg font-bold text-asm-brand">
         {copy.portfolio.engagements}
       </h2>
       <div className="sheet overflow-x-auto">

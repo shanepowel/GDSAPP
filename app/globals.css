@@ -859,3 +859,283 @@ aside select option {
   color: var(--ink);
   background: var(--card);
 }
+
+/* ---------- Redesign overrides for legacy classes (T&T library look) ----------
+   Legacy screens use .sheet, .flag, .teach-panel and friends. These rules bring them in line
+   with components/library so every screen reads as one product. Colours come from asm-* tokens. */
+
+body {
+  background: var(--asm-canvas);
+  color: var(--asm-ink);
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.005em;
+  color: var(--asm-brand-text);
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--asm-brand-mid);
+}
+
+.sheet {
+  border: 1px solid var(--asm-line);
+  background: var(--asm-surface);
+  border-radius: var(--asm-radius-lg);
+  overflow: hidden;
+}
+
+.sheet th {
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 600;
+  color: var(--asm-ink-2);
+  background: var(--asm-canvas);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--asm-line);
+}
+
+.sheet td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--asm-line-soft);
+  color: var(--asm-ink);
+}
+
+.sheet th:first-child,
+.sheet td:first-child {
+  padding-left: 24px;
+}
+
+.sheet th:last-child,
+.sheet td:last-child {
+  padding-right: 24px;
+}
+
+.sheet tbody tr.clickable:hover,
+.sheet tbody tr.clickable:focus-visible,
+.sheet tbody tr.is-open td,
+.sheet tbody tr.sheet-detail td {
+  background: var(--asm-brand-wash);
+}
+
+.sheet .row-toggle::before {
+  border-color: transparent transparent transparent var(--asm-brand-text);
+}
+
+.flag {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 3px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--asm-sunk);
+  color: var(--asm-ink-2);
+}
+
+.flag-core {
+  background: var(--asm-brand-wash);
+  color: var(--asm-brand-text);
+}
+
+.flag-risk {
+  background: var(--asm-risk-wash);
+  color: var(--asm-risk-ink);
+}
+
+.flag-ok {
+  background: var(--asm-ok-wash);
+  color: var(--asm-ok-ink);
+}
+
+.teach-panel {
+  border: 0;
+  border-left: 4px solid var(--asm-brand);
+  background: var(--asm-brand-wash);
+  border-radius: var(--asm-radius-lg);
+  padding: 18px 22px;
+  margin: 0 0 24px;
+  color: var(--asm-ink-2);
+}
+
+.teach-panel h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--asm-brand-text);
+}
+
+.teach-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--asm-brand-mid);
+}
+
+.teach-figure {
+  border: 1px solid var(--asm-line);
+  background: var(--asm-surface);
+  border-radius: var(--asm-radius-lg);
+  padding: 22px 24px 16px;
+  margin: 0 0 24px;
+}
+
+.teach-figure figcaption {
+  font-size: 12px;
+  color: var(--asm-ink-3);
+}
+
+.teach-figure figcaption b {
+  color: var(--asm-ink);
+  font-weight: 600;
+}
+
+.teach-note {
+  border-left: 3px solid var(--asm-brand-soft);
+  border-radius: var(--asm-radius);
+  background: var(--asm-sunk);
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+.teach-note-alert {
+  border-left: 3px solid var(--asm-risk);
+  border-radius: var(--asm-radius);
+  background: var(--asm-risk-wash);
+  padding: 12px 16px;
+}
+
+.role-cards {
+  gap: 16px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.role-card {
+  background: var(--asm-surface);
+  border: 1px solid var(--asm-line);
+  border-radius: var(--asm-radius-lg);
+  padding: 20px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.role-card:hover {
+  border-color: var(--asm-brand-soft);
+}
+
+.role-card .role-why {
+  color: var(--asm-ink-3);
+  border-top: 1px solid var(--asm-line-soft);
+}
+
+.demo-banner {
+  background: var(--asm-brand-wash);
+  border-bottom: 1px solid var(--asm-line);
+  color: var(--asm-brand-text);
+}
+
+.stage-pager {
+  border-top: 1px solid var(--asm-line);
+}
+
+.stage-pager-link {
+  font-weight: 600;
+  color: var(--asm-brand-text);
+}
+
+.gds-bridge {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--asm-ink-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role-card {
+    transition: none;
+  }
+}
+
+/* Teaching figures draw with var(--ink); render them in brand navy (light blue in dark mode). */
+.teach-figure {
+  --ink: var(--asm-brand-text);
+  --survey: var(--asm-warn);
+}
+
+/* Teaching buttons, used inside fit tables and the tour bar. */
+.btn-teach {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  border: 1px solid var(--asm-line-strong);
+  padding: 6px 14px;
+  min-height: 32px;
+  border-radius: var(--asm-radius);
+  background: var(--asm-surface);
+  color: var(--asm-brand-text);
+}
+
+.btn-teach:hover:not(:disabled) {
+  border-color: var(--asm-brand-soft);
+  background: var(--asm-brand-wash);
+}
+
+.btn-teach.pri {
+  background: var(--asm-brand);
+  border-color: var(--asm-brand);
+  color: var(--asm-on-brand);
+}
+
+.btn-teach.pri:hover:not(:disabled) {
+  background: var(--asm-brand-hover);
+}
+
+/* Tour bar sits beside the 256px sidebar on the brand-deep navy. */
+.tour-bar {
+  left: 256px;
+  background: var(--asm-brand-deep);
+  color: var(--asm-on-brand);
+  border-top: 1px solid var(--asm-on-brand-line);
+}
+
+.tour-bar .btn-teach {
+  background: transparent;
+  border-color: var(--asm-on-brand-line);
+  color: var(--asm-on-brand);
+}
+
+.tour-bar .btn-teach:hover:not(:disabled) {
+  background: var(--asm-brand-hover);
+  border-color: var(--asm-on-brand-2);
+}
+
+.tour-bar .btn-teach.pri {
+  background: var(--asm-white);
+  border-color: var(--asm-white);
+  color: var(--asm-brand);
+}
+
+.tour-bar .btn-teach.pri:hover:not(:disabled) {
+  background: var(--asm-brand-tint);
+}
+
+.tour-bar .btn-teach.ghost {
+  border: none;
+  background: transparent;
+}
+
+@media (max-width: 860px) {
+  .tour-bar {
+    left: 0;
+  }
+}

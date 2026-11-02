@@ -99,16 +99,16 @@ export default function PeoplePage() {
 
       <h2
         id="pool"
-        className="mb-3 mt-10 scroll-mt-6 font-[family-name:var(--font-cond)] text-[17px] font-semibold"
+        className="mb-3 mt-10 scroll-mt-6 text-lg font-bold text-asm-brand"
       >
         {copy.people.pool}
       </h2>
       <AddPersonForm roleEntities={roleEntities} />
       {roleEntities.length === 0 ? (
-        <p className="mb-3 text-sm text-[color:var(--graphite)]">{copy.people.noRolesYet}</p>
+        <p className="mb-3 text-sm text-asm-ink-3">{copy.people.noRolesYet}</p>
       ) : null}
       {isLoading ? (
-        <p className="text-[color:var(--graphite)]">{copy.ui.loading}</p>
+        <p className="text-asm-ink-3">{copy.ui.loading}</p>
       ) : isError ? (
         <EmptyState title={copy.ui.loadFailed} why={copy.ui.loadFailedWhy} />
       ) : people.length === 0 ? (
@@ -165,7 +165,7 @@ export default function PeoplePage() {
                       </td>
                       <td className="num">
                         {free.toFixed(1)}
-                        <div className="text-[10px] uppercase tracking-wide text-[color:var(--graphite)]">
+                        <div className="text-[10px] uppercase tracking-wide text-asm-ink-3">
                           {copy.people.available}
                         </div>
                       </td>
@@ -195,7 +195,7 @@ export default function PeoplePage() {
                                   <li key={`${s.type}-${s.observedAt}`} className="flex flex-wrap gap-2">
                                     <span>{label}</span>
                                     {s.ceremony ? (
-                                      <span className="text-[color:var(--graphite)]">
+                                      <span className="text-asm-ink-3">
                                         {copy.ui.ceremony}: {s.ceremony}
                                       </span>
                                     ) : null}
@@ -214,7 +214,7 @@ export default function PeoplePage() {
                               ))}
                             </ul>
                           ) : (
-                            <p className="text-sm text-[color:var(--graphite)]">{copy.people.noSkills}</p>
+                            <p className="text-sm text-asm-ink-3">{copy.people.noSkills}</p>
                           )}
                           <p className="mt-3">
                             <Link href={`/people/${p.id}`} className="text-sm underline-offset-2 hover:underline">

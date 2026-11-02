@@ -1,3 +1,5 @@
+> **Superseded in part (November 2026).** The visual direction below (2px radius, drafting-stock surfaces, survey-pink signal) has been replaced by the Turner & Townsend redesign. Use `docs/redesign/README.md` and `.cursor/rules/10-ui-and-a11y.mdc` for colour, radius and components. Accessibility, verdict and TitleBlock rules here still apply.
+
 # 01 — Design System
 
 Read this before writing any UI. Every colour and type decision in the app derives from this file.

@@ -1178,7 +1178,7 @@ export const copyCy: Copy = {
     squadShapeAria:
       'Siâp sgwad: mae maint y cylch yn dangos faint o berson y mae’r rôl ei angen. Cylchoedd toredig yw heb eu llenwi.',
     demand:
-      'Yr hyn y mae llyfr y gwaith ei angen yn erbyn yr hyn a ddelir, mewn cyfwerth llawn amser. Pinc arolwg yw galw, inc yw gallu. Hygyrchedd yw’r un i weithredu arno: galw ar draws pedwar ymgysylltiad a neb o gwbl, sydd hefyd yn y rheswm mwyaf cyffredin y mae gwasanaethau yn methu asesiad.',
+      'Yr hyn y mae llyfr y gwaith ei angen yn erbyn yr hyn a ddelir, mewn cyfwerth llawn amser. Ambr yw galw, glas tywyll yw gallu. Hygyrchedd yw’r un i weithredu arno: galw ar draws pedwar ymgysylltiad a neb o gwbl, sydd hefyd yn y rheswm mwyaf cyffredin y mae gwasanaethau yn methu asesiad.',
     demandAria: 'Galw yn erbyn gallu a ddelir, yn ôl rôl.',
   },
 
