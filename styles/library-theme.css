@@ -1,0 +1,58 @@
+/*
+ * Component library theme. Maps the asm-* tokens in styles/tokens.css to Tailwind utilities
+ * (bg-asm-brand, text-asm-ink, border-asm-line, rounded-asm...). No hex values here: every
+ * colour is defined once in styles/tokens.css.
+ */
+@theme inline {
+  --color-asm-brand: var(--asm-brand);
+  --color-asm-brand-hover: var(--asm-brand-hover);
+  --color-asm-brand-deep: var(--asm-brand-deep);
+  --color-asm-brand-mid: var(--asm-brand-mid);
+  --color-asm-brand-soft: var(--asm-brand-soft);
+  --color-asm-brand-tint: var(--asm-brand-tint);
+  --color-asm-brand-wash: var(--asm-brand-wash);
+  --color-asm-brand-wash-2: var(--asm-brand-wash-2);
+  --color-asm-black: var(--asm-black);
+  --color-asm-white: var(--asm-white);
+  --color-asm-canvas: var(--asm-canvas);
+  --color-asm-surface: var(--asm-surface);
+  --color-asm-sunk: var(--asm-sunk);
+  --color-asm-line: var(--asm-line);
+  --color-asm-line-soft: var(--asm-line-soft);
+  --color-asm-line-strong: var(--asm-line-strong);
+  --color-asm-ink: var(--asm-ink);
+  --color-asm-ink-2: var(--asm-ink-2);
+  --color-asm-ink-3: var(--asm-ink-3);
+  --color-asm-on-brand: var(--asm-on-brand);
+  --color-asm-on-brand-2: var(--asm-on-brand-2);
+  --color-asm-on-brand-3: var(--asm-on-brand-3);
+  --color-asm-on-brand-line: var(--asm-on-brand-line);
+  --color-asm-ok: var(--asm-ok);
+  --color-asm-ok-ink: var(--asm-ok-ink);
+  --color-asm-ok-wash: var(--asm-ok-wash);
+  --color-asm-warn: var(--asm-warn);
+  --color-asm-warn-ink: var(--asm-warn-ink);
+  --color-asm-warn-wash: var(--asm-warn-wash);
+  --color-asm-warn-wash-2: var(--asm-warn-wash-2);
+  --color-asm-warn-line: var(--asm-warn-line);
+  --color-asm-risk: var(--asm-risk);
+  --color-asm-risk-ink: var(--asm-risk-ink);
+  --color-asm-risk-wash: var(--asm-risk-wash);
+  --radius-asm: var(--asm-radius);
+  --radius-asm-lg: var(--asm-radius-lg);
+  --shadow-asm-pop: var(--asm-shadow-pop);
+}
+
+/*
+ * Library surfaces opt out of the legacy heading and table-header rules in app/globals.css.
+ * Those rules are unlayered, so they would beat Tailwind utilities. `revert-layer` hands colour,
+ * font and spacing back to the utility classes on each element.
+ */
+.asm-root h1,
+.asm-root h2,
+.asm-root h3,
+.asm-root th {
+  font-family: revert-layer;
+  letter-spacing: revert-layer;
+  color: revert-layer;
+}

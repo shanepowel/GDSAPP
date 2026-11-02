@@ -12,6 +12,8 @@ import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { ThemeToggle } from '@/components/product/ThemeToggle';
 import { DatumShellProvider } from '@/components/shell/datum-shell-context';
 import { SkipLink } from '@/components/library/SkipLink';
+import { AssembleMark, TurnerTownsendLogo } from '@/components/library/Logo';
+import { BookOpen, Compass, GraduationCap, Home, Layers, Settings, ShieldCheck, Users } from 'lucide-react';
 import { TourBar } from '@/components/shell/TourBar';
 import { TeachToggle } from '@/components/teach/TeachToggle';
 import { DemoBanner } from '@/components/shell/DemoBanner';
@@ -108,64 +110,66 @@ export function DatumAppShell({
 
   return (
     <DatumShellProvider>
-      <div className="grid min-h-screen grid-cols-1 md:grid-cols-[240px_1fr]">
+      <div className="asm-root grid min-h-screen grid-cols-1 md:grid-cols-[256px_1fr]">
         <SkipLink>{c.ui.skipToContent}</SkipLink>
-        <aside className="sticky top-0 z-20 flex h-auto flex-col border-b border-[color:var(--on-navy-rule)] bg-[var(--navy)] text-[color:var(--on-navy)] md:h-screen md:border-b-0 md:border-r md:border-r-[color:var(--on-navy-rule)]">
-          <div className="border-b border-[color:var(--on-navy-rule)] px-5 pb-5 pt-6">
-            <Link href="/" className="block">
-              <span className="block text-[22px] font-bold leading-none tracking-[0.01em]">
-                {c.product.name}
-              </span>
-              <span className="mt-2 block text-[12px] text-[color:var(--on-navy-mute)]">
-                {c.product.owner}
+        <aside className="sticky top-0 z-20 flex h-auto flex-col bg-asm-brand text-asm-on-brand md:h-screen md:overflow-y-auto">
+          <div className="px-5 pb-4 pt-6">
+            <Link href="/" className="flex items-center gap-2.5 text-asm-on-brand no-underline">
+              <AssembleMark />
+              <span className="flex flex-col">
+                <span className="text-lg font-bold leading-none tracking-tight">{c.product.name}</span>
+                <span className="mt-1 text-[12px] text-asm-on-brand-3">{c.product.owner}</span>
               </span>
             </Link>
           </div>
 
           <ShellNav signedIn={signedIn} />
 
-          <div className="border-t border-[color:var(--on-navy-rule)] px-5 py-3">
+          <div className="border-t border-asm-on-brand-line/40 px-5 py-3">
             <TeachToggle />
           </div>
-          <div className="border-t border-[color:var(--on-navy-rule)] px-5 py-3">
+          <div className="border-t border-asm-on-brand-line/40 px-5 py-3">
             <Link
               href="/ai-use"
               aria-current={pathname.startsWith('/ai-use') ? 'page' : undefined}
-              className="inline-flex min-h-11 items-center text-[13px] font-medium text-[color:var(--on-navy)]"
+              className="inline-flex min-h-11 items-center text-[13px] font-medium text-asm-on-brand"
             >
               {c.shell.ask}
             </Link>
           </div>
-          <div className="flex flex-wrap items-center gap-2 border-t border-[color:var(--on-navy-rule)] px-5 py-3 text-[13px]">
+          <div className="flex flex-wrap items-center gap-2 border-t border-asm-on-brand-line/40 px-5 py-3 text-[13px]">
             <LanguageSwitcher />
             <ThemeToggle />
             {signedIn ? (
               <>
-                <Link href={accountHref} className="ml-auto text-[color:var(--on-navy)]">
+                <Link href={accountHref} className="ml-auto text-asm-on-brand">
                   {accountLabel ?? c.home.signIn}
                 </Link>
                 <button
                   type="button"
-                  className="text-[color:var(--on-navy)]"
+                  className="text-asm-on-brand"
                   onClick={() => signOut({ callbackUrl: '/' })}
                 >
                   {c.ui.signOut}
                 </button>
               </>
             ) : (
-              <Link href={accountHref} className="ml-auto text-[color:var(--on-navy)]">
+              <Link href={accountHref} className="ml-auto text-asm-on-brand">
                 {accountLabel ?? c.home.signIn}
               </Link>
             )}
           </div>
-          <div className="px-5 pb-3.5 text-[12px] text-[color:var(--on-navy-mute)]">
-            {c.footer.demonstration}
-            <br />
-            {c.footer.representative}
+          <div className="flex flex-col gap-3 px-5 pb-5 pt-2 text-[12px] text-asm-on-brand-3">
+            <TurnerTownsendLogo height={22} />
+            <span>
+              {c.footer.demonstration}
+              <br />
+              {c.footer.representative}
+            </span>
           </div>
         </aside>
 
-        <main id="main-content" tabIndex={-1} className="min-w-0 bg-[var(--stock)]">
+        <main id="main-content" tabIndex={-1} className="min-w-0 bg-asm-canvas">
           <DemoBanner />
           {showStrip && contextEngagement ? (
             <ContextBar
@@ -173,7 +177,7 @@ export function DatumAppShell({
               engagements={contexts.length ? contexts : [contextEngagement]}
             />
           ) : null}
-          <div className="max-w-[1200px] px-4 pb-28 pt-7 md:px-8">
+          <div className="mx-auto max-w-[1280px] px-4 pb-28 pt-8 md:px-10">
             <StageChrome pathname={pathname}>{children}</StageChrome>
           </div>
         </main>
@@ -184,14 +188,14 @@ export function DatumAppShell({
 }
 
 const SHELL_LINKS = [
-  { href: '/', key: 'home' },
-  { href: '/squads', key: 'engagements' },
-  { href: '/people', key: 'people' },
-  { href: '/roles', key: 'capability' },
-  { href: '/practice', key: 'playbook' },
-  { href: '/portfolio', key: 'portfolio' },
-  { href: '/practice/standards', key: 'standards' },
-  { href: '/settings', key: 'settings' },
+  { href: '/', key: 'home', icon: Home },
+  { href: '/squads', key: 'engagements', icon: Layers },
+  { href: '/people', key: 'people', icon: Users },
+  { href: '/roles', key: 'capability', icon: GraduationCap },
+  { href: '/practice', key: 'playbook', icon: BookOpen },
+  { href: '/portfolio', key: 'portfolio', icon: Compass },
+  { href: '/practice/standards', key: 'standards', icon: ShieldCheck },
+  { href: '/settings', key: 'settings', icon: Settings },
 ] as const;
 
 function shellActive(pathname: string, href: string): boolean {
@@ -222,22 +226,24 @@ function ShellNav({ signedIn }: { signedIn: boolean }) {
   const links = SHELL_LINKS.filter((item) => item.key !== 'settings' || signedIn);
 
   return (
-    <nav aria-label={c.shell.navLabel} className="flex-1 py-3">
-      <ul className="flex gap-1 overflow-x-auto px-3 md:flex-col md:overflow-visible md:px-0">
+    <nav aria-label={c.shell.navLabel} className="flex-1 py-2">
+      <ul className="m-0 flex list-none gap-1 overflow-x-auto px-3 md:flex-col md:overflow-visible">
         {links.map((item) => {
           const active = shellActive(pathname, item.href);
+          const Icon = item.icon;
           return (
             <li key={item.href} className="shrink-0 md:shrink">
               <Link
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
                 className={[
-                  'flex min-h-11 items-center border-l-[3px] px-4 text-[14px] text-[color:var(--on-navy)] md:px-5',
+                  'flex min-h-11 items-center gap-3 whitespace-nowrap rounded-asm px-3 text-[15px] no-underline',
                   active
-                    ? 'border-l-[color:var(--blue)] bg-[var(--on-navy-active)] font-semibold'
-                    : 'border-l-transparent hover:bg-[var(--on-navy-hover)]',
+                    ? 'bg-asm-brand-hover font-semibold text-asm-on-brand'
+                    : 'text-asm-on-brand-2 hover:bg-asm-brand-hover hover:text-asm-on-brand',
                 ].join(' ')}
               >
+                <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
                 {c.shell[item.key]}
               </Link>
             </li>
@@ -270,13 +276,13 @@ function ContextBar({
     engagement.id === 'nrw-demo' ? c.context.demoStandards : engagement.standards.join(' · ') || '-';
 
   return (
-    <div className="flex flex-wrap items-baseline gap-6 border-b border-[color:var(--rule)] bg-[var(--raised)] px-4 py-3.5 md:px-8">
+    <div className="flex flex-wrap items-baseline gap-6 border-b border-asm-line bg-asm-surface px-4 py-3.5 md:px-10">
       <Field label={c.context.engagement}>
         {engagements.length > 1 ? (
           <select
             value={engagement.id}
             aria-label={c.context.changeEngagement}
-            className="rounded-[var(--radius)] border border-[color:var(--rule)] bg-[var(--raised)] px-2 py-1 text-[13px] font-semibold"
+            className="rounded-asm border border-asm-line-strong bg-asm-surface px-2 py-1 text-[13px] font-semibold text-asm-ink"
             onChange={(e) => {
               const next = e.target.value;
               document.cookie = `${ENGAGEMENT_COOKIE}=${next};path=/;max-age=31536000;SameSite=Lax`;
@@ -313,8 +319,8 @@ function ContextBar({
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="text-[13px]">
-      <span className="block text-[12px] text-[color:var(--graphite)]">
+    <div className="text-[13px] font-semibold text-asm-ink">
+      <span className="block text-[12px] font-normal text-asm-ink-3">
         {label}
       </span>
       {children}

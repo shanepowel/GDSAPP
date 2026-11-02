@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @import '../styles/tokens.css';
-@import '../styles/assemble-v2.css';
+@import '../styles/library-theme.css';
 
 @theme inline {
   /* Legacy semantic colours (existing screens) */

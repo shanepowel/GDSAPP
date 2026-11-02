@@ -8,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function ComponentsPage() {
-  return <Catalogue />;
+  return (
+    <div className="asm-root">
+      <Catalogue />
+    </div>
+  );
 }

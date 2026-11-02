@@ -18,7 +18,7 @@ export function Panel({
       style={{
         background: 'var(--raised)',
         border: 'var(--rule-w) solid var(--rule)',
-        borderRadius: 'var(--radius)',
+        borderRadius: 'var(--radius-lg)',
         ...(padding !== undefined ? { padding: space(padding) } : {}),
         ...style,
       }}

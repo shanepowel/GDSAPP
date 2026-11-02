@@ -19,6 +19,19 @@ import { Cluster, Grid, Inset, Measure, Stack } from '@/components/library/layou
 import { Panel } from '@/components/library/Panel';
 import { SPACE_PX, SPACE_STEPS, TYPE_PX, TYPE_ROLES, space, type TypeRole } from '@/components/library/sizing';
 import { Heading, Text, roleStyle } from '@/components/library/type';
+import { AttentionRow } from '@/components/library/AttentionRow';
+import { Badge } from '@/components/library/Badge';
+import { Card, CardBody, CardHeader } from '@/components/library/Card';
+import { Checklist } from '@/components/library/Checklist';
+import { DeliveryStatus } from '@/components/library/DeliveryStatus';
+import { EmptyState } from '@/components/library/EmptyState';
+import { LifecycleBar } from '@/components/library/LifecycleBar';
+import { MeasureTile } from '@/components/library/MeasureTile';
+import { NextActionCard } from '@/components/library/NextActionCard';
+import { PageHeader } from '@/components/library/PageHeader';
+import { Stepper } from '@/components/library/Stepper';
+import { Table, TableScroll, Td, Th } from '@/components/library/Table';
+import { lifecycleLabels } from '@/components/engagement/shared';
 
 export function Catalogue() {
   const { locale } = useI18n();
@@ -382,8 +395,8 @@ function Example({ id, copy }: { id: LibraryComponentId; copy: Copy }) {
           style={{
             display: 'inline-block',
             padding: 'var(--space-2) var(--space-4)',
-            background: 'var(--navy)',
-            color: 'var(--on-navy)',
+            background: 'var(--asm-brand)',
+            color: 'var(--asm-on-brand)',
             borderRadius: 'var(--radius)',
             fontSize: 'var(--type-label-size)',
             fontWeight: 'var(--type-label-weight)',
@@ -392,6 +405,113 @@ function Example({ id, copy }: { id: LibraryComponentId; copy: Copy }) {
           {copy.ui.skipToContent}
         </span>
       );
+    case 'card':
+      return (
+        <Card>
+          <CardHeader title={lib.sampleHeading} description={lib.sampleSecondary} />
+          <CardBody>
+            <Text>{lib.samplePrimary}</Text>
+          </CardBody>
+        </Card>
+      );
+    case 'badge':
+      return (
+        <Cluster gap={2}>
+          <Badge tone="warn">{copy.spine.types.risk}</Badge>
+          <Badge tone="risk">{copy.spine.types.issue}</Badge>
+          <Badge tone="brand">{copy.spine.paymentLinked}</Badge>
+        </Cluster>
+      );
+    case 'delivery-status':
+      return (
+        <Cluster gap={2}>
+          <DeliveryStatus status="on-track" label={copy.status.onTrack} />
+          <DeliveryStatus status="at-risk" label={copy.status.atRisk} />
+          <DeliveryStatus status="off-track" label={copy.status.offTrack} />
+        </Cluster>
+      );
+    case 'lifecycle-bar':
+      return (
+        <LifecycleBar
+          current="discovery"
+          labels={lifecycleLabels(copy)}
+          doneLabel={copy.lifecycle.done}
+          currentLabel={copy.lifecycle.current}
+          ariaLabel={copy.lifecycle.label}
+        />
+      );
+    case 'next-action':
+      return <NextActionCard label={copy.spine.nextActionLabel} sentence={lib.samplePrimary} action={lib.sampleAction} href="#" />;
+    case 'measure-tile':
+      return (
+        <Grid columns={2} gap={4}>
+          <MeasureTile label={copy.spine.predictability} value="83%" onTarget stateLabel={copy.spine.onTarget} trend={[82, 85, 80, 78, 81, 83]} trendLabel={copy.spine.predictability} />
+          <MeasureTile label={copy.spine.teamHealth} value="3.4" onTarget={false} stateLabel={copy.spine.belowTarget} trend={[4.2, 4.1, 4, 3.8, 3.5, 3.4]} trendLabel={copy.spine.teamHealth} />
+        </Grid>
+      );
+    case 'attention-row':
+      return (
+        <ul className="m-0 list-none rounded-asm-lg border border-asm-line bg-asm-surface p-0">
+          <AttentionRow icon="warning" tone="urgent" text={lib.samplePrimary} context={lib.sampleSecondary} cta={lib.sampleAction} href="#" />
+        </ul>
+      );
+    case 'table':
+      return (
+        <Card>
+          <TableScroll minWidth={360}>
+            <Table>
+              <thead>
+                <tr>
+                  <Th>{copy.spine.colEngagement}</Th>
+                  <Th>{copy.spine.colStatus}</Th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <Td>{lib.sampleHeading}</Td>
+                  <Td>
+                    <DeliveryStatus status="on-track" label={copy.status.onTrack} size="sm" />
+                  </Td>
+                </tr>
+              </tbody>
+            </Table>
+          </TableScroll>
+        </Card>
+      );
+    case 'tab-nav':
+      return (
+        <nav aria-label={copy.spine.tabs.label}>
+          <ul className="m-0 flex list-none gap-1 border-b border-asm-line-strong p-0">
+            {(['overview', 'plan', 'compass'] as const).map((key, index) => (
+              <li key={key}>
+                <span
+                  aria-current={index === 0 ? 'page' : undefined}
+                  className={index === 0 ? '-mb-px inline-flex min-h-11 items-center border-b-2 border-asm-brand px-4 font-semibold text-asm-brand' : '-mb-px inline-flex min-h-11 items-center px-4 text-asm-ink-2'}
+                >
+                  {copy.spine.tabs[key]}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      );
+    case 'stepper':
+      return <Stepper steps={copy.spine.steps} current={1} label={copy.spine.steps.join(' · ')} />;
+    case 'checklist':
+      return (
+        <Card>
+          <Checklist
+            items={[
+              { id: 'a', title: copy.spine.checks.charter, done: true },
+              { id: 'b', title: copy.spine.checks.backlog, done: false, meta: lib.sampleSecondary },
+            ]}
+          />
+        </Card>
+      );
+    case 'empty-state':
+      return <EmptyState title={copy.attention.emptyTitle} body={copy.attention.emptyBody} action={<Button>{lib.sampleAction}</Button>} />;
+    case 'page-header':
+      return <PageHeader title={lib.sampleHeading} subtitle={lib.samplePrimary} actions={<Button>{lib.sampleAction}</Button>} />;
     default: {
       const exhaustive: never = id;
       return exhaustive;
