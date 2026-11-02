@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "sh scripts/prisma-env.sh migrate deploy && sh scripts/prisma-env.sh generate && next build",
+    "build": "sh scripts/prisma-env.sh migrate deploy && sh scripts/prisma-env.sh generate && tsx scripts/seed-spine-if-empty.ts && next build",
     "postinstall": "sh scripts/prisma-env.sh generate",
     "start": "next start",
     "db:migrate": "sh scripts/prisma-env.sh migrate dev",
@@ -16,6 +16,8 @@
     "seed:capabilities": "tsx scripts/seed-capability-requirements.ts",
     "job:freshness": "tsx scripts/freshness-decay.ts",
     "seed:demo": "tsx scripts/seed-demo.ts",
+    "seed:spine": "tsx scripts/seed-spine-if-empty.ts",
+    "seed:spine:reset": "tsx scripts/seed-spine-reset.ts",
     "ensure:demo": "tsx scripts/ensure-demo.ts",
     "seed": "npm run ingest && npm run seed:standards && npm run seed:catalog && npm run seed:capabilities && npm run seed:frameworks && npm run seed:archetypes && npm run seed:demo",
     "db:seed-all": "npm run db:deploy && npm run seed",

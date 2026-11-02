@@ -79,6 +79,13 @@ engagement per month) and written by `spine.recordMeasures`. Readings below targ
 
 ## Demo
 
-`npm run seed:demo` fills both NRW demo engagements with checklist, milestones, RAID, decisions,
-change requests, status and six months of readings (`scripts/seed-spine-demo.ts`). Dates are
-relative to the day you seed. Sign in with `/api/auth/demo` or `admin@demo.local` / `demo-password`.
+Every deploy runs `npm run seed:spine` (in the build command). It loads the delivery spine demo
+data (`scripts/seed-spine-demo.ts`) into the two NRW demo engagements: checklist, milestones, RAID,
+decisions, change requests, status and six months of Compass readings. It only runs when those
+engagements exist and have no spine data yet, so it never overwrites what someone has entered,
+and it never fails the build.
+
+- `npm run seed:demo` creates the demo organisation and engagements from scratch (and the spine data).
+- `npm run seed:spine:reset` reloads the spine data and rolls its dates forward to today.
+
+Dates are relative to the day you seed. Sign in with `/api/auth/demo` or `admin@demo.local` / `demo-password`.
