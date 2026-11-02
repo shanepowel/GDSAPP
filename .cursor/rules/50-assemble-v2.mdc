@@ -1,0 +1,45 @@
+---
+description: Rules for the Assemble v2 (Agile WOW) redesign under /v2
+globs:
+  - "app/v2/**"
+  - "components/assemble-v2/**"
+  - "lib/assemble-v2/**"
+  - "styles/assemble-v2.css"
+---
+
+# Assemble v2 (Agile WOW redesign)
+
+Read `docs/redesign/README.md` first, then SPEC.md, COMPONENTS.md, SCREENS.md and WIRING.md.
+
+## Scope
+
+These rules apply to v2 files only. Where they differ from `00-assemble-core.mdc` and
+`10-ui-and-a11y.mdc` (radius, product name, navigation, brand colour, RAID log, some vocabulary), v2
+wins inside v2 paths until Shane decides each item listed in README "Decisions for Shane". Never
+change the existing Datum screens as part of v2 work.
+
+## Must
+
+- Use components from `@/components/assemble-v2`. Add a new one only if no existing component fits;
+  then add it to `index.ts`, COMPONENTS.md and `/v2/components`.
+- Tokens only: `asm-*` Tailwind utilities from `styles/assemble-v2.css`. No hex in components, no raw
+  Tailwind palette classes.
+- Status is On track / At risk / Off track, rendered with `StatusPill` (glyph + label + wash). Never
+  write "RAG" in the UI.
+- Next actions only come from `lib/assemble-v2/next-action.ts`. Change the rule table in SCREENS.md,
+  then the code, then the tests.
+- Screens render types from `lib/assemble-v2/types.ts`. When wiring, map Prisma to these types in
+  `lib/assemble-v2/adapters/`, do not reshape components around database models.
+- Server components by default. `'use client'` only for state, browser APIs or navigation hooks.
+- Next.js 16: `params` and `searchParams` are Promises; `await` them.
+- WCAG 2.2 AA: visible labels, real buttons and links, `aria-labelledby` on cards, focus visible,
+  text 4.5:1, charts have a text alternative.
+- Copy: UK spelling, sentence case, no em dashes, say what happens. Banned words from
+  `30-content-and-copy.mdc` still apply.
+- Demo data is fictional. Never add real client names to `demo-data.ts`.
+
+## Must not
+
+- Compute scores or fit in components (use `lib/scoring`).
+- Let AI write decisions, statuses or judgements. Co-pilot outputs are drafts until a person saves.
+- Build a backlog or sprint board. Read sprint data from Jira or Azure DevOps.
