@@ -10,7 +10,7 @@ export interface StageDef {
   id: StageId;
   number: 1 | 2 | 3 | 4 | 5;
   href: string;
-  extraHrefs?: Array<{ href: string; copyKey: 'roles' | 'ceremonies' }>;
+  extraHrefs?: Array<{ href: string; copyKey: 'roles' | 'ceremonies' | 'components' }>;
   match: RegExp;
   previousId: StageId | null;
   nextId: StageId | null;
@@ -21,7 +21,10 @@ export const STAGE_DEFS: readonly StageDef[] = [
     id: 'define',
     number: 1,
     href: '/practice',
-    extraHrefs: [{ href: '/practice/ceremonies', copyKey: 'ceremonies' }],
+    extraHrefs: [
+      { href: '/practice/ceremonies', copyKey: 'ceremonies' },
+      { href: '/practice/components', copyKey: 'components' },
+    ],
     match: /^\/practice(\/|$)/,
     previousId: null,
     nextId: 'hold',

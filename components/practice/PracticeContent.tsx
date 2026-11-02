@@ -23,6 +23,11 @@ export function PracticeChapters() {
           {copy.practice.looksLikeTitle}
         </h1>
         <p className="mt-2 max-w-[64ch] text-[15px] text-[color:var(--graphite)]">{copy.practice.looksLikeLede}</p>
+        <p className="mt-4">
+          <Link href="/practice/components" className="text-sm underline-offset-2 hover:underline">
+            {copy.journey.components}
+          </Link>
+        </p>
       </section>
 
       <section className="py-10">

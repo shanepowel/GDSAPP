@@ -1,3 +1,5 @@
+import { Panel } from '@/components/library/Panel';
+
 export function Card({
   children,
   className = '',
@@ -8,11 +10,8 @@ export function Card({
   style?: React.CSSProperties;
 }) {
   return (
-    <div
-      className={`rounded-2xl bg-surface shadow-sm ${className}`}
-      style={{ border: '1px solid var(--color-border)', boxShadow: '0 1px 2px rgba(0,0,0,.04)', ...style }}
-    >
+    <Panel className={className} style={style}>
       {children}
-    </div>
+    </Panel>
   );
 }

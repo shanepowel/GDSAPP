@@ -13,6 +13,7 @@ import { getCopy } from '@/lib/copy-i18n';
 import { fitFromStored, type FitBreakdown } from '@/lib/scoring/fit';
 import { trpc } from '@/lib/trpc/client';
 import { Button } from '@/components/ui/Button';
+import { EngagementTabs } from '@/components/engagement/shared';
 
 export default function SquadFitPage() {
   return (
@@ -45,6 +46,7 @@ function SquadFitPageInner() {
 
   return (
     <>
+      <EngagementTabs id={id} copy={copy} />
       <PageHeader
         eyebrow={copy.walkthrough.eyebrow}
         title={copy.walkthrough.archetypeName}

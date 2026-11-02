@@ -24,7 +24,7 @@ Extension (sections 18–27): bid evaluation, agile rigour, evidence layer, adap
 8c. Bid evaluation (18.A): tender schema, `lib/engine/bid.ts`, tender/bid screens
 8d. Adaptation economics (19) + judgements (20)
 8e. Reporting extensions (21): Word export, share link, executive one-pager; Outcome + FrameworkVersion schema (22)
-8. Design system (section 12)
+8. Design system (section 12). Shared controls and the sizing scale are `components/library`, with the implementation guide at `/practice/components`.
 9. Accessibility + axe in CI
 10. Polish + README legal notice
 11. Vercel deploy (section 13)

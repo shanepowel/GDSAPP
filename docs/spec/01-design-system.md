@@ -1,6 +1,10 @@
 # 01 — Design System
 
 Read this before writing any UI. Every colour and type decision in the app derives from this file.
+Shared sizing and standard controls live in `components/library`. The catalogue at
+`/practice/components` is the implementation guide: user need, when to use, sizing, accessibility,
+the Government Digital Service design principle, and the build-sheet step. New layout uses that
+library. Do not introduce a spacing value outside the scale.
 
 ---
 

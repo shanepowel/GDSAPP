@@ -7,10 +7,10 @@
 export const product = {
   name: 'Assemble',
   owner: 'Turner & Townsend',
-  thesis: 'the team is the delivery plan',
-  strapline: 'Assemble the team, then prove it will pass.',
+  thesis: 'how Turner & Townsend sets up, runs and assures delivery teams',
+  strapline: 'Assemble great delivery teams, then keep them great.',
   metaDescription:
-    'Assemble picks the right people for a public sector delivery, scores every role against what the work needs, and shows where a service assessment or gateway review would push back, before it does.',
+    'Assemble helps you staff, set up and assure delivery teams, from bid to aftercare, with public sector rigour built in.',
   /** The datum. Below this, a role is not safely filled. */
   datumLine: 0.6,
 } as const;

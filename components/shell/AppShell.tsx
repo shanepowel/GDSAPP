@@ -11,6 +11,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
 import { ThemeToggle } from '@/components/product/ThemeToggle';
 import { DatumShellProvider } from '@/components/shell/datum-shell-context';
+import { SkipLink } from '@/components/library/SkipLink';
 import { TourBar } from '@/components/shell/TourBar';
 import { TeachToggle } from '@/components/teach/TeachToggle';
 import { DemoBanner } from '@/components/shell/DemoBanner';
@@ -18,7 +19,9 @@ import { StageChrome } from '@/components/shell/StageChrome';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 import { fillCopy } from '@/lib/copy';
-import { STAGE_DEFS, stageDefForPath } from '@/lib/explain/stages';
+import { lifecycleLabels } from '@/components/engagement/shared';
+import { lifecycleStageForPhase } from '@/lib/attention/lifecycle';
+import { stageDefForPath } from '@/lib/explain/stages';
 import { trpc } from '@/lib/trpc/client';
 import type { MaturityLevel } from '@/lib/playbook/keel';
 
@@ -105,7 +108,8 @@ export function DatumAppShell({
 
   return (
     <DatumShellProvider>
-      <div className="grid min-h-screen grid-cols-1 md:grid-cols-[216px_1fr]">
+      <div className="grid min-h-screen grid-cols-1 md:grid-cols-[240px_1fr]">
+        <SkipLink>{c.ui.skipToContent}</SkipLink>
         <aside className="sticky top-0 z-20 flex h-auto flex-col border-b border-[color:var(--on-navy-rule)] bg-[var(--navy)] text-[color:var(--on-navy)] md:h-screen md:border-b-0 md:border-r md:border-r-[color:var(--on-navy-rule)]">
           <div className="border-b border-[color:var(--on-navy-rule)] px-5 pb-5 pt-6">
             <Link href="/" className="block">
@@ -118,12 +122,21 @@ export function DatumAppShell({
             </Link>
           </div>
 
-          <JourneyNav engagementId={contextEngagement?.id} />
+          <ShellNav signedIn={signedIn} />
 
           <div className="border-t border-[color:var(--on-navy-rule)] px-5 py-3">
             <TeachToggle />
           </div>
-          <div className="flex items-center gap-2 border-t border-[color:var(--on-navy-rule)] px-5 py-3 text-[13px]">
+          <div className="border-t border-[color:var(--on-navy-rule)] px-5 py-3">
+            <Link
+              href="/ai-use"
+              aria-current={pathname.startsWith('/ai-use') ? 'page' : undefined}
+              className="inline-flex min-h-11 items-center text-[13px] font-medium text-[color:var(--on-navy)]"
+            >
+              {c.shell.ask}
+            </Link>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 border-t border-[color:var(--on-navy-rule)] px-5 py-3 text-[13px]">
             <LanguageSwitcher />
             <ThemeToggle />
             {signedIn ? (
@@ -152,7 +165,7 @@ export function DatumAppShell({
           </div>
         </aside>
 
-        <main className="min-w-0 bg-[var(--stock)]">
+        <main id="main-content" tabIndex={-1} className="min-w-0 bg-[var(--stock)]">
           <DemoBanner />
           {showStrip && contextEngagement ? (
             <ContextBar
@@ -160,7 +173,7 @@ export function DatumAppShell({
               engagements={contexts.length ? contexts : [contextEngagement]}
             />
           ) : null}
-          <div className="max-w-[1120px] px-4 pb-28 pt-7 md:px-8">
+          <div className="max-w-[1200px] px-4 pb-28 pt-7 md:px-8">
             <StageChrome pathname={pathname}>{children}</StageChrome>
           </div>
         </main>
@@ -170,78 +183,69 @@ export function DatumAppShell({
   );
 }
 
-function JourneyNav({ engagementId }: { engagementId?: string }) {
+const SHELL_LINKS = [
+  { href: '/', key: 'home' },
+  { href: '/squads', key: 'engagements' },
+  { href: '/people', key: 'people' },
+  { href: '/roles', key: 'capability' },
+  { href: '/practice', key: 'playbook' },
+  { href: '/portfolio', key: 'portfolio' },
+  { href: '/practice/standards', key: 'standards' },
+  { href: '/settings', key: 'settings' },
+] as const;
+
+function shellActive(pathname: string, href: string): boolean {
+  if (href === '/') return pathname === '/';
+  if (href === '/practice') {
+    return (
+      pathname === '/practice' ||
+      (pathname.startsWith('/practice/') && !pathname.startsWith('/practice/standards'))
+    );
+  }
+  if (href === '/practice/standards') {
+    return (
+      pathname.startsWith('/practice/standards') ||
+      pathname.startsWith('/framework') ||
+      pathname.startsWith('/assurance')
+    );
+  }
+  if (href === '/squads') {
+    return pathname.startsWith('/squads') || pathname.startsWith('/engagements');
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function ShellNav({ signedIn }: { signedIn: boolean }) {
   const pathname = usePathname();
   const { locale } = useI18n();
   const c = getCopy(locale);
-  const current = stageDefForPath(pathname);
+  const links = SHELL_LINKS.filter((item) => item.key !== 'settings' || signedIn);
 
   return (
-    <nav aria-label={c.nav.stages} className="flex flex-1 flex-col py-3">
-      <ol className="journey-stepper md:hidden">
-        {STAGE_DEFS.map((s) => {
-          const active = s.id === current?.id;
+    <nav aria-label={c.shell.navLabel} className="flex-1 py-3">
+      <ul className="flex gap-1 overflow-x-auto px-3 md:flex-col md:overflow-visible md:px-0">
+        {links.map((item) => {
+          const active = shellActive(pathname, item.href);
           return (
-            <li key={s.id}>
+            <li key={item.href} className="shrink-0 md:shrink">
               <Link
-                href={stageHref(s, engagementId)}
-                aria-current={active ? 'page' : undefined}
-                className={active ? 'is-active' : undefined}
-              >
-                <span className="journey-n">{s.number}</span>
-                <span className="sr-only">{c.journey[s.id].label}</span>
-              </Link>
-            </li>
-          );
-        })}
-      </ol>
-      <ol className="hidden md:block">
-        {STAGE_DEFS.map((s) => {
-          const active = s.id === current?.id;
-          const item = c.journey[s.id];
-          return (
-            <li key={s.id}>
-              <Link
-                href={stageHref(s, engagementId)}
+                href={item.href}
                 aria-current={active ? 'page' : undefined}
                 className={[
-                  'flex min-h-11 flex-col justify-center border-l-[3px] px-5 py-2 text-sm text-[color:var(--on-navy)]',
+                  'flex min-h-11 items-center border-l-[3px] px-4 text-[14px] text-[color:var(--on-navy)] md:px-5',
                   active
                     ? 'border-l-[color:var(--blue)] bg-[var(--on-navy-active)] font-semibold'
                     : 'border-l-transparent hover:bg-[var(--on-navy-hover)]',
                 ].join(' ')}
               >
-                <span>
-                  {s.number} {item.label}
-                </span>
-                <span className="mt-px text-[12.5px] text-[color:var(--on-navy-mute)]">
-                  {item.hint}
-                </span>
+                {c.shell[item.key]}
               </Link>
-              {s.extraHrefs?.map((extra) => (
-                <Link
-                  key={extra.href}
-                  href={extra.href}
-                  className="ml-8 block py-1 text-[12px] text-[color:var(--on-navy-mute)] hover:text-[color:var(--on-navy)]"
-                >
-                  {c.journey[extra.copyKey]}
-                </Link>
-              ))}
             </li>
           );
         })}
-      </ol>
+      </ul>
     </nav>
   );
-}
-
-function stageHref(
-  stage: (typeof STAGE_DEFS)[number],
-  engagementId?: string,
-): string {
-  if (stage.id === 'assemble' && engagementId) return `/squads/${engagementId}`;
-  if (stage.id === 'assure' && engagementId) return `/assurance/${engagementId}`;
-  return stage.href;
 }
 
 function ContextBar({
@@ -259,7 +263,9 @@ function ContextBar({
   const levelKey = (['practising', 'evidenced', 'assured', 'compounding'][level - 1] ??
     'practising') as MaturityLevel;
   const maturityName = c.maturityLevels[levelKey];
-  const phaseLabel = engagement.id === 'nrw-demo' ? c.context.demoPhase : engagement.phase;
+  const stage = lifecycleStageForPhase(engagement.phase);
+  const phaseLabel =
+    engagement.id === 'nrw-demo' ? c.context.demoPhase : stage ? lifecycleLabels(c)[stage] : engagement.phase;
   const standardsLabel =
     engagement.id === 'nrw-demo' ? c.context.demoStandards : engagement.standards.join(' · ') || '-';
 

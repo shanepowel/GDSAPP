@@ -2,227 +2,300 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { AppShell } from '@/components/app/AppShell';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/library/Button';
+import { Field, TextInput } from '@/components/library/Field';
+import { Cluster, Grid, Stack } from '@/components/library/layout';
+import { Panel } from '@/components/library/Panel';
+import { Heading, Text } from '@/components/library/type';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 import {
-  ENGAGEMENT_MODES,
-  ENGAGEMENT_PHASES,
-} from '@/lib/standards/catalog';
+  COMMERCIAL_MODELS,
+  MARKET_SECTORS,
+  SQUAD_SHAPES,
+  STEERING_FREQUENCIES,
+  type CommercialModel,
+  type MarketSector,
+  type SquadShape,
+  type SteeringFrequency,
+} from '@/lib/handbook/choices';
 import { trpc } from '@/lib/trpc/client';
+
+interface MilestoneDraft {
+  name: string;
+  dueOn: string;
+  proves: string;
+}
 
 export default function NewEngagementWizardPage() {
   const { locale } = useI18n();
   const copy = getCopy(locale);
+  const s = copy.spine;
   const router = useRouter();
+  const create = trpc.spine.create.useMutation();
   const [step, setStep] = useState(0);
+  const [error, setError] = useState('');
+  const [name, setName] = useState('');
   const [clientOrg, setClientOrg] = useState('');
-  const [serviceName, setServiceName] = useState('');
-  const [sector, setSector] = useState<'digital-service' | 'capital-programme' | 'hybrid'>(
-    'digital-service',
-  );
-  const [serviceDescription, setServiceDescription] = useState('');
-  const [standardId, setStandardId] = useState<'gds' | 'wales'>('gds');
-  const [phase, setPhase] = useState<(typeof ENGAGEMENT_PHASES)[number]>('discovery');
-  const [mode, setMode] = useState<(typeof ENGAGEMENT_MODES)[number]>('bid');
-  const [templateId, setTemplateId] = useState<string>('gds-discovery-team');
+  const [marketSector, setMarketSector] = useState<MarketSector>('public');
+  const [startsOn, setStartsOn] = useState('');
+  const [endsOn, setEndsOn] = useState('');
+  const [outcomes, setOutcomes] = useState('');
+  const [commercialModel, setCommercialModel] = useState<CommercialModel>('fixed-price');
+  const [scopeClear, setScopeClear] = useState(true);
+  const [milestones, setMilestones] = useState<MilestoneDraft[]>([{ name: '', dueOn: '', proves: '' }]);
+  const [squadShape, setSquadShape] = useState<SquadShape>('discovery');
+  const [steeringChair, setSteeringChair] = useState('');
+  const [steeringFrequency, setSteeringFrequency] = useState<SteeringFrequency>('monthly');
+  const [clientProductOwner, setClientProductOwner] = useState('');
+  const [productOwnerDays, setProductOwnerDays] = useState('');
+  const [accountManagerName, setAccountManagerName] = useState('');
+  const [changeThresholdGbp, setChangeThresholdGbp] = useState('');
 
-  const templates = trpc.orgDesign.listTemplates.useQuery();
-  const create = trpc.engagement.create.useMutation();
-  const applyTemplate = trpc.orgDesign.applyTemplate.useMutation();
-  const bind = trpc.orgDesign.bindEngagementStructure.useMutation();
-  const steps = copy.wizard.steps;
+  function next() {
+    if (step === 0 && (!name.trim() || !clientOrg.trim())) {
+      setError(s.required);
+      return;
+    }
+    setError('');
+    setStep((value) => value + 1);
+  }
 
   async function finish() {
-    const engagement = await create.mutateAsync({
-      name: serviceName.trim() || copy.wizard.untitled,
-      standardId,
-      clientOrg: clientOrg.trim() || undefined,
-      sector,
-      serviceName: serviceName.trim() || undefined,
-      serviceDescription: serviceDescription.trim() || undefined,
-      phase,
-      mode,
+    const days = productOwnerDays === '' ? undefined : Number(productOwnerDays);
+    const threshold = changeThresholdGbp === '' ? undefined : Number(changeThresholdGbp);
+    const created = await create.mutateAsync({
+      name: name.trim(),
+      clientOrg: clientOrg.trim(),
+      marketSector,
+      startsOn: startsOn || undefined,
+      endsOn: endsOn || undefined,
+      outcomes: outcomes.trim() || undefined,
+      commercialModel,
+      scopeClear,
+      milestones: milestones
+        .filter((item) => item.name.trim())
+        .map((item) => ({
+          name: item.name.trim(),
+          dueOn: item.dueOn || undefined,
+          proves: item.proves.trim() || undefined,
+        })),
+      squadShape,
+      steeringChair: steeringChair.trim() || undefined,
+      steeringFrequency,
+      clientProductOwner: clientProductOwner.trim() || undefined,
+      productOwnerDays: Number.isFinite(days) ? days : undefined,
+      accountManagerName: accountManagerName.trim() || undefined,
+      changeThresholdGbp: Number.isFinite(threshold) ? threshold : undefined,
     });
-
-    if (templateId) {
-      try {
-        await applyTemplate.mutateAsync({ templateId });
-        await bind.mutateAsync({ engagementId: engagement.id, designBinding: 'live' });
-      } catch {
-        // Template apply is best-effort; engagement still created.
-      }
-    }
-
-    const landing =
-      mode === 'mobilise'
-        ? `/engagements/${engagement.id}/organise/people`
-        : mode === 'assure'
-          ? `/assurance/${engagement.id}`
-          : `/engagements/${engagement.id}/organise`;
-    router.push(landing);
+    router.push(`/squads/${created.id}/overview?created=1`);
   }
 
   return (
-    <AppShell title={copy.wizard.title}>
-      <ol className="mb-8 flex flex-wrap gap-4" aria-label={copy.wizard.stepsLabel}>
-        {steps.map((label, i) => (
-          <li
-            key={label}
-            className="font-data text-[12px] uppercase tracking-[0.04em]"
-            style={{ color: i === step ? 'var(--signal-ink)' : 'var(--ink-2)' }}
-          >
-            <span className="mr-2 tabular-nums">{i + 1}</span>
-            {label}
+    <Stack gap={5}>
+      <Heading level={1}>{s.newEngagement}</Heading>
+      <ol aria-label={s.steps.join(' · ')} className="flex flex-wrap gap-3">
+        {s.steps.map((label, index) => (
+          <li key={label} aria-current={index === step ? 'step' : undefined}>
+            <Text role={index === step ? 'label' : 'meta'}>{label}</Text>
           </li>
         ))}
       </ol>
+      {error ? (
+        <p role="alert">
+          <Text>{error}</Text>
+        </p>
+      ) : null}
+      {create.error ? (
+        <p role="alert">
+          <Text>{copy.ui.loadFailed}</Text>
+        </p>
+      ) : null}
 
-      {step === 0 && (
-        <fieldset className="max-w-lg space-y-4">
-          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{steps[0]}</legend>
-          <label className="block text-[13px] font-medium text-ink-1">
-            {copy.wizard.clientOrg}
-            <input
-              className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
-              value={clientOrg}
-              onChange={(e) => setClientOrg(e.target.value)}
-              required
-            />
-          </label>
-          <label className="block text-[13px] font-medium text-ink-1">
-            {copy.wizard.serviceName}
-            <input
-              className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
-              value={serviceName}
-              onChange={(e) => setServiceName(e.target.value)}
-              required
-            />
-          </label>
-          <label className="block text-[13px] font-medium text-ink-1">
-            {copy.wizard.sector}
-            <select
-              className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
-              value={sector}
-              onChange={(e) => setSector(e.target.value as typeof sector)}
-            >
-              <option value="digital-service">{copy.wizard.sectorDigital}</option>
-              <option value="capital-programme">{copy.wizard.sectorCapital}</option>
-              <option value="hybrid">{copy.wizard.sectorHybrid}</option>
-            </select>
-          </label>
-          <label className="block text-[13px] font-medium text-ink-1">
-            {copy.wizard.serviceDescription}
-            <textarea
-              className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
-              rows={3}
-              value={serviceDescription}
-              onChange={(e) => setServiceDescription(e.target.value)}
-            />
-          </label>
-        </fieldset>
-      )}
-
-      {step === 1 && (
-        <fieldset className="max-w-lg space-y-4">
-          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{steps[1]}</legend>
-          <label className="block text-[13px] font-medium text-ink-1">
-            {copy.wizard.standard}
-            <select
-              className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
-              value={standardId}
-              onChange={(e) => setStandardId(e.target.value as 'gds' | 'wales')}
-            >
-              <option value="gds">{copy.squads.standardGds}</option>
-              <option value="wales">{copy.squads.standardWales}</option>
-            </select>
-          </label>
-          <label className="block text-[13px] font-medium text-ink-1">
-            {copy.wizard.phase}
-            <select
-              className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
-              value={phase}
-              onChange={(e) => setPhase(e.target.value as typeof phase)}
-            >
-              {ENGAGEMENT_PHASES.map((p) => (
-                <option key={p} value={p}>
-                  {p}
+      {step === 0 ? (
+        <Stack gap={3}>
+          <Heading level={2}>{s.aboutTitle}</Heading>
+          <Field id="eng-name" label={s.name} hint={s.nameHint}>
+            <TextInput value={name} onChange={(event) => setName(event.target.value)} />
+          </Field>
+          <Field id="eng-client" label={s.client}>
+            <TextInput value={clientOrg} onChange={(event) => setClientOrg(event.target.value)} />
+          </Field>
+          <Field id="eng-sector" label={s.sector}>
+            <select id="eng-sector" value={marketSector} onChange={(event) => setMarketSector(event.target.value as MarketSector)}>
+              {MARKET_SECTORS.map((sector) => (
+                <option key={sector} value={sector}>
+                  {s.sectors[sector]}
                 </option>
               ))}
             </select>
-          </label>
-        </fieldset>
-      )}
+          </Field>
+          <Field id="eng-start" label={s.start}>
+            <TextInput type="date" value={startsOn} onChange={(event) => setStartsOn(event.target.value)} />
+          </Field>
+          <Field id="eng-end" label={s.end}>
+            <TextInput type="date" value={endsOn} onChange={(event) => setEndsOn(event.target.value)} />
+          </Field>
+          <Field id="eng-outcomes" label={s.outcomes} hint={s.outcomesHint}>
+            <TextInput value={outcomes} onChange={(event) => setOutcomes(event.target.value)} />
+          </Field>
+        </Stack>
+      ) : null}
 
-      {step === 2 && (
-        <fieldset className="max-w-lg space-y-4">
-          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{steps[2]}</legend>
-          <p className="text-[15px] text-ink-1">{copy.wizard.teamHint}</p>
-          <label className="block text-[13px] font-medium text-ink-1">
-            {copy.wizard.template}
+      {step === 1 ? (
+        <Stack gap={3}>
+          <Heading level={2}>{s.commercialsTitle}</Heading>
+          <Field id="eng-model" label={s.commercialModel}>
             <select
-              className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
-              value={templateId}
-              onChange={(e) => setTemplateId(e.target.value)}
+              id="eng-model"
+              value={commercialModel}
+              onChange={(event) => setCommercialModel(event.target.value as CommercialModel)}
             >
-              <option value="">{copy.wizard.skipTemplate}</option>
-              {(templates.data ?? []).map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name} ({t.size})
+              {COMMERCIAL_MODELS.map((model) => (
+                <option key={model} value={model}>
+                  {s.models[model]}
                 </option>
               ))}
             </select>
-          </label>
-        </fieldset>
-      )}
+          </Field>
+          {commercialModel === 'fixed-price' ? <Text>{s.fixedHelper}</Text> : null}
+          <Heading level={3}>{s.milestones}</Heading>
+          {milestones.map((item, index) => (
+            <Grid key={index} columns={3} gap={2}>
+              <Field id={`ms-name-${index}`} label={s.milestoneName}>
+                <TextInput
+                  value={item.name}
+                  onChange={(event) =>
+                    setMilestones((rows) => rows.map((row, i) => (i === index ? { ...row, name: event.target.value } : row)))
+                  }
+                />
+              </Field>
+              <Field id={`ms-date-${index}`} label={s.milestoneDate}>
+                <TextInput
+                  type="date"
+                  value={item.dueOn}
+                  onChange={(event) =>
+                    setMilestones((rows) => rows.map((row, i) => (i === index ? { ...row, dueOn: event.target.value } : row)))
+                  }
+                />
+              </Field>
+              <Field id={`ms-proves-${index}`} label={s.milestoneProves}>
+                <TextInput
+                  value={item.proves}
+                  onChange={(event) =>
+                    setMilestones((rows) => rows.map((row, i) => (i === index ? { ...row, proves: event.target.value } : row)))
+                  }
+                />
+              </Field>
+            </Grid>
+          ))}
+          <div>
+            <Button type="button" variant="secondary" onClick={() => setMilestones((rows) => [...rows, { name: '', dueOn: '', proves: '' }])}>
+              {s.addMilestone}
+            </Button>
+          </div>
+          <fieldset>
+            <legend>{s.scopeClear}</legend>
+            <label className="mr-4 inline-flex items-center gap-2">
+              <input type="radio" name="scope" checked={scopeClear} onChange={() => setScopeClear(true)} />
+              {s.yes}
+            </label>
+            <label className="inline-flex items-center gap-2">
+              <input type="radio" name="scope" checked={!scopeClear} onChange={() => setScopeClear(false)} />
+              {s.noDiscovery}
+            </label>
+          </fieldset>
+          {scopeClear ? null : <Text>{s.scopeHelper}</Text>}
+        </Stack>
+      ) : null}
 
-      {step === 3 && (
-        <fieldset className="max-w-lg space-y-4">
-          <legend className="mb-2 text-[17px] font-semibold text-ink-0">{steps[3]}</legend>
-          <label className="block text-[13px] font-medium text-ink-1">
-            {copy.wizard.mode}
+      {step === 2 ? (
+        <Stack gap={3}>
+          <Heading level={2}>{s.squadTitle}</Heading>
+          <Text>{s.squadBody}</Text>
+          <Grid columns={2} gap={3}>
+            {SQUAD_SHAPES.map((shape) => (
+              <Panel key={shape} padding={3}>
+                <label className="block">
+                  <input
+                    type="radio"
+                    name="shape"
+                    className="mr-2"
+                    checked={squadShape === shape}
+                    onChange={() => setSquadShape(shape)}
+                  />
+                  <strong>{s.shapes[shape].title}</strong>
+                  <Text>{s.shapes[shape].body}</Text>
+                </label>
+              </Panel>
+            ))}
+          </Grid>
+        </Stack>
+      ) : null}
+
+      {step === 3 ? (
+        <Stack gap={3}>
+          <Heading level={2}>{s.governanceTitle}</Heading>
+          <Field id="eng-chair" label={s.steeringChair}>
+            <TextInput value={steeringChair} onChange={(event) => setSteeringChair(event.target.value)} />
+          </Field>
+          <Field id="eng-frequency" label={s.frequency}>
             <select
-              className="mt-1 block w-full rounded-[2px] border border-rule px-3 py-2 text-sm"
-              value={mode}
-              onChange={(e) => setMode(e.target.value as typeof mode)}
+              id="eng-frequency"
+              value={steeringFrequency}
+              onChange={(event) => setSteeringFrequency(event.target.value as SteeringFrequency)}
             >
-              {ENGAGEMENT_MODES.map((modeOption) => (
-                <option key={modeOption} value={modeOption}>
-                  {modeOption}
+              {STEERING_FREQUENCIES.map((frequency) => (
+                <option key={frequency} value={frequency}>
+                  {frequency === 'monthly' ? s.monthly : s.fortnightly}
                 </option>
               ))}
             </select>
-          </label>
-          <p className="text-[15px] text-ink-1">{copy.wizard.modeHint}</p>
-        </fieldset>
-      )}
+          </Field>
+          <Field id="eng-po" label={s.productOwner}>
+            <TextInput value={clientProductOwner} onChange={(event) => setClientProductOwner(event.target.value)} />
+          </Field>
+          <Field id="eng-days" label={s.availability}>
+            <TextInput
+              type="number"
+              min={0}
+              max={5}
+              step={0.5}
+              value={productOwnerDays}
+              onChange={(event) => setProductOwnerDays(event.target.value)}
+            />
+          </Field>
+          {productOwnerDays !== '' && Number(productOwnerDays) < 2 ? <Text>{s.poHelper}</Text> : null}
+          <Field id="eng-am" label={s.accountManager}>
+            <TextInput value={accountManagerName} onChange={(event) => setAccountManagerName(event.target.value)} />
+          </Field>
+          <Field id="eng-threshold" label={s.threshold}>
+            <TextInput
+              type="number"
+              min={0}
+              value={changeThresholdGbp}
+              onChange={(event) => setChangeThresholdGbp(event.target.value)}
+            />
+          </Field>
+        </Stack>
+      ) : null}
 
-      <div className="mt-8 flex gap-3">
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={step === 0}
-          onClick={() => setStep((s) => Math.max(0, s - 1))}
-        >
-          {copy.ui.back}
-        </Button>
-        {step < steps.length - 1 ? (
-          <Button
-            type="button"
-            onClick={() => {
-              if (step === 0 && (!clientOrg.trim() || !serviceName.trim())) return;
-              setStep((s) => s + 1);
-            }}
-          >
-            {copy.ui.continue}
+      <Cluster gap={3}>
+        {step > 0 ? (
+          <Button type="button" variant="secondary" onClick={() => setStep((value) => value - 1)}>
+            {s.back}
+          </Button>
+        ) : null}
+        {step < 3 ? (
+          <Button type="button" onClick={next}>
+            {s.next}
           </Button>
         ) : (
-          <Button type="button" disabled={create.isPending} onClick={() => void finish()}>
-            {copy.ui.createEngagement}
+          <Button type="button" onClick={() => void finish()} disabled={create.isPending}>
+            {s.create}
           </Button>
         )}
-      </div>
-    </AppShell>
+      </Cluster>
+    </Stack>
   );
 }
