@@ -17,8 +17,8 @@ import {
   WALKTHROUGH_PEOPLE,
   WALKTHROUGH_ROLES,
   assignmentForTourStep,
+  bestAvailable,
   fitWalkthrough,
-  rankedForRole,
   squadHealth,
   type WalkthroughAssignment,
 } from '@/lib/teach/walkthrough';
@@ -32,6 +32,7 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
   const [confirmed, setConfirmed] = useState(false);
 
   const health = squadHealth(assigned);
+  const suggestions = useMemo(() => bestAvailable(assigned), [assigned]);
   const nodes = WALKTHROUGH_ROLES.map((role, i) => {
     const personIndex = assigned[i];
     if (personIndex === undefined) {
@@ -73,7 +74,7 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
   }
 
   return (
-    <div className="mb-10">
+    <div className="mb-6">
       <p className="mb-4 text-[12.5px] text-asm-ink-3">{copy.walkthrough.liveHint}</p>
 
       <FigureFrame
@@ -129,8 +130,8 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
           <tbody>
             {WALKTHROUGH_ROLES.map((role, roleIndex) => {
               const personIndex = assigned[roleIndex];
-              const ranked = rankedForRole(role);
-              const top = ranked.find((c) => c.enoughTime) ?? ranked[0];
+              const suggestion = suggestions[roleIndex];
+              const suggested = suggestion != null ? WALKTHROUGH_PEOPLE[suggestion.personIndex] : undefined;
               const meta = fillCopy(copy.walkthrough.roleLine, {
                 fte: role.fte.toFixed(1),
                 crit: essentialLabel(role.crit),
@@ -145,39 +146,36 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
                     </td>
                     <td colSpan={2}>
                       <span className="flag flag-risk">{copy.walkthrough.notFilled}</span>
-                      {top ? (
-                        <div className="mt-1 font-data text-[10.5px] text-asm-ink-3">
-                          {top.enoughTime
-                            ? fillCopy(copy.walkthrough.bestAvailableNamed, {
-                                name: top.person.name,
-                                score: top.fit.compositeScore.toFixed(2),
-                              })
-                            : fillCopy(copy.walkthrough.bestAvailableNamedShort, {
-                                name: top.person.name,
-                                score: top.fit.compositeScore.toFixed(2),
-                              })}
-                        </div>
-                      ) : null}
+                      <div className="mt-1 font-data text-[10.5px] text-asm-ink-3">
+                        {suggested && suggestion
+                          ? fillCopy(copy.walkthrough.bestAvailableNamed, {
+                              name: suggested.name,
+                              score: suggestion.score.toFixed(2),
+                            })
+                          : copy.squads.noSuitable}
+                      </div>
                     </td>
                     <td className="text-right">
-                      {top ? (
+                      <div className="flex items-center justify-end gap-2">
+                        {suggested && suggestion ? (
+                          <button
+                            type="button"
+                            className="btn-teach pri"
+                            onClick={() => assign(roleIndex, suggestion.personIndex)}
+                          >
+                            {fillCopy(copy.walkthrough.assignName, {
+                              name: suggested.name.split(' ')[0] ?? suggested.name,
+                            })}
+                          </button>
+                        ) : null}
                         <button
                           type="button"
-                          className="btn-teach pri"
-                          onClick={() => assign(roleIndex, top.personIndex)}
+                          className="btn-teach"
+                          onClick={() => setDrawerRole(roleIndex)}
                         >
-                          {fillCopy(copy.walkthrough.assignName, {
-                            name: top.person.name.split(' ')[0] ?? top.person.name,
-                          })}
+                          {copy.walkthrough.seeAll}
                         </button>
-                      ) : null}
-                      <button
-                        type="button"
-                        className="btn-teach ml-2"
-                        onClick={() => setDrawerRole(roleIndex)}
-                      >
-                        {copy.walkthrough.seeAll}
-                      </button>
+                      </div>
                     </td>
                   </tr>
                 );

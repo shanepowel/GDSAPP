@@ -7,6 +7,7 @@ import { AssuranceTeaching } from '@/components/teach/AssuranceTeaching';
 import { Verdict, type VerdictValue } from '@/components/product/Verdict';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
+import { standardDisplayName } from '@/lib/labels';
 import { trpc } from '@/lib/trpc/client';
 import { pillarsForGdsPoint } from '@/lib/bridge/gds';
 import type { ExtendedAnalysisResult } from '@/lib/types/extension';
@@ -30,11 +31,12 @@ export default function AssurancePage() {
   const id = params.engagementId as string;
   const { locale } = useI18n();
   const copy = getCopy(locale);
-  const { data: engagement, isError, isLoading } = trpc.engagement.byId.useQuery({ id });
-  const { data } = trpc.standards.assessList.useQuery(
+  const { data: engagement, isError, isLoading, refetch } = trpc.engagement.byId.useQuery({ id }, { retry: false });
+  const standards = trpc.standards.assessList.useQuery(
     { engagementId: id, locale: locale === 'cy' ? 'cy' : 'en' },
-    { enabled: Boolean(engagement) },
+    { enabled: Boolean(engagement), retry: false },
   );
+  const data = standards.data;
 
   const req = engagement?.requirements[0];
   const lastRun = req?.runs[0];
@@ -44,8 +46,11 @@ export default function AssurancePage() {
   const atRiskCount = points.filter((p) => p.status === 'partial' || p.status === 'gap').length;
   const criteriaCount = data?.criteria.length;
   const hasAnalysis = typeof index === 'number';
-  const standardLabel =
-    engagement?.standardId === 'gds' ? copy.squads.standardGds : copy.squads.standardWales;
+  const standardLabel = standardDisplayName(engagement?.standardId, {
+    wales: copy.squads.standardWales,
+    gds: copy.squads.standardGds,
+    missing: copy.spine.missing,
+  });
 
   return (
     <SpineFrame id={id}>
@@ -59,7 +64,14 @@ export default function AssurancePage() {
       </p>
 
       {isLoading ? <p className="text-asm-ink-3">{copy.ui.loading}</p> : null}
-      {isError ? <EmptyState title={copy.ui.loadFailed} why={copy.ui.loadFailedWhy} /> : null}
+      {isError || standards.isError ? (
+        <div className="flex w-full flex-col items-start gap-3">
+          <EmptyState title={copy.ui.loadFailed} why={copy.ui.loadFailedWhy} />
+          <button type="button" className="btn-teach pri" onClick={() => void Promise.all([refetch(), standards.refetch()])}>
+            {copy.ui.retry}
+          </button>
+        </div>
+      ) : null}
 
       {!isLoading && !isError ? (
         <StatStrip
@@ -124,7 +136,7 @@ export default function AssurancePage() {
                       <Verdict value={pointVerdict(point?.status)} />
                     </td>
                     <td className="font-data text-[10.5px] text-asm-ink-3">
-                      {point?.rationale[0] ?? point?.evidenceGaps[0] ?? '-'}
+                      {point?.rationale[0] ?? point?.evidenceGaps[0] ?? copy.spine.missing}
                     </td>
                   </tr>
                 );

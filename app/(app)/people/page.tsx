@@ -6,6 +6,7 @@ import { EmptyState, PageHeader, StatStrip, TextLink } from '@/components/datum/
 import { AddPersonForm, PersonRoleSelect } from '@/components/org-design/PersonRoleControls';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { ContinuityFigure, FigureFrame } from '@/components/teach/figures';
+import { WALKTHROUGH_PEOPLE } from '@/lib/teach/walkthrough';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
@@ -40,6 +41,17 @@ export default function PeoplePage() {
     const used = assignments.filter((x) => x.personId === p.id).reduce((s, x) => s + x.allocation, 0);
     return a + Math.max(0, (p.fte - used) / 100);
   }, 0);
+  const chartPeople = people.map((person) => {
+    const known = WALKTHROUGH_PEOPLE.find((item) => item.name === person.name);
+    return {
+      name: person.name,
+      role: known?.role ?? '',
+      free: person.fte / 100,
+      phases: known?.phases ?? ([1, 0, 0, 0] as [number, number, number, number]),
+      skills: {},
+      signals: [],
+    };
+  });
   const manageHref = engagements?.[0]
     ? `/engagements/${engagements[0].id}/team/people`
     : '/engagements/new';
@@ -66,6 +78,7 @@ export default function PeoplePage() {
         ))}
       </TeachPanel>
 
+      {chartPeople.length > 0 ? (
       <FigureFrame
         id="figure-keel"
         caption={
@@ -74,8 +87,9 @@ export default function PeoplePage() {
           </>
         }
       >
-        <ContinuityFigure label={copy.figures.continuityAria} />
+        <ContinuityFigure label={copy.figures.continuityAria} people={chartPeople} />
       </FigureFrame>
+      ) : null}
 
       <StatStrip
         items={[

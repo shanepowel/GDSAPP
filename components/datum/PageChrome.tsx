@@ -7,17 +7,23 @@ export function PageHeader({
   title,
   lede,
   actions,
+  heading = 'h1',
 }: {
   eyebrow: string;
   title: string;
   lede?: string;
   actions?: React.ReactNode;
+  heading?: 'h1' | 'h2';
 }) {
   return (
     <header className="asm-root mb-8 flex flex-col gap-2">
       <p className="eyebrow m-0">{eyebrow}</p>
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="m-0 text-[30px] font-bold leading-tight text-asm-brand">{title}</h1>
+        {heading === 'h2' ? (
+          <h2 className="m-0 text-[30px] font-bold leading-tight text-asm-brand">{title}</h2>
+        ) : (
+          <h1 className="m-0 text-[30px] font-bold leading-tight text-asm-brand">{title}</h1>
+        )}
         {actions ? <div className="mb-1 flex flex-wrap items-center gap-2.5">{actions}</div> : null}
       </div>
       {lede ? <p className="m-0 max-w-[68ch] text-base text-asm-ink-3">{lede}</p> : null}
@@ -41,7 +47,7 @@ export function EmptyState({
   actionLabel?: string;
 }) {
   return (
-    <div className="flex max-w-[60ch] flex-col items-start gap-2 rounded-asm-lg border border-dashed border-asm-line-strong bg-asm-surface px-6 py-8">
+    <div className="flex w-full flex-col items-start gap-2 rounded-asm-lg border border-dashed border-asm-line-strong bg-asm-surface px-6 py-8">
       <p className="m-0 text-base font-bold text-asm-brand">{title}</p>
       <p className="m-0 text-sm text-asm-ink-2">{why}</p>
       {actionHref && actionLabel ? (

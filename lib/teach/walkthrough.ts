@@ -4,6 +4,7 @@
  * Fit is scored through lib/scoring so the demo cannot drift from the instrument.
  */
 
+import { pickSuitable } from '@/lib/team-fit/rank';
 import {
   computeFit,
   levelFromOrdinal,
@@ -366,13 +367,63 @@ export function fitWalkthrough(role: WalkthroughRole, person: WalkthroughPerson)
   });
 }
 
-export function rankedForRole(role: WalkthroughRole) {
-  return WALKTHROUGH_PEOPLE.map((person, personIndex) => ({
-    person,
-    personIndex,
-    fit: fitWalkthrough(role, person),
-    enoughTime: person.free >= role.fte,
-  })).sort((a, b) => b.fit.compositeScore - a.fit.compositeScore);
+function heldElsewhere(assigned: WalkthroughAssignment, personIndex: number, exceptRole?: number): number {
+  let used = 0;
+  for (const [roleKey, who] of Object.entries(assigned)) {
+    if (who !== personIndex) continue;
+    const index = Number(roleKey);
+    if (index === exceptRole) continue;
+    used += WALKTHROUGH_ROLES[index]?.fte ?? 0;
+  }
+  return used;
+}
+
+export function rankedForRole(
+  role: WalkthroughRole,
+  assigned: WalkthroughAssignment = {},
+  roleIndex?: number,
+) {
+  return WALKTHROUGH_PEOPLE.map((person, personIndex) => {
+    const fit = fitWalkthrough(role, person);
+    const remaining = person.free - heldElsewhere(assigned, personIndex, roleIndex);
+    const enoughTime = remaining + 1e-9 >= role.fte;
+    return {
+      person,
+      personIndex,
+      fit,
+      remaining,
+      enoughTime,
+      suitable: enoughTime && fit.compositeScore >= VIABILITY_THRESHOLD,
+    };
+  }).sort((a, b) => Number(b.suitable) - Number(a.suitable) || b.fit.compositeScore - a.fit.compositeScore);
+}
+
+/** One suitable person per role. Assignments and earlier suggestions consume FTE. */
+export function bestAvailable(assigned: WalkthroughAssignment): Array<{ personIndex: number; score: number } | null> {
+  const scoresByRole = new Map(
+    WALKTHROUGH_ROLES.map((role, index) => [
+      String(index),
+      WALKTHROUGH_PEOPLE.map((person, personIndex) => ({
+        personId: String(personIndex),
+        compositeScore: fitWalkthrough(role, person).compositeScore,
+      })),
+    ]),
+  );
+  const picked = pickSuitable({
+    roles: WALKTHROUGH_ROLES.map((role, index) => ({ id: String(index), fteRequired: role.fte })),
+    scoresByRole,
+    capacity: new Map(WALKTHROUGH_PEOPLE.map((person, index) => [String(index), person.free])),
+    held: Object.entries(assigned).map(([roleKey, personIndex]) => ({
+      personId: String(personIndex),
+      roleId: roleKey,
+      fte: WALKTHROUGH_ROLES[Number(roleKey)]?.fte ?? 0,
+    })),
+    datum: VIABILITY_THRESHOLD,
+  });
+  return WALKTHROUGH_ROLES.map((_, index) => {
+    const best = picked.get(String(index));
+    return best ? { personIndex: Number(best.personId), score: best.compositeScore } : null;
+  });
 }
 
 export function squadHealth(assigned: WalkthroughAssignment) {

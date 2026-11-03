@@ -38,7 +38,7 @@ function MarketingHome() {
             <ButtonLink href="/demo" variant="inverse" size="lg">
               {c.primaryCta}
             </ButtonLink>
-            <ButtonLink href="/sign-in" variant="inverse-outline" size="lg">
+            <ButtonLink href="mailto:?subject=Book%20an%20Assemble%20walkthrough" variant="inverse-outline" size="lg">
               {c.secondaryCta}
             </ButtonLink>
           </div>
@@ -59,9 +59,9 @@ function MarketingHome() {
         <h2 id="how-title" className="m-0 text-[28px] font-bold text-asm-brand">
           {c.how.title}
         </h2>
-        <ol className="m-0 grid list-none grid-cols-1 gap-4 p-0 md:grid-cols-2 xl:grid-cols-4">
+        <ol className="m-0 grid list-none grid-cols-1 gap-4 p-0 md:grid-cols-6">
           {c.how.steps.map((step, index) => (
-            <li key={step.title} className="flex flex-col gap-3 rounded-asm-lg border border-asm-line bg-asm-surface p-6">
+            <li key={step.title} className="flex flex-col gap-3 rounded-asm-lg border border-asm-line bg-asm-surface p-6 md:col-span-2 md:[&:nth-child(4)]:col-start-2">
               <span className="flex size-9 items-center justify-center rounded-full bg-asm-brand-wash text-sm font-bold text-asm-brand tabular-nums">
                 {index + 1}
               </span>

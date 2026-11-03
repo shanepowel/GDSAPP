@@ -16,6 +16,8 @@ import {
   legacyStandardToCatalogCode,
   nextEngagementReference,
 } from '@/lib/standards/catalog';
+import { archetypeSlugForPhase } from '@/lib/labels';
+import { DATUM_LINE } from '@/lib/product.config';
 import { assertEngagementInOrg, protectedProcedure, router } from '@/lib/trpc/trpc';
 import type { Prisma, PrismaClient } from '@prisma/client';
 
@@ -99,7 +101,61 @@ function belowTarget(summary: ReturnType<typeof measureSummary>): number {
   return Object.values(summary).filter((item) => item.onTarget === false).length;
 }
 
-function toFacts(engagement: SpineRecord, now: Date, below = 0): SpineFacts {
+async function loadReadiness(
+  prisma: PrismaClient,
+  orgId: string,
+  engagements: Array<{ id: string; phase: string | null }>,
+) {
+  const ready = new Map<string, { essentialRolesOpen: number; squadConfirmed: boolean }>();
+  const slugs = [...new Set(engagements.map((item) => archetypeSlugForPhase(item.phase)).filter((slug): slug is string => Boolean(slug)))];
+  if (slugs.length === 0) return ready;
+  const archetypes = await prisma.roleArchetype.findMany({
+    where: { orgId, archivedAt: null, slug: { in: slugs } },
+    orderBy: { version: 'desc' },
+    include: { roles: { where: { criticality: 'core' }, select: { id: true } } },
+  });
+  const bySlug = new Map<string, (typeof archetypes)[number]>();
+  for (const archetype of archetypes) {
+    if (!bySlug.has(archetype.slug)) bySlug.set(archetype.slug, archetype);
+  }
+  const proposals = await prisma.squadProposal.findMany({
+    where: { engagementId: { in: engagements.map((item) => item.id) }, status: 'confirmed' },
+    include: {
+      assignments: {
+        select: { archetypeRoleId: true, fitScore: { select: { compositeScore: true } } },
+      },
+    },
+  });
+  for (const engagement of engagements) {
+    const slug = archetypeSlugForPhase(engagement.phase);
+    const archetype = slug ? bySlug.get(slug) : undefined;
+    if (!archetype || archetype.roles.length === 0) continue;
+    const proposal = proposals.find(
+      (item) => item.engagementId === engagement.id && item.archetypeId === archetype.id,
+    );
+    if (!proposal) {
+      ready.set(engagement.id, { essentialRolesOpen: archetype.roles.length, squadConfirmed: false });
+      continue;
+    }
+    const filled = new Set(
+      proposal.assignments
+        .filter((item) => (item.fitScore?.compositeScore ?? 0) >= DATUM_LINE)
+        .map((item) => item.archetypeRoleId),
+    );
+    ready.set(engagement.id, {
+      essentialRolesOpen: archetype.roles.filter((role) => !filled.has(role.id)).length,
+      squadConfirmed: true,
+    });
+  }
+  return ready;
+}
+
+function toFacts(
+  engagement: SpineRecord,
+  now: Date,
+  below = 0,
+  readiness: { essentialRolesOpen: number; squadConfirmed: boolean } | null = null,
+): SpineFacts {
   const sprint = engagement.checklistItems.filter((item) => item.stage === 'sprint-zero');
   const overdue = sprint
     .filter((item) => !item.done && item.dueOn && item.dueOn.getTime() < now.getTime())
@@ -143,12 +199,21 @@ function toFacts(engagement: SpineRecord, now: Date, below = 0): SpineFacts {
     milestoneWillBeMissed: engagement.milestones.some((item) => item.status === 'late'),
     measuresBelowTarget: below,
     overdueSprintItem: overdue?.itemKey ?? null,
+    ...(readiness
+      ? { essentialRolesOpen: readiness.essentialRolesOpen, squadConfirmed: readiness.squadConfirmed }
+      : {}),
   };
 }
 
-function present(engagement: SpineRecord, now: Date, hours: number, targets: Targets) {
+function present(
+  engagement: SpineRecord,
+  now: Date,
+  hours: number,
+  targets: Targets,
+  readiness: { essentialRolesOpen: number; squadConfirmed: boolean } | null = null,
+) {
   const measures = measureSummary(engagement, targets);
-  const facts = toFacts(engagement, now, belowTarget(measures));
+  const facts = toFacts(engagement, now, belowTarget(measures), readiness);
   return {
     id: engagement.id,
     name: engagement.name,
@@ -183,9 +248,12 @@ export const spineRouter = router({
       orderBy: { updatedAt: 'desc' },
       include: spineInclude,
     });
+    const readiness = await loadReadiness(ctx.prisma, ctx.orgId, engagements);
     return {
       targets: config.targets,
-      engagements: engagements.map((engagement) => present(engagement, now, config.hours, config.targets)),
+      engagements: engagements.map((engagement) =>
+        present(engagement, now, config.hours, config.targets, readiness.get(engagement.id) ?? null),
+      ),
     };
   }),
 
@@ -193,7 +261,8 @@ export const spineRouter = router({
     const now = new Date();
     const config = await loadConfig(ctx.prisma);
     const engagement = await loadOne(ctx.prisma, ctx.orgId, input.id);
-    const card = present(engagement, now, config.hours, config.targets);
+    const readiness = await loadReadiness(ctx.prisma, ctx.orgId, [engagement]);
+    const card = present(engagement, now, config.hours, config.targets, readiness.get(engagement.id) ?? null);
     return {
       ...card,
       targets: config.targets,

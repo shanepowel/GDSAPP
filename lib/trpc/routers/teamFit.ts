@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { Prisma } from '@prisma/client';
 import { protectedProcedure, router, assertEngagementInOrg } from '@/lib/trpc/trpc';
+import { DATUM_LINE } from '@/lib/product.config';
+import { pickSuitable } from '@/lib/team-fit/rank';
 import { recomputeTeamFit } from '@/lib/team-fit/recompute';
 
 const skillLevel = z.enum(['awareness', 'working', 'practitioner', 'expert']);
@@ -163,9 +165,12 @@ export const teamFitRouter = router({
 
       const people = await ctx.prisma.person.findMany({
         where: { engagementId: input.engagementId, isVacancy: false },
-        select: { id: true, displayName: true },
+        select: { id: true, displayName: true, availability: { select: { daysPerWeek: true }, take: 1 } },
       });
       const peopleById = new Map(people.map((p) => [p.id, p]));
+      const capacity = new Map(
+        people.map((person) => [person.id, (person.availability[0]?.daysPerWeek ?? 5) / 5]),
+      );
 
       const scores = await ctx.prisma.fitScore.findMany({
         where: {
@@ -182,9 +187,24 @@ export const teamFitRouter = router({
         },
       });
 
+      const holds = await ctx.prisma.squadAssignment.findMany({
+        where: {
+          proposal: { engagementId: input.engagementId, status: { in: ['draft', 'confirmed'] } },
+        },
+        select: { personId: true, archetypeRoleId: true, fteAllocated: true },
+      });
+      const scoresByRole = new Map(archetype.roles.map((role) => [role.id, scores.filter((score) => score.archetypeRoleId === role.id)]));
+      const suitable = pickSuitable({
+        roles: archetype.roles.map((role) => ({ id: role.id, fteRequired: role.fteRequired })),
+        scoresByRole,
+        capacity,
+        held: holds.map((hold) => ({ personId: hold.personId, roleId: hold.archetypeRoleId, fte: hold.fteAllocated })),
+        datum: DATUM_LINE,
+      });
+
       const rows = archetype.roles.map((role) => {
-        const roleScores = scores.filter((s) => s.archetypeRoleId === role.id);
-        const best = roleScores[0] ?? null;
+        const roleScores = scoresByRole.get(role.id) ?? [];
+        const best = suitable.get(role.id) ?? null;
         const gap = gaps.find((g) => g.archetypeRoleId === role.id) ?? null;
         return {
           role,
@@ -219,8 +239,18 @@ export const teamFitRouter = router({
 
       const people = await ctx.prisma.person.findMany({
         where: { engagementId: input.engagementId, isVacancy: false },
+        include: { availability: { select: { daysPerWeek: true }, take: 1 } },
       });
       const peopleById = new Map(people.map((p) => [p.id, p]));
+      const holds = await ctx.prisma.squadAssignment.findMany({
+        where: {
+          proposal: { engagementId: input.engagementId, status: { in: ['draft', 'confirmed'] } },
+          archetypeRoleId: { not: input.archetypeRoleId },
+        },
+        select: { personId: true, fteAllocated: true },
+      });
+      const heldFte = new Map<string, number>();
+      for (const hold of holds) heldFte.set(hold.personId, (heldFte.get(hold.personId) ?? 0) + hold.fteAllocated);
 
       const scores = await ctx.prisma.fitScore.findMany({
         where: {
@@ -232,10 +262,17 @@ export const teamFitRouter = router({
 
       return {
         role,
-        candidates: scores.map((s) => ({
-          ...s,
-          personName: peopleById.get(s.personId)?.displayName ?? 'Unknown',
-        })),
+        datum: DATUM_LINE,
+        candidates: scores.map((s) => {
+          const capacity = (peopleById.get(s.personId)?.availability[0]?.daysPerWeek ?? 5) / 5;
+          const remainingFte = capacity - (heldFte.get(s.personId) ?? 0);
+          return {
+            ...s,
+            personName: peopleById.get(s.personId)?.displayName ?? 'Unknown',
+            remainingFte,
+            suitable: s.compositeScore >= DATUM_LINE && remainingFte + 1e-9 >= role.fteRequired,
+          };
+        }),
       };
     }),
 

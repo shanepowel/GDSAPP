@@ -1,23 +1,115 @@
 /**
- * Runs on deploy. Loads the delivery spine demo data (scripts/seed-spine-demo.ts) into the two
- * NRW demo engagements, but only when they exist and have no spine data yet, so it never
- * overwrites anything a person has entered. Never fails the build.
+ * Runs on deploy. Ensures the NRW demo engagements, archetypes, people pool and spine
+ * exist, and never overwrites spine rows a person has already entered.
+ * Never fails the build.
  */
 import { PrismaClient } from '@prisma/client';
+import { DEMO_ACCOUNT, ensureDemoAccount } from '../lib/demo/demo-account';
+import { seedDemoPool } from '../lib/demo/seed-pool';
+import { ensureDemoReader } from '../lib/demo/reader';
+import { seedSystemArchetypes } from './seed-archetypes';
 import { seedSpineDemo } from './seed-spine-demo';
 
-const DEMO_IDS = ['nrw-demo', 'nrw-demo-2'];
+const DEMO_IDS = ['nrw-demo', 'nrw-demo-2'] as const;
+
+const DAY = 86_400_000;
+
+function day(offset: number): Date {
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) + offset * DAY);
+}
+
+async function ensureEngagements(prisma: PrismaClient, ownerId: string) {
+  const shared = {
+    clientOrg: 'Natural Resources Wales',
+    sector: 'digital-service',
+    ownerId,
+    orgId: DEMO_ACCOUNT.orgId,
+    supplierTag: 'Turner & Townsend Demo',
+  };
+  await prisma.engagement.upsert({
+    where: { id: 'nrw-demo' },
+    create: {
+      id: 'nrw-demo',
+      name: 'NRW Discovery',
+      reference: 'NRW-DISC-01',
+      standardId: 'wales',
+      serviceName: 'Regulatory permitting',
+      phase: 'discovery',
+      mode: 'bid',
+      maturityLevel: 'evidenced',
+      lotTag: 'Lot 1 Digital delivery',
+      ...shared,
+    },
+    update: {
+      standardId: 'wales',
+      maturityLevel: 'evidenced',
+      clientOrg: 'Natural Resources Wales',
+      ownerId,
+    },
+  });
+  await prisma.engagement.upsert({
+    where: { id: 'nrw-demo-2' },
+    create: {
+      id: 'nrw-demo-2',
+      name: 'NRW biodiversity data platform',
+      reference: 'NRW-ALPHA-02',
+      standardId: 'wales',
+      serviceName: 'Biodiversity data platform',
+      phase: 'alpha',
+      mode: 'mobilise',
+      lotTag: 'Lot 2 Data',
+      ...shared,
+    },
+    update: {
+      standardId: 'wales',
+      clientOrg: 'Natural Resources Wales',
+      ownerId,
+    },
+  });
+
+  const placeholder = await prisma.engagement.findFirst({
+    where: { orgId: DEMO_ACCOUNT.orgId, name: { in: ['test', 'Test'] } },
+  });
+  if (placeholder && placeholder.id !== 'nrw-demo') {
+    await prisma.engagement.update({
+      where: { id: placeholder.id },
+      data: {
+        name: 'NRW Discovery',
+        clientOrg: 'Natural Resources Wales',
+        phase: 'discovery',
+        standardId: 'wales',
+        ownerId,
+      },
+    });
+  }
+
+  await prisma.engagement.updateMany({
+    where: { id: 'nrw-demo', name: { in: ['test', 'Test', ''] } },
+    data: { name: 'NRW Discovery' },
+  });
+}
 
 async function main() {
   const prisma = new PrismaClient();
   try {
-    const found = await prisma.engagement.count({ where: { id: { in: DEMO_IDS } } });
-    if (found !== DEMO_IDS.length) {
-      console.log('[seed:spine] Demo engagements not found. Run npm run seed:demo first. Skipping.');
+    await ensureDemoAccount(prisma);
+    await ensureDemoReader(prisma);
+    const admin = await prisma.user.findUnique({ where: { email: DEMO_ACCOUNT.email } });
+    if (!admin) {
+      console.log('[seed:spine] Demo admin is missing. Skipping.');
       return;
     }
-    // seedSpineDemo replaces every one of these tables, so skip if any of them has a row.
-    const where = { engagementId: { in: DEMO_IDS } };
+    await ensureEngagements(prisma, admin.id);
+    await seedSystemArchetypes(prisma, [DEMO_ACCOUNT.orgId]);
+
+    const pool = await prisma.designPerson.count({ where: { orgId: DEMO_ACCOUNT.orgId } });
+    if (pool === 0) {
+      const seeded = await seedDemoPool(prisma, { orgId: DEMO_ACCOUNT.orgId, adminUserId: admin.id });
+      console.log(`[seed:spine] Seeded ${seeded.people} people across ${seeded.engagements} engagements.`);
+    }
+
+    const where = { engagementId: { in: [...DEMO_IDS] } };
     const counts = await Promise.all([
       prisma.engagementChecklistItem.count({ where }),
       prisma.engagementMilestone.count({ where }),
@@ -26,12 +118,24 @@ async function main() {
       prisma.decisionRecord.count({ where }),
       prisma.engagementMeasure.count({ where }),
     ]);
-    if (counts.some((n) => n > 0)) {
-      console.log('[seed:spine] Demo engagements already have spine data. Skipping.');
+    if (counts.every((n) => n === 0)) {
+      await seedSpineDemo(prisma);
+      console.log('[seed:spine] Loaded spine demo data for the NRW demo engagements.');
       return;
     }
-    await seedSpineDemo(prisma);
-    console.log('[seed:spine] Loaded spine demo data for the NRW demo engagements.');
+    const milestones = await prisma.engagementMilestone.count({ where: { engagementId: 'nrw-demo' } });
+    if (milestones === 0) {
+      await prisma.engagementMilestone.create({
+        data: {
+          engagementId: 'nrw-demo',
+          name: 'Show and tell',
+          dueOn: day(14),
+          proves: 'The squad can explain the discovery so far.',
+          status: 'on-time',
+        },
+      });
+    }
+    console.log('[seed:spine] Demo engagements already have spine data. Skipping the spine reload.');
   } finally {
     await prisma.$disconnect();
   }

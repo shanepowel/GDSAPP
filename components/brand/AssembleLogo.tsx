@@ -1,3 +1,4 @@
+import { AssembleMark } from '@/components/library/Logo';
 import { BRAND } from '@/lib/brand';
 
 /** Hex mark + Assemble wordmark. */
@@ -42,7 +43,7 @@ export function AssembleLogo({
 
   return (
     <div className={`flex items-center gap-2.5 ${className ?? ''}`} aria-label={BRAND.product}>
-      <AssembleHexIcon className={iconClassName} color={fg} />
+      <AssembleMark size={32} tone={variant === 'dark' ? 'on-brand' : 'on-light'} className={iconClassName} />
       <span className="text-[22px] font-bold tracking-[0.01em]" style={{ color: fg }}>
         {BRAND.product}
       </span>

@@ -104,7 +104,7 @@ export const copyCy: Copy = {
     portfolio: 'Portffolio',
     standards: 'Safonau',
     settings: 'Gosodiadau',
-    ask: 'Gofyn i Assemble',
+    ask: 'Sut rydym yn defnyddio deallusrwydd artiffisial',
   },
 
   lifecycle: {
@@ -162,12 +162,15 @@ export const copyCy: Copy = {
     surveyHealth: 'Anfonwch wiriad iechyd tîm y mis hwn.',
     surveyPulse: 'Anfonwch byls y mis hwn.',
     charterReview: 'Adolygwch siarter y sgwad yn eich adolygiad nesaf.',
+    fillRoles: 'Llenwch y rolau hanfodol.',
     onTrack: 'Rydych ar y trywydd. Carreg filltir nesaf: {milestone} ar {date}.',
     onTrackOpen: 'Rydych ar y trywydd.',
   },
 
   spine: {
     listTitle: 'Ymgysylltiadau',
+    missingEngagement: 'Nid yw’r ymgysylltiad hwn yn eich sefydliad.',
+    missingEngagementWhy: 'Efallai ei fod wedi symud, neu nid yw data’r arddangosfa wedi llwytho eto.',
     listSub: 'Pob ymgysylltiad y gallwch ei weld, gyda’i gam a’i statws.',
     search: 'Chwilio ymgysylltiadau',
     filterStage: 'Cam',
@@ -638,7 +641,10 @@ export const copyCy: Copy = {
     standardsTitle: 'Diffiniadau o barod a gwneud',
     standardsLede:
       'Mae diffiniadau estynedig o barod a gwneud yn cario meini prawf statudol a sicrwydd i’r tocyn, fel bod adolygiad porth yn gydosod, nid awduraeth.',
-    keelTitle: 'The Keel',
+    keelTitle: 'Parhad',
+    crosswalkTitle: 'Croesgerdd safonau',
+    crosswalkLede:
+      'Sut mae’r safonau y mae cleient yn eu defnyddio yn mapio i’r meini prawf a’r dystiolaeth a ddelir yma. Mae parod a gwneud yn y llyfr ymarfer.',
     keelLede:
       'Mae parhad yn reolaeth sicrwydd. Mae rolau craidd yn aros am gyfnod cyflawn ar 0.8 FTE neu uwch. Mae capasiti yn rhannu 70 / 20 / 10: ymrwymedig, dewisol, llac.',
     pillar: 'Piler',
@@ -812,7 +818,9 @@ export const copyCy: Copy = {
     standard: 'Safon',
     standardWales: 'Safon Gwasanaeth Digidol Cymru',
     standardGds: 'Safon Gwasanaeth GDS',
-    confirmProposal: 'Cadarnhau cynnig',
+    confirmProposal: 'Cadw drafft',
+    noSuitable: 'Dim ymgeisydd addas',
+    noArchetype: 'Nid oes archetype ar gael eto, felly mae pob rôl hanfodol yn dal ar agor.',
     allCandidates: 'Pob ymgeisydd',
     unfilled: 'Heb lenwi',
     recruit: 'Recriwtio',
@@ -957,6 +965,7 @@ export const copyCy: Copy = {
     back: 'Yn ôl',
     next: 'Nesaf',
     dismiss: 'Cau',
+    finish: 'Gorffen',
     steps: [
       {
         view: 'practice',
@@ -1179,7 +1188,9 @@ export const copyCy: Copy = {
     squadShapeAria:
       'Siâp sgwad: mae maint y cylch yn dangos faint o berson y mae’r rôl ei angen. Cylchoedd toredig yw heb eu llenwi.',
     demand:
-      'Yr hyn y mae llyfr y gwaith ei angen yn erbyn yr hyn a ddelir, mewn cyfwerth llawn amser. Ambr yw galw, glas tywyll yw gallu. Hygyrchedd yw’r un i weithredu arno: galw ar draws pedwar ymgysylltiad a neb o gwbl, sydd hefyd yn y rheswm mwyaf cyffredin y mae gwasanaethau yn methu asesiad.',
+      'Yr hyn y mae llyfr y gwaith ei angen yn erbyn yr hyn a ddelir, mewn cyfwerth llawn amser. Ambr yw galw, glas tywyll yw gallu.',
+    demandCounted:
+      'Galw yn erbyn gallu a ddelir, ar draws {count} ymgysylltiad. Ambr yw galw, glas tywyll yw’r hyn a ddelir.',
     demandAria: 'Galw yn erbyn gallu a ddelir, yn ôl rôl.',
   },
 
@@ -1269,6 +1280,11 @@ export const copyCy: Copy = {
     dark: 'Tywyll',
     light: 'Golau',
     signOut: 'Allgofnodi',
+    retry: 'Ceisiwch eto',
+    signInToContinue: 'Mewngofnodwch i agor y dudalen hon.',
+    readOnly: 'Arddangosfa yw hon. Darllen yn unig.',
+    menu: 'Dewislen',
+    closeMenu: 'Cau’r ddewislen',
     ceremony: 'Seremoni',
     gdsBridge: 'GDS: pwyntiau {points}',
     skipToContent: 'Neidio i’r prif gynnwys',

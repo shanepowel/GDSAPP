@@ -43,6 +43,9 @@ export interface SpineFacts {
   milestoneWillBeMissed: boolean;
   measuresBelowTarget: number;
   overdueSprintItem: string | null;
+  /** Omitted when the archetype is unknown, so a missing fact cannot invent At risk. */
+  essentialRolesOpen?: number;
+  squadConfirmed?: boolean;
 }
 
 export type AttentionCode =
@@ -88,12 +91,19 @@ function wholeDaysUntil(due: Date, now: Date): number {
   return Math.max(0, Math.ceil((due.getTime() - now.getTime()) / DAY_MS));
 }
 
+export function rolesNeedFilling(facts: SpineFacts): boolean {
+  return !facts.confirmedStatus && facts.squadConfirmed === false && (facts.essentialRolesOpen ?? 0) > 0;
+}
+
 export function displayStatus(facts: SpineFacts): DeliveryStatus {
   if (facts.confirmedStatus) return facts.confirmedStatus;
-  return suggestStatus({
+  const suggested = suggestStatus({
     measuresBelowTarget: facts.measuresBelowTarget,
     milestoneWillBeMissed: facts.milestoneWillBeMissed,
   });
+  if (suggested === 'off-track') return suggested;
+  if (rolesNeedFilling(facts)) return 'at-risk';
+  return suggested;
 }
 
 export function buildAttentionInput(facts: SpineFacts, now: Date, riskLockHours: number): NextActionInput {
@@ -112,6 +122,9 @@ export function buildAttentionInput(facts: SpineFacts, now: Date, riskLockHours:
     surveyDue: facts.surveyDue,
     milestone: facts.milestoneName,
     milestoneDate: facts.milestoneOn ? formatUkDate(facts.milestoneOn) : null,
+    essentialRolesOpen: facts.essentialRolesOpen,
+    squadConfirmed: facts.squadConfirmed,
+    statusConfirmed: Boolean(facts.confirmedStatus),
   };
 
   if (facts.steeringOn) {
@@ -148,7 +161,7 @@ export function attentionRows(facts: SpineFacts, now: Date, riskLockHours: numbe
   if (status === 'off-track' && !(facts.riskLockAt && inPastWindow(facts.riskLockAt, now, riskLockHours))) {
     rows.push({ code: 'off-track', vars: {} });
   }
-  if (status === 'at-risk' && !facts.hasRecoveryPlan) {
+  if (status === 'at-risk' && !facts.hasRecoveryPlan && !rolesNeedFilling(facts)) {
     rows.push({ code: 'at-risk', vars: {} });
   }
   if (facts.overdueSprintItem) {

@@ -840,8 +840,38 @@ aside .learn-toggle.on {
 }
 
 aside .learn-switch {
-  border-color: var(--on-navy-mute);
-  background: transparent;
+  border-color: transparent;
+  background: var(--switch-off);
+}
+
+aside .learn-switch i,
+aside .learn-toggle.on .learn-switch i {
+  background: var(--on-navy);
+}
+
+aside .learn-toggle.on .learn-switch {
+  background: var(--switch-on);
+  border-color: transparent;
+}
+
+aside .learn-toggle:focus-visible {
+  outline: 2px solid var(--on-navy);
+  outline-offset: 2px;
+}
+
+.tab-scroll {
+  scrollbar-width: none;
+}
+
+.tab-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.footer-controls a,
+.footer-controls button,
+.footer-controls select {
+  min-height: 44px;
+  min-width: 44px;
 }
 
 aside .journey-stepper a {

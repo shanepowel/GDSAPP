@@ -13,6 +13,11 @@ export default async function SignInPage({
       ? rawCallback
       : '/squads';
   return (
-    <AuthTabs initialTab={initialTab} callbackUrl={callbackUrl} sessionError={params.error} />
+    <AuthTabs
+      initialTab={initialTab}
+      callbackUrl={callbackUrl}
+      sessionError={params.error}
+      prompt={Boolean(rawCallback)}
+    />
   );
 }

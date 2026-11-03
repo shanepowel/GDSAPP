@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { attentionFor, attentionRows, type SpineFacts } from '@/lib/attention/facts';
+import { attentionFor, attentionRows, displayStatus, type SpineFacts } from '@/lib/attention/facts';
 import { dayPart, hourInLondon } from '@/lib/attention/greeting';
 import { lifecycleStageForPhase } from '@/lib/attention/lifecycle';
 import { nextAction, suggestStatus } from '@/lib/attention/next-action';
@@ -37,12 +37,61 @@ describe('next action', () => {
     ).toMatchObject({ n: 2, date: '12 Nov 2026' });
   });
 
+  it('asks to fill essential roles when an unconfirmed squad has them open', () => {
+    expect(
+      nextAction({ squadConfirmed: false, essentialRolesOpen: 4, status: 'at-risk', hasRecoveryPlan: false }).code,
+    ).toBe('fill-roles');
+    expect(nextAction({ status: 'at-risk', hasRecoveryPlan: false }).code).toBe('recovery');
+    expect(nextAction({ essentialRolesOpen: 4 }).code).toBe('on-track');
+    expect(
+      nextAction({
+        squadConfirmed: false,
+        essentialRolesOpen: 4,
+        status: 'at-risk',
+        hasRecoveryPlan: false,
+        statusConfirmed: true,
+      }).code,
+    ).toBe('recovery');
+  });
+
   it('falls through to on track when nothing else matches', () => {
     expect(nextAction({ milestone: 'Payment 2', milestoneDate: '30 Nov 2026' })).toEqual({
       code: 'on-track',
       priority: 13,
       vars: { milestone: 'Payment 2', date: '30 Nov 2026' },
     });
+  });
+
+  it('marks an unconfirmed squad with open essential roles as at risk', () => {
+    const base = {
+      confirmedStatus: null,
+      riskLockAt: null,
+      hasRecoveryPlan: false,
+      steeringOn: null,
+      packReady: false,
+      unconfirmedDecisions: 0,
+      stage: null,
+      sprintZeroOpen: 0,
+      sprintZeroBy: null,
+      submittedChange: null,
+      triagedChange: null,
+      exceptionPerson: null,
+      goLiveOn: null,
+      hasAftercare: false,
+      reportDueOn: null,
+      surveyDue: null,
+      charterReviewOn: null,
+      milestoneName: null,
+      milestoneOn: null,
+      milestoneWillBeMissed: false,
+      measuresBelowTarget: 0,
+      overdueSprintItem: null,
+    } satisfies SpineFacts;
+    expect(displayStatus(base)).toBe('on-track');
+    expect(displayStatus({ ...base, squadConfirmed: false, essentialRolesOpen: 3 })).toBe('at-risk');
+    expect(nextActionSentence(attentionFor({ ...base, squadConfirmed: false, essentialRolesOpen: 3 }, new Date('2026-11-03T00:00:00.000Z'), 48), copy.nextAction)).toBe(
+      'Fill essential roles.',
+    );
   });
 
   it('suggests status from measures and milestones', () => {

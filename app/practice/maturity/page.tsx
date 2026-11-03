@@ -11,7 +11,7 @@ export default function MaturityPage() {
   return (
     <>
       <PageHeader eyebrow={copy.nav.practice.label} title={copy.practice.maturityTitle} />
-      <MaturityLadder current={2} />
+      <MaturityLadder />
     </>
   );
 }

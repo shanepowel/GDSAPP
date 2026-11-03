@@ -8,6 +8,14 @@ import { useTheme } from '@/components/app/ThemeProvider';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { trpc } from '@/lib/trpc/client';
 
+function roleName(role: string): string {
+  if (role === 'demo-reader') return 'Demo reader';
+  if (role === 'admin') return 'Admin';
+  if (role === 'assessor') return 'Assessor';
+  if (role === 'member') return 'Member';
+  return role;
+}
+
 export default function SettingsPage() {
   const { messages: m } = useI18n();
   const { theme, toggle } = useTheme();
@@ -33,16 +41,15 @@ export default function SettingsPage() {
         <Card className="p-6">
           <h2 className="font-semibold text-text">Sign-in</h2>
           <p className="mt-2 text-sm text-text-muted">
-            When Microsoft Entra is configured, it is the primary sign-in. Credentials remain only
-            when <code className="font-data text-xs">AUTH_ALLOW_CREDENTIALS=true</code> (local/demo).
-            Assessor role: read and comment; no structural edits.
+            When Microsoft Entra is configured, it is the primary sign-in. A password is available
+            on this demonstration. An assessor can read and comment, and cannot change the structure.
           </p>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 lg:col-span-2">
           <h2 className="font-semibold text-text">Organisation</h2>
           <p className="mt-2 text-sm text-text-muted">{me?.organisationName}</p>
-          <p className="mt-1 text-xs text-text-muted">Your role: {me?.role}</p>
+          <p className="mt-1 text-xs text-text-muted">Your role: {me?.role ? roleName(me.role) : ''}</p>
           {me && (
             <p className="mt-3 text-sm">
               {m.settings.tenantMode}:{' '}
@@ -66,7 +73,7 @@ export default function SettingsPage() {
                   <span className="font-medium text-text">{u.name ?? u.email}</span>
                   <span className="ml-2 text-text-muted">{u.email}</span>
                 </span>
-                <span className="capitalize text-text-muted">{u.role}</span>
+                <span className="text-text-muted">{roleName(u.role)}</span>
               </li>
             ))}
           </ul>
@@ -131,8 +138,8 @@ export default function SettingsPage() {
       <Card className="mt-6 p-6">
         <h2 className="font-semibold text-text">Delivery Playbook</h2>
         <p className="mt-2 text-sm text-text-muted">
-          Public sector operating model — Keel rules, phase crosswalk, Compass targets. Team Fit
-          scores against this playbook.
+          Public sector operating model. Continuity rules, the phase crosswalk, and Compass targets.
+          Team Fit scores against this playbook.
         </p>
         <Link
           href="/practice/pillars"

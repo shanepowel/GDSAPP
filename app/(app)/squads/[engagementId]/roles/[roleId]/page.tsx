@@ -4,6 +4,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import { FitBandCell, FitBreakdownPanel, FitStrip } from '@/components/team-fit/FitStrip';
 import { EmptyState, FitLegend, PageHeader, TextLink } from '@/components/datum/PageChrome';
+import { useSession } from 'next-auth/react';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
@@ -21,6 +22,8 @@ export default function SquadRolePage() {
 function SquadRolePageInner() {
   const params = useParams();
   const search = useSearchParams();
+  const { data: session } = useSession();
+  const readOnly = session?.user?.role === 'demo-reader';
   const { locale } = useI18n();
   const copy = getCopy(locale);
   const id = params.engagementId as string;
@@ -81,7 +84,8 @@ function SquadRolePageInner() {
             const open = expandedId === c.id;
             const needsOverride = c.band === 'stretch' || c.band === 'gap';
             const override = overrides[c.id] ?? '';
-            const canAssign = !needsOverride || override.trim().length > 0;
+            const suitable = c.suitable;
+            const canAssign = suitable && (!needsOverride || override.trim().length > 0) && !readOnly;
             return (
               <li
                 key={c.id}
@@ -125,9 +129,11 @@ function SquadRolePageInner() {
                     />
                   </label>
                 ) : null}
+                {suitable ? (
                 <button
                   type="button"
                   className="btn-teach pri mt-3"
+                  title={readOnly ? copy.ui.readOnly : undefined}
                   disabled={assign.isPending || !canAssign || !data}
                   onClick={async () => {
                     if (!data) return;
@@ -147,6 +153,9 @@ function SquadRolePageInner() {
                     ? copy.walkthrough.confirmedHeading
                     : copy.walkthrough.assignToRole}
                 </button>
+                ) : (
+                  <p className="mt-3 text-sm text-asm-ink-3">{copy.squads.noSuitable}</p>
+                )}
               </li>
             );
           })}
