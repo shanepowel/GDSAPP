@@ -133,13 +133,14 @@ async function main() {
     }
     await ensureEngagements(prisma, admin.id);
     await seedSystemArchetypes(prisma, [DEMO_ACCOUNT.orgId]);
-    await ensureWalkthroughPeople(prisma);
 
+    // Count before adding the walkthrough people, so a fresh database still gets the full pool.
     const pool = await prisma.designPerson.count({ where: { orgId: DEMO_ACCOUNT.orgId } });
     if (pool === 0) {
       const seeded = await seedDemoPool(prisma, { orgId: DEMO_ACCOUNT.orgId, adminUserId: admin.id });
       console.log(`[seed:spine] Seeded ${seeded.people} people across ${seeded.engagements} engagements.`);
     }
+    await ensureWalkthroughPeople(prisma);
 
     const where = { engagementId: { in: [...DEMO_IDS] } };
     const counts = await Promise.all([
