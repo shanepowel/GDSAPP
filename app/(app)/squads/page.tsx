@@ -50,7 +50,7 @@ export default function SquadsIndexPage() {
         <Field id="engagement-search" label={s.search}>
           <TextInput type="search" value={search} onChange={(event) => setSearch(event.target.value)} />
         </Field>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
           <Filter label={s.filterStage} value={stage} onChange={setStage} options={[['all', s.filterAll], ...Object.entries(labels)]} />
           <Filter
             label={s.filterStatus}

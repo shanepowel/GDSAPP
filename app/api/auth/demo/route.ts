@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   }
 
   const origin = getAuthUrl() ?? request.nextUrl.origin;
-  const dest = new URL('/squads/nrw-demo', origin);
+  const dest = new URL('/?tour=1', origin);
 
   const existing = await getToken({ req: request, secret });
   if (existing?.role && existing.role !== DEMO_READER_ROLE) {

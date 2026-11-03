@@ -84,7 +84,7 @@ export function AddPersonForm({
           </option>
         ))}
       </DatumSelect>
-      <Button type="submit" size="sm" disabled={createPerson.isPending || !draft.name.trim()}>
+      <Button type="submit" className="min-h-11" disabled={createPerson.isPending || !draft.name.trim()}>
         {copy.people.addPerson}
       </Button>
       {createPerson.error ? (

@@ -19,10 +19,12 @@ export function AuthTabs({
   initialTab = 'sign-in',
   callbackUrl = '/squads',
   sessionError,
+  prompt = false,
 }: {
   initialTab?: Tab;
   callbackUrl?: string;
   sessionError?: string;
+  prompt?: boolean;
 }) {
   const { messages: m, locale } = useI18n();
   const copy = getCopy(locale);
@@ -98,6 +100,7 @@ export function AuthTabs({
         <div className="w-full max-w-md rounded-xl border border-border bg-surface p-8 shadow-md">
           <h1 className="font-display text-2xl font-bold text-text">{m.signIn.title}</h1>
           <p className="mt-2 text-sm leading-relaxed text-text-muted">{m.signIn.subtitle}</p>
+          {prompt ? <p className="mt-3 text-sm font-semibold text-text">{copy.ui.signInToContinue}</p> : null}
           {singleLogin && (
             <p className="mt-2 text-sm text-text-muted">{m.signIn.singleLoginHint}</p>
           )}

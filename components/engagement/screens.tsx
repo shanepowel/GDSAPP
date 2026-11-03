@@ -54,12 +54,30 @@ function useRefresh(id: string) {
 function useSpine(id: string) {
   const { locale } = useI18n();
   const copy = getCopy(locale);
-  const query = trpc.spine.get.useQuery({ id });
+  const query = trpc.spine.get.useQuery({ id }, { retry: false });
   return { copy, query, data: query.data };
 }
 
-function Loading({ copy, failed }: { copy: Copy; failed: boolean }) {
-  return <p className="text-asm-ink-3">{failed ? copy.ui.loadFailed : copy.ui.loading}</p>;
+function SpineStatus({ copy, query }: { copy: Copy; query: ReturnType<typeof useSpine>['query'] }) {
+  if (query.isLoading) return <p className="text-asm-ink-3">{copy.ui.loading}</p>;
+  if (query.error?.data?.code === 'NOT_FOUND') {
+    return (
+      <EmptyState
+        title={copy.spine.missingEngagement}
+        body={copy.spine.missingEngagementWhy}
+        action={<ButtonLink href="/squads">{copy.spine.listTitle}</ButtonLink>}
+      />
+    );
+  }
+  return (
+    <div className="flex w-full flex-col items-start gap-3">
+      <p className="m-0 font-semibold text-asm-ink">{copy.ui.loadFailed}</p>
+      <p className="m-0 text-sm text-asm-ink-2">{copy.ui.loadFailedWhy}</p>
+      <Button type="button" onClick={() => void query.refetch()}>
+        {copy.ui.retry}
+      </Button>
+    </div>
+  );
 }
 
 /** A form section inside a card: fields stacked, one primary action at the bottom. */
@@ -175,7 +193,7 @@ export function SpineFrame({ id, children }: { id: string; children: ReactNode }
 export function OverviewScreen({ id, created }: { id: string; created: boolean }) {
   const { copy, query, data } = useSpine(id);
   const agree = trpc.spine.agreeCharter.useMutation({ onSuccess: useRefresh(id) });
-  if (!data) return <Loading copy={copy} failed={!query.isLoading} />;
+  if (!data) return <SpineStatus copy={copy} query={query} />;
   const sentence = nextActionSentence(data.attention, copy.nextAction);
   const risks = data.raid.slice(0, 3);
   return (
@@ -292,7 +310,7 @@ export function StageScreen({ id, stage }: { id: string; stage: LifecycleStage }
   const toggle = trpc.spine.setChecklist.useMutation({ onSuccess: refresh });
   const move = trpc.spine.moveStage.useMutation({ onSuccess: refresh });
   const [confirming, setConfirming] = useState(false);
-  if (!data) return <Loading copy={copy} failed={!query.isLoading} />;
+  if (!data) return <SpineStatus copy={copy} query={query} />;
   const labels = lifecycleLabels(copy);
   const items = data.checklist.filter((item) => item.stage === stage);
   const done = items.filter((item) => item.done).length;
@@ -386,7 +404,7 @@ export function PlanScreen({ id }: { id: string }) {
   const [name, setName] = useState('');
   const [dueOn, setDueOn] = useState('');
   const [proves, setProves] = useState('');
-  if (!data) return <Loading copy={copy} failed={!query.isLoading} />;
+  if (!data) return <SpineStatus copy={copy} query={query} />;
   const statusKeys = Object.keys(copy.spine.milestoneStatus) as Array<keyof typeof copy.spine.milestoneStatus>;
   return (
     <div className="flex flex-col gap-6">
@@ -505,7 +523,7 @@ export function CompassScreen({ id }: { id: string }) {
   const [draft, setDraft] = useState<string | null>(null);
   const [reportDue, setReportDue] = useState('');
   const [readings, setReadings] = useState({ predictability: '', quality: '', teamHealth: '', clientSatisfaction: '' });
-  if (!data) return <Loading copy={copy} failed={!query.isLoading} />;
+  if (!data) return <SpineStatus copy={copy} query={query} />;
   const statusText = statusLabel(copy, data.status);
   const selected = choice ?? data.status;
   const num = (value: string) => (value.trim() === '' ? undefined : Number(value));
@@ -754,7 +772,7 @@ export function DecisionsScreen({ id }: { id: string }) {
   const [decision, setDecision] = useState('');
   const [steeringOn, setSteeringOn] = useState('');
   const [packReady, setPackReady] = useState<boolean | null>(null);
-  if (!data) return <Loading copy={copy} failed={!query.isLoading} />;
+  if (!data) return <SpineStatus copy={copy} query={query} />;
   const typeKeys = Object.keys(copy.spine.types) as Array<keyof typeof copy.spine.types>;
   return (
     <div className="flex flex-col gap-6">
@@ -942,7 +960,7 @@ export function ChangeScreen({ id }: { id: string }) {
   const setAftercare = trpc.spine.setAftercare.useMutation({ onSuccess: refresh });
   const [description, setDescription] = useState('');
   const [goLive, setGoLiveOn] = useState('');
-  if (!data) return <Loading copy={copy} failed={!query.isLoading} />;
+  if (!data) return <SpineStatus copy={copy} query={query} />;
   const statusLabelFor = { submitted: copy.spine.submitted, triaged: copy.spine.triaged, assessed: copy.spine.assessed };
   return (
     <div className="flex flex-col gap-6">

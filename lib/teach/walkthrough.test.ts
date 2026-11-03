@@ -5,6 +5,7 @@ import {
   WALKTHROUGH_PEOPLE,
   WALKTHROUGH_ROLES,
   assignmentForTourStep,
+  bestAvailable,
   fitWalkthrough,
   fullPhaseShare,
   isWalkthroughTourStep,
@@ -31,6 +32,27 @@ describe('spec 12 walkthrough', () => {
     expect(assignmentForTourStep(5)).toEqual({});
     expect(assignmentForTourStep(6)).toEqual({ 0: 0, 2: 2, 4: 4 });
     expect(assignmentForTourStep(7)[5]).toBe(5);
+  });
+
+  it('does not offer a person below the datum or without remaining time', () => {
+    const open = bestAvailable({});
+    const names = open.map((pick) => (pick ? WALKTHROUGH_PEOPLE[pick.personIndex]?.name : null));
+    expect(open.every((pick) => pick == null || pick.score >= 0.6)).toBe(true);
+    const content = WALKTHROUGH_ROLES.findIndex((role) => role.rid === 'cd');
+    const contentPick = open[content];
+    if (contentPick) expect(contentPick.score).toBeGreaterThanOrEqual(0.6);
+    const used = new Map<number, number>();
+    open.forEach((pick, index) => {
+      if (!pick) return;
+      const next = (used.get(pick.personIndex) ?? 0) + WALKTHROUGH_ROLES[index]!.fte;
+      expect(next).toBeLessThanOrEqual(WALKTHROUGH_PEOPLE[pick.personIndex]!.free + 1e-9);
+      used.set(pick.personIndex, next);
+    });
+
+    const dafydd = WALKTHROUGH_PEOPLE.findIndex((person) => person.name === 'Dafydd Jones');
+    const analyst = WALKTHROUGH_ROLES.findIndex((role) => role.rid === 'dm');
+    const after = bestAvailable({ [analyst]: dafydd });
+    expect(after.some((pick, index) => index !== analyst && pick?.personIndex === dafydd)).toBe(false);
   });
 
   it('treats a two-phase run as staying a full phase', () => {

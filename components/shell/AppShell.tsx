@@ -6,6 +6,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { LanguageSwitcher } from '@/components/app/LanguageSwitcher';
@@ -22,8 +23,7 @@ import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 import { fillCopy } from '@/lib/copy';
 import { lifecycleLabels } from '@/components/engagement/shared';
-import { lifecycleStageForPhase } from '@/lib/attention/lifecycle';
-import { stageDefForPath } from '@/lib/explain/stages';
+import { maturityIndex, phaseDisplay, standardDisplayName } from '@/lib/labels';
 import { trpc } from '@/lib/trpc/client';
 import type { MaturityLevel } from '@/lib/playbook/keel';
 
@@ -34,14 +34,8 @@ export interface EngagementContext {
   name: string;
   phase: string;
   standards: string[];
+  standardId?: string | null;
   maturityLevel: 1 | 2 | 3 | 4 | string;
-}
-
-function maturityNumber(level: string | number): number {
-  if (typeof level === 'number') return level;
-  const order: MaturityLevel[] = ['practising', 'evidenced', 'assured', 'compounding'];
-  const idx = order.indexOf(level as MaturityLevel);
-  return idx >= 0 ? idx + 1 : 1;
 }
 
 function readCookie(name: string): string | null {
@@ -57,15 +51,13 @@ function toContext(e: {
   maturityLevel?: string | null;
   standardId?: string | null;
 }): EngagementContext {
-  const standards = [
-    e.standardId === 'wales' ? 'Wales DSS' : e.standardId === 'gds' ? 'GDS' : e.standardId,
-  ].filter((v): v is string => Boolean(v));
   return {
     id: e.id,
     name: e.name,
-    phase: e.phase ?? 'discovery',
-    standards: standards.length ? standards : ['-'],
-    maturityLevel: (e.maturityLevel as MaturityLevel) ?? 'practising',
+    phase: e.phase ?? '',
+    standards: [],
+    standardId: e.standardId,
+    maturityLevel: (e.maturityLevel as MaturityLevel) ?? '',
   };
 }
 
@@ -85,7 +77,7 @@ export function DatumAppShell({
   accountLabel?: string;
 }) {
   const pathname = usePathname();
-  const { locale } = useI18n();
+  const { locale, messages } = useI18n();
   const c = getCopy(locale);
   const { data: session } = useSession();
   const signedIn = Boolean(session?.user);
@@ -106,13 +98,44 @@ export function DatumAppShell({
   const selectedId = fromPath ?? cookieId ?? engagement?.id ?? contexts[0]?.id;
   const contextEngagement =
     engagement ?? contexts.find((e) => e.id === selectedId) ?? contexts[0];
-  const showStrip = Boolean(contextEngagement && (signedIn || stageDefForPath(pathname)));
+  const onEngagement = /^\/squads\/[^/]+/.test(pathname) || /^\/assurance\/[^/]+/.test(pathname);
+  const showStrip = Boolean(signedIn && onEngagement && contextEngagement);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <DatumShellProvider>
-      <div className="asm-root grid min-h-screen grid-cols-1 md:grid-cols-[256px_1fr]">
+      <div className="asm-root min-h-screen md:grid md:grid-cols-[256px_1fr]">
         <SkipLink>{c.ui.skipToContent}</SkipLink>
-        <aside className="sticky top-0 z-20 flex h-auto flex-col bg-asm-brand text-asm-on-brand md:h-screen md:overflow-y-auto">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-2 bg-asm-brand px-3 text-asm-on-brand md:hidden">
+          <button
+            type="button"
+            className="inline-flex size-11 items-center justify-center rounded-asm"
+            aria-expanded={menuOpen}
+            aria-controls="app-nav"
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? c.ui.closeMenu : c.ui.menu}
+          </button>
+          <Link href="/" className="flex items-center gap-2 text-asm-on-brand no-underline">
+            <AssembleMark size={24} />
+            <span className="text-base font-bold">{c.product.name}</span>
+          </Link>
+        </header>
+        {menuOpen ? (
+          <button
+            type="button"
+            className="fixed inset-0 z-30 bg-black/40 md:hidden"
+            aria-label={c.ui.closeMenu}
+            onClick={() => setMenuOpen(false)}
+          />
+        ) : null}
+        <aside
+          id="app-nav"
+          className={[
+            'fixed inset-y-0 left-0 z-40 flex w-64 flex-col overflow-y-auto bg-asm-brand text-asm-on-brand transition-transform md:sticky md:top-0 md:z-20 md:h-screen md:w-auto md:translate-x-0',
+            menuOpen ? 'translate-x-0' : '-translate-x-full',
+          ].join(' ')}
+        >
           <div className="px-5 pb-4 pt-6">
             <Link href="/" className="flex items-center gap-2.5 text-asm-on-brand no-underline">
               <AssembleMark />
@@ -123,7 +146,7 @@ export function DatumAppShell({
             </Link>
           </div>
 
-          <ShellNav signedIn={signedIn} />
+          <ShellNav signedIn={signedIn} onNavigate={() => setMenuOpen(false)} />
 
           <div className="border-t border-asm-on-brand-line/40 px-5 py-3">
             <TeachToggle />
@@ -137,25 +160,25 @@ export function DatumAppShell({
               {c.shell.ask}
             </Link>
           </div>
-          <div className="flex flex-wrap items-center gap-2 border-t border-asm-on-brand-line/40 px-5 py-3 text-[13px]">
+          <div className="footer-controls flex flex-wrap items-center gap-1 border-t border-asm-on-brand-line/40 px-3 py-2 text-[13px]">
             <LanguageSwitcher />
             <ThemeToggle />
             {signedIn ? (
               <>
-                <Link href={accountHref} className="ml-auto text-asm-on-brand">
-                  {accountLabel ?? c.home.signIn}
+                <Link href="/profile" className="inline-flex min-h-11 items-center px-3 text-asm-on-brand">
+                  {accountLabel ?? messages.nav.profile}
                 </Link>
                 <button
                   type="button"
-                  className="text-asm-on-brand"
+                  className="inline-flex min-h-11 items-center px-3 text-asm-on-brand"
                   onClick={() => signOut({ callbackUrl: '/' })}
                 >
                   {c.ui.signOut}
                 </button>
               </>
             ) : (
-              <Link href={accountHref} className="ml-auto text-asm-on-brand">
-                {accountLabel ?? c.home.signIn}
+              <Link href={accountHref} className="inline-flex min-h-11 items-center px-3 text-asm-on-brand">
+                {c.home.signIn}
               </Link>
             )}
           </div>
@@ -207,19 +230,15 @@ function shellActive(pathname: string, href: string): boolean {
     );
   }
   if (href === '/practice/standards') {
-    return (
-      pathname.startsWith('/practice/standards') ||
-      pathname.startsWith('/framework') ||
-      pathname.startsWith('/assurance')
-    );
+    return pathname.startsWith('/practice/standards');
   }
   if (href === '/squads') {
-    return pathname.startsWith('/squads') || pathname.startsWith('/engagements');
+    return pathname.startsWith('/squads') || pathname.startsWith('/engagements') || /^\/assurance\/[^/]+/.test(pathname);
   }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function ShellNav({ signedIn }: { signedIn: boolean }) {
+function ShellNav({ signedIn, onNavigate }: { signedIn: boolean; onNavigate?: () => void }) {
   const pathname = usePathname();
   const { locale } = useI18n();
   const c = getCopy(locale);
@@ -235,6 +254,7 @@ function ShellNav({ signedIn }: { signedIn: boolean }) {
             <li key={item.href} className="shrink-0 md:shrink">
               <Link
                 href={item.href}
+                onClick={onNavigate}
                 aria-current={active ? 'page' : undefined}
                 className={[
                   'flex min-h-11 items-center gap-3 whitespace-nowrap rounded-asm px-3 text-[15px] no-underline',
@@ -265,15 +285,16 @@ function ContextBar({
   const router = useRouter();
   const { locale } = useI18n();
   const c = getCopy(locale);
-  const level = maturityNumber(engagement.maturityLevel);
-  const levelKey = (['practising', 'evidenced', 'assured', 'compounding'][level - 1] ??
+  const level = maturityIndex(engagement.maturityLevel);
+  const levelKey = (['practising', 'evidenced', 'assured', 'compounding'][(level ?? 1) - 1] ??
     'practising') as MaturityLevel;
-  const maturityName = c.maturityLevels[levelKey];
-  const stage = lifecycleStageForPhase(engagement.phase);
-  const phaseLabel =
-    engagement.id === 'nrw-demo' ? c.context.demoPhase : stage ? lifecycleLabels(c)[stage] : engagement.phase;
-  const standardsLabel =
-    engagement.id === 'nrw-demo' ? c.context.demoStandards : engagement.standards.join(' · ') || '-';
+  const maturityName = level ? c.maturityLevels[levelKey] : '';
+  const phaseLabel = phaseDisplay(engagement.phase, lifecycleLabels(c), c.spine.missing);
+  const standardsLabel = standardDisplayName(engagement.standardId, {
+    wales: c.squads.standardWales,
+    gds: c.squads.standardGds,
+    missing: c.spine.missing,
+  });
 
   return (
     <div className="flex flex-wrap items-baseline gap-6 border-b border-asm-line bg-asm-surface px-4 py-3.5 md:px-10">
@@ -311,7 +332,7 @@ function ContextBar({
       <Field label={c.context.standards}>{standardsLabel}</Field>
       <div className="flex-1" />
       <Field label={c.context.maturity}>
-        {fillCopy(c.context.maturityValue, { level, name: maturityName })}
+        {level ? fillCopy(c.context.maturityValue, { level, name: maturityName }) : c.spine.missing}
       </Field>
     </div>
   );

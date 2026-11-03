@@ -127,17 +127,18 @@ export function CapacityFigure({ label }: { label: string }) {
   );
 }
 
-/** Figure 4. Continuity — The Keel made visible. */
+/** Figure 4. Continuity across four phases. Labels sit in their own column. */
 export function ContinuityFigure({
   label,
-  people = WALKTHROUGH_PEOPLE,
+  people = [],
 }: {
   label: string;
   people?: WalkthroughPerson[];
 }) {
-  const w = 560;
-  const x0 = 150;
-  const colw = (w - x0 - 20) / 4;
+  const w = 680;
+  const x0 = 168;
+  const labelW = 96;
+  const colw = (w - x0 - labelW - 12) / 4;
   const heads = ['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4']
     .map(
       (h, i) =>
@@ -155,11 +156,14 @@ export function ContinuityFigure({
         )
         .join('');
       const run = longestRun(p.phases);
-      const tag = run >= 3 ? 'stable' : run === 2 ? '' : 'fragmented';
+      const tag = run >= 3 ? 'Stable' : run === 2 ? 'Recent' : 'Building';
+      const tagX = x0 + colw * 4 + 8;
       return `<text x="0" y="${y + 11}" font-family="${MONO}" font-size="10" fill="var(--ink)">${p.name}</text>${bars}
-        <text x="${w - 14}" y="${y + 11}" text-anchor="end" font-family="${MONO}" font-size="9" fill="${tag === 'fragmented' ? 'var(--survey)' : 'var(--graphite)'}">${tag}</text>`;
+        <text x="${tagX}" y="${y + 11}" font-family="${MONO}" font-size="9" fill="${tag === 'Building' ? 'var(--survey)' : 'var(--graphite)'}">${tag}</text>`;
     })
     .join('');
+
+  if (people.length === 0) return null;
 
   return (
     <svg
@@ -211,22 +215,30 @@ export function SquadShapeFigure({ label, nodes }: { label: string; nodes: Squad
 }
 
 /** Figure 6. Demand against capability held. */
-export function DemandFigure({ label }: { label: string }) {
-  const w = 560;
-  const x0 = 180;
-  const max = 3.2;
-  const sc = (w - x0 - 40) / max;
-  const bars = WALKTHROUGH_DEMAND.map((r, i) => {
-    const y = 18 + i * 32;
-    return `<text x="0" y="${y + 10}" font-family="${MONO}" font-size="10">${r.role}</text>
+export function DemandFigure({
+  label,
+  rows = WALKTHROUGH_DEMAND,
+}: {
+  label: string;
+  rows?: Array<{ role: string; need: number; hold: number }>;
+}) {
+  const w = 720;
+  const x0 = 210;
+  const gutter = 148;
+  const max = Math.max(3.2, ...rows.map((row) => Math.max(row.need, row.hold)));
+  const sc = (w - x0 - gutter) / max;
+  const bars = rows.map((r, i) => {
+    const y = 18 + i * 36;
+    const labelX = x0 + Math.max(r.need, r.hold) * sc + 8;
+    return `<text x="0" y="${y + 12}" font-family="${MONO}" font-size="10">${r.role}</text>
     <rect x="${x0}" y="${y}" width="${r.need * sc}" height="6" fill="var(--survey)"/>
     <rect x="${x0}" y="${y + 8}" width="${r.hold * sc}" height="6" fill="var(--ink)"/>
-    <text x="${x0 + Math.max(r.need, r.hold) * sc + 6}" y="${y + 11}" font-family="${MONO}" font-size="9" fill="var(--graphite)">need ${r.need.toFixed(1)} · hold ${r.hold.toFixed(1)}</text>`;
+    <text x="${labelX}" y="${y + 14}" font-family="${MONO}" font-size="9" fill="var(--graphite)">need ${r.need.toFixed(1)} · hold ${r.hold.toFixed(1)}</text>`;
   }).join('');
 
   return (
     <svg
-      viewBox={`0 0 ${w} ${18 + WALKTHROUGH_DEMAND.length * 32}`}
+      viewBox={`0 0 ${w} ${18 + rows.length * 36}`}
       role="img"
       aria-label={label}
       dangerouslySetInnerHTML={{ __html: bars }}

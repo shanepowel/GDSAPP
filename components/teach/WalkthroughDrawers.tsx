@@ -122,7 +122,7 @@ export function WalkthroughRolePanel({
   const copy = getCopy(locale);
   const role = WALKTHROUGH_ROLES[roleIndex];
   const meta = copy.roles.cards.find((c) => c.id === role.rid);
-  const list = rankedForRole(role);
+  const list = rankedForRole(role, assigned, roleIndex);
 
   return (
     <>
@@ -214,9 +214,13 @@ function RankedCard({
       </div>
       <FitStrip fit={c.fit} candidateName={c.person.name} />
       <div className="font-data text-[10.5px] text-asm-ink-3">{meta}</div>
-      <button type="button" className="btn-teach pri mt-2" onClick={onAssign}>
-        {copy.walkthrough.assignToRole}
-      </button>
+      {c.suitable ? (
+        <button type="button" className="btn-teach pri mt-2" onClick={onAssign}>
+          {copy.walkthrough.assignToRole}
+        </button>
+      ) : (
+        <p className="mt-2 mb-0 text-[12.5px] text-asm-ink-3">{copy.squads.noSuitable}</p>
+      )}
       {assignedHere ? (
         <button type="button" className="btn-teach mt-2 ml-2" onClick={onUnassign}>
           {copy.walkthrough.remove}

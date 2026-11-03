@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { TeachPanel } from '@/components/teach/TeachPanel';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
@@ -26,9 +25,6 @@ export function StageChrome({ pathname, children }: { pathname: string; children
   return (
     <>
       <p className="stage-handover">{stageCopy.handover}</p>
-      <TeachPanel tag={stageCopy.label} title={stageCopy.label}>
-        <p>{stageCopy.narration}</p>
-      </TeachPanel>
       {children}
       <nav className="stage-pager" aria-label={copy.nav.stages}>
         {prev ? (

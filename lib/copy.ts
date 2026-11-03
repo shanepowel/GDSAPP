@@ -122,7 +122,7 @@ export const copy = {
     portfolio: 'Portfolio',
     standards: 'Standards',
     settings: 'Settings',
-    ask: 'Ask Assemble',
+    ask: 'How we use AI',
   },
 
   lifecycle: {
@@ -180,12 +180,15 @@ export const copy = {
     surveyHealth: "Send this month's team health check.",
     surveyPulse: "Send this month's pulse.",
     charterReview: 'Review the squad charter at your next retrospective.',
+    fillRoles: 'Fill essential roles.',
     onTrack: 'You are on track. Next milestone: {milestone} on {date}.',
     onTrackOpen: 'You are on track.',
   },
 
   spine: {
     listTitle: 'Engagements',
+    missingEngagement: 'This engagement is not in your organisation.',
+    missingEngagementWhy: 'It may have moved, or the demonstration data has not loaded yet.',
     listSub: 'Every engagement you can see, with its stage and status.',
     search: 'Search engagements',
     filterStage: 'Stage',
@@ -655,7 +658,10 @@ export const copy = {
     standardsTitle: 'Definitions of ready and done',
     standardsLede:
       'Extended definitions of ready and done carry statutory and assurance criteria into the ticket, so a gate review is assembly, not authorship.',
-    keelTitle: 'The Keel',
+    keelTitle: 'Continuity',
+    crosswalkTitle: 'Standards crosswalk',
+    crosswalkLede:
+      'How the standards a client uses map onto the criteria and evidence held here. Ready and done live in the playbook.',
     keelLede:
       'Continuity is an assurance control. Core roles stay for a complete phase at 0.8 FTE or above. Capacity splits 70 / 20 / 10: committed, discretionary, slack.',
     pillar: 'Pillar',
@@ -827,7 +833,9 @@ export const copy = {
     standard: 'Standard',
     standardWales: 'Wales Digital Service Standard',
     standardGds: 'GDS Service Standard',
-    confirmProposal: 'Confirm proposal',
+    confirmProposal: 'Save draft',
+    noSuitable: 'No suitable candidate',
+    noArchetype: 'No archetype is available yet, so every essential role is still open.',
     allCandidates: 'Every candidate',
     unfilled: 'Unfilled',
     recruit: 'Recruit',
@@ -972,6 +980,7 @@ export const copy = {
     back: 'Back',
     next: 'Next',
     dismiss: 'Dismiss',
+    finish: 'Finish',
     steps: [
       {
         view: 'practice',
@@ -1194,7 +1203,9 @@ export const copy = {
     squadShapeAria:
       'Squad shape: circle size shows how much of a person the role needs. Dashed circles are unfilled.',
     demand:
-      'What the book of work needs against what we hold, in full-time equivalents. Amber is demand, navy is capability. Accessibility is the one to act on: demand across four engagements and nobody at all, which is also the most common reason services fail assessment.',
+      'What the book of work needs against what we hold, in full-time equivalents. Amber is demand, navy is capability.',
+    demandCounted:
+      'Demand against capability held, across {count} engagements. Amber is demand, navy is what we hold.',
     demandAria: 'Demand against capability held, by role.',
   },
 
@@ -1284,6 +1295,11 @@ export const copy = {
     dark: 'Dark',
     light: 'Light',
     signOut: 'Sign out',
+    retry: 'Try again',
+    signInToContinue: 'Sign in to open this page.',
+    readOnly: 'This demonstration is read-only.',
+    menu: 'Menu',
+    closeMenu: 'Close menu',
     ceremony: 'Ceremony',
     gdsBridge: 'GDS: points {points}',
     skipToContent: 'Skip to main content',

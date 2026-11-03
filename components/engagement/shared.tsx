@@ -57,7 +57,7 @@ export function EngagementTabs({ id, copy }: { id: string; copy: Copy }) {
   const pathname = usePathname();
   return (
     <nav aria-label={copy.spine.tabs.label} className="mb-6">
-      <ul className="m-0 flex list-none gap-1 overflow-x-auto border-b border-asm-line-strong p-0">
+      <ul className="tab-scroll m-0 flex list-none gap-1 overflow-x-auto border-b border-asm-line-strong p-0">
         {TABS.map((tab) => {
           const href = tab.href(id);
           const active =
@@ -106,6 +106,8 @@ export function actionHref(id: string, code: NextActionCode): string {
     case 'charter-review':
     case 'on-track':
       return `/squads/${id}/overview`;
+    case 'fill-roles':
+      return `/squads/${id}`;
     default: {
       const neverCode: never = code;
       return neverCode;
@@ -140,6 +142,8 @@ export function actionLabel(copy: Copy, code: NextActionCode, survey: string | n
     case 'keel-end':
     case 'on-track':
       return copy.attention.open;
+    case 'fill-roles':
+      return copy.nextAction.fillRoles;
     default: {
       const neverCode: never = code;
       return neverCode;

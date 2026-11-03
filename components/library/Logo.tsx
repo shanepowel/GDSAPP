@@ -2,13 +2,24 @@
 import { cn } from '@/lib/cn';
 
 /** The Assemble mark: four squares, two in light brand blue. Placeholder until a final mark is designed. */
-export function AssembleMark({ size = 28, className }: { size?: number; className?: string }) {
+export function AssembleMark({
+  size = 28,
+  className,
+  tone = 'on-brand',
+}: {
+  size?: number;
+  className?: string;
+  tone?: 'on-brand' | 'on-light';
+}) {
+  const light = tone === 'on-light';
+  const a = light ? 'fill-asm-brand' : 'fill-asm-brand-soft';
+  const b = light ? 'fill-asm-brand-deep' : 'fill-asm-white';
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" className={className}>
-      <rect x="2" y="2" width="12" height="12" rx="3" className="fill-asm-brand-soft" />
-      <rect x="18" y="2" width="12" height="12" rx="3" className="fill-asm-white" />
-      <rect x="2" y="18" width="12" height="12" rx="3" className="fill-asm-white" />
-      <rect x="18" y="18" width="12" height="12" rx="3" className="fill-asm-brand-soft" />
+      <rect x="2" y="2" width="12" height="12" rx="3" className={a} />
+      <rect x="18" y="2" width="12" height="12" rx="3" className={b} />
+      <rect x="2" y="18" width="12" height="12" rx="3" className={b} />
+      <rect x="18" y="18" width="12" height="12" rx="3" className={a} />
     </svg>
   );
 }

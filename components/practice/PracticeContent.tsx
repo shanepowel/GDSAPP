@@ -4,7 +4,9 @@ import Link from 'next/link';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 import { fillCopy } from '@/lib/copy';
-import { CEREMONIES, MATURITY, PILLARS } from '@/lib/practice';
+import { CEREMONIES, DONE_ITEMS, MATURITY, PILLARS, READY_ITEMS } from '@/lib/practice';
+import { maturityIndex } from '@/lib/labels';
+import { trpc } from '@/lib/trpc/client';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { CapacityFigure, FigureFrame } from '@/components/teach/figures';
 import { GdsBridgeLabel } from '@/components/bridge/GdsBridgeLabel';
@@ -83,7 +85,22 @@ export function PracticeChapters() {
         <h2 className="mb-4 text-lg font-bold text-asm-brand">
           {copy.practice.maturityTitle}
         </h2>
-        <MaturityLadder current={2} />
+        <MaturityLadder />
+      </section>
+
+      <section className="pb-8">
+        <h2 className="mb-3 text-lg font-bold text-asm-brand">{copy.practice.readyTitle}</h2>
+        <ul className="m-0 list-none divide-y divide-asm-line p-0">
+          {READY_ITEMS.map((item) => (
+            <li key={item} className="py-3">{item}</li>
+          ))}
+        </ul>
+        <h2 className="mb-3 mt-8 text-lg font-bold text-asm-brand">{copy.practice.doneTitle}</h2>
+        <ul className="m-0 list-none divide-y divide-asm-line p-0">
+          {DONE_ITEMS.map((item) => (
+            <li key={item} className="py-3">{item}</li>
+          ))}
+        </ul>
       </section>
     </>
   );
@@ -145,7 +162,7 @@ export function CeremoniesTable() {
                     <GdsBridgeLabel mapping={SIGNAL_BRIDGE[x.signal]} />
                   </span>
                 ) : (
-                  '-'
+                  copy.spine.missing
                 )}
               </td>
             </tr>
@@ -159,24 +176,27 @@ export function CeremoniesTable() {
 export function MaturityLadder({ current }: { current?: number }) {
   const { locale } = useI18n();
   const copy = getCopy(locale);
+  const { data: engagements } = trpc.engagement.list.useQuery(undefined, { retry: false });
+  const fromEngagement = maturityIndex(engagements?.[0]?.maturityLevel);
+  const here = current ?? fromEngagement ?? undefined;
   return (
     <div className="sheet">
       {MATURITY.map((m) => (
         <div
           key={m.level}
           className="grid grid-cols-[52px_1fr] border-b border-[color:var(--rule-soft)] last:border-b-0"
-          style={m.level === current ? { background: 'var(--sunk)' } : undefined}
+          style={m.level === here ? { background: 'var(--sunk)' } : undefined}
         >
           <div
             className="flex items-center justify-center border-r border-[color:var(--rule-soft)] font-[family-name:var(--font-mono)] text-[18px]"
-            style={{ color: m.level === current ? 'var(--blue)' : 'var(--graphite)' }}
+            style={{ color: m.level === here ? 'var(--blue)' : 'var(--graphite)' }}
           >
             {m.level}
           </div>
           <div className="px-4 py-3.5">
             <h3 className="mb-1 font-[family-name:var(--font-cond)] text-sm font-semibold">
               {copy.maturityLevels[m.key]}
-              {m.level === current ? (
+              {m.level === here ? (
                 <span className="ml-2.5 text-[12px] font-semibold text-[color:var(--blue)]">
                   {copy.practice.youAreHere}
                 </span>

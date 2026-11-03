@@ -24,6 +24,8 @@
   --on-navy-rule: rgba(255, 255, 255, 0.14);
   --on-navy-hover: rgba(255, 255, 255, 0.06);
   --on-navy-active: rgba(255, 255, 255, 0.1);
+  --switch-off: rgba(255, 255, 255, 0.25);
+  --switch-on: var(--on-navy-mute);
 
   /* Surfaces. Paper and raised cards. */
   --stock: var(--paper);
@@ -233,6 +235,8 @@ html.dark {
   --on-navy-rule: rgba(255, 255, 255, 0.14);
   --on-navy-hover: rgba(255, 255, 255, 0.06);
   --on-navy-active: rgba(255, 255, 255, 0.1);
+  --switch-off: rgba(255, 255, 255, 0.25);
+  --switch-on: var(--on-navy-mute);
 
   --stock: var(--paper);
   --raised: var(--card);

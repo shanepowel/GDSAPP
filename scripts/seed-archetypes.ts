@@ -27,9 +27,28 @@ type SeedArchetype = {
   roles: SeedRole[];
 };
 
-async function seedOrg(orgId: string, archetypes: SeedArchetype[]) {
+export async function seedSystemArchetypes(client: PrismaClient, orgIds?: string[]) {
+  const path = join(process.cwd(), 'data/archetypes/seed/system-archetypes.json');
+  const archetypes = JSON.parse(readFileSync(path, 'utf8')) as SeedArchetype[];
+  if (archetypes.length !== 7) {
+    throw new Error(`Expected 7 system archetypes, found ${archetypes.length}`);
+  }
+  const orgs = orgIds
+    ? orgIds.map((id) => ({ id, name: id }))
+    : await client.organisation.findMany({ select: { id: true, name: true } });
+  if (orgs.length === 0) {
+    console.log('No organisations yet. Archetypes will seed with the first organisation.');
+    return;
+  }
+  for (const org of orgs) {
+    await seedOrg(client, org.id, archetypes);
+    console.log(`Archetypes seeded for ${org.name} (${org.id}).`);
+  }
+}
+
+async function seedOrg(client: PrismaClient, orgId: string, archetypes: SeedArchetype[]) {
   for (const a of archetypes) {
-    const existing = await prisma.roleArchetype.findFirst({
+    const existing = await client.roleArchetype.findFirst({
       where: { orgId, slug: a.slug, isSystem: true, archivedAt: null },
       orderBy: { version: 'desc' },
       include: { roles: true },
@@ -40,7 +59,7 @@ async function seedOrg(orgId: string, archetypes: SeedArchetype[]) {
       continue;
     }
 
-    await prisma.roleArchetype.create({
+    await client.roleArchetype.create({
       data: {
         orgId,
         name: a.name,
@@ -67,27 +86,15 @@ async function seedOrg(orgId: string, archetypes: SeedArchetype[]) {
 }
 
 async function main() {
-  const path = join(process.cwd(), 'data/archetypes/seed/system-archetypes.json');
-  const archetypes = JSON.parse(readFileSync(path, 'utf8')) as SeedArchetype[];
-  if (archetypes.length !== 7) {
-    throw new Error(`Expected 7 system archetypes, found ${archetypes.length}`);
-  }
-
-  const orgs = await prisma.organisation.findMany({ select: { id: true, name: true } });
-  if (orgs.length === 0) {
-    console.log('No organisations yet — archetypes will seed with seed:demo / first org.');
-    return;
-  }
-
-  for (const org of orgs) {
-    await seedOrg(org.id, archetypes);
-    console.log(`Archetypes ready for ${org.name}`);
-  }
+  await seedSystemArchetypes(prisma);
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(() => prisma.$disconnect());
+const entry = process.argv[1] ?? '';
+if (entry.endsWith('seed-archetypes.ts') || entry.endsWith('seed-archetypes.js')) {
+  main()
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(() => prisma.$disconnect());
+}

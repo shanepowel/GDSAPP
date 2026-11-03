@@ -12,7 +12,7 @@ export function LanguageSwitcher() {
       <select
         value={locale}
         onChange={(e) => setLocale(e.target.value as Locale)}
-        className="rounded-[var(--radius)] border border-[color:var(--on-navy-mute)] bg-transparent px-2 py-1 text-[12px] text-[color:inherit]"
+        className="min-h-11 min-w-11 rounded-[var(--radius)] border border-[color:var(--on-navy-mute)] bg-transparent px-2 text-[12px] text-[color:inherit]"
         aria-label={messages.app.language}
       >
         <option value="en">{messages.app.english}</option>

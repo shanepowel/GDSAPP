@@ -7,9 +7,12 @@ import { FitBandCell, FitStrip } from '@/components/team-fit/FitStrip';
 import { EmptyState, FitLegend, PageHeader, TextLink } from '@/components/datum/PageChrome';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { WalkthroughSlot } from '@/components/teach/WalkthroughSlot';
+import { useSession } from 'next-auth/react';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy, gapMoveLabel } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
+import { archetypeSlugForPhase } from '@/lib/labels';
+import { DATUM_LINE } from '@/lib/product.config';
 import { fitFromStored, type FitBreakdown } from '@/lib/scoring/fit';
 import { trpc } from '@/lib/trpc/client';
 import { Button } from '@/components/ui/Button';
@@ -30,8 +33,16 @@ function SquadFitPageInner() {
   const { locale } = useI18n();
   const copy = getCopy(locale);
   const id = params.engagementId as string;
+  const { data: session } = useSession();
+  const readOnly = session?.user?.role === 'demo-reader';
+  const { data: engagement } = trpc.engagement.byId.useQuery({ id }, { retry: false });
   const { data: archetypes } = trpc.teamFit.listArchetypes.useQuery();
-  const archetypeId = search.get('archetype') ?? archetypes?.[0]?.id ?? '';
+  const preferred = archetypeSlugForPhase(engagement?.phase);
+  const archetypeId =
+    search.get('archetype') ??
+    archetypes?.find((item) => item.slug === preferred)?.id ??
+    archetypes?.[0]?.id ??
+    '';
   const { data, refetch } = trpc.teamFit.overview.useQuery(
     { engagementId: id, archetypeId },
     { enabled: Boolean(archetypeId) },
@@ -50,6 +61,7 @@ function SquadFitPageInner() {
         eyebrow={copy.walkthrough.eyebrow}
         title={copy.walkthrough.archetypeName}
         lede={copy.walkthrough.lede}
+        heading="h2"
       />
 
       <TeachPanel tag={copy.teach.whatYouAreDoing.tag} title={copy.teach.whatYouAreDoing.title}>
@@ -59,7 +71,7 @@ function SquadFitPageInner() {
       </TeachPanel>
       <WalkthroughSlot force />
 
-      <h2 className="mb-3 mt-10 text-lg font-bold text-asm-brand">
+      <h2 className="mb-3 mt-6 text-lg font-bold text-asm-brand">
         {copy.walkthrough.thisEngagement}
       </h2>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -68,7 +80,7 @@ function SquadFitPageInner() {
             {copy.squads.archetype}
           </span>
           <select
-            className="border border-[color:var(--rule)] bg-[var(--raised)] px-3 py-2 text-sm"
+            className="min-h-11 min-w-60 border border-[color:var(--rule)] bg-[var(--raised)] px-3 py-2 text-sm"
             style={{ borderRadius: 'var(--radius)' }}
             value={archetypeId}
             onChange={(e) =>
@@ -85,7 +97,8 @@ function SquadFitPageInner() {
         <Button
           type="button"
           variant="secondary"
-          disabled={!archetypeId || recompute.isPending || busy}
+          disabled={!archetypeId || recompute.isPending || busy || readOnly}
+          title={readOnly ? copy.ui.readOnly : undefined}
           onClick={async () => {
             if (!archetypeId) return;
             setBusy(true);
@@ -114,8 +127,15 @@ function SquadFitPageInner() {
       {!hasRows ? (
         <EmptyState title={copy.empty.noScores} why={copy.empty.noScoresWhy} />
       ) : (
-        <div className="sheet overflow-x-auto">
-          <table>
+        <div className="sheet w-full overflow-x-auto">
+          <table className="w-full table-fixed">
+            <colgroup>
+              <col className="w-[28%]" />
+              <col className="w-[14%]" />
+              <col className="w-[18%]" />
+              <col className="w-[20%]" />
+              <col className="w-[20%]" />
+            </colgroup>
             <thead>
               <tr>
                 <th>{copy.squads.role}</th>
@@ -177,15 +197,9 @@ function SquadFitPageInner() {
                       </td>
                       <td>{fit ? <FitStrip fit={fit} candidateName={bestScore?.personName} /> : '—'}</td>
                       <td className="text-right" onClick={(e) => e.stopPropagation()}>
-                        {fit ? (
-                          <div className="inline-block text-right">
-                            <FitBandCell fit={fit} />
-                          </div>
-                        ) : (
-                          '—'
-                        )}
-                        <div>
-                          <Link href={href} className="btn-teach mt-2 inline-block">
+                        <div className="flex items-center justify-end gap-2">
+                          {fit && bestScore && bestScore.compositeScore >= DATUM_LINE ? <FitBandCell fit={fit} /> : null}
+                          <Link href={href} className="btn-teach inline-flex min-h-11 items-center">
                             {copy.walkthrough.seeAll}
                           </Link>
                         </div>
@@ -202,7 +216,24 @@ function SquadFitPageInner() {
       <h2 className="mt-10 mb-3 text-lg font-bold text-asm-brand">
         {copy.squads.gapsTitle}
       </h2>
-      {gaps.length === 0 ? (
+      {!archetypeId ? (
+        <p className="text-asm-ink-3">{copy.squads.noArchetype}</p>
+      ) : !hasRows ? (
+        <div className="sheet w-full overflow-x-auto">
+          <table className="w-full">
+            <tbody>
+              {(archetypes?.find((item) => item.id === archetypeId)?.roles ?? [])
+                .filter((role) => role.criticality === 'core' || role.criticality === 'supporting')
+                .map((role) => (
+                  <tr key={role.id}>
+                    <td className="font-semibold">{role.displayTitle}</td>
+                    <td>{copy.squads.unfilled}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      ) : gaps.length === 0 ? (
         <p className="text-asm-ink-3">{copy.empty.noGaps}</p>
       ) : (
         <div className="sheet overflow-x-auto">
@@ -220,9 +251,10 @@ function SquadFitPageInner() {
                   gap?.kind && gap.kind in copy.gaps
                     ? copy.gaps[gap.kind as keyof typeof copy.gaps]
                     : copy.squads.unfilled;
-                const scoreNote = bestScore
-                  ? fillCopy(copy.squads.bestAvailable, { score: bestScore.compositeScore.toFixed(2) })
-                  : null;
+                const scoreNote =
+                  bestScore && bestScore.compositeScore >= DATUM_LINE
+                    ? fillCopy(copy.squads.bestAvailable, { score: bestScore.compositeScore.toFixed(2) })
+                    : copy.squads.noSuitable;
                 return (
                   <tr
                     key={role.id}

@@ -24,9 +24,9 @@ export default function RolesPage() {
       <div className="role-cards">
         {cards.map((r) => (
           <article key={r.id} className="role-card">
-            <h3 className="font-[family-name:var(--font-cond)] text-sm font-semibold">{r.title}</h3>
+            <h3 className="text-[18px] font-semibold">{r.title}</h3>
             <p className="font-data text-[10.5px] text-asm-ink-3">{r.group}</p>
-            <p className="mt-2">{r.what}</p>
+            <p className="role-summary mt-2 text-[15px] font-normal">{r.what}</p>
             <p className="role-why">
               <b>{copy.roles.withoutLabel}:</b> {r.without}
             </p>
@@ -56,8 +56,8 @@ export default function RolesPage() {
               const essential = copy.squads.criticalityLabels[role.crit];
               return (
                 <tr key={role.rid}>
-                  <td className="font-semibold">{role.title}</td>
-                  <td className="num">{role.fte.toFixed(1)} FTE</td>
+                  <td className="min-w-[180px] font-semibold">{role.title}</td>
+                  <td className="num whitespace-nowrap">{role.fte.toFixed(1)} FTE</td>
                   <td>
                     <span className={`flag ${role.crit === 'core' ? 'flag-risk' : ''}`}>{essential}</span>
                   </td>

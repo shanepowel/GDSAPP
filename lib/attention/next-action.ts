@@ -20,6 +20,7 @@ export type NextActionCode =
   | 'monthly-report'
   | 'survey'
   | 'charter-review'
+  | 'fill-roles'
   | 'on-track';
 
 export interface NextActionInput {
@@ -44,6 +45,12 @@ export interface NextActionInput {
   charterReviewOverdue?: boolean;
   milestone?: string | null;
   milestoneDate?: string | null;
+  /** Set only when the archetype's essential roles are known. */
+  essentialRolesOpen?: number;
+  /** False only when we know the squad has not been confirmed. */
+  squadConfirmed?: boolean;
+  /** True when a person has confirmed the delivery status. */
+  statusConfirmed?: boolean;
 }
 
 export interface NextAction {
@@ -66,6 +73,15 @@ const RULES: ReadonlyArray<{
   },
   {
     priority: 2,
+    code: 'fill-roles',
+    when: (input) =>
+      input.statusConfirmed !== true &&
+      input.squadConfirmed === false &&
+      (input.essentialRolesOpen ?? 0) > 0,
+    vars: (input) => ({ n: input.essentialRolesOpen ?? 0 }),
+  },
+  {
+    priority: 3,
     code: 'recovery',
     when: (input) => input.status === 'at-risk' && input.hasRecoveryPlan === false,
     vars: () => ({}),

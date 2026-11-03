@@ -23,6 +23,7 @@ export interface NextActionTemplates {
   surveyHealth: string;
   surveyPulse: string;
   charterReview: string;
+  fillRoles: string;
   onTrack: string;
   onTrackOpen: string;
 }
@@ -60,6 +61,8 @@ export function nextActionSentence(action: NextAction, templates: NextActionTemp
       return vars.survey === 'pulse' ? templates.surveyPulse : templates.surveyHealth;
     case 'charter-review':
       return templates.charterReview;
+    case 'fill-roles':
+      return templates.fillRoles;
     case 'on-track':
       return vars.milestone && vars.date
         ? fillCopy(templates.onTrack, { milestone: vars.milestone, date: vars.date })

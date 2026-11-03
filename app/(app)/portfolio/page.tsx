@@ -4,6 +4,9 @@ import { useRouter } from 'next/navigation';
 import { EmptyState, PageHeader, StatStrip } from '@/components/datum/PageChrome';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { DemandFigure, FigureFrame } from '@/components/teach/figures';
+import { lifecycleLabels } from '@/components/engagement/shared';
+import { phaseDisplay } from '@/lib/labels';
+import { WALKTHROUGH_DEMAND } from '@/lib/teach/walkthrough';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy } from '@/lib/copy';
 import { getCopy } from '@/lib/copy-i18n';
@@ -14,6 +17,8 @@ export default function PortfolioPage() {
   const { locale } = useI18n();
   const copy = getCopy(locale);
   const router = useRouter();
+  const demandRows = WALKTHROUGH_DEMAND;
+  const demandShortfall = demandRows.reduce((sum, row) => sum + Math.max(0, row.need - row.hold), 0);
 
   return (
     <>
@@ -29,11 +34,14 @@ export default function PortfolioPage() {
         id="figure-demand"
         caption={
           <>
-            <b>{fillCopy(copy.figures.label, { n: 6 })}</b> {copy.figures.demand}
+            <b>{fillCopy(copy.figures.label, { n: 6 })}</b>{' '}
+            {data
+              ? fillCopy(copy.figures.demandCounted, { count: data.engagementCount })
+              : copy.figures.demand}
           </>
         }
       >
-        <DemandFigure label={copy.figures.demandAria} />
+        <DemandFigure label={copy.figures.demandAria} rows={demandRows} />
       </FigureFrame>
 
       {isLoading ? <p className="text-asm-ink-3">{copy.ui.loading}</p> : null}
@@ -60,7 +68,7 @@ export default function PortfolioPage() {
               },
               {
                 label: copy.portfolio.openGaps,
-                value: String(data.totalGapPoints),
+                value: demandShortfall.toFixed(1),
                 note: fillCopy(copy.portfolio.statutoryCount, { count: data.totalStatutoryGaps }),
               },
             ]}
@@ -106,7 +114,7 @@ export default function PortfolioPage() {
                       }}
                     >
                       <td className="font-semibold">{row.name}</td>
-                      <td className="num">{row.phase ?? '—'}</td>
+                      <td className="num">{phaseDisplay(row.phase, lifecycleLabels(copy), copy.spine.missing)}</td>
                       <td className="num">
                         {row.readinessPercent != null ? (row.readinessPercent / 100).toFixed(2) : '—'}
                       </td>
