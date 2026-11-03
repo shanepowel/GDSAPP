@@ -7,7 +7,7 @@ import {
   WalkthroughConfirmPanel,
   WalkthroughRolePanel,
 } from '@/components/teach/WalkthroughDrawers';
-import { FitBandCell, FitStrip } from '@/components/team-fit/FitStrip';
+import { FitStrip } from '@/components/team-fit/FitStrip';
 import { StatStrip } from '@/components/datum/PageChrome';
 import { useI18n } from '@/components/app/LocaleProvider';
 import { fillCopy } from '@/lib/copy';
@@ -117,8 +117,14 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
         {copy.walkthrough.rolesHeading}
       </h2>
 
-      <div className="sheet overflow-x-auto">
-        <table>
+      <div className="sheet w-full overflow-x-auto">
+        <table className="w-full table-fixed">
+          <colgroup>
+            <col className="w-[28%]" />
+            <col className="w-[20%]" />
+            <col className="w-[32%]" />
+            <col className="w-[20%]" />
+          </colgroup>
           <thead>
             <tr>
               <th>{copy.squads.role}</th>
@@ -156,11 +162,11 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
                       </div>
                     </td>
                     <td className="text-right">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex flex-nowrap items-center justify-end gap-2 whitespace-nowrap">
                         {suggested && suggestion ? (
                           <button
                             type="button"
-                            className="btn-teach pri"
+                            className="btn-teach pri whitespace-nowrap"
                             onClick={() => assign(roleIndex, suggestion.personIndex)}
                           >
                             {fillCopy(copy.walkthrough.assignName, {
@@ -170,7 +176,7 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
                         ) : null}
                         <button
                           type="button"
-                          className="btn-teach"
+                          className="btn-teach whitespace-nowrap"
                           onClick={() => setDrawerRole(roleIndex)}
                         >
                           {copy.walkthrough.seeAll}
@@ -197,13 +203,10 @@ export function SquadWalkthrough({ tourStep }: { tourStep: number }) {
                     <FitStrip fit={fit} candidateName={person.name} />
                   </td>
                   <td className="text-right">
-                    <div className="inline-block text-right">
-                      <FitBandCell fit={fit} />
-                    </div>
-                    <div>
+                    <div className="flex flex-nowrap items-center justify-end gap-2 whitespace-nowrap">
                       <button
                         type="button"
-                        className="btn-teach mt-2"
+                        className="btn-teach whitespace-nowrap"
                         onClick={() => setDrawerRole(roleIndex)}
                       >
                         {copy.walkthrough.change}

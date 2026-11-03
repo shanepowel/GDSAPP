@@ -34,9 +34,9 @@ export const PILLAR_BRIDGE: Record<string, BridgeMapping> = {
     panelWouldAsk:
       'Is this a multidisciplinary team that can decide, or a collection of borrowed specialists?',
   },
-  'The Keel': {
+  Continuity: {
     id: 'keel',
-    label: 'The Keel',
+    label: 'Continuity',
     gdsPoints: [6, 7, 14],
     ddat: 'Delivery management: assignment, capacity, tenure',
     panelWouldAsk:
@@ -105,7 +105,7 @@ export const SIGNAL_BRIDGE: Record<RigourSignalType, BridgeMapping> = {
     id: 'sustained_assignment',
     label: 'Sustained assignment',
     gdsPoints: [6, 7],
-    ddat: 'Delivery management (The Keel, not a ceremony)',
+    ddat: 'Delivery management (Continuity, not a ceremony)',
     panelWouldAsk: 'Did the core roles stay for a complete phase at enough FTE to hold the story?',
   },
 };

@@ -18,7 +18,7 @@ export const PILLARS = [
     produces: 'Archetypes used to assemble squads',
   },
   {
-    name: 'The Keel',
+    name: 'Continuity',
     owns: 'Assignment, capacity, tenure',
     produces: 'Continuity that makes evidence explainable',
   },

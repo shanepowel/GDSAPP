@@ -9,6 +9,7 @@ import { seedDemoPool } from '../lib/demo/seed-pool';
 import { ensureDemoReader } from '../lib/demo/reader';
 import { seedSystemArchetypes } from './seed-archetypes';
 import { seedSpineDemo } from './seed-spine-demo';
+import { WALKTHROUGH_PEOPLE } from '../lib/teach/walkthrough';
 
 const DEMO_IDS = ['nrw-demo', 'nrw-demo-2'] as const;
 
@@ -90,6 +91,36 @@ async function ensureEngagements(prisma: PrismaClient, ownerId: string) {
   });
 }
 
+function walkthroughEmail(name: string): string {
+  const local = name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z]+/g, '.')
+    .replace(/^\.|\.$/g, '');
+  return `${local}@demo.local`;
+}
+
+/** The eight people named in the review, with the FTE the teaching chart uses. */
+async function ensureWalkthroughPeople(prisma: PrismaClient) {
+  const orgId = DEMO_ACCOUNT.orgId;
+  for (const person of WALKTHROUGH_PEOPLE) {
+    const email = walkthroughEmail(person.name);
+    const data = {
+      name: person.name,
+      fte: Math.round(person.free * 100),
+      skills: Object.keys(person.skills),
+    };
+    const existing = await prisma.designPerson.findFirst({ where: { orgId, email } });
+    if (existing) {
+      await prisma.designPerson.update({ where: { id: existing.id }, data });
+    } else {
+      await prisma.designPerson.create({ data: { orgId, email, ...data } });
+    }
+  }
+  console.log(`[seed:spine] Ensured ${WALKTHROUGH_PEOPLE.length} named people in the demo pool.`);
+}
+
 async function main() {
   const prisma = new PrismaClient();
   try {
@@ -102,6 +133,7 @@ async function main() {
     }
     await ensureEngagements(prisma, admin.id);
     await seedSystemArchetypes(prisma, [DEMO_ACCOUNT.orgId]);
+    await ensureWalkthroughPeople(prisma);
 
     const pool = await prisma.designPerson.count({ where: { orgId: DEMO_ACCOUNT.orgId } });
     if (pool === 0) {

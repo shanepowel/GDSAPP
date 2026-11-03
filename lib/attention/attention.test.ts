@@ -51,7 +51,7 @@ describe('next action', () => {
         hasRecoveryPlan: false,
         statusConfirmed: true,
       }).code,
-    ).toBe('recovery');
+    ).toBe('fill-roles');
   });
 
   it('falls through to on track when nothing else matches', () => {
@@ -89,6 +89,12 @@ describe('next action', () => {
     } satisfies SpineFacts;
     expect(displayStatus(base)).toBe('on-track');
     expect(displayStatus({ ...base, squadConfirmed: false, essentialRolesOpen: 3 })).toBe('at-risk');
+    expect(
+      displayStatus({ ...base, confirmedStatus: 'on-track', squadConfirmed: false, essentialRolesOpen: 7 }),
+    ).toBe('at-risk');
+    expect(
+      displayStatus({ ...base, confirmedStatus: 'off-track', squadConfirmed: false, essentialRolesOpen: 7 }),
+    ).toBe('off-track');
     expect(nextActionSentence(attentionFor({ ...base, squadConfirmed: false, essentialRolesOpen: 3 }, new Date('2026-11-03T00:00:00.000Z'), 48), copy.nextAction)).toBe(
       'Fill essential roles.',
     );

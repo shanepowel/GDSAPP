@@ -17,7 +17,7 @@ describe('GDS bridge', () => {
     expect(Object.keys(PILLAR_BRIDGE)).toEqual([
       'The Forge',
       'Squad Blueprint',
-      'The Keel',
+      'Continuity',
       'DevOps Spec',
       'Delivery Compass',
     ]);

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
-import { FitBandCell, FitStrip } from '@/components/team-fit/FitStrip';
+import { FitStrip } from '@/components/team-fit/FitStrip';
 import { EmptyState, FitLegend, PageHeader, TextLink } from '@/components/datum/PageChrome';
 import { TeachPanel } from '@/components/teach/TeachPanel';
 import { WalkthroughSlot } from '@/components/teach/WalkthroughSlot';
@@ -131,15 +131,13 @@ function SquadFitPageInner() {
           <table className="w-full table-fixed">
             <colgroup>
               <col className="w-[28%]" />
-              <col className="w-[14%]" />
-              <col className="w-[18%]" />
               <col className="w-[20%]" />
+              <col className="w-[32%]" />
               <col className="w-[20%]" />
             </colgroup>
             <thead>
               <tr>
                 <th>{copy.squads.role}</th>
-                <th>{copy.squads.criticality}</th>
                 <th>{copy.squads.bestCandidate}</th>
                 <th>{copy.squads.fitAgainstDatum}</th>
                 <th className="text-right">{copy.walkthrough.score}</th>
@@ -171,18 +169,18 @@ function SquadFitPageInner() {
                     >
                       <td>
                         <div className="font-semibold">{role.displayTitle}</div>
-                        <div className="font-data text-[10.5px] text-asm-ink-3">
-                          {role.minLevel} · {role.fteRequired.toFixed(1)} FTE
+                        <div className="mt-1 flex flex-wrap items-center gap-2">
+                          <span className={`flag ${role.criticality === 'core' ? 'flag-risk' : ''}`}>
+                            {role.criticality === 'core' ||
+                            role.criticality === 'supporting' ||
+                            role.criticality === 'optional'
+                              ? copy.squads.criticalityLabels[role.criticality]
+                              : role.criticality}
+                          </span>
+                          <span className="font-data text-[10.5px] text-asm-ink-3">
+                            {role.minLevel} · {role.fteRequired.toFixed(1)} FTE
+                          </span>
                         </div>
-                      </td>
-                      <td>
-                        <span className={`flag ${role.criticality === 'core' ? 'flag-risk' : ''}`}>
-                          {role.criticality === 'core' ||
-                          role.criticality === 'supporting' ||
-                          role.criticality === 'optional'
-                            ? copy.squads.criticalityLabels[role.criticality]
-                            : role.criticality}
-                        </span>
                       </td>
                       <td>
                         {bestScore?.personName ?? '—'}
@@ -197,9 +195,8 @@ function SquadFitPageInner() {
                       </td>
                       <td>{fit ? <FitStrip fit={fit} candidateName={bestScore?.personName} /> : '—'}</td>
                       <td className="text-right" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-2">
-                          {fit && bestScore && bestScore.compositeScore >= DATUM_LINE ? <FitBandCell fit={fit} /> : null}
-                          <Link href={href} className="btn-teach inline-flex min-h-11 items-center">
+                        <div className="flex flex-nowrap items-center justify-end gap-2 whitespace-nowrap">
+                          <Link href={href} className="btn-teach inline-flex min-h-11 items-center whitespace-nowrap">
                             {copy.walkthrough.seeAll}
                           </Link>
                         </div>
