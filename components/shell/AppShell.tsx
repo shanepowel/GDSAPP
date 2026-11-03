@@ -98,7 +98,7 @@ export function DatumAppShell({
   const selectedId = fromPath ?? cookieId ?? engagement?.id ?? contexts[0]?.id;
   const contextEngagement =
     engagement ?? contexts.find((e) => e.id === selectedId) ?? contexts[0];
-  const onEngagement = /^\/squads\/[^/]+/.test(pathname) || /^\/assurance\/[^/]+/.test(pathname);
+  const onEngagement = /^\/squads\/[^/]+/.test(pathname);
   const showStrip = Boolean(signedIn && onEngagement && contextEngagement);
   const [menuOpen, setMenuOpen] = useState(false);
 

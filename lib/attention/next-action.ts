@@ -74,10 +74,7 @@ const RULES: ReadonlyArray<{
   {
     priority: 2,
     code: 'fill-roles',
-    when: (input) =>
-      input.statusConfirmed !== true &&
-      input.squadConfirmed === false &&
-      (input.essentialRolesOpen ?? 0) > 0,
+    when: (input) => input.squadConfirmed === false && (input.essentialRolesOpen ?? 0) > 0,
     vars: (input) => ({ n: input.essentialRolesOpen ?? 0 }),
   },
   {

@@ -92,18 +92,17 @@ function wholeDaysUntil(due: Date, now: Date): number {
 }
 
 export function rolesNeedFilling(facts: SpineFacts): boolean {
-  return !facts.confirmedStatus && facts.squadConfirmed === false && (facts.essentialRolesOpen ?? 0) > 0;
+  return facts.squadConfirmed === false && (facts.essentialRolesOpen ?? 0) > 0;
 }
 
 export function displayStatus(facts: SpineFacts): DeliveryStatus {
+  if (facts.confirmedStatus === 'off-track') return 'off-track';
+  if (rolesNeedFilling(facts)) return 'at-risk';
   if (facts.confirmedStatus) return facts.confirmedStatus;
-  const suggested = suggestStatus({
+  return suggestStatus({
     measuresBelowTarget: facts.measuresBelowTarget,
     milestoneWillBeMissed: facts.milestoneWillBeMissed,
   });
-  if (suggested === 'off-track') return suggested;
-  if (rolesNeedFilling(facts)) return 'at-risk';
-  return suggested;
 }
 
 export function buildAttentionInput(facts: SpineFacts, now: Date, riskLockHours: number): NextActionInput {
