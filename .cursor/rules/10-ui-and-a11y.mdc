@@ -9,47 +9,85 @@ globs:
 
 # UI and accessibility
 
-Full direction in `docs/spec/01-design-system.md`. Read it before creating a component.
-See `docs/spec/ADAPTATIONS.md` for stack path differences (Prisma, single app).
+Full direction in `docs/spec/01-design-system.md` and `docs/redesign/README.md`.
+Read both before creating a component. Stack notes are in `docs/spec/ADAPTATIONS.md`.
 
-## The direction in one line
+## What a screen is for
 
-Turner & Townsend, clean blue and white: navy `#1e4479` brand, white surfaces, cool grey canvas,
-generous spacing, clear hierarchy. Calm and confident enough to show a prospective client.
-Build from `components/library` (see `50-ui-library.mdc` and `docs/redesign/README.md`).
+Assemble is a working surface for a squad lead and an assessor. Calm, navy and white, enough
+space to see the next action. It is not a dashboard of equal boxes.
+
+A screen has one job. Put that job first in the main column: the next action, or the decision
+the person came to make. A count, a chart or a list may follow when it helps that job. If the
+same fact appears twice, each instance does a different job. A summary count is not also a card,
+and a queue row is not a second primary action for the engagement card below it.
+
+The rail is for finding a place. The page is for the work. Do not repeat the engagement name in
+the rail, the context bar, the title and the card unless each one does a different job. The
+engagement context bar renders only on `/squads/:id`.
+
+## One control
+
+Actions are `Button` and `ButtonLink` from `components/library`. Do not add another button class,
+and do not restyle a raw `<button>` to look like one. One primary action per region. Anything
+else in that region is secondary, ghost or a text link. The verb on the control is the verb in
+the result.
+
+The action that proceeds, assigns, confirms or saves is 44px tall (`--target-control`). 24px is
+the floor for a text link or a status pill, not for that action. The small button is only a
+second action inside a comparison row, and it stays on the same line as the primary.
+
+## Status, tables, forms, states
+
+- Engagement status is `DeliveryStatus`: glyph, label and wash. Other short states are `Badge`
+  with words. Never colour alone. A statutory gap stays visually distinct from at risk.
+- A table compares. Typical jobs are what, who, how it compares, and what to do. The figure
+  appears once. Actions stay on one row. Criticality is a label under the name, not a column
+  that squeezes it.
+- A field has a visible label, a hint when the format is not obvious, and an error that names
+  the field and the correction. Never use the placeholder as the label.
+- Loading, empty and failed are different. Each is a sentence and one action. A missing record
+  is the empty state at once. A failure names what failed and offers retry. Do not hold the
+  person on a spinner and then show a generic error.
 
 ## Non-negotiables
 
-- **Tokens only.** Every colour comes from `styles/tokens.css` via the `asm-*` utilities. If a value
-  you need doesn't exist, add a token. Never inline a hex value or use a raw Tailwind palette class.
-- **Spacing** uses the Tailwind scale (multiples of 4px). No arbitrary pixel spacing.
+- **Tokens only.** Every colour comes from `styles/tokens.css` via the `asm-*` utilities, or via
+  a shadcn variable that aliases those tokens. If a value is missing, add a token. Never inline
+  a hex value or use a raw Tailwind palette class. Do not leave a default shadcn palette
+  (slate, zinc, or a literal oklch) in a component.
+- **Spacing** uses the spacing scale (multiples of 4px). No arbitrary pixel spacing.
 - **Radius:** `rounded-asm` (10px) for controls, `rounded-asm-lg` (14px) for cards and panels,
   `rounded-full` for pills, badges, status and avatars.
 - **No signal pink.** Emphasis is navy. Status uses the ok, warn and risk palettes only.
-- **Every numeral is tabular.** `tabular-nums` on any score, count, measure or date.
-- **Status renders glyph + label + wash.** Never colour alone.
-- **A statutory gap is not an amber.** `<StatutoryFlag/>` stays visually distinct from `at-risk`.
+- **Every numeral is tabular.** `tabular-nums` on any count, measure, fit or date.
 - **`<TitleBlock/>` is the same component on screen and in the PDF cover.** Do not fork it.
 - **Dark mode:** every library colour has an `html.dark` value. Check new screens in both themes.
+- **Account cluster.** Language, theme, profile and sign out each meet 44px and stay in the rail.
+  They do not wrap into the brand mark.
 
 ## Accessibility — WCAG 2.2 AA is a release gate
 
 - 4.5:1 body contrast, 3:1 large text and UI boundaries.
 - 3px `--focus` outline with a 1px `--focus-shadow` inner ring. Never removed.
-- 24×24px minimum target size.
-- Every flow completable by keyboard. Org graph's accessible peer is `<OrgTable/>`.
-- `prefers-reduced-motion: reduce` respected by chain rail, index delta and D3 force simulation.
+- 24×24px minimum target. 44px for the action that proceeds.
+- Every flow completable by keyboard. The org graph's accessible peer is `<OrgTable/>`.
+- `prefers-reduced-motion: reduce` is respected by the chain rail, the index delta and the D3
+  force simulation.
 - Visible persistent labels. Never placeholder-as-label.
 - `lang` follows the EN/CY toggle.
+- Heading order follows the document. Stage chrome is not a heading above the page h1.
 
 Run axe-backed e2e before merging UI changes when practical.
 
 ## Component conventions
 
-- Server components by default. `'use client'` only for graph, chain rail, forms, command palette.
+- Server components by default. `'use client'` only for a graph, the chain rail, a form, or the
+  command palette.
 - Product domain components live in `components/product/`.
+- Pages compose `components/library`. They do not import a shadcn primitive directly.
 
 ## Motion budget
 
-Hover and focus transitions on cards and buttons, the index delta and the chain rail slide.
+Hover and focus transitions on cards and buttons, the index delta, and the chain rail slide.
 Nothing else animates. Respect `prefers-reduced-motion`.
