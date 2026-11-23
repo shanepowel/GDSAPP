@@ -17,3 +17,10 @@ export type RaidType = (typeof RAID_TYPES)[number];
 
 export const MILESTONE_STATUSES = ['on-time', 'at-risk', 'late', 'replanned'] as const;
 export type MilestoneStatus = (typeof MILESTONE_STATUSES)[number];
+
+/** How the client wants the work run. The method sets the evidence cadence, not the evidence itself. */
+export const DELIVERY_METHODS = ['agile', 'waterfall', 'hybrid'] as const;
+export type DeliveryMethod = (typeof DELIVERY_METHODS)[number];
+
+/** Squad shapes that build data products and so carry the Data and Analytics evidence pack. */
+export const DATA_PACK_SHAPES = ['data', 'reporting'] as const;

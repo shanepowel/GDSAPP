@@ -4,12 +4,14 @@ import { attentionFor, attentionRows, displayStatus, type SpineFacts } from '@/l
 import { lifecycleIndex, lifecycleStageForPhase, LIFECYCLE_STAGES } from '@/lib/attention/lifecycle';
 import {
   COMMERCIAL_MODELS,
+  DELIVERY_METHODS,
   MARKET_SECTORS,
   MILESTONE_STATUSES,
   RAID_TYPES,
   SQUAD_SHAPES,
   STEERING_FREQUENCIES,
 } from '@/lib/handbook/choices';
+import { DATA_PACK_STAGE, deliveryMethodOf, handbookStagesFor, ttPhaseForStage } from '@/lib/handbook/method';
 import {
   bindPrimaryStandardVersion,
   currentVersionIdForCode,
@@ -268,6 +270,9 @@ export const spineRouter = router({
       targets: config.targets,
       outcomes: engagement.outcomes,
       squadShape: engagement.squadShape,
+      deliveryMethod: deliveryMethodOf(engagement.deliveryMethod),
+      deliveryMethodRecorded: engagement.deliveryMethod != null,
+      ttPhase: ttPhaseForStage(card.stage),
       commercialModel: engagement.commercialModel,
       scopeClear: engagement.scopeClear,
       startsOn: isoDate(engagement.startsOn),
@@ -350,6 +355,7 @@ export const spineRouter = router({
           .array(z.object({ name: z.string().min(1), dueOn: dateField.optional(), proves: z.string().optional() }))
           .default([]),
         squadShape: z.enum(SQUAD_SHAPES),
+        deliveryMethod: z.enum(DELIVERY_METHODS).default('agile'),
         steeringChair: z.string().optional(),
         steeringFrequency: z.enum(STEERING_FREQUENCIES).optional(),
         clientProductOwner: z.string().optional(),
@@ -367,8 +373,8 @@ export const spineRouter = router({
         legacyStandardToCatalogCode(input.standardId),
       );
       const handbook = await ctx.prisma.handbookChecklistItem.findMany({
-        where: { stage: 'sprint-zero' },
-        orderBy: { sortOrder: 'asc' },
+        where: { stage: { in: handbookStagesFor(input.squadShape) } },
+        orderBy: [{ stage: 'asc' }, { sortOrder: 'asc' }],
       });
 
       const engagement = await ctx.prisma.engagement.create({
@@ -391,6 +397,7 @@ export const spineRouter = router({
           commercialModel: input.commercialModel,
           scopeClear: input.scopeClear,
           squadShape: input.squadShape,
+          deliveryMethod: input.deliveryMethod,
           steeringChair: input.steeringChair,
           steeringFrequency: input.steeringFrequency,
           clientProductOwner: input.clientProductOwner,
@@ -455,6 +462,39 @@ export const spineRouter = router({
         data: input.done
           ? { done: true, doneAt: new Date(), doneByUserId: ctx.userId }
           : { done: false, doneAt: null, doneByUserId: null },
+      });
+      return { ok: true };
+    }),
+
+  setMethod: protectedProcedure
+    .input(z.object({ engagementId: z.string(), method: z.enum(DELIVERY_METHODS) }))
+    .mutation(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      await ctx.prisma.engagement.update({
+        where: { id: input.engagementId },
+        data: { deliveryMethod: input.method },
+      });
+      return { ok: true };
+    }),
+
+  /** Add the Data and Analytics evidence pack to an engagement that does not have it yet. */
+  addDataPack: protectedProcedure
+    .input(z.object({ engagementId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await assertEngagementInOrg(ctx, input.engagementId);
+      const handbook = await ctx.prisma.handbookChecklistItem.findMany({
+        where: { stage: DATA_PACK_STAGE },
+        orderBy: { sortOrder: 'asc' },
+      });
+      await ctx.prisma.engagementChecklistItem.createMany({
+        data: handbook.map((item) => ({
+          engagementId: input.engagementId,
+          stage: item.stage,
+          itemKey: item.itemKey,
+          title: item.title,
+          sortOrder: item.sortOrder,
+        })),
+        skipDuplicates: true,
       });
       return { ok: true };
     }),

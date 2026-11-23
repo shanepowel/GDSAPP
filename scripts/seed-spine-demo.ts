@@ -18,6 +18,19 @@ function monthsAgo(n: number): Date {
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - n, 1));
 }
 
+const DATA_PACK = [
+  'dap-requirements',
+  'dap-wireframe',
+  'dap-quality',
+  'dap-normalisation',
+  'dap-model',
+  'dap-access',
+  'dap-environments',
+  'dap-testing',
+  'dap-versioning',
+  'dap-dictionary',
+];
+
 const SPRINT_ZERO = [
   'charter',
   'governance',
@@ -82,6 +95,7 @@ export async function seedSpineDemo(prisma: PrismaClient) {
       marketSector: 'public',
       commercialModel: 'fixed-price',
       squadShape: 'discovery',
+      deliveryMethod: 'hybrid',
       scopeClear: false,
       outcomes:
         'Applicants can apply for a water abstraction permit online in Welsh or English.\nPermit officers decide 80% of standard applications within 20 working days.',
@@ -183,6 +197,7 @@ export async function seedSpineDemo(prisma: PrismaClient) {
       marketSector: 'public',
       commercialModel: 'time-materials',
       squadShape: 'data',
+      deliveryMethod: 'agile',
       scopeClear: true,
       startsOn: day(-200),
       endsOn: day(90),
@@ -205,6 +220,13 @@ export async function seedSpineDemo(prisma: PrismaClient) {
   for (const [index, key] of SPRINT_ZERO.entries()) {
     await prisma.engagementChecklistItem.create({
       data: { engagementId: b, stage: 'sprint-zero', itemKey: key, title: key, sortOrder: index, done: true, doneAt: day(-185) },
+    });
+  }
+  // Data and Analytics evidence pack: the first six checks are in place by alpha.
+  for (const [index, key] of DATA_PACK.entries()) {
+    const done = index < 6;
+    await prisma.engagementChecklistItem.create({
+      data: { engagementId: b, stage: 'data-pack', itemKey: key, title: key, sortOrder: index + 1, done, doneAt: done ? day(-150 + index * 15) : null },
     });
   }
   await prisma.engagementMilestone.createMany({

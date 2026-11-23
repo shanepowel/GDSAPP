@@ -206,6 +206,8 @@ model Engagement {
   endsOn                 DateTime?
   outcomes               String?   @db.Text
   squadShape             String?
+  /// agile | waterfall | hybrid. Null means not recorded; treated as agile.
+  deliveryMethod         String?
   scopeClear             Boolean?
   steeringChair          String?
   steeringFrequency      String?
