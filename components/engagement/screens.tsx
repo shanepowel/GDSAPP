@@ -206,6 +206,19 @@ export function SpineFrame({ id, children }: { id: string; children: ReactNode }
           </div>
           {data.stage ? (
             <LifecycleBar
+              variant="compact"
+              current={data.stage}
+              labels={lifecycleLabels(copy)}
+              doneLabel={copy.lifecycle.done}
+              currentLabel={copy.lifecycle.current}
+              ariaLabel={copy.lifecycle.label}
+              progressLabel={data.ttPhase ? copy.spine.ttPhases[data.ttPhase] : undefined}
+              className="sm:hidden"
+            />
+          ) : null}
+          {data.stage ? (
+            <LifecycleBar
+              className="hidden sm:flex"
               current={data.stage}
               groups={[
                 { label: copy.spine.ttPhases.strategy, span: 1 },

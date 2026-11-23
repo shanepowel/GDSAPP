@@ -1308,6 +1308,7 @@ export const copy = {
     skillWeight: '×{weight}',
     eyebrow: 'Build a squad',
     archetypeName: 'Discovery squad',
+    ledeRoles: '{n} roles. Fill each one, and watch what it does to the shape and the health of the team. Nothing here is saved until you confirm it.',
     lede: 'Seven roles. Fill each one, and watch what it does to the shape and the health of the team. Nothing here is saved until you confirm it.',
     assigned: 'Assigned',
     score: 'Score',

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-23 (demo portfolio, phone layout, Welsh on demand)
+
+- The demo now holds five engagements at different stages, each with its own client, method, squad shape, confirmed squad and status: Network Rail asset reporting (Sprint Zero, hybrid, reporting), NRW permitting service (Discovery, at risk), NRW biodiversity data platform (Alpha), DVLA driving licence renewal (Beta, on track) and HS2 station information management (Live, waterfall, off track with a recovery plan). The duplicate "NRW Discovery" placeholder becomes the Network Rail engagement. The refresh runs once per version from the deploy seed, so later edits in the demo are kept.
+- Phones: the context bar keeps only the engagement switcher, the stage bar is compact, the tabs fade at the edge to show they scroll and bring the current tab into view. The next action now starts about 170px higher.
+- Welsh on demand: the browser tab title and meta description follow the chosen language, server-rendered text refreshes on switch, and any page opened with `?lang=cy` (or `/lang/cy?next=/path`) switches straight to Welsh.
+- The squad builder heading names the squad the stage calls for (for example Beta / Live squad) rather than always Discovery squad.
+
 ## 2026-11-23 (engagement UX)
 
 ### Changed

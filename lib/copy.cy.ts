@@ -1293,6 +1293,7 @@ export const copyCy: Copy = {
     skillWeight: '×{weight}',
     eyebrow: 'Cydosod sgwad',
     archetypeName: 'Sgwad darganfod',
+    ledeRoles: '{n} rôl. Llenwch bob un, a gwyliwch beth a wna i siâp ac iechyd y tîm. Nid oes dim yn cael ei gadw nes i chi gadarnhau.',
     lede: 'Saith rôl. Llenwch bob un, a gwyliwch beth a wna i siâp ac iechyd y tîm. Nid oes dim yn cael ei gadw nes i chi gadarnhau.',
     assigned: 'Neilltuwyd',
     score: 'Sgôr',
