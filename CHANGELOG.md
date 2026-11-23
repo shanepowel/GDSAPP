@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-23
+
+### Added
+
+- Delivery method on every engagement: Agile, Waterfall or Hybrid, chosen in the new-engagement wizard and changeable on the overview. The evidence is the same for every method; the method sets when it is captured, where it is reviewed and where the decision is made. Engagements with no method recorded show as Agile with a prompt to record it.
+- The engagement header shows the method and the T&T phase (Strategy, Set-up or Delivery) that the lifecycle stage sits in.
+- Data product checks from the DAA Data & Analytics Playbook technical delivery checklist. Data and reporting squads get them automatically, existing ones are backfilled unticked, and any other engagement can add them from the overview. They never block a stage move.
+
 ## 2026-09-04
 
 ### Changed

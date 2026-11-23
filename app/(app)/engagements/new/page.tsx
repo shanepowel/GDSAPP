@@ -12,10 +12,12 @@ import { useI18n } from '@/components/app/LocaleProvider';
 import { getCopy } from '@/lib/copy-i18n';
 import {
   COMMERCIAL_MODELS,
+  DELIVERY_METHODS,
   MARKET_SECTORS,
   SQUAD_SHAPES,
   STEERING_FREQUENCIES,
   type CommercialModel,
+  type DeliveryMethod,
   type MarketSector,
   type SquadShape,
   type SteeringFrequency,
@@ -44,6 +46,7 @@ export default function NewEngagementWizardPage() {
   const [outcomes, setOutcomes] = useState('');
   const [commercialModel, setCommercialModel] = useState<CommercialModel>('fixed-price');
   const [scopeClear, setScopeClear] = useState(true);
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('agile');
   const [milestones, setMilestones] = useState<MilestoneDraft[]>([{ name: '', dueOn: '', proves: '' }]);
   const [squadShape, setSquadShape] = useState<SquadShape>('discovery');
   const [steeringChair, setSteeringChair] = useState('');
@@ -82,6 +85,7 @@ export default function NewEngagementWizardPage() {
           proves: item.proves.trim() || undefined,
         })),
       squadShape,
+      deliveryMethod,
       steeringChair: steeringChair.trim() || undefined,
       steeringFrequency,
       clientProductOwner: clientProductOwner.trim() || undefined,
@@ -214,6 +218,35 @@ export default function NewEngagementWizardPage() {
                 </div>
               </fieldset>
               {scopeClear ? null : note(s.scopeHelper, 'warn')}
+              <fieldset className="m-0 flex flex-col gap-2 border-0 p-0" aria-describedby="method-hint">
+                <legend className="mb-1 text-sm font-semibold text-asm-ink">{s.methodTitle}</legend>
+                <p id="method-hint" className="m-0 text-sm text-asm-ink-3">
+                  {s.methodHint}
+                </p>
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                  {DELIVERY_METHODS.map((method) => (
+                    <label
+                      key={method}
+                      className={cn(
+                        'flex cursor-pointer gap-3 rounded-asm-lg border p-4',
+                        deliveryMethod === method ? 'border-asm-brand bg-asm-brand-wash' : 'border-asm-line hover:border-asm-brand-soft',
+                      )}
+                    >
+                      <input
+                        type="radio"
+                        name="method"
+                        className="mt-1 accent-asm-brand"
+                        checked={deliveryMethod === method}
+                        onChange={() => setDeliveryMethod(method)}
+                      />
+                      <span className="flex flex-col gap-1">
+                        <span className="font-bold text-asm-brand">{s.methods[method].title}</span>
+                        <span className="text-sm text-asm-ink-2">{s.methods[method].body}</span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
             </>
           ) : null}
 

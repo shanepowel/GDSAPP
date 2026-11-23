@@ -30,6 +30,8 @@ import { getCopy } from '@/lib/copy-i18n';
 import { nextActionSentence } from '@/lib/attention/sentence';
 import type { LifecycleStage } from '@/lib/attention/lifecycle';
 import { LIFECYCLE_STAGES } from '@/lib/attention/lifecycle';
+import { DELIVERY_METHODS, type DeliveryMethod } from '@/lib/handbook/choices';
+import { DATA_PACK_STAGE } from '@/lib/handbook/method';
 import { trpc } from '@/lib/trpc/client';
 import type { inferRouterOutputs } from '@trpc/server';
 import type { AppRouter } from '@/lib/trpc/root';
@@ -169,6 +171,16 @@ export function SpineFrame({ id, children }: { id: string; children: ReactNode }
                     {copy.spine.squadLead}: <span className="font-semibold text-asm-ink-2">{data.squadLead}</span>
                   </span>
                 ) : null}
+                <span>
+                  {copy.spine.methodLabel}:{' '}
+                  <span className="font-semibold text-asm-ink-2">{copy.spine.methods[data.deliveryMethod].title}</span>
+                </span>
+                {data.ttPhase ? (
+                  <span>
+                    {copy.spine.ttPhaseLabel}:{' '}
+                    <span className="font-semibold text-asm-ink-2">{copy.spine.ttPhases[data.ttPhase]}</span>
+                  </span>
+                ) : null}
               </div>
             </div>
           </div>
@@ -187,6 +199,104 @@ export function SpineFrame({ id, children }: { id: string; children: ReactNode }
       <EngagementTabs id={id} copy={copy} />
       {children}
     </div>
+  );
+}
+
+/** The evidence cadence for the engagement's method, with a way to record the agreed method. */
+function MethodCard({ id, copy, data }: { id: string; copy: Copy; data: Spine }) {
+  const save = trpc.spine.setMethod.useMutation({ onSuccess: useRefresh(id) });
+  const [choice, setChoice] = useState<DeliveryMethod>(data.deliveryMethod);
+  const cadence = copy.spine.cadence[data.deliveryMethod];
+  return (
+    <Card>
+      <CardHeader title={copy.spine.cadenceTitle} description={copy.spine.cadenceSub} />
+      <CardBody className="flex flex-col gap-4">
+        {data.deliveryMethodRecorded ? null : (
+          <p className="m-0 rounded-asm bg-asm-warn-wash px-4 py-3 text-sm text-asm-warn-ink">{copy.spine.methodNotRecorded}</p>
+        )}
+        <dl className="m-0 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {(
+            [
+              [copy.spine.cadenceCaptured, cadence.captured],
+              [copy.spine.cadenceReviewed, cadence.reviewed],
+              [copy.spine.cadenceDecision, cadence.decision],
+            ] as const
+          ).map(([term, value]) => (
+            <div key={term} className="flex flex-col gap-1 rounded-asm border border-asm-line-soft px-4 py-3">
+              <dt className="text-sm text-asm-ink-3">{term}</dt>
+              <dd className="m-0 font-semibold text-asm-ink">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </CardBody>
+      <CardFooter>
+        <form
+          className="flex flex-wrap items-end gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            save.mutate({ engagementId: id, method: choice });
+          }}
+        >
+          <Field id={`method-${id}`} label={copy.spine.methodLabel}>
+            <SelectInput value={choice} onChange={(event) => setChoice(event.target.value as DeliveryMethod)}>
+              {DELIVERY_METHODS.map((method) => (
+                <option key={method} value={method}>
+                  {copy.spine.methods[method].title}
+                </option>
+              ))}
+            </SelectInput>
+          </Field>
+          <Button
+            type="submit"
+            variant="secondary"
+            disabled={save.isPending || (choice === data.deliveryMethod && data.deliveryMethodRecorded)}
+          >
+            {copy.spine.saveMethod}
+          </Button>
+        </form>
+      </CardFooter>
+    </Card>
+  );
+}
+
+/** The Data and Analytics Playbook checks for engagements that build data products. */
+function DataPackCard({ id, copy, data }: { id: string; copy: Copy; data: Spine }) {
+  const refresh = useRefresh(id);
+  const toggle = trpc.spine.setChecklist.useMutation({ onSuccess: refresh });
+  const add = trpc.spine.addDataPack.useMutation({ onSuccess: refresh });
+  const items = data.checklist.filter((item) => item.stage === DATA_PACK_STAGE);
+  const done = items.filter((item) => item.done).length;
+  const progress = fillCopy(copy.spine.stageProgress, { done, total: items.length });
+  return (
+    <Card>
+      <CardHeader title={copy.spine.dataPackTitle} description={items.length ? `${copy.spine.dataPackSub} ${progress}` : copy.spine.dataPackSub} />
+      {items.length ? (
+        <>
+          <ProgressBar value={(done / items.length) * 100} label={progress} className="mx-6 mt-4" />
+          <Checklist
+            className="mt-2"
+            disabled={toggle.isPending}
+            items={items.map((item) => ({
+              id: item.id,
+              title: item.itemKey in copy.spine.checks ? storedTitle(item.itemKey, copy.spine.checks, copy.spine.poRaid) : item.title,
+              done: item.done,
+            }))}
+            onToggle={(itemId, value) => toggle.mutate({ engagementId: id, itemId, done: value })}
+          />
+        </>
+      ) : (
+        <>
+          <CardBody>
+            <p className="m-0 text-sm text-asm-ink-3">{copy.spine.dataPackEmpty}</p>
+          </CardBody>
+          <CardFooter>
+            <Button type="button" variant="secondary" onClick={() => add.mutate({ engagementId: id })} disabled={add.isPending}>
+              {copy.spine.dataPackAdd}
+            </Button>
+          </CardFooter>
+        </>
+      )}
+    </Card>
   );
 }
 
@@ -220,6 +330,7 @@ export function OverviewScreen({ id, created }: { id: string; created: boolean }
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">{measureTiles(copy, data)}</div>
       </section>
+      <MethodCard key={`${data.deliveryMethod}-${data.deliveryMethodRecorded}`} id={id} copy={copy} data={data} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader title={copy.spine.keyDates} />
@@ -283,6 +394,7 @@ export function OverviewScreen({ id, created }: { id: string; created: boolean }
           )}
         </Card>
       </div>
+      <DataPackCard id={id} copy={copy} data={data} />
       <Card>
         <CardHeader title={copy.spine.charter} description={copy.spine.charterSub} />
         <CardFooter>
