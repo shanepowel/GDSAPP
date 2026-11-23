@@ -143,7 +143,7 @@ export function actionLabel(copy: Copy, code: NextActionCode, survey: string | n
     case 'on-track':
       return copy.attention.open;
     case 'fill-roles':
-      return copy.nextAction.fillRoles;
+      return copy.spine.openSquad;
     default: {
       const neverCode: never = code;
       return neverCode;

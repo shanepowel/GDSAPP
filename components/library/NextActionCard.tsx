@@ -33,7 +33,7 @@ export function NextActionCard({
     );
   }
   return (
-    <section aria-label={label} className={cn('flex flex-wrap items-center justify-between gap-5 rounded-asm-lg bg-asm-brand px-7 py-6', className)}>
+    <section aria-label={label} data-surface="dark" className={cn('flex flex-wrap items-center justify-between gap-5 rounded-asm-lg bg-asm-brand px-7 py-6', className)}>
       <div className="flex min-w-0 flex-[1_1_420px] flex-col gap-1.5">
         {label ? <span className="text-xs font-bold uppercase tracking-[0.08em] text-asm-brand-tint">{label}</span> : null}
         <p className="m-0 text-xl font-semibold leading-snug text-asm-on-brand">{sentence}</p>

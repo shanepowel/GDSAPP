@@ -15,6 +15,7 @@ export function LifecycleBar({
   ariaLabel,
   links,
   progressLabel,
+  groups,
   variant = 'full',
   className,
 }: {
@@ -25,6 +26,8 @@ export function LifecycleBar({
   ariaLabel: string;
   links?: Partial<Record<LifecycleStage, string>>;
   progressLabel?: string;
+  /** Optional bands above the stages, for example Strategy, Set-up and Delivery. Spans must add up to the stage count. */
+  groups?: ReadonlyArray<{ label: string; span: number }>;
   variant?: 'full' | 'compact';
   className?: string;
 }) {
@@ -44,8 +47,8 @@ export function LifecycleBar({
     );
   }
 
-  return (
-    <ol aria-label={ariaLabel} className={cn('flex flex-wrap gap-2 rounded-asm-lg border border-asm-line bg-asm-surface px-6 py-5', className)}>
+  const list = (
+    <ol aria-label={ariaLabel} className={cn('flex flex-wrap gap-2', groups ? '' : 'rounded-asm-lg border border-asm-line bg-asm-surface px-6 py-5', groups ? '' : className)}>
       {LIFECYCLE_STAGES.map((stage, index) => {
         const state = index < currentIndex ? 'done' : index === currentIndex ? 'current' : 'future';
         const body = (
@@ -78,5 +81,22 @@ export function LifecycleBar({
         );
       })}
     </ol>
+  );
+  if (!groups) return list;
+  return (
+    <div className={cn('flex flex-col gap-3 rounded-asm-lg border border-asm-line bg-asm-surface px-6 py-5', className)}>
+      <div className="hidden gap-2 sm:flex" aria-hidden="true">
+        {groups.map((group) => (
+          <span
+            key={group.label}
+            className="border-b border-asm-line-strong pb-1 text-xs font-semibold uppercase tracking-[0.06em] text-asm-ink-3"
+            style={{ flexGrow: group.span, flexBasis: 0 }}
+          >
+            {group.label}
+          </span>
+        ))}
+      </div>
+      {list}
+    </div>
   );
 }
