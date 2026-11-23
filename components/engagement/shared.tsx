@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 import type { AttentionCode } from '@/lib/attention/facts';
 import type { LifecycleStage } from '@/lib/attention/lifecycle';
 import { LIFECYCLE_STAGES } from '@/lib/attention/lifecycle';
@@ -55,9 +56,14 @@ const TABS = [
 
 export function EngagementTabs({ id, copy }: { id: string; copy: Copy }) {
   const pathname = usePathname();
+  const list = useRef<HTMLUListElement>(null);
+  // On a narrow screen the tabs scroll sideways: bring the current one into view.
+  useEffect(() => {
+    list.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }, [pathname]);
   return (
-    <nav aria-label={copy.spine.tabs.label} className="mb-6">
-      <ul className="tab-scroll m-0 flex list-none gap-1 overflow-x-auto border-b border-asm-line-strong p-0">
+    <nav aria-label={copy.spine.tabs.label} className="relative mb-6">
+      <ul ref={list} className="tab-scroll m-0 flex list-none gap-1 overflow-x-auto border-b border-asm-line-strong p-0 pr-10 sm:pr-0">
         {TABS.map((tab) => {
           const href = tab.href(id);
           const active =
@@ -81,6 +87,8 @@ export function EngagementTabs({ id, copy }: { id: string; copy: Copy }) {
           );
         })}
       </ul>
+      {/* A fade on the right edge shows there are more tabs off screen. */}
+      <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-asm-canvas to-transparent sm:hidden" />
     </nav>
   );
 }
@@ -143,7 +151,7 @@ export function actionLabel(copy: Copy, code: NextActionCode, survey: string | n
     case 'on-track':
       return copy.attention.open;
     case 'fill-roles':
-      return copy.nextAction.fillRoles;
+      return copy.spine.openSquad;
     default: {
       const neverCode: never = code;
       return neverCode;

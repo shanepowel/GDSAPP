@@ -43,6 +43,8 @@ function SquadFitPageInner() {
     archetypes?.find((item) => item.slug === preferred)?.id ??
     archetypes?.[0]?.id ??
     '';
+  // The heading names the squad this stage calls for, not always the discovery example.
+  const selected = archetypes?.find((item) => item.id === archetypeId);
   const { data, refetch } = trpc.teamFit.overview.useQuery(
     { engagementId: id, archetypeId },
     { enabled: Boolean(archetypeId) },
@@ -59,8 +61,8 @@ function SquadFitPageInner() {
     <SpineFrame id={id}>
       <PageHeader
         eyebrow={copy.walkthrough.eyebrow}
-        title={copy.walkthrough.archetypeName}
-        lede={copy.walkthrough.lede}
+        title={selected?.name ?? copy.walkthrough.archetypeName}
+        lede={selected ? fillCopy(copy.walkthrough.ledeRoles, { n: selected.roles.length }) : copy.walkthrough.lede}
         heading="h2"
       />
 

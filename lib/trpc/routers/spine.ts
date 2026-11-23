@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { attentionFor, attentionRows, displayStatus, type SpineFacts } from '@/lib/attention/facts';
+import { attentionFor, attentionRows, displayStatus, statusReason, type SpineFacts } from '@/lib/attention/facts';
 import { lifecycleIndex, lifecycleStageForPhase, LIFECYCLE_STAGES } from '@/lib/attention/lifecycle';
 import {
   COMMERCIAL_MODELS,
@@ -224,6 +224,7 @@ function present(
     squadLead: engagement.owner?.name || engagement.owner?.email || null,
     stage: facts.stage,
     status: displayStatus(facts),
+    statusReason: statusReason(facts),
     attention: attentionFor(facts, now, hours),
     rows: attentionRows(facts, now, hours),
     milestone: facts.milestoneName,

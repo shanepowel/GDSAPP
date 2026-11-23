@@ -153,6 +153,23 @@ function reportMeasures(copy: Copy, data: Spine): string {
   });
 }
 
+/** The reason behind the status, in words, or empty when there is nothing to explain. */
+function reasonText(copy: Copy, reason: Spine['statusReason']): string {
+  const why = copy.spine.statusWhy;
+  switch (reason.code) {
+    case 'roles':
+      return reason.n === 1 ? why.rolesOne : fillCopy(why.roles, { n: reason.n });
+    case 'measures':
+      return reason.n === 1 ? why.measuresOne : fillCopy(why.measures, { n: reason.n });
+    case 'milestone':
+      return why.milestone;
+    case 'confirmed':
+      return why.confirmed;
+    default:
+      return '';
+  }
+}
+
 /** Engagement header, lifecycle and tabs. Shared by every engagement screen. */
 export function SpineFrame({ id, children }: { id: string; children: ReactNode }) {
   const { copy, data } = useSpine(id);
@@ -166,6 +183,9 @@ export function SpineFrame({ id, children }: { id: string; children: ReactNode }
               <h1 className="m-0 text-[30px] font-bold leading-tight text-asm-brand">{data.name}</h1>
               <div className="flex flex-wrap items-center gap-3 text-sm text-asm-ink-3">
                 <DeliveryStatus status={data.status} label={statusLabel(copy, data.status)} />
+                {reasonText(copy, data.statusReason) ? (
+                  <span className="text-asm-ink-2">{reasonText(copy, data.statusReason)}</span>
+                ) : null}
                 {data.squadLead ? (
                   <span>
                     {copy.spine.squadLead}: <span className="font-semibold text-asm-ink-2">{data.squadLead}</span>
@@ -176,7 +196,7 @@ export function SpineFrame({ id, children }: { id: string; children: ReactNode }
                   <span className="font-semibold text-asm-ink-2">{copy.spine.methods[data.deliveryMethod].title}</span>
                 </span>
                 {data.ttPhase ? (
-                  <span>
+                  <span className="sm:sr-only">
                     {copy.spine.ttPhaseLabel}:{' '}
                     <span className="font-semibold text-asm-ink-2">{copy.spine.ttPhases[data.ttPhase]}</span>
                   </span>
@@ -186,7 +206,25 @@ export function SpineFrame({ id, children }: { id: string; children: ReactNode }
           </div>
           {data.stage ? (
             <LifecycleBar
+              variant="compact"
               current={data.stage}
+              labels={lifecycleLabels(copy)}
+              doneLabel={copy.lifecycle.done}
+              currentLabel={copy.lifecycle.current}
+              ariaLabel={copy.lifecycle.label}
+              progressLabel={data.ttPhase ? copy.spine.ttPhases[data.ttPhase] : undefined}
+              className="sm:hidden"
+            />
+          ) : null}
+          {data.stage ? (
+            <LifecycleBar
+              className="hidden sm:flex"
+              current={data.stage}
+              groups={[
+                { label: copy.spine.ttPhases.strategy, span: 1 },
+                { label: copy.spine.ttPhases['set-up'], span: 1 },
+                { label: copy.spine.ttPhases.delivery, span: 5 },
+              ]}
               labels={lifecycleLabels(copy)}
               doneLabel={copy.lifecycle.done}
               currentLabel={copy.lifecycle.current}
@@ -202,43 +240,36 @@ export function SpineFrame({ id, children }: { id: string; children: ReactNode }
   );
 }
 
-/** The evidence cadence for the engagement's method, with a way to record the agreed method. */
+/** The evidence cadence for the engagement's method. Changing the method saves straight away. */
 function MethodCard({ id, copy, data }: { id: string; copy: Copy; data: Spine }) {
-  const save = trpc.spine.setMethod.useMutation({ onSuccess: useRefresh(id) });
-  const [choice, setChoice] = useState<DeliveryMethod>(data.deliveryMethod);
+  const refresh = useRefresh(id);
+  const [saved, setSaved] = useState(false);
+  const save = trpc.spine.setMethod.useMutation({
+    onSuccess: async () => {
+      setSaved(true);
+      await refresh();
+    },
+  });
   const cadence = copy.spine.cadence[data.deliveryMethod];
   return (
-    <Card>
-      <CardHeader title={copy.spine.cadenceTitle} description={copy.spine.cadenceSub} />
-      <CardBody className="flex flex-col gap-4">
-        {data.deliveryMethodRecorded ? null : (
-          <p className="m-0 rounded-asm bg-asm-warn-wash px-4 py-3 text-sm text-asm-warn-ink">{copy.spine.methodNotRecorded}</p>
-        )}
-        <dl className="m-0 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {(
-            [
-              [copy.spine.cadenceCaptured, cadence.captured],
-              [copy.spine.cadenceReviewed, cadence.reviewed],
-              [copy.spine.cadenceDecision, cadence.decision],
-            ] as const
-          ).map(([term, value]) => (
-            <div key={term} className="flex flex-col gap-1 rounded-asm border border-asm-line-soft px-4 py-3">
-              <dt className="text-sm text-asm-ink-3">{term}</dt>
-              <dd className="m-0 font-semibold text-asm-ink">{value}</dd>
-            </div>
-          ))}
-        </dl>
-      </CardBody>
-      <CardFooter>
-        <form
-          className="flex flex-wrap items-end gap-3"
-          onSubmit={(event) => {
-            event.preventDefault();
-            save.mutate({ engagementId: id, method: choice });
-          }}
-        >
+    <section aria-labelledby="cadence-heading" className="flex flex-col gap-4 rounded-asm-lg border border-asm-line bg-asm-surface px-6 py-5">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="flex max-w-2xl flex-col gap-1">
+          <h2 id="cadence-heading" className="m-0 text-lg font-bold text-asm-brand">
+            {copy.spine.cadenceTitle}
+          </h2>
+          <p className="m-0 text-sm text-asm-ink-3">{copy.spine.cadenceSub}</p>
+        </div>
+        <div className="flex items-end gap-3">
           <Field id={`method-${id}`} label={copy.spine.methodLabel}>
-            <SelectInput value={choice} onChange={(event) => setChoice(event.target.value as DeliveryMethod)}>
+            <SelectInput
+              value={data.deliveryMethod}
+              disabled={save.isPending}
+              onChange={(event) => {
+                setSaved(false);
+                save.mutate({ engagementId: id, method: event.target.value as DeliveryMethod });
+              }}
+            >
               {DELIVERY_METHODS.map((method) => (
                 <option key={method} value={method}>
                   {copy.spine.methods[method].title}
@@ -246,57 +277,79 @@ function MethodCard({ id, copy, data }: { id: string; copy: Copy; data: Spine })
               ))}
             </SelectInput>
           </Field>
-          <Button
-            type="submit"
-            variant="secondary"
-            disabled={save.isPending || (choice === data.deliveryMethod && data.deliveryMethodRecorded)}
-          >
-            {copy.spine.saveMethod}
-          </Button>
-        </form>
-      </CardFooter>
-    </Card>
+          <span role="status" className="min-h-6 pb-2.5 text-sm text-asm-ok-ink">
+            {saved ? copy.spine.methodSaved : ''}
+          </span>
+        </div>
+      </div>
+      {data.deliveryMethodRecorded ? null : (
+        <p className="m-0 rounded-asm bg-asm-warn-wash px-4 py-3 text-sm text-asm-warn-ink">{copy.spine.methodNotRecorded}</p>
+      )}
+      <dl className="m-0 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-3">
+        {(
+          [
+            [copy.spine.cadenceCaptured, cadence.captured],
+            [copy.spine.cadenceReviewed, cadence.reviewed],
+            [copy.spine.cadenceDecision, cadence.decision],
+          ] as const
+        ).map(([term, value]) => (
+          <div key={term} className="flex flex-col gap-0.5 border-l-2 border-asm-brand-soft pl-3">
+            <dt className="text-[13px] text-asm-ink-3">{term}</dt>
+            <dd className="m-0 text-[15px] font-semibold text-asm-ink">{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
   );
 }
 
-/** The Data and Analytics Playbook checks for engagements that build data products. */
+/** The Data and Analytics Playbook checks, folded to a progress line until opened. */
 function DataPackCard({ id, copy, data }: { id: string; copy: Copy; data: Spine }) {
   const refresh = useRefresh(id);
   const toggle = trpc.spine.setChecklist.useMutation({ onSuccess: refresh });
   const add = trpc.spine.addDataPack.useMutation({ onSuccess: refresh });
   const items = data.checklist.filter((item) => item.stage === DATA_PACK_STAGE);
   const done = items.filter((item) => item.done).length;
-  const progress = fillCopy(copy.spine.stageProgress, { done, total: items.length });
+  const progress = fillCopy(copy.spine.dataPackSummary, { done, total: items.length });
+  if (items.length === 0) {
+    return (
+      <section aria-labelledby="datapack-heading" className="flex flex-wrap items-center justify-between gap-4 rounded-asm-lg border border-asm-line bg-asm-surface px-6 py-4">
+        <div className="flex flex-col gap-1">
+          <h2 id="datapack-heading" className="m-0 text-lg font-bold text-asm-brand">
+            {copy.spine.dataPackTitle}
+          </h2>
+          <p className="m-0 text-sm text-asm-ink-3">{copy.spine.dataPackEmpty}</p>
+        </div>
+        <Button type="button" variant="secondary" size="sm" onClick={() => add.mutate({ engagementId: id })} disabled={add.isPending}>
+          {copy.spine.dataPackAdd}
+        </Button>
+      </section>
+    );
+  }
   return (
-    <Card>
-      <CardHeader title={copy.spine.dataPackTitle} description={items.length ? `${copy.spine.dataPackSub} ${progress}` : copy.spine.dataPackSub} />
-      {items.length ? (
-        <>
-          <ProgressBar value={(done / items.length) * 100} label={progress} className="mx-6 mt-4" />
-          <Checklist
-            className="mt-2"
-            disabled={toggle.isPending}
-            items={items.map((item) => ({
-              id: item.id,
-              title: item.itemKey in copy.spine.checks ? storedTitle(item.itemKey, copy.spine.checks, copy.spine.poRaid) : item.title,
-              done: item.done,
-            }))}
-            onToggle={(itemId, value) => toggle.mutate({ engagementId: id, itemId, done: value })}
-          />
-        </>
-      ) : (
-        <>
-          <CardBody>
-            <p className="m-0 text-sm text-asm-ink-3">{copy.spine.dataPackEmpty}</p>
-          </CardBody>
-          <CardFooter>
-            <Button type="button" variant="secondary" onClick={() => add.mutate({ engagementId: id })} disabled={add.isPending}>
-              {copy.spine.dataPackAdd}
-            </Button>
-          </CardFooter>
-        </>
-      )}
-    </Card>
+    <details className="group rounded-asm-lg border border-asm-line bg-asm-surface">
+      <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-4 px-6 py-4">
+        <span className="flex flex-col gap-1">
+          <span className="text-lg font-bold text-asm-brand">{copy.spine.dataPackTitle}</span>
+          <span className="text-sm text-asm-ink-3">{copy.spine.dataPackSub}</span>
+        </span>
+        <span className="flex items-center gap-4">
+          <ProgressBar value={(done / items.length) * 100} label={progress} className="w-40" />
+          <span className="whitespace-nowrap text-sm font-semibold text-asm-ink">{progress}</span>
+          <span className="text-sm font-semibold text-asm-brand underline group-open:hidden">{copy.spine.dataPackShow}</span>
+        </span>
+      </summary>
+      <Checklist
+        className="border-t border-asm-line-soft"
+        disabled={toggle.isPending}
+        items={items.map((item) => ({
+          id: item.id,
+          title: item.itemKey in copy.spine.checks ? storedTitle(item.itemKey, copy.spine.checks, copy.spine.poRaid) : item.title,
+          done: item.done,
+        }))}
+        onToggle={(itemId, value) => toggle.mutate({ engagementId: id, itemId, done: value })}
+      />
+    </details>
   );
 }
 
@@ -324,13 +377,13 @@ export function OverviewScreen({ id, created }: { id: string; created: boolean }
           <h2 id="compass-heading" className="m-0 text-lg font-bold text-asm-brand">
             {copy.spine.compassTitle}
           </h2>
-          <Link href={`/squads/${id}/compass`} className="text-sm font-semibold text-asm-brand">
-            {copy.spine.tabs.compass}
+          <Link href={`/squads/${id}/compass`} className="inline-flex min-h-6 items-center text-sm font-semibold text-asm-brand">
+            {copy.spine.openCompass}
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">{measureTiles(copy, data)}</div>
       </section>
-      <MethodCard key={`${data.deliveryMethod}-${data.deliveryMethodRecorded}`} id={id} copy={copy} data={data} />
+      <MethodCard id={id} copy={copy} data={data} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader title={copy.spine.keyDates} />
@@ -344,10 +397,10 @@ export function OverviewScreen({ id, created }: { id: string; created: boolean }
                       ? data.milestoneOn
                         ? fillCopy(copy.spine.milestoneWhen, { name: data.milestone, date: showDate(data.milestoneOn) })
                         : data.milestone
-                      : copy.spine.missing,
+                      : copy.spine.notSet,
                   ],
-                  [copy.spine.nextSteering, data.steeringOn ? showDate(data.steeringOn) : copy.spine.missing],
-                  [copy.spine.goLive, data.goLiveOn ? showDate(data.goLiveOn) : copy.spine.missing],
+                  [copy.spine.nextSteering, data.steeringOn ? showDate(data.steeringOn) : copy.spine.notSet],
+                  [copy.spine.goLive, data.goLiveOn ? showDate(data.goLiveOn) : copy.spine.notSet],
                 ] as const
               ).map(([term, value]) => (
                 <div key={term} className="flex flex-wrap justify-between gap-2 border-b border-asm-line-soft px-6 py-3.5 last:border-b-0">
@@ -362,7 +415,7 @@ export function OverviewScreen({ id, created }: { id: string; created: boolean }
           <CardHeader
             title={copy.spine.topRisks}
             action={
-              <Link href={`/squads/${id}/decisions`} className="text-sm font-semibold text-asm-brand">
+              <Link href={`/squads/${id}/decisions`} className="inline-flex min-h-6 items-center text-sm font-semibold text-asm-brand">
                 {copy.spine.viewDecisions}
               </Link>
             }

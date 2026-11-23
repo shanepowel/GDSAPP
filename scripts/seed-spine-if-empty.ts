@@ -9,6 +9,7 @@ import { seedDemoPool } from '../lib/demo/seed-pool';
 import { ensureDemoReader } from '../lib/demo/reader';
 import { seedSystemArchetypes } from './seed-archetypes';
 import { seedSpineDemo } from './seed-spine-demo';
+import { refreshDemoPortfolio } from './refresh-demo-portfolio';
 import { WALKTHROUGH_PEOPLE } from '../lib/teach/walkthrough';
 
 const DEMO_IDS = ['nrw-demo', 'nrw-demo-2'] as const;
@@ -141,6 +142,9 @@ async function main() {
       console.log(`[seed:spine] Seeded ${seeded.people} people across ${seeded.engagements} engagements.`);
     }
     await ensureWalkthroughPeople(prisma);
+    if (await refreshDemoPortfolio(prisma, admin.id)) {
+      console.log('[seed:spine] Refreshed the demo portfolio: stages, methods, squads and statuses.');
+    }
 
     const where = { engagementId: { in: [...DEMO_IDS] } };
     const counts = await Promise.all([

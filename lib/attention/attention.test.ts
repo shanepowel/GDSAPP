@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { attentionFor, attentionRows, displayStatus, type SpineFacts } from '@/lib/attention/facts';
+import { attentionFor, attentionRows, displayStatus, statusReason, type SpineFacts } from '@/lib/attention/facts';
 import { dayPart, hourInLondon } from '@/lib/attention/greeting';
 import { lifecycleStageForPhase } from '@/lib/attention/lifecycle';
 import { nextAction, suggestStatus } from '@/lib/attention/next-action';
@@ -96,8 +96,26 @@ describe('next action', () => {
       displayStatus({ ...base, confirmedStatus: 'off-track', squadConfirmed: false, essentialRolesOpen: 7 }),
     ).toBe('off-track');
     expect(nextActionSentence(attentionFor({ ...base, squadConfirmed: false, essentialRolesOpen: 3 }, new Date('2026-11-03T00:00:00.000Z'), 48), copy.nextAction)).toBe(
-      'Fill essential roles.',
+      'Fill the 3 essential roles still open.',
     );
+    expect(nextActionSentence(attentionFor({ ...base, squadConfirmed: false, essentialRolesOpen: 1 }, new Date('2026-11-03T00:00:00.000Z'), 48), copy.nextAction)).toBe(
+      'Fill the essential role still open.',
+    );
+  });
+
+  it('gives the reason behind the displayed status', () => {
+    const base = {
+      confirmedStatus: null, riskLockAt: null, hasRecoveryPlan: false, steeringOn: null, packReady: false,
+      unconfirmedDecisions: 0, stage: null, sprintZeroOpen: 0, sprintZeroBy: null, submittedChange: null,
+      triagedChange: null, exceptionPerson: null, goLiveOn: null, hasAftercare: false, reportDueOn: null,
+      surveyDue: null, charterReviewOn: null, milestoneName: null, milestoneOn: null,
+      milestoneWillBeMissed: false, measuresBelowTarget: 0, overdueSprintItem: null,
+    } satisfies SpineFacts;
+    expect(statusReason(base)).toEqual({ code: 'none' });
+    expect(statusReason({ ...base, squadConfirmed: false, essentialRolesOpen: 3, measuresBelowTarget: 1 })).toEqual({ code: 'roles', n: 3 });
+    expect(statusReason({ ...base, measuresBelowTarget: 1 })).toEqual({ code: 'measures', n: 1 });
+    expect(statusReason({ ...base, milestoneWillBeMissed: true })).toEqual({ code: 'milestone' });
+    expect(statusReason({ ...base, confirmedStatus: 'at-risk' })).toEqual({ code: 'confirmed' });
   });
 
   it('suggests status from measures and milestones', () => {

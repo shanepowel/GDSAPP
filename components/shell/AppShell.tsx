@@ -328,12 +328,15 @@ function ContextBar({
           engagement.name
         )}
       </Field>
-      <Field label={c.context.phase}>{phaseLabel}</Field>
-      <Field label={c.context.standards}>{standardsLabel}</Field>
-      <div className="flex-1" />
-      <Field label={c.context.maturity}>
-        {level ? fillCopy(c.context.maturityValue, { level, name: maturityName }) : c.spine.missing}
-      </Field>
+      {/* On a phone the engagement header below already says this, so only the switcher stays. */}
+      <div className="hidden md:contents">
+        <Field label={c.context.phase}>{phaseLabel}</Field>
+        <Field label={c.context.standards}>{standardsLabel}</Field>
+        <div className="flex-1" />
+        <Field label={c.context.maturity}>
+          {level ? fillCopy(c.context.maturityValue, { level, name: maturityName }) : c.spine.missing}
+        </Field>
+      </div>
     </div>
   );
 }

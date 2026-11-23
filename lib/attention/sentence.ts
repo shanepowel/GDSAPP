@@ -24,6 +24,7 @@ export interface NextActionTemplates {
   surveyPulse: string;
   charterReview: string;
   fillRoles: string;
+  fillRolesOne: string;
   onTrack: string;
   onTrackOpen: string;
 }
@@ -62,7 +63,7 @@ export function nextActionSentence(action: NextAction, templates: NextActionTemp
     case 'charter-review':
       return templates.charterReview;
     case 'fill-roles':
-      return templates.fillRoles;
+      return Number(vars.n) === 1 ? templates.fillRolesOne : fillCopy(templates.fillRoles, { n: vars.n ?? 0 });
     case 'on-track':
       return vars.milestone && vars.date
         ? fillCopy(templates.onTrack, { milestone: vars.milestone, date: vars.date })

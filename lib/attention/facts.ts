@@ -182,3 +182,20 @@ export function attentionRows(facts: SpineFacts, now: Date, riskLockHours: numbe
   if (facts.surveyDue === 'pulse') rows.push({ code: 'survey-pulse', vars: {} });
   return rows;
 }
+
+/** Why the displayed status is what it is, so the header can say it in words. */
+export type StatusReason =
+  | { code: 'confirmed' }
+  | { code: 'roles'; n: number }
+  | { code: 'milestone' }
+  | { code: 'measures'; n: number }
+  | { code: 'none' };
+
+export function statusReason(facts: SpineFacts): StatusReason {
+  if (facts.confirmedStatus === 'off-track') return { code: 'confirmed' };
+  if (rolesNeedFilling(facts)) return { code: 'roles', n: facts.essentialRolesOpen ?? 0 };
+  if (facts.confirmedStatus) return { code: 'confirmed' };
+  if (facts.milestoneWillBeMissed) return { code: 'milestone' };
+  if (facts.measuresBelowTarget > 0) return { code: 'measures', n: facts.measuresBelowTarget };
+  return { code: 'none' };
+}

@@ -97,6 +97,19 @@ th,
   box-shadow: 0 0 0 1px var(--focus-shadow);
 }
 
+/* On navy surfaces (the side navigation, the next action panel) a navy ring would be invisible. */
+#app-nav :focus-visible,
+[data-surface='dark'] :focus-visible {
+  outline-color: #ffffff;
+  box-shadow: 0 0 0 1px #16335c;
+}
+
+button:not(:disabled),
+select:not(:disabled),
+summary {
+  cursor: pointer;
+}
+
 /* First tab stop in the shell. Hidden until focused; the outline stays. */
 .skip-link {
   position: absolute;

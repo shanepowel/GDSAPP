@@ -15,13 +15,18 @@ const publicSans = Public_Sans({
   weight: ['400', '500', '600', '700'],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: `${product.name}: ${product.thesis}`,
-    template: `${product.name}: %s`,
-  },
-  description: product.metaDescription,
-};
+/** Title and description follow the language the person has chosen. */
+export async function generateMetadata(): Promise<Metadata> {
+  const stored = (await cookies()).get(LOCALE_COOKIE)?.value;
+  const welsh = stored === 'cy';
+  return {
+    title: {
+      default: `${product.name}: ${welsh ? product.thesisCy : product.thesis}`,
+      template: `${product.name}: %s`,
+    },
+    description: welsh ? product.metaDescriptionCy : product.metaDescription,
+  };
+}
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const stored = (await cookies()).get(LOCALE_COOKIE)?.value;
