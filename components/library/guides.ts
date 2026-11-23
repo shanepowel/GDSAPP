@@ -44,7 +44,7 @@ export const GDS_PRINCIPLES: readonly DesignPrinciple[] = [
     statement:
       'A component starts from the job a person is trying to do: a reviewer tracing a judgement, a delivery lead assembling a squad, or someone completing a form.',
     assemble:
-      'Every component guide opens with that need. A control with no named user is not ready to ship.',
+      'Name the person and the job before adding a control. If the screen cannot say what they do next, it is not ready.',
     serviceStandard: [1],
   },
   {
@@ -54,7 +54,7 @@ export const GDS_PRINCIPLES: readonly DesignPrinciple[] = [
     statement:
       'Build only the interface this service needs. Do not recreate a backlog, a document store, or a second design system beside this one.',
     assemble:
-      'The library standardises sizing and the controls screens share. Scoring stays in lib/scoring. Standards stay in the database.',
+      'One job per screen. The first region is the next action or the decision. A count or a list may follow when it helps that job. Do not add a second control for a job the library already does.',
     serviceStandard: [2, 11],
   },
   {
@@ -64,7 +64,7 @@ export const GDS_PRINCIPLES: readonly DesignPrinciple[] = [
     statement:
       'Sizes, type roles and standards are data. A screen does not invent a spacing value, a type size, or a criterion count.',
     assemble:
-      'Gap and padding accept the spacing scale only. An index with insufficient evidence renders as a dash, never as zero.',
+      'Spacing, type and status come from the tokens and the data. Do not invent a size, a criterion count, or an index of zero when the evidence is missing.',
     serviceStandard: [10],
   },
   {
@@ -74,7 +74,7 @@ export const GDS_PRINCIPLES: readonly DesignPrinciple[] = [
     statement:
       'The underlying model is a chain of criterion, evidence and judgement. The interface asks for one decision at a time and names the fix when something is wrong.',
     assemble:
-      'Field keeps a visible label. An error names the field and the correction. Off-scale spacing fails the type checker.',
+      'Ask for one decision at a time. An error names the field and the correction. A table compares, and it does not show the same figure twice to make the row look complete.',
     serviceStandard: [4],
   },
   {
@@ -84,7 +84,7 @@ export const GDS_PRINCIPLES: readonly DesignPrinciple[] = [
     statement:
       'Ship the smallest control that meets the need, watch it in a real task, then change the guide when the rule changes.',
     assemble:
-      'The catalogue is the record of the current rule. A build step says what must be true before the next step starts.',
+      'Change this guide when the rule changes, then change the screen to match. A rule the live screen contradicts is not the rule yet.',
     serviceStandard: [7, 8],
   },
   {
@@ -94,7 +94,7 @@ export const GDS_PRINCIPLES: readonly DesignPrinciple[] = [
     statement:
       'Accessible design is the floor, not a later pass. Contrast, focus, target size and text labels ship with the component.',
     assemble:
-      'Colour is never the only carrier of a verdict. Focus styling is never removed. Primary actions use the control target height.',
+      'The action that proceeds is 44px tall and has a visible name. Status is a glyph, a label and a wash. Focus stays. The same task works with a keyboard and on a phone.',
     serviceStandard: [5],
   },
   {
@@ -104,7 +104,7 @@ export const GDS_PRINCIPLES: readonly DesignPrinciple[] = [
     statement:
       'The same person may be in a gate review on a laptop or on a phone between meetings. The layout has to reflow, including at large zoom.',
     assemble:
-      'Grid tracks collapse when the viewport cannot hold them. Reading copy sits in a measure. The shell becomes a single column on a narrow screen.',
+      'The rail is for finding a place. The page is for the work. The engagement bar appears only on a squad page. Account controls stay in the rail and do not wrap into the brand mark.',
     serviceStandard: [1, 3],
   },
   {
@@ -114,7 +114,7 @@ export const GDS_PRINCIPLES: readonly DesignPrinciple[] = [
     statement:
       'A screen exists to help someone complete the assurance task. Decoration that does not help that task does not belong in the library.',
     assemble:
-      'Button names the action. Panel is a ruled surface for a group of related facts, not a card for its own sake.',
+      'A screen helps someone finish the assurance task. One primary action per region. The button uses the verb they came to do. Decoration that does not help that task does not ship.',
     serviceStandard: [2],
   },
   {
@@ -124,7 +124,7 @@ export const GDS_PRINCIPLES: readonly DesignPrinciple[] = [
     statement:
       'Shared jobs use the same control and the same spacing. A verdict, a gap and a title block stay specific, because they are the product.',
     assemble:
-      'New layout uses Stack, Cluster, Grid and Panel. Product components in components/product keep their own meaning on top of that scale.',
+      'The same job uses the same control. Actions are Button or ButtonLink. Engagement status is DeliveryStatus. Other short states are Badge. Do not add a second button class.',
     serviceStandard: [3, 13],
   },
   {
@@ -134,7 +134,7 @@ export const GDS_PRINCIPLES: readonly DesignPrinciple[] = [
     statement:
       'The rule for a component is public, next to the component, so a later change can be checked against it.',
     assemble:
-      'This guide is on /practice/components. It cites the build sheet step a component belongs to.',
+      'The rule sits on the component catalogue, in the same words the screen is built to. A later change is checked against that text.',
     serviceStandard: [12, 13],
   },
 ];
@@ -270,10 +270,10 @@ export const COMPONENT_GUIDES: readonly ComponentGuide[] = [
     id: 'button',
     name: 'Button',
     userNeed: 'A person committing an action needs a control that says what will happen, at a size they can hit.',
-    whenToUse: 'Use Button for actions on the page. Use ButtonLink when the action is navigation that should look like the primary action.',
-    whenNotToUse: 'Do not use Button for a judgement. A verdict is a product component with a glyph and a label.',
-    howItWorks: 'Variants are primary, secondary, tertiary and destructive. The existing components/ui/Button entry re-exports this control.',
-    sizing: 'Medium uses the 44px control target, with 16px inline padding. Small uses the 32px step, still above the 24px minimum, for a dense row.',
+    whenToUse: 'Use Button for an action on the page. Use ButtonLink when navigation should look like that action. One primary per region.',
+    whenNotToUse: 'Do not use Button for a verdict. Do not add another button class. Do not use the small size for the action that proceeds.',
+    howItWorks: 'Primary is the one action that proceeds. Secondary, ghost and tertiary are the others. Destructive names the object and the consequence.',
+    sizing: 'The action that proceeds is the 44px control, with 16px inline padding. Small is 32px and only for a second action in a comparison row, on the same line.',
     accessibility: 'The accessible name is the button text. Focus uses the global outline and is never removed. Disabled buttons stay in the tab order only when the attribute is set by the caller.',
     principleIds: ['user-needs', 'everyone', 'services-not-websites'],
     serviceStandard: [4, 5],
@@ -319,7 +319,7 @@ export const COMPONENT_GUIDES: readonly ComponentGuide[] = [
     name: 'Card',
     userNeed: 'A person scanning a screen needs related content grouped under one title so they can find it and skip it.',
     whenToUse: 'Use Card with CardHeader for any titled section: a list, a form, a set of facts. Put the primary action for a form in CardFooter.',
-    whenNotToUse: 'Do not nest cards. Do not use a card around a single line of text.',
+    whenNotToUse: 'Do not nest cards. Do not wrap a single sentence. Do not split one summary into several equal cards.',
     howItWorks: 'Card is a white surface with a 1px line and the large radius. CardHeader holds the title, an optional description and one action. CardBody and CardFooter hold content and actions.',
     sizing: 'Header and body padding is 24px by 20px. Footer padding is 24px by 14px.',
     accessibility: 'CardHeader renders an h2. Pass an id and set aria-labelledby on the Card when it is a landmark section.',
@@ -343,7 +343,7 @@ export const COMPONENT_GUIDES: readonly ComponentGuide[] = [
     name: 'Delivery status',
     userNeed: 'A person checking an engagement needs to know at once whether it is on track.',
     whenToUse: 'Use DeliveryStatus wherever an engagement status appears.',
-    whenNotToUse: 'Do not use it for milestone or change states. Use Badge.',
+    whenNotToUse: 'Do not use it for a milestone or a change state. Use Badge. Do not draw a status with colour alone, and do not invent a fourth state.',
     howItWorks: 'A glyph, a label from copy and a tinted wash. Three states: on track, at risk, off track.',
     sizing: 'Two sizes. md is the default, sm sits inside tables and cards.',
     accessibility: 'The glyph is hidden from assistive technology. The label carries the meaning. The pill meets the 24px minimum target.',
@@ -366,8 +366,8 @@ export const COMPONENT_GUIDES: readonly ComponentGuide[] = [
     id: 'next-action',
     name: 'Next action',
     userNeed: 'A person opening an engagement needs one clear thing to do next.',
-    whenToUse: 'Use the hero emphasis once at the top of the engagement overview. Use soft emphasis inside cards.',
-    whenNotToUse: 'Do not show more than one hero next action on a screen.',
+    whenToUse: 'Use the hero once, at the top of the engagement overview. Use the soft emphasis inside an engagement card, as the point of that card.',
+    whenNotToUse: 'Do not show two heroes. Do not tuck the sentence under a chart or a lifecycle so the person has to hunt for it.',
     howItWorks: 'The sentence comes from nextActionSentence(). The action goes to the screen where the person can do it.',
     sizing: 'Hero padding is 28px by 24px.',
     accessibility: 'The hero is a labelled section. The action is a real link with a visible name.',
@@ -391,8 +391,8 @@ export const COMPONENT_GUIDES: readonly ComponentGuide[] = [
     name: 'Attention row',
     userNeed: 'A person starting their day needs the items that need them, with one action each.',
     whenToUse: 'Use in the Needs attention list on the home screen.',
-    whenNotToUse: 'Do not use it for history or notifications that need no action.',
-    howItWorks: 'An icon, a sentence, a context line and one secondary action.',
+    whenNotToUse: 'Do not use it for history. Do not repeat the next action already on the engagement card as a second primary. The list is the queue.',
+    howItWorks: 'An icon, a sentence, a context line and one action. The action opens the place where the person can do the thing.',
     sizing: 'Rows are at least 72px high with 24px side padding.',
     accessibility: 'It is a list item. The icon is decorative. The action is a link with a visible name.',
     principleIds: ['do-less', 'user-needs'],
@@ -402,9 +402,9 @@ export const COMPONENT_GUIDES: readonly ComponentGuide[] = [
     id: 'table',
     name: 'Table',
     userNeed: 'A person comparing many records needs them in rows and columns.',
-    whenToUse: 'Use for engagement lists, milestones and the RAID log. Wrap in TableScroll.',
-    whenNotToUse: 'Do not use a table for layout.',
-    howItWorks: 'Th and Td primitives on a collapsed table. TableScroll gives a minimum width and scrolls inside the card on narrow screens.',
+    whenToUse: 'Use for a comparison: engagement lists, milestones, the RAID log, and a squad against the datum. Wrap in TableScroll.',
+    whenNotToUse: 'Do not use a table for layout. Do not add a column that repeats a figure already in the row.',
+    howItWorks: 'Th and Td on a collapsed table. A comparison row has four jobs: what, who, how it compares, and what to do. The figure appears once. Actions stay on one row. TableScroll sets a minimum width and scrolls inside the card on a narrow screen.',
     sizing: 'Cells are 12px by 14px with 24px at the edges.',
     accessibility: 'Th has scope col. Keep one header row. Use real links in cells.',
     principleIds: ['make-simple', 'everyone'],
@@ -451,8 +451,8 @@ export const COMPONENT_GUIDES: readonly ComponentGuide[] = [
     name: 'Empty state',
     userNeed: 'A person seeing an empty screen needs to know why it is empty and what to do.',
     whenToUse: 'Use when a list has nothing in it yet.',
-    whenNotToUse: 'Do not use it for errors.',
-    howItWorks: 'A title, a sentence and one action.',
+    whenNotToUse: 'Do not use it for a failed request. A failure names what failed and offers retry. A missing record is this state at once, not after a long wait.',
+    howItWorks: 'A title, a sentence that says why it is empty, and one action.',
     sizing: '24px by 32px padding with a dashed line.',
     accessibility: 'The title is an h3. The action is a real button or link.',
     principleIds: ['user-needs', 'do-less'],
@@ -464,7 +464,7 @@ export const COMPONENT_GUIDES: readonly ComponentGuide[] = [
     userNeed: 'A person landing on a screen needs to know where they are and the main thing they can do.',
     whenToUse: 'Use once at the top of every list and form screen.',
     whenNotToUse: 'Do not use it inside a card.',
-    howItWorks: 'Title, optional subtitle and up to two actions.',
+    howItWorks: 'A title, one line of context, and one primary action. A second action is secondary.',
     sizing: 'Title is 30px.',
     accessibility: 'The title is the page h1.',
     principleIds: ['context', 'consistent'],

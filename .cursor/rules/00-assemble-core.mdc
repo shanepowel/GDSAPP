@@ -38,12 +38,20 @@ document (for evidence), recommendation, unstaffed, archived. `issue` is allowed
 
 The product is called **Assemble**, by Turner & Townsend. Do not use the older name "Datum" in UI.
 
+## Experience
+
+A screen has one job. The first region in the main column is the next action or the decision.
+Counts, charts and lists support that job. How to build it is in `10-ui-and-a11y.mdc` and
+`50-ui-library.mdc`.
+
 ## Refuse these patterns
 
 - A colour used as the only carrier of meaning. Every verdict needs glyph + label + wash.
 - `outline: none` or any removal of focus styling.
 - A raw Tailwind palette class (`bg-blue-500`, `text-red-600`). Semantic tokens only.
 - Hardcoded hex values in components. Every colour comes from tokens CSS.
+- A second action style beside `Button` and `ButtonLink` from `components/library`.
+- Two primary actions in the same region.
 - `Date.now()` inside scoring or freshness logic. `now` is injected.
 - An index of `0` when data is insufficient. It is `null`, rendered `—`.
 - String concatenation to build a user-facing sentence.

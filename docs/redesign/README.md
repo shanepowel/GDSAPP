@@ -40,8 +40,28 @@ Import from `@/components/library` or the file directly. The live catalogue is a
 | AssembleMark, AssembleLockup, TurnerTownsendLogo | Brand marks. |
 | Stack, Cluster, Grid, Inset, Measure, Heading, Text, Panel | The original layout and type primitives. Still supported. |
 
-Rules that still hold: tokens only, status is glyph plus label plus wash, every string comes from
-`lib/copy.ts` and `lib/copy.cy.ts`, scoring stays in `lib/scoring`, AI proposes and people decide.
+## How a screen is arranged
+
+A screen has one job. The main column leads with the page title, then the next action or the
+decision, then the evidence. One primary action in that region. A count, a chart or a list follows
+only when it helps that job, and the same fact is not repeated unless each instance does a
+different job.
+
+The rail is for finding a place. The page is for the work. The engagement context bar renders only
+on a squad page. Account controls stay in the rail, at 44px, and do not wrap into the brand mark.
+
+Actions are `Button` and `ButtonLink`. There is no second button class. The action that proceeds
+is 44px. Engagement status is `DeliveryStatus` (glyph, label and wash). A comparison table shows
+each figure once and keeps its actions on one row.
+
+Loading, empty and failed are different states. Each is a sentence and one action. A missing
+record is the empty state at once.
+
+Rules that still hold: tokens only, no raw palette and no hex outside `styles/tokens.css`, every
+string comes from `lib/copy.ts` and `lib/copy.cy.ts`, scoring stays in `lib/scoring`, AI proposes
+and people decide. The locked wording is in `.cursor/rules/10-ui-and-a11y.mdc` and
+`50-ui-library.mdc`. The same rules are the "How Assemble applies it" lines on
+`/practice/components`.
 
 ## Screens rebuilt on the library
 
@@ -67,8 +87,8 @@ The Squad and Standards tabs (`/squads/[id]`, `/assurance/[id]`) sit inside `Spi
 share the engagement header, lifecycle and tabs. When you next touch one of these screens, move its
 markup onto library components rather than adding more global CSS.
 
-The locked rules were updated for this direction: see `.cursor/rules/00-assemble-core.mdc` and
-`10-ui-and-a11y.mdc` (radius, pills, no signal pink, RAID log in scope, delivery vocabulary).
+The locked rules for this direction are `.cursor/rules/00-assemble-core.mdc`,
+`10-ui-and-a11y.mdc` and `50-ui-library.mdc`.
 
 ## Data
 
